@@ -9,6 +9,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Get in Touch',
       slogan: 'Technology, Bonded.',
       language: 'Language',
+      installGuide: 'Installation Guide',
     },
     hero: {
       titlePrefix: 'Smart software.',
@@ -23,7 +24,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       liveVerified: 'Live Verified',
       dualTarget: 'SENEAR & JUNEAR',
       flagshipTag: 'Flagship Android',
-      nearTitle: 'The NEAR Ecosystem',
+      nearTitle: 'Fail-safe app for seniors.',
       nearDesc:
         'A distraction-free, fail-safe Android launcher and remote care system for seniors and kids. Built natively in Kotlin with robust Device Owner kiosk protection.',
       trySimulator: 'Try Interactive SENEAR Simulator',
@@ -34,9 +35,12 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
     },
     nearSection: {
       title: 'The NEAR Ecosystem',
+      subtitlePill: '2 dedicated apps in one safety ecosystem',
+      appSeniorLabel: 'For Seniors',
+      appJuniorLabel: 'For Kids',
       description:
         'Built on a single, fail-safe technological foundation, we have created two tailored solutions. Whether it is ensuring the safety of the older generation (SENEAR) or providing digital protection for the youngest (JUNEAR), our technology serves one ultimate purpose: preserving the bond between you and your loved ones.',
-      quote: '“Whether for a SEnior or a JUnior—the goal is to always stay NEAR.”',
+      quote: '“Whether SENIOR or JUNIOR—the essence is to always keep them NEAR.”',
       screenshotsFolder: 'Folder',
       screenshotsLabel: 'Mobile Screenshots',
       zoom: 'Zoom',
@@ -47,27 +51,28 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
     },
     senear: {
       badge: '★ SENEAR',
-      targetAudience: 'For Seniors',
-      tagPill: 'Zero-Confusion Life-Safety Kiosk',
-      headline: 'SENEAR – Always close to your loved ones',
+      targetAudience: '',
+      tagPill: 'Foolproof App for Seniors',
+      headline: 'Ultra-simple, foolproof mobile interface for seniors with guaranteed safety and remote care.',
       description:
-        'Zero-confusion, fail-safe Android launcher and remote care system designed specifically for elderly users.',
+        'Two connected applications in a unified system: a foolproof mobile interface for the elderly user, and a dedicated dashboard for the caring relative, seamlessly connected.',
       featuresTitle: 'Core Features & Capabilities:',
-      feature1Title: 'One-Touch Emergency SOS',
+      feature1Title: 'Emergency SOS Call',
       feature1Desc:
-        'Broadcasts real-time GPS coordinates and automatically initiates voice calls to configured family members with a single tap.',
+        'With a single button press, sends real-time GPS coordinates to family members and automatically starts an emergency call to the designated phone number (or 112 emergency services).',
       feature2Title: 'Remote Caregiver Dashboard',
       feature2Desc:
-        'Family members can remotely check battery levels, regulate speaker volume, and manage speed-dial contacts from any browser.',
-      feature3Title: 'Accidental Misconfiguration Protection',
+        'Family members can remotely check the senior’s device status, modify settings, query precise GPS coordinates, and access multiple helpful features.',
+      feature3Title: 'Foolproof, Locked Interface',
       feature3Desc:
-        'Android Device Owner (DPC) kiosk enforcement prevents accidental app uninstallation, drawer disorientation, or unintended system setting changes.',
-      feature4Title: 'Offline-First Reliability',
+        'The senior receives a strictly secured (kiosk mode) interface preventing accidental app uninstallation or misconfiguration. Vital functions – such as making and receiving calls and sending SMS – continue to work smoothly.',
+      feature4Title: 'Offline-First Stability',
       feature4Desc:
-        'Built-in deterministic state machine operates seamlessly and securely even during mobile network or Wi-Fi interruptions.',
+        'The senior’s app operates smoothly and safely even without an internet connection, as long as cellular reception is available for phone calls – plus, it requires no pairing with another phone to function.',
       galleryTitle: 'SENEAR Mobile Screenshots:',
       btnSimulator: 'Download from Google Play',
       btnArchitecture: 'SENEAR Detailed Architecture',
+      btnInstallGuide: 'Installation Guide (QR Setup)',
       photos: {
         title1: 'Main Kiosk Screen',
         sub1: '4 oversized, high-contrast unmistakable action tiles',
@@ -104,7 +109,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       feature4Desc:
         'Restrictions, background tracking, and safety policies remain completely active and resilient even if mobile data temporarily drops.',
       galleryTitle: 'JUNEAR Mobile Screenshots:',
-      btnMoreInfo: 'Learn More About JUNEAR',
+      btnMoreInfo: 'Notify Me About Launch',
       btnContact: 'Contact & Integration',
       photos: {
         title1: 'Protected Kids Launcher',
@@ -141,7 +146,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       next: 'Next',
     },
     contact: {
-      title: 'Start a Conversation with gabba',
+      title: 'Get in Touch With Us:',
       subtitle:
         'Whether you require specialized Android kiosk engineering, fail-safe mobile systems, or senior architectural advisory, we welcome inquiries for technical partnerships.',
       directContact: 'Direct Contact',
@@ -151,7 +156,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       availabilityLabel: 'Capacity',
       availabilityValue: 'Accepting select client partnerships & architecture projects',
       copiedEmail: 'Email copied to clipboard!',
-      formTitle: 'Technical Inquiry / Scope Brief',
+      formTitle: 'Inquiry',
       nameLabel: 'Your Name *',
       namePlaceholder: 'e.g., Sarah Jenkins',
       emailInputLabel: 'Your Email *',
@@ -172,9 +177,8 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
         month36: '3 – 6 months',
         exploratory: 'Exploratory / Architecture Consultation',
       },
-      messageLabel: 'Project Requirements & Context *',
-      messagePlaceholder:
-        'Describe your requirements, intended deployment scale, target hardware, and technical goals...',
+      messageLabel: 'Message:',
+      messagePlaceholder: 'Write your questions and comments here',
       sendEmailBtn: 'Send Inquiry via Email Client',
       copyBriefBtn: 'Copy Project Brief to Clipboard',
       briefCopied: 'Brief Copied to Clipboard!',
@@ -219,6 +223,98 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       taken: 'Taken',
       closeSimulator: 'Close Simulator',
     },
+    installGuide: {
+      backToHome: 'Back to Overview',
+      breadcrumbCurrent: 'SENEAR Installation Guide',
+      heroBadge: 'Android Enterprise QR Provisioning',
+      heroTitle: 'SENEAR Installation Guide',
+      heroDescription:
+        "A quick and easy guide to installing the distraction-free SENEAR launcher on your loved one's device using a secure, Google-account-free setup.",
+      mockupAlt: 'SENEAR App Mockup',
+      badgeDeviceOwner: 'Device Owner Kiosk Mode',
+      badgeEnterprise: 'Zero-Google Account Setup',
+      prereqTitle: 'Important Pre-requisite',
+      prereqSubtitle: 'Target Device State Requirement',
+      prereqContent:
+        'The target device MUST be brand new out-of-the-box or completely Factory Reset before you start.',
+      prereqExplanation:
+        'Android Enterprise Device Owner permissions can only be granted during the initial unboxing setup. If the phone already has Google accounts or apps installed, Android security prevents kiosk-level enrollment.',
+      prereqResetTip:
+        'Already set up? Navigate to Settings > System > Reset options > Erase all data (Factory reset).',
+      phase1Badge: 'Phase 1: Factory Reset',
+      phase1Title: 'Factory Reset (If the device is not brand new)',
+      phase1Subtitle:
+        'A complete wipe ensures no existing Google accounts block Android Enterprise Device Owner privileges.',
+      phase1SkipNote:
+        'Unboxing a brand-new, factory-sealed device? You can skip Phase 1 and proceed directly to Phase 2 below.',
+      p1Step1Number: '1',
+      p1Step1Title: 'Open Settings',
+      p1Step1Desc: 'On the target device, open the standard Android Settings app.',
+      p1Step1Tip: 'Look for the gear icon on the home screen or app drawer.',
+      p1Step2Number: '2',
+      p1Step2Title: 'Find Reset Options',
+      p1Step2Desc:
+        'Navigate to System > Reset options (on some devices, it may be under General Management > Reset).',
+      p1Step2Tip: 'You can also tap the search bar at the top of Settings and type "Reset".',
+      p1Step3Number: '3',
+      p1Step3Title: 'Erase Data',
+      p1Step3Desc: 'Select Erase all data (factory reset).',
+      p1Step3Tip:
+        'The screen will confirm that accounts, apps, and stored files will be completely cleared.',
+      p1Step4Number: '4',
+      p1Step4Title: 'Confirm and Reboot',
+      p1Step4Desc:
+        'Confirm the action. The phone will completely wipe all previous data, accounts, and apps, and will eventually reboot to the initial "Welcome" screen.',
+      p1Step4Tip:
+        'Rebooting takes 2 to 4 minutes. Do not interrupt until the "Welcome / Hello" language screen displays.',
+      transitionBadge: 'Device Wiped & Unlinked',
+      transitionTitle: 'Ready for Enterprise Kiosk Setup',
+      transitionDesc:
+        'Your smartphone is now in a clean out-of-the-box state with zero personal accounts. Proceed with Phase 2 below.',
+      phase2Badge: 'Phase 2: Kiosk Installation',
+      phase2Title: 'Kiosk Installation & QR Provisioning',
+      phase2Subtitle:
+        'Enroll the SENEAR launcher in Device Owner mode via the native Android Enterprise setup wizard.',
+      step1Number: '01',
+      step1Title: 'Power On',
+      step1Desc:
+        'Turn on the device and wait for the initial "Welcome" or language selection screen.',
+      step1Tip:
+        'Do not click "Start" or configure Wi-Fi yet. Just remain on the primary greeting screen.',
+      step2Number: '02',
+      step2Title: 'The Secret 6 Taps',
+      step2Desc:
+        'Tap quickly 6 times on an empty area of the screen (avoiding any buttons).',
+      step2Tip:
+        'Tap rapidly in an open space on the screen. The device will chime or show a prompt initiating QR code setup.',
+      step3Number: '03',
+      step3Title: 'Scan the QR Code',
+      step3Desc:
+        'The device will automatically recognize the setup mode, ask you to connect to Wi-Fi, and launch a hidden QR code scanner. Scan the SENEAR QR code provided in your caregiver dashboard.',
+      step3Tip:
+        'Point the phone camera steadily at the provisioning QR code displayed below.',
+      step4Number: '04',
+      step4Title: 'Automatic Setup',
+      step4Desc:
+        'The device will download the app directly from our secure servers, install it, and grant the necessary Device Owner (kiosk) permissions instantly. No Google account login is required.',
+      step4Tip:
+        'Once downloaded, SENEAR launches automatically into protected kiosk mode, fully secured and ready for everyday use.',
+      qrCardBadge: 'Provisioning QR Code',
+      qrCardTitle: 'SENEAR Enrollment QR Code',
+      qrCardSubtitle: 'Scan this code with the device camera during Step 3',
+      qrTabQr: 'Interactive QR Code',
+      qrTabPayload: 'JSON Provisioning Payload',
+      btnCopyPayload: 'Copy JSON Config',
+      btnCopied: 'Copied!',
+      btnPrint: 'Print Setup Card',
+      btnDownloadQr: 'Download QR PNG',
+      compatibilityNote: 'Compatible with Android 9.0 through Android 15+',
+      needHelpTitle: 'Need assistance during setup?',
+      needHelpDesc:
+        'Our technical team is ready to assist with remote provisioning, corporate fleet deployment, or family setups.',
+      btnContact: 'Contact Technical Support',
+      btnOpenSimulator: 'Try Web Simulator First',
+    },
   },
 
   hu: {
@@ -229,6 +325,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Kapcsolatfelvétel',
       slogan: 'Technológia, ami összekapcsol.',
       language: 'Nyelv',
+      installGuide: 'Telepítési Útmutató',
     },
     hero: {
       titlePrefix: 'Okos szoftverek.',
@@ -243,9 +340,9 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       liveVerified: 'Élőben Verifikált',
       dualTarget: 'SENEAR & JUNEAR',
       flagshipTag: 'Zászlóshajó Android',
-      nearTitle: 'A NEAR Ökoszisztéma',
+      nearTitle: 'Elállíthatatlan alkalmazás időseknek.',
       nearDesc:
-        'A distraction-free, fail-safe Android launcher and remote care system for seniors and kids. Built natively in Kotlin with robust Device Owner kiosk protection.',
+        'Végtelenül egyszerű, elronthatatlan mobilfelület időseknek garantált biztonsággal és távfelügyelettel.',
       trySimulator: 'Interaktív SENEAR Szimulátor indítása',
       dpcLockdownTitle: 'DPC Rendszerzár',
       dpcLockdownDesc: 'Megakadályozza a véletlen törlést és elállítást',
@@ -253,10 +350,13 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       tactileCardsDesc: 'Tapintható, nagy kontrasztú védett felület',
     },
     nearSection: {
-      title: 'The NEAR Ecosystem',
+      title: 'A NEAR Ökoszisztéma',
+      subtitlePill: '2 dedikált alkalmazás egyetlen rendszerben',
+      appSeniorLabel: 'Időseknek',
+      appJuniorLabel: 'Gyermekeknek',
       description:
-        'Built on a single, fail-safe technological foundation, we have created two tailored solutions. Whether it is ensuring the safety of the older generation (SENEAR) or providing digital protection for the youngest (JUNEAR), our technology serves one ultimate purpose: preserving the bond between you and your loved ones.',
-      quote: '„Whether for a SEnior or a JUnior—the goal is to always stay NEAR.”',
+        'Egyetlen, hibabiztos technológiai alapon két különálló, célorientált megoldást hoztunk létre. Legyen szó az idősek biztonságáról (SENEAR) vagy a legkisebbek digitális védelméről (JUNEAR), technológiánk egyetlen végső célt szolgál: megőrizni a köteléket közted és a szeretteid között.',
+      quote: '„Akár SENIOR, akár JUNIOR – a lényeg, hogy mindig NEAR (közel) legyenek.”',
       screenshotsFolder: 'Mappa',
       screenshotsLabel: 'Mobil Képernyőképek (Screenshots)',
       zoom: 'Nagyítás',
@@ -267,27 +367,28 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
     },
     senear: {
       badge: '★ SENEAR',
-      targetAudience: 'Idősek számára / For Seniors',
-      tagPill: 'Zero-Confusion Életmentő Kioszk',
-      headline: 'SENEAR – Mindig a szeretteid közelében',
+      targetAudience: '',
+      tagPill: 'Elállíthatatlan alkalmazás időseknek',
+      headline: 'Végtelenül egyszerű, elronthatatlan mobilfelület időseknek garantált biztonsággal és távfelügyelettel.',
       description:
-        'Idősek számára tervezett zéró zavart okozó, hibabiztos Android launcher és távgondozási rendszer.',
+        'Két összefüggő alkalmazás egyetlen rendszerben: egy elronthatatlan telefonos felület az idős felhasználónak, és egy dedikált vezérlőpult a gondoskodó rokonnak, folyamatos összeköttetésben.',
       featuresTitle: 'Főbb Funkciók és Képességek:',
-      feature1Title: 'Egyérintéses vészhelyzeti SOS',
+      feature1Title: 'Vészhelyzeti SOS hívás',
       feature1Desc:
-        'Egyetlen gombnyomásra valós idejű GPS-koordinátákat küld, és automatikusan felhívja a beállított családtagokat.',
-      feature2Title: 'Távgondozói vezérlőpult (Dashboard)',
+        'Egyetlen gombnyomásra valós idejű GPS-koordinátákat küld a családtagoknak, és automatikusan elindítja a segélyhívást a beállított telefonszámra (vagy a 112-es segélyhívóra).',
+      feature2Title: 'Távgondozói vezérlőpult',
       feature2Desc:
-        'A családtagok távolról ellenőrizhetik az akkumulátor szintjét, állíthatják az eszköz hangerejét, és kezelhetik a gyorstárcsázási névjegyeket.',
-      feature3Title: 'Véletlen elállítás elleni védelem',
+        'A családtagok távolról ellenőrizhetik az idős telefonjának állapotát, módosíthatják a beállításokat, lekérdezhetik a pontos GPS-koordinátákat, és számos további hasznos funkciót érhetnek el.',
+      feature3Title: 'Elronthatatlan, zárolt felület',
       feature3Desc:
-        'Az Android Device Owner (DPC) szintű kioszk zárolás megakadályozza, hogy a felhasználó véletlenül töröljön alkalmazásokat vagy elállítsa a rendszert.',
+        'Az idős felhasználó egy szigorú rendszerbiztonságú (kioszk módú) felületet kap, amely megakadályozza az alkalmazások véletlen törlését vagy a beállítások elállítását. Ezzel együtt a fontos funkciók – mint a hívásindítás, hívásfogadás és az SMS küldés – továbbra is zavartalanul működnek.',
       feature4Title: 'Offline-first stabilitás',
       feature4Desc:
-        'A beépített állapotgép hálózati (mobilnet/Wi-Fi) szakadások esetén is zökkenőmentesen és biztonságosan üzemel.',
+        'Az idős alkalmazása internetkapcsolat nélkül is zökkenőmentesen és biztonságosan üzemel mindaddig, amíg a mobilhálózati térerő biztosított a hívásokhoz – ráadásul a működéséhez semmi szükség arra, hogy egy másik telefonnal legyen párosítva.',
       galleryTitle: 'SENEAR Mobil Képernyőképek (Screenshots):',
       btnSimulator: 'Download from Google Play',
       btnArchitecture: 'SENEAR Részletes Architektúra',
+      btnInstallGuide: 'Telepítési útmutató (QR Setup)',
       photos: {
         title1: 'Főképernyő Kioszk',
         sub1: '4 nagy kontrasztos, eltéveszthetetlen csempe',
@@ -324,7 +425,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       feature4Desc:
         'A korlátozások és a háttérfolyamatok akkor is aktívak és stabilak maradnak, ha a készülék átmenetileg elveszíti az internetkapcsolatot.',
       galleryTitle: 'JUNEAR Mobil Képernyőképek (Screenshots):',
-      btnMoreInfo: 'További információ a JUNEAR rendszerről',
+      btnMoreInfo: 'Értesítést kérek az indulásról',
       btnContact: 'Kapcsolatfelvétel & Bevezetés',
       photos: {
         title1: 'Védett Gyerek Launcher',
@@ -361,7 +462,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       next: 'Következő',
     },
     contact: {
-      title: 'Beszéljünk a projektedről a gabbával',
+      title: 'Vedd fel a kapcsolatot velünk:',
       subtitle:
         'Legyen szó dedikált Android kioszk rendszerekről, hibabiztos mobil szoftverekről vagy komplex architektúra-tervezésről, örömmel várjuk megkeresésed.',
       directContact: 'Közvetlen Elérhetőség',
@@ -371,7 +472,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       availabilityLabel: 'Kapacitás',
       availabilityValue: 'Egyedi partnerségek és architektúra projektek fogadása',
       copiedEmail: 'E-mail cím másolva a vágólapra!',
-      formTitle: 'Projekt Brief / Megkeresés',
+      formTitle: 'Megkeresés',
       nameLabel: 'Neved *',
       namePlaceholder: 'pl. Kovács Péter',
       emailInputLabel: 'E-mail címed *',
@@ -392,9 +493,8 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
         month36: '3 – 6 hónap',
         exploratory: 'Érdeklődés / Architektúra Konzultáció',
       },
-      messageLabel: 'Projektigények és háttér *',
-      messagePlaceholder:
-        'Írd le a célokat, a tervezett felhasználók számát, a célhardvert és a technikai követelményeket...',
+      messageLabel: 'Üzenet:',
+      messagePlaceholder: 'Írd ide kérdéseidet és észrevételeidet',
       sendEmailBtn: 'Megkeresés Küldése E-mailben',
       copyBriefBtn: 'Projekt Brief Másolása a Vágólapra',
       briefCopied: 'Brief Sikeresen Másolva!',
@@ -439,6 +539,98 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       taken: 'Bevéve',
       closeSimulator: 'Szimulátor Bezárása',
     },
+    installGuide: {
+      backToHome: 'Vissza a főoldalra',
+      breadcrumbCurrent: 'SENEAR Telepítési Útmutató',
+      heroBadge: 'Android Enterprise QR Telepítés',
+      heroTitle: 'SENEAR Telepítési Útmutató',
+      heroDescription:
+        'Gyors és egyszerű útmutató a zavarmentes SENEAR launcher telepítéséhez szeretteid telefonjára, biztonságos és Google-fiók mentes beállítással.',
+      mockupAlt: 'SENEAR App Mockup',
+      badgeDeviceOwner: 'Device Owner Kioszk Mód',
+      badgeEnterprise: 'Google-fiók mentes beállítás',
+      prereqTitle: 'Fontos Előfeltétel',
+      prereqSubtitle: 'A céleszköz állapotkövetelménye',
+      prereqContent:
+        'A céleszköznek vadonatújnak (kicsomagolt állapotúnak) vagy teljesen Gyári Állapotba Visszaállítottnak (Factory Reset) KELL lennie a kezdés előtt.',
+      prereqExplanation:
+        'Az Android Enterprise Device Owner jogosultság kizárólag a legelső bekapcsolási folyamat során ruházható fel. Amennyiben a telefonon már aktív Google-fiók vagy egyéb alkalmazás található, az Android biztonsági rendszere nem engedélyezi a kioszk regisztrációt.',
+      prereqResetTip:
+        'Már használatban van a telefon? Nyisd meg: Beállítások > Rendszer > Visszaállítási opciók > Összes adat törlése (Gyári visszaállítás).',
+      phase1Badge: '1. Fázis: Gyári Visszaállítás',
+      phase1Title: 'Gyári Visszaállítás (ha a készülék nem vadonatúj)',
+      phase1Subtitle:
+        'A telefon teljes törlése biztosítja, hogy semmilyen korábbi fiók ne gátolja a Device Owner kioszk jogok felruházását.',
+      phase1SkipNote:
+        'Vadonatúj, dobozból most kibontott telefont állítasz be? Az 1. fázis átugorható, folytasd közvetlenül a 2. fázissal!',
+      p1Step1Number: '1',
+      p1Step1Title: 'Beállítások megnyitása',
+      p1Step1Desc: 'A céleszközön nyisd meg a standard Android Beállítások (Settings) alkalmazást.',
+      p1Step1Tip: 'Keresd a fogaskerék ikont a kezdőképernyőn vagy az alkalmazáslistában.',
+      p1Step2Number: '2',
+      p1Step2Title: 'Keresd meg a visszaállítást',
+      p1Step2Desc:
+        'Navigálj a Rendszer > Visszaállítási opciók menübe (egyes készülékeken: Általános kezelés > Visszaállítás).',
+      p1Step2Tip: 'Használhatod a Beállítások felső keresőmezőjét is: írd be, hogy „Visszaállítás”.',
+      p1Step3Number: '3',
+      p1Step3Title: 'Adatok törlése',
+      p1Step3Desc: 'Válaszd az Összes adat törlése (gyári visszaállítás) lehetőséget.',
+      p1Step3Tip:
+        'A kijelző megerősíti, hogy a Google-fiókok, alkalmazások és fájlok teljesen törlődnek.',
+      p1Step4Number: '4',
+      p1Step4Title: 'Megerősítés és újraindítás',
+      p1Step4Desc:
+        'Erősítsd meg a műveletet. A telefon teljesen töröl minden korábbi adatot, fiókot és alkalmazást, majd újraindul a nyitó „Üdvözöljük” képernyőre.',
+      p1Step4Tip:
+        'Az újraindulás 2–4 percet vesz igénybe. Várd meg türelemmel a nyitó nyelvválasztó képernyőt.',
+      transitionBadge: 'Eszköz Törölve & Felkészítve',
+      transitionTitle: 'Készen áll a Vállalati Kioszk Telepítésre',
+      transitionDesc:
+        'A telefon most teljesen tiszta, dobozos állapotban van személyes fiókok nélkül. Folytasd a 2. Fázissal alább!',
+      phase2Badge: '2. Fázis: Kioszk Telepítés',
+      phase2Title: 'Kioszk Telepítés & QR Regisztráció',
+      phase2Subtitle:
+        'A SENEAR launcher regisztrálása Device Owner módban az Android Enterprise varázslóval.',
+      step1Number: '01',
+      step1Title: 'Bekapcsolás',
+      step1Desc:
+        'Kapcsold be az eszközt, és várd meg a kezdeti „Üdvözöljük” vagy nyelvválasztó képernyő megjelenését.',
+      step1Tip:
+        'Ne nyomj még a „Kezdés” gombra és ne állíts be manuálisan semmit. Maradj a nyitóképernyőn.',
+      step2Number: '02',
+      step2Title: 'A titkos 6 koppintás',
+      step2Desc:
+        'Koppints gyorsan egymás után 6 alkalommal a képernyő egy üres felületére (elkerülve a gombokat és mezőket).',
+      step2Tip:
+        'Koppints tempósan a fehér üres területre. A telefon hangjelzést ad, és elindítja a rejtett QR-kódos telepítő varázslót.',
+      step3Number: '03',
+      step3Title: 'Olvasd be a QR-kódot',
+      step3Desc:
+        'A készülék automatikusan felismeri a telepítési módot, felajánlja a Wi-Fi csatlakozást, majd megnyitja a beépített QR-kód olvasót. Olvasd be a távgondozói felületen található SENEAR QR-kódot.',
+      step3Tip:
+        'Irányítsd a telefon kameráját stabilan az alább található provisioning QR-kódra.',
+      step4Number: '04',
+      step4Title: 'Automatikus konfiguráció',
+      step4Desc:
+        'A készülék közvetlenül a biztonságos szervereinkről letölti az alkalmazást, feltelepíti, és azonnal megadja a szükséges Device Owner (kioszk) jogosultságokat. Nincs szükség Google-fiókos bejelentkezésre.',
+      step4Tip:
+        'A letöltést követően a SENEAR automatikusan elindul védett kioszk módban, elállíthatatlanul és készen az azonnali használatra.',
+      qrCardBadge: 'Provisioning QR-kód',
+      qrCardTitle: 'SENEAR Telepítő QR-kód',
+      qrCardSubtitle: 'Olvasd be ezt a kódot a készülék kamerájával a 3. lépés során',
+      qrTabQr: 'Interaktív QR-kód',
+      qrTabPayload: 'JSON Telepítési Konfiguráció',
+      btnCopyPayload: 'JSON másolása',
+      btnCopied: 'Másolva!',
+      btnPrint: 'Kártya nyomtatása',
+      btnDownloadQr: 'QR letöltése (PNG)',
+      compatibilityNote: 'Kompatibilis: Android 9.0 – Android 15+',
+      needHelpTitle: 'Kérdésed merült fel a beállítás során?',
+      needHelpDesc:
+        'Technikai csapatunk szívesen segít a távoli konfigurálásban és az eszközök előkészítésében.',
+      btnContact: 'Kapcsolatfelvétel a támogatással',
+      btnOpenSimulator: 'Webes Szimulátor kipróbálása',
+    },
   },
 
   de: {
@@ -449,6 +641,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Kontakt aufnehmen',
       slogan: 'Technologie, die verbindet.',
       language: 'Sprache',
+      installGuide: 'Installationsanleitung',
     },
     hero: {
       titlePrefix: 'Intelligente Software.',
@@ -463,7 +656,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       liveVerified: 'Live Verifiziert',
       dualTarget: 'SENEAR & JUNEAR',
       flagshipTag: 'Flaggschiff Android',
-      nearTitle: 'Das NEAR Ökosystem',
+      nearTitle: 'Ausfallsichere App für Senioren.',
       nearDesc:
         'Ein ablenkungsfreier, ausfallsicherer Android-Launcher und Fernfürsorge-System für Senioren und Kinder. Nativ in Kotlin mit robustem Device Owner Kioskschutz entwickelt.',
       trySimulator: 'Interaktiven SENEAR-Simulator testen',
@@ -474,9 +667,12 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
     },
     nearSection: {
       title: 'Das NEAR Ökosystem',
+      subtitlePill: '2 spezialisierte Apps in einem Sicherheitssystem',
+      appSeniorLabel: 'Für Senioren',
+      appJuniorLabel: 'Für Kinder',
       description:
         'Auf einem einzigen, ausfallsicheren technologischen Fundament haben wir zwei maßgeschneiderte Lösungen geschaffen. Ob es um die Sicherheit der älteren Generation geht (SENEAR) oder um den digitalen Schutz der Jüngsten (JUNEAR) – unsere Technologie dient einem einzigen obersten Zweck: das Band zwischen Ihnen und Ihren Liebsten zu bewahren.',
-      quote: '„Ob für einen SEnior oder einen JUnior – das Ziel ist immer, in der Nähe (NEAR) zu bleiben.“',
+      quote: '„Ob SENIOR oder JUNIOR – das Wesentliche ist, dass sie immer NEAR (in der Nähe) sind.“',
       screenshotsFolder: 'Ordner',
       screenshotsLabel: 'Mobile Screenshots',
       zoom: 'Vergrößern',
@@ -487,27 +683,28 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
     },
     senear: {
       badge: '★ SENEAR',
-      targetAudience: 'Für Senioren',
-      tagPill: 'Verwirrungsfreier Lebensrettungs-Kiosk',
-      headline: 'SENEAR – Immer in der Nähe Ihrer Liebsten',
+      targetAudience: '',
+      tagPill: 'Unverstellbare App für Senioren',
+      headline: 'Unendlich einfache, fehlersichere mobile Oberfläche für Senioren mit garantierter Sicherheit und Fernbetreuung.',
       description:
-        'Ein verwirrungsfreier, ausfallsicherer Android-Launcher und Fernfürsorge-System speziell für ältere Menschen.',
+        'Zwei zusammenhängende Anwendungen in einem einzigen System: eine fehlersichere Bildschirmoberfläche für den älteren Nutzer und ein dediziertes Dashboard für die fürsorglichen Angehörigen – in ständiger Verbindung.',
       featuresTitle: 'Hauptfunktionen und Fähigkeiten:',
-      feature1Title: 'Ein-Tasten-Notfall-SOS',
+      feature1Title: 'Notfall-SOS-Anruf',
       feature1Desc:
-        'Sendet Echtzeit-GPS-Koordinaten und ruft hinterlegte Familienmitglieder automatisch mit nur einer Berührung an.',
+        'Sendet auf Tastendruck Echtzeit-GPS-Koordinaten an die Angehörigen und startet automatisch einen Notruf an die hinterlegte Telefonnummer (oder den Notruf 112).',
       feature2Title: 'Fernpflege-Dashboard',
       feature2Desc:
-        'Angehörige können aus der Ferne den Batteriestand prüfen, die Lautstärke regeln und Kurzwahlkontakte verwalten.',
-      feature3Title: 'Schutz vor Fehlbedienung',
+        'Angehörige können den Gerätestatus aus der Ferne prüfen, Einstellungen ändern, genaue GPS-Koordinaten abfragen und viele weitere nützliche Funktionen nutzen.',
+      feature3Title: 'Fehlersichere, gesperrte Oberfläche',
       feature3Desc:
-        'Die Android Device Owner (DPC) Kiosksperre verhindert zuverlässig das versehentliche Löschen von Apps oder Ändern der Systemeinstellungen.',
+        'Der ältere Nutzer erhält eine streng geschützte (Kiosk-Modus) Oberfläche, die versehentliches Löschen von Apps oder Ändern der Einstellungen verhindert. Wichtige Funktionen wie Anrufe und SMS bleiben uneingeschränkt nutzbar.',
       feature4Title: 'Offline-First-Stabilität',
       feature4Desc:
-        'Die integrierte Zustandsmaschine arbeitet selbst bei Verbindungsabbrüchen im Mobilfunk oder WLAN nahtlos und sicher weiter.',
+        'Die Senioren-App funktioniert auch ohne Internetverbindung reibungslos und sicher, solange Mobilfunkempfang für Anrufe besteht – zudem muss sie im Betrieb keineswegs mit einem anderen Smartphone gekoppelt sein.',
       galleryTitle: 'SENEAR Mobile Screenshots:',
       btnSimulator: 'Download from Google Play',
       btnArchitecture: 'SENEAR Detaillierte Architektur',
+      btnInstallGuide: 'Installationsanleitung (QR Setup)',
       photos: {
         title1: 'Hauptbildschirm-Kiosk',
         sub1: '4 kontrastreiche, unverwechselbare Aktionstasten',
@@ -544,7 +741,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       feature4Desc:
         'Schutzregeln und Hintergrunddienste bleiben vollständig aktiv und stabil, selbst wenn das Mobilfunknetz vorübergehend getrennt ist.',
       galleryTitle: 'JUNEAR Mobile Screenshots:',
-      btnMoreInfo: 'Mehr über das JUNEAR-System erfahren',
+      btnMoreInfo: 'Über den Start benachrichtigen',
       btnContact: 'Kontakt & Einführung',
       photos: {
         title1: 'Geschützter Kinder-Launcher',
@@ -581,7 +778,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       next: 'Weiter',
     },
     contact: {
-      title: 'Ein Gespräch mit gabba beginnen',
+      title: 'Nehmen Sie Kontakt mit uns auf:',
       subtitle:
         'Ob spezialisierte Android-Kiosksysteme, ausfallsichere Mobiltechnologie oder Senior-Architekturberatung – wir freuen uns über Anfragen für technische Partnerschaften.',
       directContact: 'Direkter Kontakt',
@@ -591,7 +788,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       availabilityLabel: 'Kapazität',
       availabilityValue: 'Offen für ausgewählte Kundenprojekte & Architekturberatung',
       copiedEmail: 'E-Mail-Adresse kopiert!',
-      formTitle: 'Projekt-Briefing / Technische Anfrage',
+      formTitle: 'Anfrage',
       nameLabel: 'Ihr Name *',
       namePlaceholder: 'z.B. Markus Weber',
       emailInputLabel: 'Ihre E-Mail *',
@@ -612,9 +809,8 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
         month36: '3 – 6 Monate',
         exploratory: 'Erkundung / Architektur-Beratung',
       },
-      messageLabel: 'Projektanforderungen & Kontext *',
-      messagePlaceholder:
-        'Beschreiben Sie Ihre Anforderungen, Nutzerzahl, Zielgeräte und technischen Ziele...',
+      messageLabel: 'Nachricht:',
+      messagePlaceholder: 'Schreiben Sie hier Ihre Fragen und Anmerkungen',
       sendEmailBtn: 'Anfrage per E-Mail senden',
       copyBriefBtn: 'Projekt-Briefing in Zwischenablage kopieren',
       briefCopied: 'Briefing erfolgreich kopiert!',
@@ -658,6 +854,98 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       markTaken: 'Als eingenommen markieren',
       taken: 'Eingenommen',
       closeSimulator: 'Simulator schließen',
+    },
+    installGuide: {
+      backToHome: 'Zurück zur Übersicht',
+      breadcrumbCurrent: 'SENEAR Installationsanleitung',
+      heroBadge: 'Android Enterprise QR-Bereitstellung',
+      heroTitle: 'SENEAR Installationsanleitung',
+      heroDescription:
+        'Eine schnelle und einfache Anleitung zur Installation des ablenkungsfreien SENEAR-Launchers auf dem Gerät Ihrer Angehörigen – über eine sichere, Google-Konto-freie Einrichtung.',
+      mockupAlt: 'SENEAR App Mockup',
+      badgeDeviceOwner: 'Device Owner Kiosk-Modus',
+      badgeEnterprise: 'Einrichtung ohne Google-Konto',
+      prereqTitle: 'Wichtige Voraussetzung',
+      prereqSubtitle: 'Erforderlicher Gerätezustand',
+      prereqContent:
+        'Das Zielgerät MUSS fabrikneu (frisch ausgepackt) oder vollständig auf Werkseinstellungen zurückgesetzt sein, bevor Sie beginnen.',
+      prereqExplanation:
+        'Android Enterprise Device Owner-Rechte können ausschließlich während des allerersten Einrichtungsprozesses vergeben werden. Befinden sich bereits Google-Konten oder Apps auf dem Gerät, blockiert die Android-Sicherheit die Kiosk-Registrierung.',
+      prereqResetTip:
+        'Bereits eingerichtet? Gehen Sie zu Einstellungen > System > Optionen zum Zurücksetzen > Alle Daten löschen (Werkseinstellungen).',
+      phase1Badge: 'Phase 1: Werkseinstellungen',
+      phase1Title: 'Werkseinstellungen (falls das Gerät nicht fabrikneu ist)',
+      phase1Subtitle:
+        'Ein vollständiges Zurücksetzen stellt sicher, dass keine bestehenden Google-Konten die Device Owner-Privilegien blockieren.',
+      phase1SkipNote:
+        'Packen Sie ein fabrikneues, noch versiegeltes Gerät aus? Dann können Sie Phase 1 überspringen und direkt mit Phase 2 fortfahren.',
+      p1Step1Number: '1',
+      p1Step1Title: 'Einstellungen öffnen',
+      p1Step1Desc: 'Öffnen Sie auf dem Zielgerät die Standard-App „Einstellungen“ (Settings).',
+      p1Step1Tip: 'Suchen Sie nach dem Zahnrad-Symbol auf dem Startbildschirm oder in der App-Übersicht.',
+      p1Step2Number: '2',
+      p1Step2Title: 'Zurücksetzen finden',
+      p1Step2Desc:
+        'Navigieren Sie zu System > Optionen zum Zurücksetzen (auf einigen Geräten unter Allgemeine Verwaltung > Zurücksetzen).',
+      p1Step2Tip: 'Sie können auch die Suchleiste in den Einstellungen nutzen und „Zurücksetzen“ eingeben.',
+      p1Step3Number: '3',
+      p1Step3Title: 'Daten löschen',
+      p1Step3Desc: 'Wählen Sie „Alle Daten löschen (Werkseinstellungen)“.',
+      p1Step3Tip:
+        'Der Bildschirm bestätigt, dass Konten, Apps und Daten vollständig entfernt werden.',
+      p1Step4Number: '4',
+      p1Step4Title: 'Bestätigen und Neustart',
+      p1Step4Desc:
+        'Bestätigen Sie den Vorgang. Das Telefon löscht alle bisherigen Daten, Konten und Apps vollständig und startet schließlich mit dem anfänglichen „Willkommen“-Bildschirm neu.',
+      p1Step4Tip:
+        'Der Neustart dauert ca. 2 bis 4 Minuten. Warten Sie, bis der Begrüßungsbildschirm mit der Sprachauswahl erscheint.',
+      transitionBadge: 'Gerät Bereinigt & Entkoppelt',
+      transitionTitle: 'Bereit für die Enterprise-Kiosk-Einrichtung',
+      transitionDesc:
+        'Ihr Smartphone befindet sich nun im bereinigten Auslieferungszustand ohne hinterlegte Konten. Fahren Sie mit Phase 2 fort.',
+      phase2Badge: 'Phase 2: Kiosk-Installation',
+      phase2Title: 'Kiosk-Installation & QR-Bereitstellung',
+      phase2Subtitle:
+        'Registrieren Sie den SENEAR-Launcher im Device Owner-Modus über den integrierten Android Enterprise-Assistenten.',
+      step1Number: '01',
+      step1Title: 'Einschalten',
+      step1Desc:
+        'Schalten Sie das Gerät ein und warten Sie auf den anfänglichen „Willkommen“- oder Sprachauswahl-Bildschirm.',
+      step1Tip:
+        'Tippen Sie noch nicht auf „Start“ und richten Sie noch kein WLAN ein. Bleiben Sie auf dem Begrüßungsbildschirm.',
+      step2Number: '02',
+      step2Title: 'Die geheimen 6 Fingertipps',
+      step2Desc:
+        'Tippen Sie zügig 6-mal auf einen leeren Bereich des Bildschirms (vermeiden Sie Schaltflächen und Textfelder).',
+      step2Tip:
+        'Tippen Sie schnell hintereinander auf den freien Bereich. Das Gerät signalisiert den Modus und startet den QR-Assistenten.',
+      step3Number: '03',
+      step3Title: 'QR-Code scannen',
+      step3Desc:
+        'Das Gerät erkennt den Einrichtungsmodus automatisch, fordert zur WLAN-Verbindung auf und öffnet den integrierten QR-Scanner. Scannen Sie den im Betreuer-Dashboard bereitgestellten SENEAR QR-Code.',
+      step3Tip:
+        'Halten Sie die Gerätekamera ruhig auf den unten angezeigten Bereitstellungs-QR-Code.',
+      step4Number: '04',
+      step4Title: 'Automatische Einrichtung',
+      step4Desc:
+        'Das Gerät lädt die App direkt von unseren sicheren Servern herunter, installiert sie und erteilt sofort die erforderlichen Device Owner (Kiosk)-Berechtigungen. Es ist keine Google-Konto-Anmeldung erforderlich.',
+      step4Tip:
+        'Nach dem Download startet SENEAR automatisch im geschützten Kioskmodus – manipulationssicher und sofort einsatzbereit.',
+      qrCardBadge: 'Bereitstellungs-QR-Code',
+      qrCardTitle: 'SENEAR Bereitstellungs-QR-Code',
+      qrCardSubtitle: 'Scannen Sie diesen Code mit der Gerätekamera in Schritt 3',
+      qrTabQr: 'Interaktiver QR-Code',
+      qrTabPayload: 'JSON-Bereitstellungskonfiguration',
+      btnCopyPayload: 'JSON-Konfiguration kopieren',
+      btnCopied: 'Kopiert!',
+      btnPrint: 'Anleitung drucken',
+      btnDownloadQr: 'QR als PNG herunterladen',
+      compatibilityNote: 'Kompatibel mit Android 9.0 bis Android 15+',
+      needHelpTitle: 'Fragen während der Installation?',
+      needHelpDesc:
+        'Unser technisches Team unterstützt Sie gerne bei der Bereitstellung und Absicherung Ihrer Geräte.',
+      btnContact: 'Support kontaktieren',
+      btnOpenSimulator: 'Web-Simulator testen',
     },
   },
 };

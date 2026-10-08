@@ -25,35 +25,30 @@ export function ProductTileLogoBadge({ productKey, label }: ProductTileLogoBadge
 
   return (
     <div className="relative group shrink-0" title={`Logo: ${uploadPath}`}>
-      {/* Outer subtle glow/ring */}
-      <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full p-1 bg-gradient-to-br from-[#EBDCCB] via-[#FFFFFF] to-[#C5A880]/50 border-2 border-[#C5A880]/60 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:scale-105 group-hover:border-[#A38053] flex items-center justify-center">
+      {/* Outer subtle glow/ring - increased by 15% */}
+      <div className="w-[65px] h-[65px] sm:w-[74px] sm:h-[74px] lg:w-[92px] lg:h-[92px] rounded-full p-1 bg-gradient-to-br from-[#EBDCCB] via-[#FFFFFF] to-[#C5A880]/50 border-2 border-[#C5A880]/60 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:scale-105 group-hover:border-[#A38053] flex items-center justify-center">
         <div className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center shadow-inner relative">
           {!imageError ? (
             <img
               src={logoSrc}
               alt={`${label} logo`}
-              className="w-full h-full object-contain p-1.5 transition-transform duration-300 group-hover:scale-110"
+              className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-110"
               onError={handleImageError}
             />
           ) : (
             /* Elegant Placeholder when user has not yet uploaded the logo */
             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF7F2] to-[#F5EFE6] text-[#8C7355] p-1 text-center select-none">
               {productKey === 'senear' ? (
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[#A38053]" />
+                <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-[#A38053]" />
               ) : (
-                <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 text-[#A38053]" />
+                <Smartphone className="w-6 h-6 sm:w-7 sm:h-7 text-[#A38053]" />
               )}
-              <span className="text-[9px] sm:text-[10px] font-bold font-mono tracking-tighter uppercase text-[#5C5A56] mt-0.5 leading-none">
+              <span className="text-[10px] sm:text-[11px] font-bold font-mono tracking-tighter uppercase text-[#5C5A56] mt-0.5 leading-none">
                 {productKey}
               </span>
             </div>
           )}
         </div>
-      </div>
-
-      {/* Floating Mini Badge Indicator */}
-      <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-[#2C2C2C] text-[#FAFAFA] text-[9px] font-bold rounded-full border border-white/80 shadow-xs uppercase tracking-wider scale-90 sm:scale-100">
-        Logo
       </div>
     </div>
   );

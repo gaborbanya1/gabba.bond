@@ -6,27 +6,54 @@ import { SupportedLanguage } from '../i18n/types';
 interface NavbarProps {
   onContactClick: () => void;
   onExploreProjects: () => void;
+  onInstallGuideClick?: () => void;
+  onHomeClick?: () => void;
+  currentPage?: 'home' | 'install-guide';
 }
 
 export function Navbar({
   onContactClick,
   onExploreProjects,
+  onInstallGuideClick,
+  onHomeClick,
+  currentPage = 'home',
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
 
-  const navLinks = [
-    { label: t.nav.projects, href: '#projects' },
-    { label: t.nav.contact, href: '#contact' },
-  ];
-
   const handleLinkClick = (href: string) => {
     setMobileMenuOpen(false);
+    if (href === '#install-guide') {
+      if (onInstallGuideClick) {
+        onInstallGuideClick();
+      }
+      return;
+    }
+
+    if (currentPage === 'install-guide') {
+      if (onHomeClick) {
+        onHomeClick();
+      }
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 50);
+      return;
+    }
+
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const navLinks = [
+    { label: t.nav.projects, href: '#projects', isCurrent: currentPage === 'home' },
+    { label: t.nav.installGuide, href: '#install-guide', isCurrent: currentPage === 'install-guide' },
+    { label: t.nav.contact, href: '#contact', isCurrent: false },
+  ];
 
   const handleLangChange = (code: SupportedLanguage) => {
     setLanguage(code);
@@ -39,9 +66,15 @@ export function Navbar({
           
           {/* Brand Wordmark & Slogan */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <a
-              href="#"
-              className="flex items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A880] rounded-lg p-1"
+            <button
+              onClick={() => {
+                if (currentPage === 'install-guide' && onHomeClick) {
+                  onHomeClick();
+                } else {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              className="flex items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A880] rounded-lg p-1 text-left cursor-pointer"
             >
               <span
                 className="font-heading font-extrabold text-[30px] pt-0 pb-[5px] tracking-tight text-[#2C2C2C] lowercase transition-colors group-hover:text-[#A38053]"
@@ -50,7 +83,7 @@ export function Navbar({
                 gabba
               </span>
               <span className="w-2 h-2 rounded-full bg-[#C5A880] inline-block mb-1 shadow-2xs" />
-            </a>
+            </button>
 
             <div className="h-5 w-px bg-[#C5A880]/30 hidden sm:block" />
 
@@ -60,12 +93,16 @@ export function Navbar({
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-3">
+          <nav className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => (
               <button
                 key={link.label}
                 onClick={() => handleLinkClick(link.href)}
-                className="px-4 py-2 text-sm font-medium text-[#5C5A56] hover:text-[#2C2C2C] hover:bg-[#F5F0EB] rounded-lg transition-colors cursor-pointer"
+                className={`px-3.5 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                  link.isCurrent
+                    ? 'text-[#2C2C2C] bg-[#F5F0EB] font-semibold border border-[#C5A880]/30 shadow-2xs'
+                    : 'text-[#5C5A56] hover:text-[#2C2C2C] hover:bg-[#F5F0EB]'
+                }`}
               >
                 {link.label}
               </button>

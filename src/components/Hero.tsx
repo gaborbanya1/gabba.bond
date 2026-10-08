@@ -1,5 +1,6 @@
-import { ArrowRight, Sparkles, Smartphone, ShieldCheck, CheckCircle2, Lock, Radio } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { Senear3DShowcaseTile } from './Senear3DShowcaseTile';
 
 interface HeroProps {
   onViewProjects: () => void;
@@ -84,75 +85,10 @@ export function Hero({
 
           </div>
 
-          {/* Right Column: Architectural Showcase Card */}
+          {/* Right Column: SENEAR 3D Showcase */}
           <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none space-y-4">
-              
-              {/* Main Architectural Card */}
-              <div className="bg-[#FFFFFF] rounded-2xl border border-[#C5A880]/40 shadow-sm p-6 sm:p-7 space-y-5">
-                
-                {/* Header */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-[#F0EAE1]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#F5F0EB] border border-[#C5A880]/40 flex items-center justify-center">
-                      <ShieldCheck className="w-5 h-5 text-[#A38053]" />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-semibold font-heading text-[#2C2C2C]">{t.hero.flagshipBadge}</h2>
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-[#F5F0EB] text-[#8C7355] border border-[#C5A880]/30">
-                    {t.hero.liveVerified}
-                  </span>
-                </div>
-
-                {/* Flagship Card */}
-                <div className="p-4.5 rounded-xl bg-gradient-to-br from-[#FAF7F2] to-[#F5EFE6] border border-[#C5A880]/50 space-y-3 transition-all hover:border-[#C5A880]">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Smartphone className="w-4 h-4 text-[#A38053]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#A38053]">{t.hero.flagshipTag}</span>
-                    </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#FFFFFF] border border-[#C5A880]/40 text-[#2C2C2C]">
-                      {t.hero.dualTarget}
-                    </span>
-                  </div>
-                  <h3 className="font-heading font-semibold text-lg text-[#2C2C2C]">
-                    {t.hero.nearTitle}
-                  </h3>
-                  <p className="text-xs text-[#5C5A56] leading-relaxed">
-                    {t.hero.nearDesc}
-                  </p>
-                  <button
-                    onClick={onOpenNogondDemo}
-                    className="w-full mt-1 py-2.5 px-3 rounded-lg bg-[#FFFFFF] hover:bg-[#F5F0EB] text-[#2C2C2C] text-xs font-semibold border border-[#C5A880]/50 flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
-                    <span>{t.hero.trySimulator}</span>
-                  </button>
-                </div>
-
-                {/* Kiosk Architecture Highlights */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="p-3 rounded-xl bg-[#FAFAFA] border border-[#E8DFD3] space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C2C2C]">
-                      <Lock className="w-3.5 h-3.5 text-[#A38053]" />
-                      <span>{t.hero.dpcLockdownTitle}</span>
-                    </div>
-                    <p className="text-[10px] text-[#6E6B65]">{t.hero.dpcLockdownDesc}</p>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-[#FAFAFA] border border-[#E8DFD3] space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C2C2C]">
-                      <Radio className="w-3.5 h-3.5 text-[#A38053]" />
-                      <span>{t.hero.tactileCardsTitle}</span>
-                    </div>
-                    <p className="text-[10px] text-[#6E6B65]">{t.hero.tactileCardsDesc}</p>
-                  </div>
-                </div>
-
-              </div>
-
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              <Senear3DShowcaseTile onOpenSimulator={onOpenNogondDemo} />
             </div>
           </div>
 

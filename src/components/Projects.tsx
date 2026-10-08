@@ -13,7 +13,8 @@ import {
   PhoneCall,
   Radio,
   Clock,
-  FolderOpen
+  FolderOpen,
+  QrCode
 } from 'lucide-react';
 import { PROJECTS } from '../data/portfolioData';
 import { ProjectItem } from '../types';
@@ -26,9 +27,10 @@ import { GooglePlayIcon } from './GooglePlayIcon';
 interface ProjectsProps {
   onSelectProject: (project: ProjectItem) => void;
   onOpenNogondDemo: () => void;
+  onOpenInstallGuide?: () => void;
 }
 
-export function Projects({ onSelectProject, onOpenNogondDemo }: ProjectsProps) {
+export function Projects({ onSelectProject, onOpenNogondDemo, onOpenInstallGuide }: ProjectsProps) {
   const { language, t } = useLanguage();
   const [zoomPhoto, setZoomPhoto] = useState<PhonePhotoItem | null>(null);
   const [modalPhotosList, setModalPhotosList] = useState<PhonePhotoItem[]>([]);
@@ -154,11 +156,57 @@ export function Projects({ onSelectProject, onOpenNogondDemo }: ProjectsProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 space-y-4">
+        <div className="max-w-4xl mx-auto text-center mb-14 space-y-6">
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C2C2C] tracking-tight">
             {t.nearSection.title}
           </h2>
-          <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed">
+
+          {/* Subtitle Pill */}
+          <div className="flex justify-center">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-[#C5A880]/40 text-xs sm:text-sm font-bold text-[#8C7355] uppercase tracking-wider shadow-2xs">
+              {t.nearSection.subtitlePill}
+            </span>
+          </div>
+
+          {/* 2-Column Split Row: Left = SENEAR Text & Logo (right aligned) | Right = JUNEAR Logo & Text (left aligned) */}
+          <div className="grid grid-cols-2 items-center py-2 max-w-2xl mx-auto">
+            {/* Left Column: SENEAR text and SENEAR logo right-aligned */}
+            <div className="flex items-center justify-end gap-3 sm:gap-4 pr-4 sm:pr-8 border-r-2 border-[#C5A880]/60">
+              <div className="text-right">
+                <span className="block font-heading text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2C2C2C] tracking-tight leading-none">
+                  SENEAR
+                </span>
+                <span className="block text-xs sm:text-sm font-semibold text-[#8C7355] mt-1">
+                  {t.nearSection.appSeniorLabel}
+                </span>
+              </div>
+              <img
+                src="/logos/senear-logo.png"
+                alt="SENEAR logo"
+                className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-contain shrink-0"
+              />
+            </div>
+
+            {/* Right Column: JUNEAR logo and JUNEAR text left-aligned */}
+            <div className="flex items-center justify-start gap-3 sm:gap-4 pl-4 sm:pl-8">
+              <img
+                src="/logos/junear-logo.png"
+                alt="JUNEAR logo"
+                className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-contain shrink-0"
+              />
+              <div className="text-left">
+                <span className="block font-heading text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2C2C2C] tracking-tight leading-none">
+                  JUNEAR
+                </span>
+                <span className="block text-xs sm:text-sm font-semibold text-[#8C7355] mt-1">
+                  {t.nearSection.appJuniorLabel}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Description Paragraph */}
+          <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed max-w-3xl mx-auto text-center">
             {t.nearSection.description}
             <span className="block mt-3 text-sm sm:text-base font-medium text-[#8C7355] italic">
               {t.nearSection.quote}
@@ -180,10 +228,12 @@ export function Projects({ onSelectProject, onOpenNogondDemo }: ProjectsProps) {
                 <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-[#2C2C2C] text-[#FAFAFA] shadow-xs">
                   {t.senear.badge}
                 </span>
-                <span className="text-xs font-semibold text-[#8C7355] border-l border-[#C5A880]/40 pl-3">
-                  {t.senear.targetAudience}
-                </span>
-                <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3 py-1.5 rounded-full border border-[#C5A880]/30 ml-2">
+                {t.senear.targetAudience ? (
+                  <span className="text-xs font-semibold text-[#8C7355] border-l border-[#C5A880]/40 pl-3">
+                    {t.senear.targetAudience}
+                  </span>
+                ) : null}
+                <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3 py-1.5 rounded-full border border-[#C5A880]/30">
                   <HeartHandshake className="w-3.5 h-3.5 text-[#C5A880]" />
                   <span>{t.senear.tagPill}</span>
                 </div>
@@ -313,6 +363,16 @@ export function Projects({ onSelectProject, onOpenNogondDemo }: ProjectsProps) {
                   <GooglePlayIcon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" />
                   <span>{t.senear.btnSimulator}</span>
                 </button>
+
+                {onOpenInstallGuide && (
+                  <button
+                    onClick={onOpenInstallGuide}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#FFFFFF] text-[#2C2C2C] text-sm font-semibold hover:bg-[#F5F0EB] active:scale-98 transition-all cursor-pointer shadow-2xs hover:shadow-xs border border-[#C5A880]/50 group"
+                  >
+                    <QrCode className="w-4 h-4 text-[#8C7355] shrink-0 transition-transform group-hover:scale-110" />
+                    <span>{t.senear.btnInstallGuide}</span>
+                  </button>
+                )}
               </div>
 
             </div>

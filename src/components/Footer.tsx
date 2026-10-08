@@ -53,6 +53,9 @@ export function Footer() {
                 <a href="#projects" className="hover:text-[#2C2C2C] transition-colors">{t.footer.projectsLink}</a>
               </li>
               <li>
+                <a href="#install-guide" className="hover:text-[#2C2C2C] transition-colors">{t.installGuide.heroTitle}</a>
+              </li>
+              <li>
                 <a href="#contact" className="hover:text-[#2C2C2C] transition-colors">{t.footer.contactLink}</a>
               </li>
             </ul>
