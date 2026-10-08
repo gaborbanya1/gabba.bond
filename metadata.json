@@ -1,0 +1,6 @@
+{
+  "name": "Gabba Labs",
+  "description": "Modern, professional portfolio and company landing page for Gabba Labs, founded by Gabor Banyai — robust software development, enterprise solutions, and human-centric mobile applications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
