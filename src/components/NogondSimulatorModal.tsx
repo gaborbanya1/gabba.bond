@@ -11,18 +11,168 @@ import {
   Heart, 
   Lock, 
   UserCheck, 
-  RotateCcw,
-  Check,
-  Volume2
+  Check, 
+  Volume2 
 } from 'lucide-react';
 import { SENEAR_SIMULATOR_DATA } from '../data/portfolioData';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface NogondSimulatorModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const SIMULATOR_I18N = {
+  hu: {
+    modalTitle: 'SENEAR Interaktív Szimulátor',
+    ecosystemTag: 'NEAR Ökoszisztéma',
+    modalSubtitle: 'A SENEAR idős felületének tesztelése (a NEAR ökoszisztéma része a gyermekeknek készült JUNEAR mellett)',
+    kioskLocked: 'Kioszk Zárolva',
+    dateLabel: 'Kedd, szeptember 22.',
+    connectedCaregiver: 'Kapcsolódva: Anna (Lánya)',
+    familyCall: 'Család hívása',
+    familyCallSub: '1 érintéses gyorstárcsázó',
+    medications: 'Gyógyszerek',
+    medicationsSub: '1 bevéve, 2 hátra van',
+    sos: 'Vészhelyzeti SOS',
+    sosSub: 'Hívja a családot & GPS-t küld',
+    sosTap: 'MEGNYOMÁS',
+    hardwareKeyNote: 'A fizikai bekapcsológomb háromszori megnyomása offline is azonnali SOS-t indít.',
+    speedDialTitle: 'Gyorstárcsázó Lista',
+    backToHome: 'Vissza a kezdőlapra',
+    callingCaregiver: 'Gondozó hívása folyamatban',
+    speakerEngaged: 'Kihangosító automatikusan bekapcsolva',
+    endCall: 'Hívás befejezése',
+    todaysMedicines: 'Mai Gyógyszerek',
+    caregiverPillNote: 'A gondozók automatikus értesítést kapnak, amint a gyógyszer bevétele megjelölésre kerül.',
+    sosSentTitle: 'SOS elküldve a családnak!',
+    sosSentDesc: 'Élő GPS helyzet elküldve Annának és Péternek. A telefon most automatikusan, maximális hangerőn fogadja a család hívásait.',
+    resetSosBtn: 'SOS Teszt Alaphelyzetbe',
+    dispatchingHelp: 'Vészhelyzeti Segélykérés Folyamatban',
+    dispatchingHelpNote: 'Riasztás küldése az elsődleges gondozónak: Dr. Bányai Anna.',
+    cancelAlarm: 'Téves riasztás (Mégse)',
+    returnMainScreen: 'Visszatérés a főképernyőre',
+    protectedBadge: 'Védett',
+    homeBtn: 'FŐOLDAL',
+    spotlightTitle: 'Architektúra Fókusz',
+    spotlightHeadline: 'Miért szünteti meg a SENEAR & JUNEAR a felhasználói bizonytalanságot?',
+    spotlightDesc: 'A hagyományos Android és iOS felületek finommotorikus képességekkel rendelkező fiataloknak készültek. Ha egy idős vagy gyermek véletlenül repülőgépes módba kapcsolja a telefont, megszakad a kapcsolat a családdal. A NEAR ökoszisztéma ezt natív rendszerszintű zárolással szünteti meg.',
+    arch1Title: 'Android Device Owner (DPC) Rendszerzár',
+    arch1Desc: 'A SENEAR vállalati szintű Device Owner jogosultsággal fut. Fizikailag megakadályozza a hozzáférést a beállításokhoz, letiltja a lehúzható értesítési sávot és a véletlen alkalmazástörlést.',
+    arch2Title: 'Offline-First SQLite / Room Szinkronizáció',
+    arch2Desc: 'Az alapvető funkciók (tárcsázás, helyi ébresztések, gyógyszerrend, SMS SOS) nem igényelnek mobilnetet. Amikor a kapcsolat visszatér, a rendszer szinkronizál a felhőbe.',
+    arch3Title: 'Távoli Gondozói Felügyeleti Portál',
+    arch3Desc: 'A családtagok saját okostelefonjukról távolról felhangosíthatják a némított telefont, ellenőrizhetik az akkut, frissíthetik a kontaktokat és megerősítő csengetést indíthatnak.',
+    footerDev: 'Natív Kotlin és Jetpack Compose nyelven fejlesztve',
+    closeSimulator: 'Szimulátor bezárása',
+    contactRoles: {
+      'Daughter / Primary Caregiver': 'Lánya / Elsődleges Gondozó',
+      'Son / Emergency Backup': 'Fia / Másodlagos Elérhetőség',
+      'Family Physician': 'Háziorvos',
+    } as Record<string, string>,
+  },
+  de: {
+    modalTitle: 'Interaktiver SENEAR Simulator',
+    ecosystemTag: 'NEAR Ökosystem',
+    modalSubtitle: 'SENEAR für Senioren testen (Teil des NEAR Ökosystems neben JUNEAR für Kinder)',
+    kioskLocked: 'Kiosk Gesperrt',
+    dateLabel: 'Dienstag, 22. September',
+    connectedCaregiver: 'Verbunden mit Anna (Tochter)',
+    familyCall: 'Familie anrufen',
+    familyCallSub: '1-Tipp Schnellwahl',
+    medications: 'Medikamente',
+    medicationsSub: '1 eingenommen, 2 übrig',
+    sos: 'Notfall-SOS',
+    sosSub: 'Ruft Familie an & sendet GPS',
+    sosTap: 'ANTIPPEN',
+    hardwareKeyNote: 'Dreimaliges Drücken der Power-Taste löst SOS auch offline aus.',
+    speedDialTitle: 'Schnellwahlliste',
+    backToHome: 'Zurück zur Startseite',
+    callingCaregiver: 'Betreuer wird angerufen',
+    speakerEngaged: 'Freisprecher automatisch aktiviert',
+    endCall: 'Anruf beenden',
+    todaysMedicines: 'Heutige Medikamente',
+    caregiverPillNote: 'Angehörige erhalten eine automatische Bestätigung, sobald Tabletten abgehakt werden.',
+    sosSentTitle: 'SOS an die Familie gesendet!',
+    sosSentDesc: 'Live-GPS-Standort an Anna und Peter gesendet. Das Telefon nimmt Anrufe der Familie jetzt automatisch mit maximaler Lautstärke an.',
+    resetSosBtn: 'SOS-Test zurücksetzen',
+    dispatchingHelp: 'Notruf wird abgesetzt',
+    dispatchingHelpNote: 'Benachrichtigung an Hauptbetreuerin Dr. Anna Banyai wird gesendet.',
+    cancelAlarm: 'Fehlalarm (Abbrechen)',
+    returnMainScreen: 'Zurück zum Hauptbildschirm',
+    protectedBadge: 'Geschützt',
+    homeBtn: 'START',
+    spotlightTitle: 'Architektur-Einblick',
+    spotlightHeadline: 'Warum SENEAR & JUNEAR Fehlbedienungen und Panik verhindern',
+    spotlightDesc: 'Standard-Launcher sind für Digital Natives mit feiner Motorik konzipiert. Wenn ein Senior versehentlich den Flugmodus aktiviert, bricht der Kontakt ab. Das NEAR Ökosystem löst dies durch strikte Sperren auf Betriebssystemebene.',
+    arch1Title: 'Android Device Owner (DPC) Kiosksperre',
+    arch1Desc: 'SENEAR läuft als Enterprise Device Owner. Es verhindert physisch den Zugriff auf Systemeinstellungen, sperrt Statusleisten-Gesten und schließt App-Deinstallationen aus.',
+    arch2Title: 'Offline-First SQLite / Room Synchronisation',
+    arch2Desc: 'Kernfunktionen (Telefonie, Alarme, Medikamentenplan, SMS-SOS) benötigen keine mobilen Daten. Bei Verbindung werden Ereignisse synchronisiert.',
+    arch3Title: 'Fernpflege-Portal für Angehörige',
+    arch3Desc: 'Angehörige können das stummgeschaltete Telefon aus der Ferne lautstellen, den Akkustand prüfen und Schnellwahlnummern pflegen.',
+    footerDev: 'Nativ in Kotlin + Jetpack Compose entwickelt',
+    closeSimulator: 'Simulator schließen',
+    contactRoles: {
+      'Daughter / Primary Caregiver': 'Tochter / Hauptbetreuerin',
+      'Son / Emergency Backup': 'Sohn / Notfallkontakt',
+      'Family Physician': 'Hausarzt',
+    } as Record<string, string>,
+  },
+  en: {
+    modalTitle: 'SENEAR Interactive Simulator',
+    ecosystemTag: 'NEAR Ecosystem',
+    modalSubtitle: 'Testing SENEAR for seniors (part of the NEAR Ecosystem alongside JUNEAR for kids)',
+    kioskLocked: 'Kiosk Locked',
+    dateLabel: 'Tuesday, 22 September',
+    connectedCaregiver: 'Connected to Anna (Daughter)',
+    familyCall: 'Family Call',
+    familyCallSub: '1-tap speed dials',
+    medications: 'Medications',
+    medicationsSub: '1 taken, 2 left',
+    sos: 'Emergency SOS',
+    sosSub: 'Calls family & sends GPS',
+    sosTap: 'TAP',
+    hardwareKeyNote: 'Triple-press physical power button triggers SOS offline.',
+    speedDialTitle: 'Speed Dial List',
+    backToHome: 'Back to Home',
+    callingCaregiver: 'Calling Caregiver',
+    speakerEngaged: 'Speakerphone auto-engaged',
+    endCall: 'End Call',
+    todaysMedicines: "Today's Medicines",
+    caregiverPillNote: 'Caregivers receive automatic confirmation when pills are checked off.',
+    sosSentTitle: 'SOS Sent to Family!',
+    sosSentDesc: 'Live GPS location sent to Anna and Peter. Phone is now answering family calls automatically with max speaker volume.',
+    resetSosBtn: 'Reset SOS Test',
+    dispatchingHelp: 'Dispatching Emergency Help',
+    dispatchingHelpNote: 'Sending alerts to primary caregiver Dr. Anna Banyai.',
+    cancelAlarm: 'False Alarm (Cancel)',
+    returnMainScreen: 'Return to Main Screen',
+    protectedBadge: 'Protected',
+    homeBtn: 'HOME',
+    spotlightTitle: 'Architecture Spotlight',
+    spotlightHeadline: 'Why SENEAR & JUNEAR Eliminate User Panic',
+    spotlightDesc: 'Standard Android and iOS launchers are designed for digital natives with fine motor skills. When a senior or child accidentally taps airplane mode or dismisses a dialog, they lose contact with family. The NEAR Ecosystem solves this through native system-level lockdown.',
+    arch1Title: 'Android Device Owner (DPC) Lockdown',
+    arch1Desc: 'SENEAR runs as the enterprise device owner. It physically prevents access to standard settings, disables swipe-down notification shades, and disallows accidental app uninstallations.',
+    arch2Title: 'Offline-First SQLite / Room Synchronization',
+    arch2Desc: 'Core capabilities (phone dialing, local alarm chimes, medication schedules, SMS SOS) require zero cellular data. The system caches events and syncs to caregiver cloud when connectivity returns.',
+    arch3Title: 'Remote Caregiver Guardian Portal',
+    arch3Desc: 'Caregivers can remotely unmute the phone if silenced, inspect battery level, update speed dial photos, and trigger auditory reassurance rings from their own smartphone.',
+    footerDev: 'Developed in native Kotlin + Jetpack Compose',
+    closeSimulator: 'Close Simulator',
+    contactRoles: {
+      'Daughter / Primary Caregiver': 'Daughter / Primary Caregiver',
+      'Son / Emergency Backup': 'Son / Emergency Backup',
+      'Family Physician': 'Family Physician',
+    } as Record<string, string>,
+  },
+};
+
 export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalProps) {
+  const { language } = useLanguage();
+  const sim = SIMULATOR_I18N[language] || SIMULATOR_I18N.en;
+
   const [activeTab, setActiveTab] = useState<'home' | 'contacts' | 'meds' | 'sos' | 'compare'>('home');
   const [callActiveContact, setCallActiveContact] = useState<string | null>(null);
   const [sosActive, setSosActive] = useState(false);
@@ -81,14 +231,14 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
             <div>
               <div className="flex items-center gap-2">
                 <h3 id="nogond-modal-title" className="font-heading font-bold text-lg text-[#2C2C2C]">
-                  SENEAR Interactive Simulator
+                  {sim.modalTitle}
                 </h3>
                 <span className="px-2 py-0.5 text-[10px] font-semibold uppercase bg-[#FFFFFF] text-[#A38053] border border-[#C5A880]/40 rounded-full">
-                  **NEAR Ecosystem
+                  {sim.ecosystemTag}
                 </span>
               </div>
               <p className="text-xs text-[#5C5A56]">
-                Testing SENEAR for seniors (part of the **NEAR Ecosystem alongside JUNEAR for kids)
+                {sim.modalSubtitle}
               </p>
             </div>
           </div>
@@ -119,10 +269,10 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                 
                 {/* Phone Status Bar (Protected by Device Owner) */}
                 <div className="px-4 py-1.5 flex items-center justify-between text-[11px] font-semibold text-[#5C5A56] border-b border-[#EAE0D3]/60 bg-[#F5F0EB]/50">
-                  <span>10:45 AM</span>
+                  <span>10:45</span>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-medium text-emerald-700 flex items-center gap-1">
-                      <Lock className="w-3 h-3 text-[#A38053]" /> Kiosk Locked
+                      <Lock className="w-3 h-3 text-[#A38053]" /> {sim.kioskLocked}
                     </span>
                     <Wifi className="w-3 h-3 text-[#5C5A56]" />
                     <BatteryMedium className="w-3.5 h-3.5 text-[#5C5A56]" />
@@ -141,11 +291,11 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                           10:45
                         </div>
                         <div className="text-xs font-semibold text-[#A38053] uppercase tracking-wider mt-0.5">
-                          Tuesday, 22 September
+                          {sim.dateLabel}
                         </div>
                         <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-medium">
                           <UserCheck className="w-3 h-3" />
-                          <span>Connected to Anna (Daughter)</span>
+                          <span>{sim.connectedCaregiver}</span>
                         </div>
                       </div>
 
@@ -161,8 +311,8 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                             <PhoneCall className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="font-heading font-bold text-sm text-[#2C2C2C]">Family Call</p>
-                            <p className="text-[10px] text-[#5C5A56]">1-tap speed dials</p>
+                            <p className="font-heading font-bold text-sm text-[#2C2C2C]">{sim.familyCall}</p>
+                            <p className="text-[10px] text-[#5C5A56]">{sim.familyCallSub}</p>
                           </div>
                         </button>
 
@@ -175,8 +325,8 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                             <Pill className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="font-heading font-bold text-sm text-[#2C2C2C]">Medications</p>
-                            <p className="text-[10px] text-[#5C5A56]">1 taken, 2 left</p>
+                            <p className="font-heading font-bold text-sm text-[#2C2C2C]">{sim.medications}</p>
+                            <p className="text-[10px] text-[#5C5A56]">{sim.medicationsSub}</p>
                           </div>
                         </button>
 
@@ -193,12 +343,12 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                               <AlertTriangle className="w-5 h-5 animate-pulse" />
                             </div>
                             <div>
-                              <p className="font-heading font-bold text-base text-red-900">Emergency SOS</p>
-                              <p className="text-[10px] text-red-700">Calls family & sends GPS</p>
+                              <p className="font-heading font-bold text-base text-red-900">{sim.sos}</p>
+                              <p className="text-[10px] text-red-700">{sim.sosSub}</p>
                             </div>
                           </div>
                           <span className="text-[10px] font-bold px-2 py-1 bg-red-600 text-white rounded-md">
-                            TAP
+                            {sim.sosTap}
                           </span>
                         </button>
 
@@ -207,7 +357,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                       {/* Hardware Button Reminder */}
                       <div className="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] text-center">
                         <p className="text-[10px] text-[#6E6B65]">
-                          Triple-press physical power button triggers SOS offline.
+                          {sim.hardwareKeyNote}
                         </p>
                       </div>
 
@@ -218,7 +368,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                   {activeTab === 'contacts' && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between pb-2 border-b border-[#E8DFD3]">
-                        <h4 className="font-heading font-bold text-sm text-[#2C2C2C]">Speed Dial List</h4>
+                        <h4 className="font-heading font-bold text-sm text-[#2C2C2C]">{sim.speedDialTitle}</h4>
                         <button
                           onClick={() => {
                             setActiveTab('home');
@@ -226,7 +376,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                           }}
                           className="text-xs font-semibold text-[#8C7355] underline cursor-pointer"
                         >
-                          Back to Home
+                          {sim.backToHome}
                         </button>
                       </div>
 
@@ -236,39 +386,42 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                             <PhoneCall className="w-7 h-7" />
                           </div>
                           <div>
-                            <p className="text-xs uppercase tracking-wider text-[#6E6B65]">Calling Caregiver</p>
+                            <p className="text-xs uppercase tracking-wider text-[#6E6B65]">{sim.callingCaregiver}</p>
                             <h5 className="font-heading font-bold text-xl text-[#2C2C2C]">{callActiveContact}</h5>
-                            <p className="text-xs text-emerald-700 mt-1">Speakerphone auto-engaged</p>
+                            <p className="text-xs text-emerald-700 mt-1">{sim.speakerEngaged}</p>
                           </div>
                           <button
                             onClick={() => setCallActiveContact(null)}
                             className="w-full py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs cursor-pointer shadow-xs"
                           >
-                            End Call
+                            {sim.endCall}
                           </button>
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          {SENEAR_SIMULATOR_DATA.speedDials.map((contact) => (
-                            <button
-                              key={contact.id}
-                              onClick={() => setCallActiveContact(`${contact.name} (${contact.role})`)}
-                              className="w-full p-3 rounded-xl bg-[#FFFFFF] border-2 border-[#C5A880]/60 hover:border-[#C5A880] text-left flex items-center justify-between cursor-pointer transition-all active:scale-95 shadow-2xs"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-[#F5F0EB] flex items-center justify-center font-bold text-[#A38053] text-sm">
-                                  {contact.name[0]}
+                          {SENEAR_SIMULATOR_DATA.speedDials.map((contact) => {
+                            const localizedRole = sim.contactRoles[contact.role] || contact.role;
+                            return (
+                              <button
+                                key={contact.id}
+                                onClick={() => setCallActiveContact(`${contact.name} (${localizedRole})`)}
+                                className="w-full p-3 rounded-xl bg-[#FFFFFF] border-2 border-[#C5A880]/60 hover:border-[#C5A880] text-left flex items-center justify-between cursor-pointer transition-all active:scale-95 shadow-2xs"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-9 h-9 rounded-full bg-[#F5F0EB] flex items-center justify-center font-bold text-[#A38053] text-sm">
+                                    {contact.name[0]}
+                                  </div>
+                                  <div>
+                                    <p className="font-heading font-bold text-sm text-[#2C2C2C]">{contact.name}</p>
+                                    <p className="text-[10px] text-[#6E6B65]">{localizedRole}</p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <p className="font-heading font-bold text-sm text-[#2C2C2C]">{contact.name}</p>
-                                  <p className="text-[10px] text-[#6E6B65]">{contact.role}</p>
-                                </div>
-                              </div>
-                              <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700">
-                                <PhoneCall className="w-3.5 h-3.5" />
-                              </span>
-                            </button>
-                          ))}
+                                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700">
+                                  <PhoneCall className="w-3.5 h-3.5" />
+                                </span>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -278,12 +431,12 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                   {activeTab === 'meds' && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between pb-2 border-b border-[#E8DFD3]">
-                        <h4 className="font-heading font-bold text-sm text-[#2C2C2C]">Today's Medicines</h4>
+                        <h4 className="font-heading font-bold text-sm text-[#2C2C2C]">{sim.todaysMedicines}</h4>
                         <button
                           onClick={() => setActiveTab('home')}
                           className="text-xs font-semibold text-[#8C7355] underline cursor-pointer"
                         >
-                          Back to Home
+                          {sim.backToHome}
                         </button>
                       </div>
 
@@ -317,7 +470,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                       </div>
 
                       <p className="text-[10px] text-center text-[#6E6B65] pt-2">
-                        Caregivers receive automatic confirmation when pills are checked off.
+                        {sim.caregiverPillNote}
                       </p>
                     </div>
                   )}
@@ -330,25 +483,25 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                           <div className="w-12 h-12 mx-auto rounded-full bg-red-600 text-white flex items-center justify-center animate-pulse">
                             <Heart className="w-6 h-6" />
                           </div>
-                          <h5 className="font-heading font-bold text-base text-red-900">SOS Sent to Family!</h5>
+                          <h5 className="font-heading font-bold text-base text-red-900">{sim.sosSentTitle}</h5>
                           <p className="text-[11px] text-red-800 leading-tight">
-                            Live GPS location sent to Anna and Peter. Phone is now answering family calls automatically with max speaker volume.
+                            {sim.sosSentDesc}
                           </p>
                           <button
                             onClick={resetSos}
                             className="w-full py-2 bg-[#2C2C2C] text-white rounded-lg text-xs font-semibold cursor-pointer"
                           >
-                            Reset SOS Test
+                            {sim.resetSosBtn}
                           </button>
                         </div>
                       ) : (
                         <div className="p-4 bg-red-50 rounded-2xl border-2 border-red-400 space-y-3">
-                          <h5 className="font-heading font-bold text-lg text-red-900">Dispatching Emergency Help</h5>
+                          <h5 className="font-heading font-bold text-lg text-red-900">{sim.dispatchingHelp}</h5>
                           <div className="text-4xl font-bold font-mono text-red-600">
                             00:0{sosCountdown}
                           </div>
                           <p className="text-xs text-red-700">
-                            Sending alerts to primary caregiver Dr. Anna Banyai.
+                            {sim.dispatchingHelpNote}
                           </p>
                           <button
                             onClick={() => {
@@ -357,7 +510,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                             }}
                             className="w-full py-2.5 bg-gray-200 hover:bg-gray-300 text-[#2C2C2C] rounded-lg text-xs font-bold cursor-pointer"
                           >
-                            False Alarm (Cancel)
+                            {sim.cancelAlarm}
                           </button>
                         </div>
                       )}
@@ -369,7 +522,7 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                         }}
                         className="text-xs font-medium text-[#5C5A56] underline cursor-pointer"
                       >
-                        Return to Main Screen
+                        {sim.returnMainScreen}
                       </button>
                     </div>
                   )}
@@ -383,9 +536,9 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
                     onClick={() => setActiveTab('home')}
                     className="px-3 py-1 rounded-md bg-[#FFFFFF] border border-[#C5A880]/40 font-bold text-[10px] text-[#2C2C2C] hover:bg-[#FAF7F2] cursor-pointer"
                   >
-                    HOME
+                    {sim.homeBtn}
                   </button>
-                  <span className="text-[10px] text-emerald-700 font-semibold">Protected</span>
+                  <span className="text-[10px] text-emerald-700 font-semibold">{sim.protectedBadge}</span>
                 </div>
 
               </div>
@@ -396,13 +549,13 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
           <div className="lg:col-span-6 space-y-6">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F5F0EB] text-[#8C7355] text-xs font-semibold uppercase tracking-wider mb-2">
-                <span>Architecture Spotlight</span>
+                <span>{sim.spotlightTitle}</span>
               </div>
               <h4 className="font-heading text-2xl font-bold text-[#2C2C2C]">
-                Why SENEAR & JUNEAR Eliminate User Panic
+                {sim.spotlightHeadline}
               </h4>
               <p className="text-sm text-[#5C5A56] leading-relaxed mt-2">
-                Standard Android and iOS launchers are designed for digital natives with fine motor skills. When a senior or child accidentally taps airplane mode or dismisses a dialog, they lose contact with family. The **NEAR Ecosystem solves this through native system-level lockdown.
+                {sim.spotlightDesc}
               </p>
             </div>
 
@@ -411,42 +564,42 @@ export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalPr
               <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] space-y-1">
                 <div className="flex items-center gap-2 font-heading font-semibold text-sm text-[#2C2C2C]">
                   <ShieldCheck className="w-4 h-4 text-[#A38053]" />
-                  <span>Android Device Owner (DPC) Lockdown</span>
+                  <span>{sim.arch1Title}</span>
                 </div>
                 <p className="text-xs text-[#5C5A56] leading-relaxed pl-6">
-                  SENEAR runs as the enterprise device owner. It physically prevents access to standard settings, disables swipe-down notification shades, and disallows accidental app uninstallations.
+                  {sim.arch1Desc}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] space-y-1">
                 <div className="flex items-center gap-2 font-heading font-semibold text-sm text-[#2C2C2C]">
                   <Wifi className="w-4 h-4 text-[#A38053]" />
-                  <span>Offline-First SQLite / Room Synchronization</span>
+                  <span>{sim.arch2Title}</span>
                 </div>
                 <p className="text-xs text-[#5C5A56] leading-relaxed pl-6">
-                  Core capabilities (phone dialing, local alarm chimes, medication schedules, SMS SOS) require zero cellular data. The system caches events and syncs to caregiver cloud when connectivity returns.
+                  {sim.arch2Desc}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] space-y-1">
                 <div className="flex items-center gap-2 font-heading font-semibold text-sm text-[#2C2C2C]">
                   <Volume2 className="w-4 h-4 text-[#A38053]" />
-                  <span>Remote Caregiver Guardian Portal</span>
+                  <span>{sim.arch3Title}</span>
                 </div>
                 <p className="text-xs text-[#5C5A56] leading-relaxed pl-6">
-                  Caregivers can remotely unmute the phone if silenced, inspect battery level, update speed dial photos, and trigger auditory reassurance rings from their own smartphone.
+                  {sim.arch3Desc}
                 </p>
               </div>
             </div>
 
             {/* Action buttons */}
             <div className="pt-2 flex items-center justify-between border-t border-[#F0EAE1]">
-              <span className="text-xs text-[#6E6B65]">Developed in native Kotlin + Jetpack Compose</span>
+              <span className="text-xs text-[#6E6B65]">{sim.footerDev}</span>
               <button
                 onClick={onClose}
                 className="px-5 py-2.5 rounded-xl bg-[#2C2C2C] text-[#FAFAFA] font-medium text-xs hover:bg-[#1A1A1A] cursor-pointer"
               >
-                Close Simulator
+                {sim.closeSimulator}
               </button>
             </div>
 

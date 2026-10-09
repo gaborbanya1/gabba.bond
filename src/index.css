@@ -49,15 +49,15 @@ h1, h2, h3, h4, .font-heading {
   scrollbar-width: none;  /* Firefox */
 }
 
-/* Stately, slow accordion collapse animation for completed install steps */
+/* Stately, smooth accordion collapse animation for completed install steps */
 .step-accordion-collapse {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
   visibility: hidden;
-  transition: grid-template-rows 850ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 750ms cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 850ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: grid-template-rows 380ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 380ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 

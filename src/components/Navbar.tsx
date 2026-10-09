@@ -52,7 +52,6 @@ export function Navbar({
   const navLinks = [
     { label: t.nav.projects, href: '#projects', isCurrent: currentPage === 'home' },
     { label: t.nav.installGuide, href: '#install-guide', isCurrent: currentPage === 'install-guide' },
-    { label: t.nav.contact, href: '#contact', isCurrent: false },
   ];
 
   const handleLangChange = (code: SupportedLanguage) => {

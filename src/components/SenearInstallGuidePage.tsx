@@ -1,6 +1,5 @@
 import { useState, useId } from 'react';
 import {
-  ArrowLeft,
   Smartphone,
   Power,
   Hand,
@@ -9,10 +8,7 @@ import {
   AlertTriangle,
   Wifi,
   Download,
-  Copy,
   Check,
-  Printer,
-  FileCode2,
   RotateCcw,
   Sparkles,
   HelpCircle,
@@ -26,7 +22,6 @@ import {
   ArrowRight,
   Package,
   History,
-  Globe,
   ExternalLink,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -44,21 +39,23 @@ interface SenearInstallGuidePageProps {
 const I18N_WIZARD = {
   en: {
     backToHome: 'Back to Overview',
-    breadcrumb: 'SENEAR Installation Wizard',
-    pageTitle: 'SENEAR Installation Guide',
+    breadcrumb: 'Installation Wizard',
+    pageTitle: 'Installation Guide',
     pageSubtitle:
-      'Step-by-step setup wizard for Android Enterprise QR provisioning. Simple, fail-safe, and free of Google accounts.',
+      'Step-by-step setup wizard for installing SENEAR or JUNEAR. Simple, fail-safe, and free of Google accounts.',
+    pageNote:
+      'This setup is only required on the senior’s or child’s phone. As a caregiver or family member, simply download the app from Google Play Store.',
     deviceOwnerPill: 'Device Owner Kiosk Mode',
     noGoogleAccountPill: 'Zero Google Account Setup',
     langSelectorLabel: 'Language:',
 
     // Conditional phone question
-    phoneQuestionTitle: 'Are you installing SENEAR on a NEW phone or a USED phone?',
+    phoneQuestionTitle: 'Are you installing SENEAR or JUNEAR on a NEW phone or a USED phone?',
     phoneQuestionSubtitle:
       'Android Enterprise Device Owner permissions require a completely unconfigured system. Choose your starting scenario below:',
-    usedPhoneTitle: 'USED / Existing Phone',
+    usedPhoneTitle: 'USED Phone',
     usedPhoneSubtitle:
-      'Has previous accounts, apps, or settings. We will start with a quick 2-minute Factory Reset to wipe it clean.',
+      'We start with a quick Factory Reset. Before starting, back up all important photos and data from the phone.',
     usedPhoneBadge: 'Starts with Phase 1: Factory Reset',
     newPhoneTitle: 'BRAND-NEW Phone',
     newPhoneSubtitle:
@@ -70,6 +67,8 @@ const I18N_WIZARD = {
     deviceTypeBadgeNew: 'Configuring: NEW Phone (Phase 2 Only)',
 
     // Phase Headers
+    phase1Tag: 'Phase 1: Wipe',
+    phase2Tag: 'Phase 2: Kiosk',
     phase1Heading: 'Phase 1: Factory Reset',
     phase1Subheading: 'Wipe all previous data to unlock firmware-level kiosk permissions.',
     phase2Heading: 'Phase 2: Kiosk Installation',
@@ -95,6 +94,8 @@ const I18N_WIZARD = {
     p1s3Tip:
       'The phone will summarize that Google accounts, apps, and storage will be erased. This is required.',
     p1s3VisualText: 'Erase all data (factory reset)',
+    p1s3VisualSubText:
+      'Before starting, back up all important photos and data from the phone.',
 
     p1s4Title: 'Step 4: Confirm and Reboot',
     p1s4Category: 'Wipe Execution',
@@ -110,6 +111,7 @@ const I18N_WIZARD = {
     p2s1Desc: 'Turn on the device and wait for the initial "Welcome" or language selection screen.',
     p2s1Tip: 'IMPORTANT: Stay on this greeting screen! Do NOT tap "Start" or configure Wi-Fi manually.',
     p2s1VisualText: 'Initial "Welcome" / "Hi there" Screen',
+    p2s1VisualWarning: '⚠ Stay on this screen! Do NOT press Start',
 
     p2s2Title: 'Step 2: The Secret 6 Taps',
     p2s2Category: 'Hidden Activation Gesture',
@@ -172,29 +174,50 @@ const I18N_WIZARD = {
       'Ensure the phone is on the clean "Welcome" screen right after a factory reset, before pressing "Start". Tap rapidly in the upper empty white area of the screen.',
     faq2Q: 'Is a SIM card needed during this setup?',
     faq2A:
-      'No SIM card is needed! The phone only requires a standard Wi-Fi connection to download the SENEAR package.',
+      'No SIM card is needed! The phone only requires a standard Wi-Fi connection to download the SENEAR package. A SIM card will only be needed later for regular use.',
     faq3Q: 'Why is no Google account required?',
     faq3A:
       'Android Enterprise Device Owner mode installs the app at firmware root level, bypassing Google Play accounts and preventing unwanted popups for seniors.',
+
+    // Visual Card & Badge Labels
+    selectedBadge: 'Selected',
+    childModeBadge: 'Child Mode',
+    dpcLockedBadge: 'DPC Locked',
+    stepsTotalLabel: 'Total Steps',
+    stepsDoneLabel: 'of',
+    stepsCompletedLabel: 'Done',
+    p1s1GearTip: 'Tap the Settings gear on home screen',
+    p1s2SystemStep: '1. System',
+    p1s2ResetStep: '2. Reset options',
+    p1s4RebootSub: 'Wiping phone & preparing Welcome screen',
+    p2s1WelcomeTitle: 'Welcome / Hi there',
+    p2s2TapsSub: 'Triggers hidden Android Enterprise camera',
+    p2s3WifiReady: 'Wi-Fi Ready',
+    p2s3Scanner: 'Scanner',
+    p2s4ApkDownload: 'APK Download',
+    p2s4DeviceOwnerBypassed: 'Device Owner Granted • Google Login Bypassed',
+    p2s2TapCounter: 'taps',
   },
 
   de: {
     backToHome: 'Zurück zur Übersicht',
-    breadcrumb: 'SENEAR Installations-Assistent',
-    pageTitle: 'SENEAR Installationsanleitung',
+    breadcrumb: 'Installations-Assistent',
+    pageTitle: 'Installationsanleitung',
     pageSubtitle:
-      'Schritt-für-Schritt-Assistent für die Android Enterprise QR-Bereitstellung. Einfach, fehlbedienungssicher und ohne Google-Konto.',
+      'Schritt-für-Schritt-Assistent für die Installation von SENEAR oder JUNEAR. Einfach, fehlbedienungssicher und ohne Google-Konto.',
+    pageNote:
+      'Diese Installation ist nur auf dem Smartphone des Seniors oder Kindes erforderlich. Als Betreuer/Familienmitglied laden Sie die App einfach aus dem Google Play Store herunter.',
     deviceOwnerPill: 'Device Owner Kiosk-Modus',
     noGoogleAccountPill: 'Einrichtung ohne Google-Konto',
     langSelectorLabel: 'Sprache:',
 
     // Conditional phone question
-    phoneQuestionTitle: 'Installieren Sie SENEAR auf einem NEUEN oder einem GEBRAUCHTEN Telefon?',
+    phoneQuestionTitle: 'Installieren Sie SENEAR oder JUNEAR auf einem NEUEN oder einem GEBRAUCHTEN Telefon?',
     phoneQuestionSubtitle:
       'Android Enterprise Device Owner-Rechte erfordern ein vollständig unkonfiguriertes System. Wählen Sie Ihr Szenario:',
-    usedPhoneTitle: 'GEBRAUCHTES / Vorhandenes Telefon',
+    usedPhoneTitle: 'GEBRAUCHTES Telefon',
     usedPhoneSubtitle:
-      'Enthält bestehende Konten oder Apps. Wir beginnen mit einem schnellen 2-minütigen Zurücksetzen auf Werkseinstellungen.',
+      'Wir starten mit einem schnellen Zurücksetzen auf Werkseinstellungen. Sichern Sie vorher alle wichtigen Fotos und Daten vom Telefon.',
     usedPhoneBadge: 'Startet mit Phase 1: Werkseinstellungen',
     newPhoneTitle: 'FABRIKNEUES Telefon',
     newPhoneSubtitle:
@@ -206,6 +229,8 @@ const I18N_WIZARD = {
     deviceTypeBadgeNew: 'Konfiguration: FABRIKNEUES Telefon (nur Phase 2)',
 
     // Phase Headers
+    phase1Tag: 'Phase 1: Bereinigung',
+    phase2Tag: 'Phase 2: Kiosk',
     phase1Heading: 'Phase 1: Werkseinstellungen',
     phase1Subheading: 'Alle vorherigen Daten löschen, um Kioskrechte auf Firmware-Ebene freizuschalten.',
     phase2Heading: 'Phase 2: Kiosk-Installation',
@@ -231,6 +256,8 @@ const I18N_WIZARD = {
     p1s3Tip:
       'Das Telefon weist darauf hin, dass Google-Konten, Apps und Daten gelöscht werden. Dies ist erforderlich.',
     p1s3VisualText: 'Alle Daten löschen (Werkseinstellungen)',
+    p1s3VisualSubText:
+      'Sichern Sie vorher alle wichtigen Fotos und Daten vom Telefon.',
 
     p1s4Title: 'Schritt 4: Bestätigen und Neustart',
     p1s4Category: 'Ausführung Zurücksetzen',
@@ -246,6 +273,7 @@ const I18N_WIZARD = {
     p2s1Desc: 'Schalten Sie das Gerät ein und warten Sie auf den anfänglichen „Willkommen“-Bildschirm.',
     p2s1Tip: 'WICHTIG: Bleiben Sie auf diesem Bildschirm! Tippen Sie NICHT auf „Start“ und richten Sie kein WLAN manuell ein.',
     p2s1VisualText: 'Anfänglicher Begrüßungsbildschirm',
+    p2s1VisualWarning: '⚠ Auf diesem Bildschirm bleiben! NICHT auf Start tippen',
 
     p2s2Title: 'Schritt 2: Die geheimen 6 Fingertipps',
     p2s2Category: 'Versteckte Aktivierungsgeste',
@@ -308,29 +336,50 @@ const I18N_WIZARD = {
       'Stellen Sie sicher, dass das Telefon auf dem anfänglichen Willkommensbildschirm steht, bevor Sie auf „Start“ drücken. Tippen Sie schnell auf die obere freie weiße Fläche.',
     faq2Q: 'Wird während des Setups eine SIM-Karte benötigt?',
     faq2A:
-      'Nein! Das Telefon benötigt lediglich eine normale WLAN-Verbindung, um das SENEAR-Paket herunterzuladen.',
+      'Nein! Das Telefon benötigt lediglich eine normale WLAN-Verbindung, um das SENEAR-Paket herunterzuladen. Eine SIM-Karte wird erst später für den regulären Gebrauch benötigt.',
     faq3Q: 'Warum ist kein Google-Konto erforderlich?',
     faq3A:
       'Der Android Enterprise Device Owner-Modus installiert die App direkt auf Systemebene, wodurch Google Play-Konten und verwirrende Passworteingaben für Senioren entfallen.',
+
+    // Visual Card & Badge Labels
+    selectedBadge: 'Ausgewählt',
+    childModeBadge: 'Kindermodus',
+    dpcLockedBadge: 'DPC Gesperrt',
+    stepsTotalLabel: 'Schritte Gesamt',
+    stepsDoneLabel: 'von',
+    stepsCompletedLabel: 'Erledigt',
+    p1s1GearTip: 'Tippen Sie auf das Einstellungen-Zahnrad auf dem Startbildschirm',
+    p1s2SystemStep: '1. System',
+    p1s2ResetStep: '2. Optionen zum Zurücksetzen',
+    p1s4RebootSub: 'Telefon wird gelöscht & Startbildschirm vorbereitet',
+    p2s1WelcomeTitle: 'Willkommen / Hallo',
+    p2s2TapsSub: 'Aktiviert die versteckte Android Enterprise Kamera',
+    p2s3WifiReady: 'WLAN Bereit',
+    p2s3Scanner: 'Scanner',
+    p2s4ApkDownload: 'APK-Download',
+    p2s4DeviceOwnerBypassed: 'Device Owner erteilt • Google-Anmeldung übersprungen',
+    p2s2TapCounter: 'Fingertipps',
   },
 
   hu: {
     backToHome: 'Vissza a főoldalra',
-    breadcrumb: 'SENEAR Telepítési Varázsló',
-    pageTitle: 'SENEAR Telepítési Útmutató',
+    breadcrumb: 'Telepítési Varázsló',
+    pageTitle: 'Telepítési Útmutató',
     pageSubtitle:
-      'Lépésről lépésre követhető varázsló Android Enterprise QR telepítéshez. Egyszerű, elállíthatatlan és Google-fiók mentes.',
+      'Lépésről lépésre követhető varázsló SENEAR vagy JUNEAR telepítéséhez. Egyszerű, elállíthatatlan és Google-fiók mentes.',
+    pageNote:
+      'Ez a telepítés csak az idős vagy gyermek felhasználó telefonjára szükséges. Segítőként / családtagként elég az appot a Google Play Áruházból letölteni.',
     deviceOwnerPill: 'Device Owner Kioszk Mód',
     noGoogleAccountPill: 'Google-fiók mentes beállítás',
     langSelectorLabel: 'Nyelv:',
 
     // Conditional phone question
-    phoneQuestionTitle: 'ÚJ vagy HASZNÁLT telefonra telepíted a SENEAR-t?',
+    phoneQuestionTitle: 'ÚJ vagy HASZNÁLT telefonra telepíted a SENEAR-t vagy JUNEAR-t?',
     phoneQuestionSubtitle:
       'Az Android Enterprise Device Owner jogosultsághoz teljesen tiszta rendszer szükséges. Válaszd ki az aktuális kiindulási állapotot:',
-    usedPhoneTitle: 'HASZNÁLT / Már beállított telefon',
+    usedPhoneTitle: 'HASZNÁLT telefon',
     usedPhoneSubtitle:
-      'Már vannak rajta fiókok vagy alkalmazások. Egy gyors 2 perces Gyári Visszaállítással kezdünk, hogy teljesen töröljük.',
+      'Egy gyors Gyári Visszaállítást kezdünk. Előtte ments le a telefonról minden fontos képet és adatot.',
     usedPhoneBadge: 'Az 1. Fázissal indul: Gyári Visszaállítás',
     newPhoneTitle: 'VADONATÚJ telefon',
     newPhoneSubtitle:
@@ -342,6 +391,8 @@ const I18N_WIZARD = {
     deviceTypeBadgeNew: 'Beállítás típusa: VADONATÚJ telefon (csak 2. Fázis)',
 
     // Phase Headers
+    phase1Tag: '1. Fázis: Törlés',
+    phase2Tag: '2. Fázis: Kioszk',
     phase1Heading: '1. Fázis: Gyári Visszaállítás',
     phase1Subheading: 'Minden korábbi adat törlése a kioszk jogosultságok feloldásához.',
     phase2Heading: '2. Fázis: Kioszk Telepítés',
@@ -367,6 +418,8 @@ const I18N_WIZARD = {
     p1s3Tip:
       'A telefon összegzi, hogy a fiókok, alkalmazások és adatok törlődni fognak. Erre szükség van.',
     p1s3VisualText: 'Összes adat törlése (gyári visszaállítás)',
+    p1s3VisualSubText:
+      'Előtte ments le a telefonról minden fontos képet és adatot.',
 
     p1s4Title: '4. Lépés: Megerősítés és újraindítás',
     p1s4Category: 'Törlés Végrehajtása',
@@ -382,6 +435,7 @@ const I18N_WIZARD = {
     p2s1Desc: 'Kapcsold be az eszközt, és várd meg a kezdeti „Üdvözöljük” nyelvválasztó képernyőt.',
     p2s1Tip: 'FONTOS: Maradj ezen a nyitóképernyőn! Ne kattints a „Kezdés” gombra és ne állíts be Wi-Fi-t előre.',
     p2s1VisualText: 'Kezdeti „Üdvözöljük” Képernyő',
+    p2s1VisualWarning: '⚠ Maradj ezen a képernyőn! NE nyomd meg a Kezdést!',
 
     p2s2Title: '2. Lépés: A titkos 6 koppintás',
     p2s2Category: 'Rejtett Aktiváló Gesztus',
@@ -444,10 +498,29 @@ const I18N_WIZARD = {
       'Győződj meg róla, hogy a nyitó „Üdvözöljük” képernyőn vagy a gyári visszaállítás után, még mielőtt a „Kezdés” gombra nyomnál. Koppints tempósan a felső üres fehér részre.',
     faq2Q: 'Szükséges SIM-kártya a beállítás közben?',
     faq2A:
-      'Nem! A telefonnak csupán Wi-Fi hálózatra van szüksége a SENEAR csomag automatikus letöltéséhez.',
+      'Nem! A telefonnak csupán Wi-Fi hálózatra van szüksége a SENEAR csomag automatikus letöltéséhez. Sim-kártyára a késöbbiekben lesz szüksége a telefonnak, hogy rendesen használható legyen.',
     faq3Q: 'Miért nincs szükség Google-fiókra?',
     faq3A:
       'Az Android Enterprise Device Owner mód közvetlenül firmware szinten telepíti és zárolja az appot, így nincs szükség fiókra és elkerülhetők a jelszó kérések az idős használónál.',
+
+    // Visual Card & Badge Labels
+    selectedBadge: 'Kiválasztva',
+    childModeBadge: 'Gyermek Mód',
+    dpcLockedBadge: 'DPC Zárolva',
+    stepsTotalLabel: 'Lépés Összesen',
+    stepsDoneLabel: '/',
+    stepsCompletedLabel: 'Kész',
+    p1s1GearTip: 'Koppints a Beállítások fogaskerékre a kezdőképernyőn',
+    p1s2SystemStep: '1. Rendszer',
+    p1s2ResetStep: '2. Visszaállítási lehetőségek',
+    p1s4RebootSub: 'Telefon törlése & Üdvözlő képernyő előkészítése',
+    p2s1WelcomeTitle: 'Üdvözöljük',
+    p2s2TapsSub: 'Aktiválja a rejtett Android Enterprise kamerát',
+    p2s3WifiReady: 'Wi-Fi Kész',
+    p2s3Scanner: 'Szkenner',
+    p2s4ApkDownload: 'Csomag letöltése (APK)',
+    p2s4DeviceOwnerBypassed: 'Device Owner Jogosultság Megadva • Google Belépés Kihagyva',
+    p2s2TapCounter: 'koppintás',
   },
 };
 
@@ -563,7 +636,7 @@ export function SenearInstallGuidePage({
   onOpenSimulator,
   onContactClick,
 }: SenearInstallGuidePageProps) {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const currentLang = (language in I18N_WIZARD ? language : 'en') as SupportedLanguage;
   const t = I18N_WIZARD[currentLang];
 
@@ -581,22 +654,73 @@ export function SenearInstallGuidePage({
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [isWizardComplete, setIsWizardComplete] = useState(false);
 
-  // QR Code card state
-  const [activeQrTab, setActiveQrTab] = useState<'qr' | 'json'>('qr');
-  const [copiedJson, setCopiedJson] = useState(false);
   const [interactiveTapCount, setInteractiveTapCount] = useState(0);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [highlightedStepId, setHighlightedStepId] = useState<string | null>(null);
 
-  // Scroll and focus helper
-  const scrollToStep = (stepId: string, delay = 260) => {
-    setTimeout(() => {
-      const el = document.getElementById(`step-${stepId}`) || document.getElementById('stepper-wizard');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        const focusable = el.querySelector<HTMLElement>('button, [tabindex="0"], a');
-        if (focusable) {
-          focusable.focus();
+  // Smooth scroll helper that dynamically tracks element position on every animation frame,
+  // preventing overshoot or slipping down when preceding accordion items collapse
+  const smoothScrollToElement = (
+    element: HTMLElement,
+    duration = 550,
+    offset = 100,
+    onComplete?: () => void
+  ) => {
+    let startTime: number | null = null;
+    let lastTime: number | null = null;
+
+    const step = (currentTime: number) => {
+      if (!startTime) {
+        startTime = currentTime;
+        lastTime = currentTime;
+      }
+      const timeElapsed = currentTime - startTime;
+      const dt = Math.max(0.001, Math.min(0.05, (currentTime - (lastTime || currentTime)) / 1000));
+      lastTime = currentTime;
+
+      // Current live distance to target:
+      // positive = element is below target (scroll down)
+      // negative = element is above target (scroll up)
+      const rect = element.getBoundingClientRect();
+      const currentDiff = rect.top - offset;
+
+      // Check if settled or time exceeded
+      if (timeElapsed >= duration || Math.abs(currentDiff) <= 1.0) {
+        // Final sub-pixel align to exact offset
+        if (Math.abs(currentDiff) > 0.5) {
+          window.scrollBy(0, currentDiff);
         }
+        const focusable =
+          element.querySelector<HTMLElement>('button, [tabindex="0"], a') ||
+          element;
+        if (focusable) {
+          focusable.focus({ preventScroll: true });
+        }
+        if (onComplete) {
+          onComplete();
+        }
+        return;
+      }
+
+      // Critically-damped spring factor: smoothly approaches zero error without overshoot
+      const dampingFactor = 1 - Math.exp(-dt * 12);
+      const scrollStep = currentDiff * dampingFactor;
+
+      window.scrollBy(0, scrollStep);
+      requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
+  };
+
+  // Scroll and focus helper for stepper transitions
+  const scrollToStep = (stepId: string, delay = 40) => {
+    setTimeout(() => {
+      const el =
+        document.getElementById(`step-${stepId}`) ||
+        document.getElementById('stepper-wizard');
+      if (el) {
+        smoothScrollToElement(el, 550, 100);
       }
     }, delay);
   };
@@ -613,17 +737,31 @@ export function SenearInstallGuidePage({
     }
   };
 
-  // Start button handler: sets phone type and jumps directly to first step
+  // Start button handler: sets phone type and slowly glides focus to the first step
   const handleStartStep = (type: PhoneType) => {
     handleSelectPhoneType(type);
     const targetStepId = type === 'used' ? 'p1_s1' : 'p2_s1';
-    scrollToStep(targetStepId);
+
+    // Allow state update to apply to the DOM, then smoothly scroll and highlight
+    setTimeout(() => {
+      const el =
+        document.getElementById(`step-${targetStepId}`) ||
+        document.getElementById('stepper-wizard');
+      if (el) {
+        setHighlightedStepId(targetStepId);
+        smoothScrollToElement(el, 850, 100, () => {
+          setTimeout(() => {
+            setHighlightedStepId(null);
+          }, 2000);
+        });
+      }
+    }, 60);
   };
 
   const currentStepIndex = activeSteps.findIndex((s) => s.id === activeStepId);
   const currentStep = activeSteps[currentStepIndex] || activeSteps[0];
 
-  // "Done / Next" handler with smooth slow closing animation sequence
+  // "Done / Next" handler with smooth closing animation sequence
   const handleStepDoneNext = () => {
     const newCompleted = new Set(completedSteps);
     newCompleted.add(activeStepId);
@@ -632,18 +770,18 @@ export function SenearInstallGuidePage({
     if (currentStepIndex < activeSteps.length - 1) {
       const nextStep = activeSteps[currentStepIndex + 1];
       setActiveStepId(nextStep.id);
-      scrollToStep(nextStep.id, 280);
+      scrollToStep(nextStep.id, 40);
     } else {
-      // Completed all steps - allow the final step's closing animation to complete smoothly
+      // Completed all steps
       setTimeout(() => {
         setIsWizardComplete(true);
         setTimeout(() => {
           const wizardEl = document.getElementById('stepper-wizard');
           if (wizardEl) {
-            wizardEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            smoothScrollToElement(wizardEl, 550, 100);
           }
-        }, 120);
-      }, 700);
+        }, 80);
+      }, 400);
     }
   };
 
@@ -652,37 +790,7 @@ export function SenearInstallGuidePage({
     if (currentStepIndex > 0) {
       const prevStep = activeSteps[currentStepIndex - 1];
       setActiveStepId(prevStep.id);
-      scrollToStep(prevStep.id);
-    }
-  };
-
-  // Android Enterprise Provisioning Payload
-  const provisioningPayload = {
-    'android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_NAME': 'hu.gabba.senear',
-    'android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION':
-      'https://download.gabba.hu/senear/latest/senear-dpc.apk',
-    'android.app.extra.PROVISIONING_DEVICE_ADMIN_SIGNATURE_CHECKSUM':
-      '4d7a8e99b4f2c019d5e3816a12b48992f801a24d56f6',
-    'android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED': false,
-    'android.app.extra.PROVISIONING_SKIP_ENCRYPTION': true,
-    'android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE': {
-      kiosk_mode: true,
-      fail_safe_ui: true,
-      emergency_sos_enabled: true,
-      remote_portal_sync: true,
-      disable_app_uninstalls: true,
-      disable_status_bar: true,
-    },
-  };
-  const jsonString = JSON.stringify(provisioningPayload, null, 2);
-
-  const handleCopyJson = async () => {
-    try {
-      await navigator.clipboard.writeText(jsonString);
-      setCopiedJson(true);
-      setTimeout(() => setCopiedJson(false), 2500);
-    } catch {
-      // fallback
+      scrollToStep(prevStep.id, 40);
     }
   };
 
@@ -690,65 +798,8 @@ export function SenearInstallGuidePage({
     setInteractiveTapCount((prev) => (prev >= 6 ? 1 : prev + 1));
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
-      {/* ------------------------------------------------------------------- */}
-      {/* Top Header Bar: Breadcrumb + Dedicated Language Toggle              */}
-      {/* ------------------------------------------------------------------- */}
-      <div className="border-b border-[#C5A880]/20 bg-[#FFFFFF]/90 backdrop-blur-md sticky top-20 z-30 transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-          {/* Breadcrumb back */}
-          <div className="flex items-center gap-2 text-xs sm:text-sm">
-            <button
-              onClick={onBackToHome}
-              className="inline-flex items-center gap-1.5 font-semibold text-[#8C7355] hover:text-[#2C2C2C] transition-colors cursor-pointer group"
-            >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              <span>{t.backToHome}</span>
-            </button>
-            <span className="text-[#C5A880]/60">/</span>
-            <span className="font-medium text-[#5C5A56] truncate max-w-[200px] sm:max-w-none">
-              {t.breadcrumb}
-            </span>
-          </div>
-
-          {/* Multilingual Selector Toggle (EN, DE, HU) */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#8C7355] hidden sm:flex items-center gap-1">
-              <Globe className="w-3.5 h-3.5 text-[#C5A880]" />
-              <span>{t.langSelectorLabel}</span>
-            </span>
-
-            <div className="flex items-center bg-[#F5F0EB] p-1 rounded-xl border border-[#C5A880]/35 shadow-2xs">
-              {(
-                [
-                  { code: 'en', label: 'English', short: 'EN' },
-                  { code: 'de', label: 'Deutsch', short: 'DE' },
-                  { code: 'hu', label: 'Magyar', short: 'HU' },
-                ] as const
-              ).map((opt) => (
-                <button
-                  key={opt.code}
-                  onClick={() => setLanguage(opt.code)}
-                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    language === opt.code
-                      ? 'bg-[#2C2C2C] text-[#FAFAFA] shadow-xs scale-102'
-                      : 'text-[#6E6B65] hover:text-[#2C2C2C] hover:bg-white/60'
-                  }`}
-                  title={opt.label}
-                >
-                  {opt.short}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12 sm:space-y-16">
         {/* ------------------------------------------------------------------- */}
         {/* Hero Section                                                        */}
@@ -777,12 +828,52 @@ export function SenearInstallGuidePage({
                 <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed max-w-2xl">
                   {t.pageSubtitle}
                 </p>
+
+                {/* Important Note for Caregivers & Relatives - Red Alert Style */}
+                <div className="bg-red-50/75 border border-red-200/90 rounded-2xl p-3.5 sm:p-4 max-w-2xl flex items-start gap-3 shadow-2xs">
+                  <div className="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                    <AlertTriangle className="w-4 h-4 text-red-600" />
+                  </div>
+                  <p className="text-xs sm:text-sm text-red-950 leading-relaxed font-medium">
+                    {t.pageNote}
+                  </p>
+                </div>
               </div>
 
-              {/* Smartphone Mockup Image */}
+              {/* Smartphone Mockup Images (Senear in front, Junear peeking behind tilted to the right) */}
               <div className="lg:col-span-4 flex justify-center lg:justify-end">
-                <div className="relative group max-w-[240px] w-full">
-                  <div className="relative bg-[#1A1A1A] rounded-[36px] p-2.5 shadow-2xl border-4 border-[#2C2C2C] ring-1 ring-[#C5A880]/50 overflow-hidden">
+                <div className="relative group max-w-[270px] w-full pt-4 pr-6 sm:pr-8">
+                  {/* JUNEAR Phone Mockup - Tilted to the right behind SENEAR, only top/upper portion peeking out */}
+                  <div
+                    className="absolute -top-3 sm:-top-4 -right-1 sm:right-0 w-[88%] bg-[#1F2421] rounded-[34px] p-2.5 shadow-xl border-4 border-[#2D3748] ring-1 ring-emerald-500/40 overflow-hidden transform rotate-[13deg] translate-x-4 -translate-y-2 z-0 opacity-95 transition-transform duration-500 group-hover:rotate-[16deg] group-hover:translate-x-6"
+                    title="JUNEAR Kiosk"
+                  >
+                    {/* Phone speaker & camera notch */}
+                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-2">
+                      <div className="w-9 h-1 bg-[#4A5568] rounded-full" />
+                      <div className="w-2 h-2 bg-[#111111] rounded-full border border-[#4A5568]" />
+                    </div>
+
+                    <div className="relative rounded-[26px] overflow-hidden bg-[#0F172A] aspect-[9/19.5]">
+                      <img
+                        src={`/screenshots/junear/junear-1_${language}.png`}
+                        alt="JUNEAR App Mockup"
+                        className="w-full h-full object-cover object-top filter brightness-[0.96]"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            '/screenshots/junear/junear-1.png';
+                        }}
+                      />
+                      {/* Top badge on Junear phone to clearly identify it */}
+                      <div className="absolute top-6 left-2 right-2 bg-emerald-950/85 backdrop-blur-md px-2 py-1 rounded-md text-emerald-300 text-[10px] font-bold flex items-center justify-between border border-emerald-500/30">
+                        <span className="tracking-wide">JUNEAR</span>
+                        <span className="text-[8px] text-emerald-400 font-mono">{t.childModeBadge}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SENEAR Phone Mockup - Main phone in front */}
+                  <div className="relative z-10 bg-[#1A1A1A] rounded-[36px] p-2.5 shadow-2xl border-4 border-[#2C2C2C] ring-1 ring-[#C5A880]/50 overflow-hidden">
                     <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-2">
                       <div className="w-10 h-1 bg-[#3A3A3A] rounded-full" />
                       <div className="w-2.5 h-2.5 bg-[#111111] rounded-full border border-[#333333]" />
@@ -800,7 +891,7 @@ export function SenearInstallGuidePage({
                       />
                       <div className="absolute bottom-2 left-2 right-2 bg-[#2C2C2C]/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg text-white text-[11px] flex items-center justify-between border border-white/20">
                         <span className="font-bold">SENEAR Kiosk</span>
-                        <span className="text-[9px] text-[#C5A880] font-mono">DPC Locked</span>
+                        <span className="text-[9px] text-[#C5A880] font-mono">{t.dpcLockedBadge}</span>
                       </div>
                     </div>
                   </div>
@@ -868,7 +959,7 @@ export function SenearInstallGuidePage({
                 {selectedPhoneType === 'used' && (
                   <div className="mt-4 flex items-center justify-end text-xs font-bold">
                     <span className="flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                      <Check className="w-3.5 h-3.5" /> Selected
+                      <Check className="w-3.5 h-3.5" /> {t.selectedBadge}
                     </span>
                   </div>
                 )}
@@ -881,10 +972,10 @@ export function SenearInstallGuidePage({
                       e.stopPropagation();
                       handleStartStep('used');
                     }}
-                    className="w-full py-3 px-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all cursor-pointer group"
+                    className="w-full py-3.5 px-5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 active:scale-[0.98] text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
                   >
                     <span>{t.btnStart}</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1.5 transition-transform duration-200" />
                   </button>
                 </div>
               </div>
@@ -934,7 +1025,7 @@ export function SenearInstallGuidePage({
                 {selectedPhoneType === 'new' && (
                   <div className="mt-4 flex items-center justify-end text-xs font-bold">
                     <span className="flex items-center gap-1 text-emerald-700 font-bold bg-white px-2.5 py-1 rounded-full border border-emerald-300">
-                      <Check className="w-3.5 h-3.5" /> Selected
+                      <Check className="w-3.5 h-3.5" /> {t.selectedBadge}
                     </span>
                   </div>
                 )}
@@ -947,10 +1038,10 @@ export function SenearInstallGuidePage({
                       e.stopPropagation();
                       handleStartStep('new');
                     }}
-                    className="w-full py-3 px-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all cursor-pointer group"
+                    className="w-full py-3.5 px-5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 active:scale-[0.98] text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
                   >
                     <span>{t.btnStart}</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1.5 transition-transform duration-200" />
                   </button>
                 </div>
               </div>
@@ -970,8 +1061,8 @@ export function SenearInstallGuidePage({
 
             <div className="flex items-center gap-2">
               <span className="text-[#8C7355] text-xs">
-                {activeSteps.length} Total Steps &bull;{' '}
-                {completedSteps.size} of {activeSteps.length} Done
+                {activeSteps.length} {t.stepsTotalLabel} &bull;{' '}
+                {completedSteps.size} {t.stepsDoneLabel} {activeSteps.length} {t.stepsCompletedLabel}
               </span>
             </div>
           </div>
@@ -1010,16 +1101,6 @@ export function SenearInstallGuidePage({
                   <span>{t.btnRestartWizard}</span>
                 </button>
 
-                {onOpenSimulator && (
-                  <button
-                    onClick={onOpenSimulator}
-                    className="px-6 py-3 rounded-xl bg-[#C5A880] hover:bg-[#D4AF37] text-[#1F2421] font-bold text-sm transition-all cursor-pointer shadow-md flex items-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>{t.btnOpenSimulator}</span>
-                  </button>
-                )}
-
                 <button
                   onClick={onBackToHome}
                   className="px-6 py-3 rounded-xl bg-[#2C2C2C] hover:bg-black text-white font-semibold text-sm border border-stone-600 transition-all cursor-pointer"
@@ -1034,13 +1115,17 @@ export function SenearInstallGuidePage({
               {activeSteps.map((step, idx) => {
                 const isActive = step.id === activeStepId;
                 const isCompleted = completedSteps.has(step.id);
+                const isHighlighted = highlightedStepId === step.id;
 
                 return (
                   <div
                     key={step.id}
                     id={`step-${step.id}`}
-                    className={`rounded-3xl transition-all duration-[850ms] border-2 overflow-hidden scroll-mt-28 ${
-                      isActive
+                    tabIndex={-1}
+                    className={`rounded-3xl transition-all duration-350 border-2 overflow-hidden scroll-mt-36 outline-none ${
+                      isHighlighted
+                        ? 'bg-[#FFFFFF] border-emerald-500 shadow-xl ring-4 ring-emerald-500/40 scale-[1.015]'
+                        : isActive
                         ? 'bg-[#FFFFFF] border-[#C5A880] shadow-md ring-2 ring-[#C5A880]/20'
                         : isCompleted
                         ? 'bg-[#FAF8F5] border-emerald-300/80 hover:border-emerald-400'
@@ -1049,15 +1134,18 @@ export function SenearInstallGuidePage({
                   >
                     {/* Collapsed/Header Bar */}
                     <button
-                      onClick={() => setActiveStepId(step.id)}
-                      className={`w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer transition-colors duration-[850ms] ${
+                      onClick={() => {
+                        setActiveStepId(step.id);
+                        scrollToStep(step.id, 40);
+                      }}
+                      className={`w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer transition-colors duration-350 ${
                         isActive ? 'bg-[#FAF7F2]/60' : 'hover:bg-[#FAF8F5]'
                       }`}
                     >
                       <div className="flex items-center gap-4">
                         {/* Step Circle Indicator */}
                         <div
-                          className={`w-10 h-10 rounded-2xl flex items-center justify-center font-heading font-black text-base shrink-0 transition-all duration-[850ms] ${
+                          className={`w-10 h-10 rounded-2xl flex items-center justify-center font-heading font-black text-base shrink-0 transition-all duration-350 ${
                             isCompleted
                               ? 'bg-emerald-600 text-white shadow-xs'
                               : isActive
@@ -1082,8 +1170,7 @@ export function SenearInstallGuidePage({
                                   : 'bg-emerald-50 text-emerald-700'
                               }`}
                             >
-                              Phase {step.phase}:{' '}
-                              {step.phase === 1 ? 'Wipe' : 'Kiosk'}
+                              {step.phase === 1 ? t.phase1Tag : t.phase2Tag}
                             </span>
                             <span className="text-[11px] text-[#8C7355] hidden sm:inline">
                               &bull; {t[step.categoryKey]}
@@ -1123,7 +1210,7 @@ export function SenearInstallGuidePage({
                         </span>
 
                         <ChevronDown
-                          className={`w-5 h-5 text-[#8C7355] shrink-0 transition-transform duration-[850ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                          className={`w-5 h-5 text-[#8C7355] shrink-0 transition-transform duration-350 ease-[cubic-bezier(0.4,0,0.2,1)] ${
                             isActive ? 'rotate-180 text-[#2C2C2C]' : ''
                           }`}
                         />
@@ -1141,10 +1228,20 @@ export function SenearInstallGuidePage({
                               {t[step.descKey]}
                             </p>
 
-                            <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#C5A880]/35 flex items-start gap-3 text-xs sm:text-sm text-[#5C5A56]">
-                              <Info className="w-4 h-4 text-[#8C7355] shrink-0 mt-0.5" />
-                              <span>{t[step.tipKey]}</span>
-                            </div>
+                            {/* Tip box */}
+                            {step.id === 'p2_s1' || (typeof t[step.tipKey] === 'string' && (t[step.tipKey].startsWith('FONTOS') || t[step.tipKey].startsWith('IMPORTANT') || t[step.tipKey].startsWith('WICHTIG'))) ? (
+                              <div className="bg-red-50/75 p-4 rounded-2xl border border-red-200/90 flex items-start gap-3 text-xs sm:text-sm text-red-950 shadow-2xs">
+                                <div className="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                                  <AlertTriangle className="w-4 h-4 text-red-600" />
+                                </div>
+                                <span className="font-medium leading-relaxed">{t[step.tipKey]}</span>
+                              </div>
+                            ) : (
+                              <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#C5A880]/35 flex items-start gap-3 text-xs sm:text-sm text-[#5C5A56]">
+                                <Info className="w-4 h-4 text-[#8C7355] shrink-0 mt-0.5" />
+                                <span>{t[step.tipKey]}</span>
+                              </div>
+                            )}
 
                             {/* Special Interactive Widget for Phase 2 Step 2 (6 taps) */}
                             {step.id === 'p2_s2' && (
@@ -1152,7 +1249,7 @@ export function SenearInstallGuidePage({
                                 <div className="text-xs font-bold text-[#8C7355] flex items-center justify-between">
                                   <span>{t.p2s2PracticeLabel}</span>
                                   <span className="font-mono text-[#2C2C2C]">
-                                    ({interactiveTapCount} / 6 taps)
+                                    ({interactiveTapCount} / 6 {t.p2s2TapCounter})
                                   </span>
                                 </div>
 
@@ -1206,19 +1303,10 @@ export function SenearInstallGuidePage({
                                     <div className="absolute inset-x-3 top-2 h-1 bg-[#C5A880]/70 rounded-full animate-pulse pointer-events-none" />
                                   </div>
 
-                                  <div className="mt-3.5 space-y-1.5 text-center">
-                                    <div className="text-xs sm:text-sm font-bold text-[#2C2C2C] flex items-center justify-center gap-1.5">
-                                      <QrCode className="w-4 h-4 text-[#8C7355]" />
-                                      <span>{t.p2s3QrBadge}</span>
-                                    </div>
-                                    <p className="text-[11px] sm:text-xs text-[#5C5A56] leading-relaxed">
+                                  <div className="mt-3.5 text-center">
+                                    <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed">
                                       {t.p2s3QrSubtitle}
                                     </p>
-                                    <div className="pt-1">
-                                      <span className="inline-block px-2.5 py-1 rounded-lg bg-[#F5F0EB] text-[#8C7355] text-[10px] font-mono border border-[#C5A880]/30 select-all">
-                                        📁 {t.p2s3QrPathLabel}
-                                      </span>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -1240,7 +1328,7 @@ export function SenearInstallGuidePage({
                                   {t.p1s1VisualText}
                                 </div>
                                 <div className="text-[11px] text-[#5C5A56] bg-white p-2 rounded-lg border border-[#C5A880]/20">
-                                  Tap the Settings gear on home screen
+                                  {t.p1s1GearTip}
                                 </div>
                               </div>
                             )}
@@ -1254,11 +1342,11 @@ export function SenearInstallGuidePage({
                                 </div>
                                 <div className="space-y-1.5 text-xs">
                                   <div className="bg-[#F5F0EB] p-2 rounded-lg font-medium text-[#2C2C2C] flex items-center justify-between">
-                                    <span>1. System</span>
+                                    <span>{t.p1s2SystemStep}</span>
                                     <span className="text-[10px] text-[#8C7355]">&rarr;</span>
                                   </div>
                                   <div className="bg-[#FAF7F2] p-2 rounded-lg font-medium text-[#2C2C2C] flex items-center justify-between">
-                                    <span>2. Reset options</span>
+                                    <span>{t.p1s2ResetStep}</span>
                                     <span className="text-[10px] text-[#8C7355]">&rarr;</span>
                                   </div>
                                 </div>
@@ -1275,7 +1363,7 @@ export function SenearInstallGuidePage({
                                   {t.p1s3VisualText}
                                 </div>
                                 <div className="text-[11px] text-red-800 bg-white/80 p-2 rounded-lg border border-red-200">
-                                  Erase all data & accounts
+                                  {t.p1s3VisualSubText}
                                 </div>
                               </div>
                             )}
@@ -1293,7 +1381,7 @@ export function SenearInstallGuidePage({
                                   {t.p1s4VisualText}
                                 </div>
                                 <div className="text-[11px] text-stone-300">
-                                  Wiping phone & preparing Welcome screen
+                                  {t.p1s4RebootSub}
                                 </div>
                               </div>
                             )}
@@ -1301,14 +1389,14 @@ export function SenearInstallGuidePage({
                             {/* Visual card for Welcome */}
                             {step.type === 'welcome' && (
                               <div className="w-full max-w-[280px] bg-gradient-to-b from-[#2C2C2C] to-[#1F2421] rounded-2xl p-5 text-white text-center space-y-3">
-                                <div className="w-8 h-8 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
-                                  EN
+                                <div className="w-8 h-8 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase">
+                                  {language}
                                 </div>
                                 <div className="font-heading font-bold text-base text-white">
-                                  Welcome / Hi there
+                                  {t.p2s1WelcomeTitle}
                                 </div>
-                                <div className="text-[11px] text-amber-300 bg-amber-900/40 p-2 rounded border border-amber-500/30">
-                                  ⚠ Stay on this screen! Do NOT press Start
+                                <div className="text-[11px] text-red-200 bg-red-900/60 p-2.5 rounded-xl border border-red-400/50 font-medium leading-relaxed">
+                                  {t.p2s1VisualWarning}
                                 </div>
                               </div>
                             )}
@@ -1323,7 +1411,7 @@ export function SenearInstallGuidePage({
                                   {t.p2s2VisualText}
                                 </div>
                                 <div className="text-[11px] text-[#5C5A56]">
-                                  Triggers hidden Android Enterprise camera
+                                  {t.p2s2TapsSub}
                                 </div>
                               </div>
                             )}
@@ -1333,9 +1421,9 @@ export function SenearInstallGuidePage({
                               <div className="w-full max-w-[280px] bg-[#1F2421] rounded-2xl p-4 text-white space-y-3 text-center">
                                 <div className="flex justify-between text-[11px] text-stone-300">
                                   <span className="flex items-center gap-1 text-emerald-400">
-                                    <Wifi className="w-3.5 h-3.5" /> Wi-Fi Ready
+                                    <Wifi className="w-3.5 h-3.5" /> {t.p2s3WifiReady}
                                   </span>
-                                  <span>Scanner</span>
+                                  <span>{t.p2s3Scanner}</span>
                                 </div>
                                 <div className="aspect-square bg-black/60 rounded-xl border border-white/20 flex items-center justify-center relative">
                                   <div className="absolute inset-x-2 h-0.5 bg-[#C5A880] animate-pulse" />
@@ -1356,7 +1444,7 @@ export function SenearInstallGuidePage({
                                 </div>
                                 <div className="space-y-1 text-xs">
                                   <div className="flex justify-between font-semibold text-[#5C5A56]">
-                                    <span>APK Download</span>
+                                    <span>{t.p2s4ApkDownload}</span>
                                     <span>100%</span>
                                   </div>
                                   <div className="h-2 w-full bg-[#EAEAEA] rounded-full overflow-hidden">
@@ -1364,7 +1452,7 @@ export function SenearInstallGuidePage({
                                   </div>
                                 </div>
                                 <div className="text-[11px] text-[#5C5A56] bg-white p-2 rounded-lg border border-[#C5A880]/20">
-                                  Device Owner Granted &bull; Google Login Bypassed
+                                  {t.p2s4DeviceOwnerBypassed}
                                 </div>
                               </div>
                             )}
@@ -1404,213 +1492,6 @@ export function SenearInstallGuidePage({
               })}
             </div>
           )}
-        </section>
-
-        {/* ------------------------------------------------------------------- */}
-        {/* Centered QR Code Card Component (Embedded in guide)                 */}
-        {/* ------------------------------------------------------------------- */}
-        <section id="qr-code-embed" className="max-w-4xl mx-auto scroll-mt-28">
-          <div className="bg-gradient-to-b from-[#FFFFFF] via-[#FAF7F2] to-[#F5EFE6] rounded-3xl border-2 border-[#C5A880] p-6 sm:p-10 lg:p-12 shadow-xl relative overflow-hidden text-center space-y-6">
-            <div className="space-y-2 max-w-2xl mx-auto">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#2C2C2C] text-[#FAFAFA] shadow-xs">
-                <QrCode className="w-3.5 h-3.5 text-[#C5A880]" />
-                <span>Android Enterprise Token</span>
-              </span>
-              <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-[#2C2C2C] tracking-tight">
-                {t.qrBoxTitle}
-              </h3>
-              <p className="text-sm text-[#5C5A56] leading-relaxed">
-                {t.qrBoxSubtitle}
-              </p>
-            </div>
-
-            {/* Toggle Tabs */}
-            <div className="inline-flex p-1 bg-[#EFE9DF] rounded-xl border border-[#C5A880]/30 shadow-2xs">
-              <button
-                onClick={() => setActiveQrTab('qr')}
-                className={`px-4 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
-                  activeQrTab === 'qr'
-                    ? 'bg-[#2C2C2C] text-white shadow-xs'
-                    : 'text-[#5C5A56] hover:text-[#2C2C2C]'
-                }`}
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>{t.qrTabInteractive}</span>
-              </button>
-              <button
-                onClick={() => setActiveQrTab('json')}
-                className={`px-4 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
-                  activeQrTab === 'json'
-                    ? 'bg-[#2C2C2C] text-white shadow-xs'
-                    : 'text-[#5C5A56] hover:text-[#2C2C2C]'
-                }`}
-              >
-                <FileCode2 className="w-3.5 h-3.5" />
-                <span>{t.qrTabPayload}</span>
-              </button>
-            </div>
-
-            {activeQrTab === 'qr' ? (
-              <div className="space-y-5">
-                {/* Scalable High-Contrast SVG QR Code */}
-                <div className="inline-block p-6 sm:p-7 bg-[#FFFFFF] rounded-3xl border-2 border-[#C5A880] shadow-md relative group">
-                  <div className="relative w-60 h-60 sm:w-68 sm:h-68 mx-auto flex items-center justify-center bg-white p-2">
-                    <svg
-                      viewBox="0 0 256 256"
-                      className="w-full h-full text-[#1F2421]"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <rect width="256" height="256" fill="#FFFFFF" />
-
-                      {/* Corner Finder Patterns */}
-                      <rect x="16" y="16" width="56" height="56" fill="#2C2C2C" rx="8" />
-                      <rect x="24" y="24" width="40" height="40" fill="#FFFFFF" rx="4" />
-                      <rect x="32" y="32" width="24" height="24" fill="#2C2C2C" rx="2" />
-
-                      <rect x="184" y="16" width="56" height="56" fill="#2C2C2C" rx="8" />
-                      <rect x="192" y="24" width="40" height="40" fill="#FFFFFF" rx="4" />
-                      <rect x="200" y="32" width="24" height="24" fill="#2C2C2C" rx="2" />
-
-                      <rect x="16" y="184" width="56" height="56" fill="#2C2C2C" rx="8" />
-                      <rect x="24" y="192" width="40" height="40" fill="#FFFFFF" rx="4" />
-                      <rect x="32" y="200" width="24" height="24" fill="#2C2C2C" rx="2" />
-
-                      {/* Timing & Data Grid */}
-                      <g fill="#2C2C2C">
-                        <rect x="80" y="24" width="8" height="8" rx="1" />
-                        <rect x="96" y="24" width="8" height="8" rx="1" />
-                        <rect x="112" y="24" width="8" height="8" rx="1" />
-                        <rect x="128" y="24" width="8" height="8" rx="1" />
-                        <rect x="144" y="24" width="8" height="8" rx="1" />
-                        <rect x="160" y="24" width="8" height="8" rx="1" />
-
-                        <rect x="84" y="44" width="16" height="8" rx="1" />
-                        <rect x="108" y="44" width="24" height="8" rx="1" />
-                        <rect x="140" y="44" width="8" height="16" rx="1" />
-                        <rect x="156" y="44" width="16" height="8" rx="1" />
-
-                        <rect x="84" y="60" width="8" height="16" rx="1" />
-                        <rect x="100" y="60" width="16" height="8" rx="1" />
-                        <rect x="124" y="60" width="8" height="8" rx="1" />
-
-                        <rect x="44" y="84" width="16" height="8" rx="1" />
-                        <rect x="68" y="84" width="8" height="16" rx="1" />
-                        <rect x="84" y="84" width="24" height="8" rx="1" />
-                        <rect x="116" y="84" width="8" height="8" rx="1" />
-                        <rect x="132" y="84" width="16" height="16" rx="1" />
-                        <rect x="156" y="84" width="8" height="8" rx="1" />
-                        <rect x="172" y="84" width="24" height="8" rx="1" />
-                        <rect x="204" y="84" width="8" height="16" rx="1" />
-
-                        <rect x="44" y="100" width="8" height="16" rx="1" />
-                        <rect x="60" y="100" width="16" height="8" rx="1" />
-                        <rect x="84" y="100" width="8" height="24" rx="1" />
-                        <rect x="172" y="100" width="8" height="16" rx="1" />
-                        <rect x="188" y="100" width="16" height="8" rx="1" />
-
-                        <rect x="44" y="124" width="24" height="8" rx="1" />
-                        <rect x="180" y="124" width="16" height="8" rx="1" />
-                        <rect x="204" y="124" width="24" height="8" rx="1" />
-
-                        <rect x="44" y="140" width="8" height="8" rx="1" />
-                        <rect x="60" y="140" width="16" height="16" rx="1" />
-                        <rect x="172" y="140" width="24" height="8" rx="1" />
-                        <rect x="204" y="140" width="8" height="16" rx="1" />
-
-                        <rect x="84" y="180" width="8" height="16" rx="1" />
-                        <rect x="100" y="180" width="16" height="8" rx="1" />
-                        <rect x="124" y="180" width="24" height="8" rx="1" />
-                        <rect x="156" y="180" width="8" height="8" rx="1" />
-                        <rect x="172" y="180" width="24" height="16" rx="1" />
-
-                        <rect x="84" y="204" width="24" height="8" rx="1" />
-                        <rect x="116" y="204" width="8" height="16" rx="1" />
-                        <rect x="132" y="204" width="16" height="8" rx="1" />
-                        <rect x="156" y="204" width="8" height="8" rx="1" />
-                        <rect x="204" y="204" width="16" height="8" rx="1" />
-                      </g>
-
-                      {/* Center Emblem Shield */}
-                      <rect
-                        x="98"
-                        y="98"
-                        width="60"
-                        height="60"
-                        rx="12"
-                        fill="#FFFFFF"
-                        stroke="#C5A880"
-                        strokeWidth="4"
-                      />
-                      <rect x="106" y="106" width="44" height="44" rx="8" fill="#2C2C2C" />
-                      <text
-                        x="128"
-                        y="132"
-                        fill="#C5A880"
-                        fontSize="13"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        fontFamily="sans-serif"
-                      >
-                        NEAR
-                      </text>
-                    </svg>
-                  </div>
-
-                  <div className="mt-3 pt-2.5 border-t border-[#C5A880]/30 text-xs text-[#5C5A56] font-medium flex items-center justify-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span>{t.qrHoldDistance}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <button
-                    onClick={handleCopyJson}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2C2C2C] text-[#FAFAFA] text-xs font-semibold hover:bg-black transition-all cursor-pointer shadow-2xs"
-                  >
-                    {copiedJson ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>{t.btnCopied}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-[#C5A880]" />
-                        <span>{t.btnCopyJson}</span>
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    onClick={handlePrint}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#2C2C2C] text-xs font-semibold hover:bg-[#F5F0EB] border border-[#C5A880]/40 transition-all cursor-pointer shadow-2xs"
-                  >
-                    <Printer className="w-3.5 h-3.5 text-[#8C7355]" />
-                    <span>{t.btnPrintCard}</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              /* JSON View */
-              <div className="space-y-3 text-left max-w-2xl mx-auto">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#8C7355] uppercase tracking-wider">
-                    Provisioning Payload JSON
-                  </span>
-                  <button
-                    onClick={handleCopyJson}
-                    className="text-xs font-bold text-[#2C2C2C] hover:text-[#8C7355] cursor-pointer flex items-center gap-1"
-                  >
-                    {copiedJson ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                    <span>{copiedJson ? t.btnCopied : t.btnCopyJson}</span>
-                  </button>
-                </div>
-                <div className="bg-[#1A1A1A] text-stone-200 p-4 rounded-2xl font-mono text-xs overflow-x-auto shadow-inner border border-stone-800">
-                  <pre>{jsonString}</pre>
-                </div>
-              </div>
-            )}
-          </div>
         </section>
 
         {/* ------------------------------------------------------------------- */}

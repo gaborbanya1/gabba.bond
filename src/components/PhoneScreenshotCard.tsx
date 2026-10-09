@@ -4,8 +4,7 @@ import {
   Wifi, 
   Battery, 
   Signal, 
-  Image as ImageIcon,
-  CheckCircle2
+  Image as ImageIcon
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { SupportedLanguage } from '../i18n/types';
@@ -95,17 +94,6 @@ export function PhoneScreenshotCard({ photo, index, onOpenZoom }: PhoneScreensho
                 onError={handleImageError}
                 className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-102"
               />
-
-              {/* Uploaded Real Screenshot Status Pill with Language Badge */}
-              <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-[8px] font-semibold text-emerald-400 border border-emerald-500/30 shadow-xs">
-                  <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
-                  <span>{t.nearSection.realScreenshotPill}</span>
-                  <span className="text-[7.5px] uppercase font-mono px-1 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-700/40">
-                    {language}
-                  </span>
-                </span>
-              </div>
             </div>
           ) : (
             /* Simulated High-Fidelity App UI Template */

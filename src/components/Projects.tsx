@@ -21,7 +21,6 @@ import { ProjectItem } from '../types';
 import { PhoneScreenshotCard, PhonePhotoItem } from './PhoneScreenshotCard';
 import { PhoneScreenshotModal } from './PhoneScreenshotModal';
 import { useLanguage } from '../i18n/LanguageContext';
-import { ProductTileLogoBadge } from './ProductTileLogoBadge';
 import { GooglePlayIcon } from './GooglePlayIcon';
 
 interface ProjectsProps {
@@ -222,30 +221,27 @@ export function Projects({ onSelectProject, onOpenNogondDemo, onOpenInstallGuide
           {/* ================================================================ */}
           <div className="bg-gradient-to-br from-[#FFFFFF] via-[#FAF7F2] to-[#F5EFE6] rounded-3xl border-2 border-[#C5A880] p-6 sm:p-9 lg:p-12 shadow-md relative overflow-hidden transition-all duration-300 hover:shadow-xl">
             
-            {/* Top Category Badge & Pill + Circular Logo Container */}
-            <div className="flex items-center justify-between gap-4 mb-8 pb-6 border-b border-[#EBDCCB]">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-[#2C2C2C] text-[#FAFAFA] shadow-xs">
-                  {t.senear.badge}
-                </span>
-                {t.senear.targetAudience ? (
-                  <span className="text-xs font-semibold text-[#8C7355] border-l border-[#C5A880]/40 pl-3">
-                    {t.senear.targetAudience}
+            {/* Top Category Title/Logo & Pill */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 mb-8 pb-6 border-b border-[#EBDCCB]">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <img
+                  src="/logos/senear-logo.png"
+                  alt="SENEAR logo"
+                  className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 object-contain shrink-0"
+                />
+                <div className="text-left">
+                  <span className="block font-heading text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2C2C2C] tracking-tight leading-none">
+                    SENEAR
                   </span>
-                ) : null}
-                <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3 py-1.5 rounded-full border border-[#C5A880]/30">
-                  <HeartHandshake className="w-3.5 h-3.5 text-[#C5A880]" />
-                  <span>{t.senear.tagPill}</span>
+                  <span className="block text-xs sm:text-sm font-semibold text-[#8C7355] mt-1">
+                    {t.nearSection.appSeniorLabel}
+                  </span>
                 </div>
               </div>
 
-              {/* Top-Right Circular Logo Container */}
-              <div className="flex items-center gap-3">
-                <div className="sm:hidden flex items-center gap-1.5 text-[11px] font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-2 py-1 rounded-full border border-[#C5A880]/30">
-                  <HeartHandshake className="w-3 h-3 text-[#C5A880]" />
-                  <span className="truncate max-w-[120px]">{t.senear.tagPill}</span>
-                </div>
-                <ProductTileLogoBadge productKey="senear" label="SENEAR" />
+              <div className="flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3.5 py-1.5 rounded-full border border-[#C5A880]/30 shadow-2xs shrink-0">
+                <HeartHandshake className="w-3.5 h-3.5 text-[#C5A880]" />
+                <span>{t.senear.tagPill}</span>
               </div>
             </div>
 
@@ -384,28 +380,27 @@ export function Projects({ onSelectProject, onOpenNogondDemo, onOpenInstallGuide
           {/* ================================================================ */}
           <div className="bg-gradient-to-br from-[#FFFFFF] via-[#FAF8F5] to-[#F3EFEA] rounded-3xl border-2 border-[#C5A880] p-6 sm:p-9 lg:p-12 shadow-md relative overflow-hidden transition-all duration-300 hover:shadow-xl">
             
-            {/* Top Category Badge & Pill + Circular Logo Container */}
-            <div className="flex items-center justify-between gap-4 mb-8 pb-6 border-b border-[#EBDCCB]">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-[#2C2C2C] text-[#FAFAFA] shadow-xs">
-                  {t.junear.badge}
-                </span>
-                <span className="text-xs font-semibold text-[#8C7355] border-l border-[#C5A880]/40 pl-3">
-                  {t.junear.targetAudience}
-                </span>
-                <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3 py-1.5 rounded-full border border-[#C5A880]/30 ml-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#C5A880]" />
-                  <span>{t.junear.tagPill}</span>
+            {/* Top Category Title/Logo & Pill */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 mb-8 pb-6 border-b border-[#EBDCCB]">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <img
+                  src="/logos/junear-logo.png"
+                  alt="JUNEAR logo"
+                  className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 object-contain shrink-0"
+                />
+                <div className="text-left">
+                  <span className="block font-heading text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2C2C2C] tracking-tight leading-none">
+                    JUNEAR
+                  </span>
+                  <span className="block text-xs sm:text-sm font-semibold text-[#8C7355] mt-1">
+                    {t.nearSection.appJuniorLabel}
+                  </span>
                 </div>
               </div>
 
-              {/* Top-Right Circular Logo Container */}
-              <div className="flex items-center gap-3">
-                <div className="sm:hidden flex items-center gap-1.5 text-[11px] font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-2 py-1 rounded-full border border-[#C5A880]/30">
-                  <ShieldCheck className="w-3 h-3 text-[#C5A880]" />
-                  <span className="truncate max-w-[120px]">{t.junear.tagPill}</span>
-                </div>
-                <ProductTileLogoBadge productKey="junear" label="JUNEAR" />
+              <div className="flex items-center gap-2 text-xs font-medium text-[#5C5A56] bg-[#FFFFFF]/80 px-3.5 py-1.5 rounded-full border border-[#C5A880]/30 shadow-2xs shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#C5A880]" />
+                <span>{t.junear.tagPill}</span>
               </div>
             </div>
 

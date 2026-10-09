@@ -3,11 +3,6 @@ import {
   X, 
   ChevronLeft, 
   ChevronRight, 
-  Copy, 
-  Check, 
-  Folder, 
-  FileText,
-  Smartphone,
   Globe2
 } from 'lucide-react';
 import { PhonePhotoItem } from './PhoneScreenshotCard';
@@ -27,7 +22,6 @@ export function PhoneScreenshotModal({
   onSelectPhoto,
 }: PhoneScreenshotModalProps) {
   const { language, t } = useLanguage();
-  const [copied, setCopied] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [currentSrcIndex, setCurrentSrcIndex] = useState(0);
 
@@ -54,7 +48,6 @@ export function PhoneScreenshotModal({
   if (!photo) return null;
 
   const currentLangFilename = `${photo.baseName}_${language}.png`;
-  const fullPathForCopy = `${photo.folder}${currentLangFilename}`;
 
   const currentIndex = allPhotos.findIndex((p) => p.id === photo.id);
   const hasPrev = currentIndex > 0;
@@ -78,12 +71,6 @@ export function PhoneScreenshotModal({
     } else {
       setImageError(true);
     }
-  };
-
-  const copyPath = () => {
-    navigator.clipboard.writeText(fullPathForCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const IconComp = photo.icon;
@@ -150,12 +137,6 @@ export function PhoneScreenshotModal({
                     onError={handleImageError}
                     className="w-full h-full object-cover object-top"
                   />
-                  {/* Status Indicator */}
-                  <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-[9px] font-semibold text-emerald-400 border border-emerald-500/40">
-                      ✓ {t.nearSection.realScreenshotPill} ({language.toUpperCase()})
-                    </span>
-                  </div>
                 </div>
               ) : (
                 <div className={`w-full h-full bg-gradient-to-br ${photo.accentColor} p-4 flex flex-col justify-between`}>
@@ -204,9 +185,11 @@ export function PhoneScreenshotModal({
             
             {/* Header info */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#2C2C2C] text-[#FAFAFA]">
-                  {photo.theme === 'senear' ? 'SENEAR (Seniors)' : 'JUNEAR (Kids)'}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#2C2C2C] text-[#FAFAFA]">
+                  {photo.theme === 'senear'
+                    ? (language === 'hu' ? 'SENEAR (Idősek)' : language === 'de' ? 'SENEAR (Senioren)' : 'SENEAR (Seniors)')
+                    : (language === 'hu' ? 'JUNEAR (Gyermekek)' : language === 'de' ? 'JUNEAR (Kinder)' : 'JUNEAR (Kids)')}
                 </span>
                 <span className="text-[10px] font-semibold text-[#8C7355] border border-[#C5A880]/40 px-2 py-0.5 rounded bg-white">
                   {currentIndex + 1} / {allPhotos.length}
@@ -219,84 +202,14 @@ export function PhoneScreenshotModal({
               <h3 className="font-heading font-bold text-xl sm:text-2xl text-[#2C2C2C]">
                 {photo.title}
               </h3>
-              <p className="text-sm text-[#5C5A56] mt-1 leading-relaxed">
+              <p className="text-sm text-[#5C5A56] mt-2 leading-relaxed">
                 {photo.subtitle}
               </p>
-            </div>
-
-            {/* Path Box for the specific language */}
-            <div className="bg-[#FFFFFF] rounded-2xl border border-[#C5A880]/40 p-4 space-y-3 shadow-2xs">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C2C2C]">
-                  <Folder className="w-4 h-4 text-[#A38053]" />
-                  <span>{t.modal.folderTitle}</span>
+              {photo.badge && (
+                <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-[#C5A880]/40 text-xs font-semibold text-[#8C7355] shadow-2xs">
+                  <span>{photo.badge}</span>
                 </div>
-                <div className="font-mono text-xs text-[#6E6B65] bg-[#F5F0EB] px-3 py-1.5 rounded-lg border border-[#E8DFD3] select-all">
-                  {photo.folder}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C2C2C]">
-                  <FileText className="w-4 h-4 text-[#A38053]" />
-                  <span>{t.modal.filenameTitle}</span>
-                </div>
-                <div className="font-mono text-xs font-bold text-[#A38053] bg-[#FAF7F2] px-3 py-1.5 rounded-lg border border-[#C5A880]/40 flex items-center justify-between">
-                  <span>{currentLangFilename}</span>
-                  <span className="text-[10px] font-sans font-medium text-[#8C7355] bg-white px-2 py-0.5 rounded border border-[#C5A880]/30">
-                    {language.toUpperCase()}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={copyPath}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#2C2C2C] hover:bg-[#1A1A1A] active:scale-98 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4 text-emerald-400" />
-                    <span>{t.modal.copiedPath}</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4 text-[#C5A880]" />
-                    <span>{t.modal.copyPath} ({currentLangFilename})</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Language-specific upload tip */}
-            <div className="bg-[#F5F0EB]/80 rounded-2xl border border-[#C5A880]/30 p-4 space-y-2 text-xs">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#2C2C2C]">
-                <Globe2 className="w-4 h-4 text-[#A38053]" />
-                <span>{t.modal.tip}</span>
-              </div>
-              <p className="text-[#5C5A56] leading-relaxed">
-                {t.modal.tipDesc}
-              </p>
-              <div className="pt-1 flex flex-wrap gap-1.5">
-                <span className={`px-2 py-0.5 rounded text-[11px] font-mono border ${language === 'en' ? 'bg-[#2C2C2C] text-white border-black font-bold' : 'bg-white text-[#5C5A56] border-[#C5A880]/30'}`}>
-                  {photo.baseName}_en.png
-                </span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-mono border ${language === 'hu' ? 'bg-[#2C2C2C] text-white border-black font-bold' : 'bg-white text-[#5C5A56] border-[#C5A880]/30'}`}>
-                  {photo.baseName}_hu.png
-                </span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-mono border ${language === 'de' ? 'bg-[#2C2C2C] text-white border-black font-bold' : 'bg-white text-[#5C5A56] border-[#C5A880]/30'}`}>
-                  {photo.baseName}_de.png
-                </span>
-              </div>
-            </div>
-
-            {/* Technical Specs recommendations */}
-            <div className="space-y-1.5 text-xs text-[#6E6B65] bg-white p-3 rounded-xl border border-[#E8DFD3]">
-              <p className="font-semibold text-[#2C2C2C]">{t.modal.specsTitle}</p>
-              <ul className="list-disc pl-4 space-y-0.5 text-[11px]">
-                <li>{t.modal.aspectRatioLabel}</li>
-                <li>{t.modal.resolutionLabel}</li>
-                <li>{t.modal.supportedFormatsLabel}</li>
-              </ul>
+              )}
             </div>
           </div>
 
