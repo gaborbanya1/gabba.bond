@@ -171,7 +171,7 @@ const SIMULATOR_I18N = {
 
 export function NogondSimulatorModal({ isOpen, onClose }: NogondSimulatorModalProps) {
   const { language } = useLanguage();
-  const sim = SIMULATOR_I18N[language] || SIMULATOR_I18N.en;
+  const sim = SIMULATOR_I18N[language as keyof typeof SIMULATOR_I18N] || SIMULATOR_I18N.en;
 
   const [activeTab, setActiveTab] = useState<'home' | 'contacts' | 'meds' | 'sos' | 'compare'>('home');
   const [callActiveContact, setCallActiveContact] = useState<string | null>(null);

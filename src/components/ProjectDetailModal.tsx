@@ -50,7 +50,7 @@ const MODAL_I18N = {
 
 export function ProjectDetailModal({ project, onClose, onOpenDemo }: ProjectDetailModalProps) {
   const { language } = useLanguage();
-  const m = MODAL_I18N[language] || MODAL_I18N.en;
+  const m = MODAL_I18N[language as keyof typeof MODAL_I18N] || MODAL_I18N.en;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

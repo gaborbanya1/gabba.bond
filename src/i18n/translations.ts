@@ -1,6 +1,10 @@
 import { SupportedLanguage, TranslationData } from './types';
 
-export const translations: Record<SupportedLanguage, TranslationData> = {
+/**
+ * Translation store keyed by the 20 supported language codes.
+ * `en` is mandatory; any language without an entry falls back to English.
+ */
+export const translations: Partial<Record<SupportedLanguage, TranslationData>> & { en: TranslationData } = {
   en: {
     pageTitle: 'Smart software. Built for people. — gabba',
     nav: {
@@ -9,7 +13,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Get in Touch',
       slogan: 'Technology, Bonded.',
       language: 'Language',
-      installGuide: 'Installation Guide',
+      installGuide: 'Setup Guide',
     },
     hero: {
       titlePrefix: 'Smart software.',
@@ -72,7 +76,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       galleryTitle: 'SENEAR Mobile Screenshots:',
       btnSimulator: 'Download from Google Play',
       btnArchitecture: 'SENEAR Detailed Architecture',
-      btnInstallGuide: 'Installation Guide',
+      btnInstallGuide: 'Setup Guide',
       photos: {
         title1: 'Clean Screen',
         sub1: '4 oversized, high-contrast unmistakable action tiles',
@@ -179,7 +183,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       },
       messageLabel: 'Message:',
       messagePlaceholder: 'Write your questions and comments here',
-      sendEmailBtn: 'Send Inquiry via Email Client',
+      sendEmailBtn: 'Send Inquiry via Email',
       copyBriefBtn: 'Copy Project Brief to Clipboard',
       briefCopied: 'Brief Copied to Clipboard!',
     },
@@ -325,7 +329,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Kapcsolatfelvétel',
       slogan: 'Technológia, ami összeköt.',
       language: 'Nyelv',
-      installGuide: 'Telepítési Útmutató',
+      installGuide: 'Beállítási Útmutató',
     },
     hero: {
       titlePrefix: 'Okos szoftverek.',
@@ -388,7 +392,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       galleryTitle: 'SENEAR Mobil Képernyőképek:',
       btnSimulator: 'Letöltés a Google Play Áruházból',
       btnArchitecture: 'SENEAR Részletes Architektúra',
-      btnInstallGuide: 'Telepítési útmutató',
+      btnInstallGuide: 'Beállítási útmutató',
       photos: {
         title1: 'Letisztult képernyő',
         sub1: '4 nagy kontrasztos, eltéveszthetetlen csempe',
@@ -641,7 +645,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       getInTouch: 'Kontakt aufnehmen',
       slogan: 'Technologie, die verbindet.',
       language: 'Sprache',
-      installGuide: 'Installationsanleitung',
+      installGuide: 'Einrichtungsanleitung',
     },
     hero: {
       titlePrefix: 'Intelligente Software.',
@@ -704,7 +708,7 @@ export const translations: Record<SupportedLanguage, TranslationData> = {
       galleryTitle: 'SENEAR App-Screenshots:',
       btnSimulator: 'Im Google Play Store herunterladen',
       btnArchitecture: 'SENEAR Detaillierte Architektur',
-      btnInstallGuide: 'Installationsanleitung',
+      btnInstallGuide: 'Einrichtungsanleitung',
       photos: {
         title1: 'Klarer Bildschirm',
         sub1: '4 kontrastreiche, unverwechselbare Aktionstasten',

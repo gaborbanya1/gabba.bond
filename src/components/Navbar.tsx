@@ -1,61 +1,34 @@
 import { useState } from 'react';
-import { Menu, X, ArrowUpRight, Globe } from 'lucide-react';
-import { useLanguage, LANGUAGE_OPTIONS } from '../i18n/LanguageContext';
-import { SupportedLanguage } from '../i18n/types';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
+import { AppRoute, productOfRoute } from '../routing';
 
 interface NavbarProps {
   onContactClick: () => void;
   onExploreProjects: () => void;
-  onInstallGuideClick?: () => void;
-  onHomeClick?: () => void;
-  currentPage?: 'home' | 'install-guide';
+  onNavigate: (route: AppRoute) => void;
+  currentRoute: AppRoute;
 }
 
 export function Navbar({
   onContactClick,
   onExploreProjects,
-  onInstallGuideClick,
-  onHomeClick,
-  currentPage = 'home',
+  onNavigate,
+  currentRoute,
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { language, setLanguage, t } = useLanguage();
+  const { t } = useLanguage();
+  const activeProduct = productOfRoute(currentRoute);
 
-  const handleLinkClick = (href: string) => {
-    setMobileMenuOpen(false);
-    if (href === '#install-guide') {
-      if (onInstallGuideClick) {
-        onInstallGuideClick();
-      }
-      return;
-    }
-
-    if (currentPage === 'install-guide') {
-      if (onHomeClick) {
-        onHomeClick();
-      }
-      setTimeout(() => {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 50);
-      return;
-    }
-
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const navLinks = [
-    { label: t.nav.projects, href: '#projects', isCurrent: currentPage === 'home' },
-    { label: t.nav.installGuide, href: '#install-guide', isCurrent: currentPage === 'install-guide' },
+  const navLinks: { label: string; isCurrent: boolean; onClick: () => void }[] = [
+    { label: t.nav.projects, isCurrent: currentRoute === 'home', onClick: onExploreProjects },
+    { label: 'SENEAR', isCurrent: activeProduct === 'senear', onClick: () => onNavigate('senear') },
+    { label: 'JUNEAR', isCurrent: activeProduct === 'junear', onClick: () => onNavigate('junear') },
   ];
 
-  const handleLangChange = (code: SupportedLanguage) => {
-    setLanguage(code);
+  const handleLinkClick = (fn: () => void) => {
+    setMobileMenuOpen(false);
+    fn();
   };
 
   return (
@@ -67,8 +40,8 @@ export function Navbar({
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => {
-                if (currentPage === 'install-guide' && onHomeClick) {
-                  onHomeClick();
+                if (currentRoute !== 'home') {
+                  onNavigate('home');
                 } else {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
@@ -96,7 +69,7 @@ export function Navbar({
             {navLinks.map((link) => (
               <button
                 key={link.label}
-                onClick={() => handleLinkClick(link.href)}
+                onClick={() => handleLinkClick(link.onClick)}
                 className={`px-3.5 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                   link.isCurrent
                     ? 'text-[#2C2C2C] bg-[#F5F0EB] font-semibold border border-[#C5A880]/30 shadow-2xs'
@@ -108,30 +81,8 @@ export function Navbar({
             ))}
           </nav>
 
-          {/* Desktop Right Side: Language Switcher + Contact CTA */}
+          {/* Desktop Right Side: Contact CTA */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Language Switcher Segmented Control */}
-            <div className="flex items-center bg-[#F5F0EB] p-1 rounded-xl border border-[#C5A880]/30 shadow-2xs">
-              <Globe className="w-3.5 h-3.5 text-[#8C7355] ml-1.5 mr-1" />
-              {LANGUAGE_OPTIONS.map((opt) => {
-                const isActive = language === opt.code;
-                return (
-                  <button
-                    key={opt.code}
-                    onClick={() => handleLangChange(opt.code)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-[#2C2C2C] text-[#FAFAFA] shadow-xs scale-102'
-                        : 'text-[#6E6B65] hover:text-[#2C2C2C] hover:bg-white/60'
-                    }`}
-                    title={opt.label}
-                  >
-                    {opt.short}
-                  </button>
-                );
-              })}
-            </div>
-
             <button
               onClick={onContactClick}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#FAFAFA] bg-[#2C2C2C] hover:bg-[#1A1A1A] active:scale-98 rounded-xl shadow-xs transition-all border border-[#2C2C2C] cursor-pointer ml-1"
@@ -141,25 +92,8 @@ export function Navbar({
             </button>
           </div>
 
-          {/* Mobile Right Controls: Quick language toggle + Menu button */}
+          {/* Mobile Right Controls: Menu button */}
           <div className="flex items-center gap-2 md:hidden">
-            {/* Compact Mobile Language Switcher */}
-            <div className="flex items-center bg-[#F5F0EB] p-0.5 rounded-lg border border-[#C5A880]/30">
-              {LANGUAGE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.code}
-                  onClick={() => handleLangChange(opt.code)}
-                  className={`px-2 py-1 text-[11px] font-bold rounded-md transition-all ${
-                    language === opt.code
-                      ? 'bg-[#2C2C2C] text-[#FAFAFA] shadow-2xs'
-                      : 'text-[#6E6B65] hover:text-[#2C2C2C]'
-                  }`}
-                >
-                  {opt.short}
-                </button>
-              ))}
-            </div>
-
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2.5 rounded-xl text-[#2C2C2C] hover:bg-[#F5F0EB] border border-[#C5A880]/30 focus:outline-none"
@@ -178,38 +112,12 @@ export function Navbar({
           {navLinks.map((link) => (
             <button
               key={link.label}
-              onClick={() => handleLinkClick(link.href)}
+              onClick={() => handleLinkClick(link.onClick)}
               className="w-full text-left px-3.5 py-2.5 text-base font-medium text-[#2C2C2C] hover:bg-[#F5F0EB] rounded-lg transition-colors cursor-pointer"
             >
               {link.label}
             </button>
           ))}
-
-          {/* Mobile language picker in dropdown */}
-          <div className="pt-2 pb-1 border-t border-[#C5A880]/20 flex items-center justify-between px-2">
-            <span className="text-xs font-semibold text-[#8C7355] flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-[#C5A880]" />
-              <span>{t.nav.language}:</span>
-            </span>
-            <div className="flex items-center gap-1">
-              {LANGUAGE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.code}
-                  onClick={() => {
-                    handleLangChange(opt.code);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-all ${
-                    language === opt.code
-                      ? 'bg-[#2C2C2C] text-white border-black font-bold'
-                      : 'bg-[#F5F0EB] text-[#5C5A56] border-[#C5A880]/30'
-                  }`}
-                >
-                  {opt.label} ({opt.short})
-                </button>
-              ))}
-            </div>
-          </div>
 
           <div className="pt-2 border-t border-[#C5A880]/20">
             <button

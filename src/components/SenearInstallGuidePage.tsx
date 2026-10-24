@@ -1,12 +1,7 @@
-import { useState, useId } from 'react';
+import { useState } from 'react';
 import {
   Smartphone,
-  Power,
-  Hand,
-  QrCode,
   ShieldCheck,
-  AlertTriangle,
-  Wifi,
   Download,
   Check,
   RotateCcw,
@@ -16,515 +11,710 @@ import {
   Info,
   CheckCircle2,
   Settings,
-  Sliders,
-  Trash2,
-  RefreshCw,
   ArrowRight,
-  Package,
-  History,
-  ExternalLink,
+  Users,
+  HeartHandshake,
+  Bell,
+  Volume2,
+  PhoneCall,
+  MapPin,
+  Lock,
+  KeyRound,
+  UserCheck,
+  AlertTriangle,
+  ChevronRight,
+  Wifi,
+  Clock,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { SupportedLanguage } from '../i18n/types';
 
 interface SenearInstallGuidePageProps {
   onBackToHome: () => void;
-  onOpenSimulator?: () => void;
+  onBackToProduct: () => void;
   onContactClick?: () => void;
 }
 
 // -----------------------------------------------------------------------------
-// Complete Multilingual Dictionary (EN, DE, HU)
+// Complete Multilingual Dictionary (EN, DE, HU) — Unified Step-by-Step Guide
 // -----------------------------------------------------------------------------
 const I18N_WIZARD = {
   en: {
     backToHome: 'Back to Overview',
-    breadcrumb: 'Installation Wizard',
-    pageTitle: 'Installation Guide',
+    breadcrumb: 'Step-by-Step Setup Guide',
+    pageTitle: 'SENEAR Setup Guide',
     pageSubtitle:
-      'Step-by-step setup wizard for installing SENEAR or JUNEAR. Simple, fail-safe, and free of Google accounts.',
+      'Step-by-step configuration guide for both the Senior’s phone and the Caregiver’s phone. Standard installation — no factory reset or QR provisioning required.',
     pageNote:
-      'This setup is only required on the senior’s or child’s phone. As a caregiver or family member, simply download the app from Google Play Store.',
-    deviceOwnerPill: 'Device Owner Kiosk Mode',
-    noGoogleAccountPill: 'Zero Google Account Setup',
+      'Good news: the senior’s phone no longer necessarily needs a SIM card for voice and video calls! A Wi-Fi internet connection is enough — the senior can still receive calls and call their 4 selected main contacts.',
+    standardInstallPill: 'Standard App Installation',
+    dualPhonePill: 'Senior + Caregiver Phone Guide',
     langSelectorLabel: 'Language:',
 
-    // Conditional phone question
-    phoneQuestionTitle: 'Are you installing SENEAR or JUNEAR on a NEW phone or a USED phone?',
+    // Role / Phone selector section
+    phoneQuestionTitle: 'Which phone would you like to configure right now?',
     phoneQuestionSubtitle:
-      'Android Enterprise Device Owner permissions require a completely unconfigured system. Choose your starting scenario below:',
-    usedPhoneTitle: 'USED Phone',
-    usedPhoneSubtitle:
-      'We start with a quick Factory Reset. Before starting, back up all important photos and data from the phone.',
-    usedPhoneBadge: 'Starts with Phase 1: Factory Reset',
-    newPhoneTitle: 'BRAND-NEW Phone',
-    newPhoneSubtitle:
-      'Fresh out of the sealed box. Never had any Google account added. Skips directly to the 6-tap QR setup.',
-    newPhoneBadge: 'Skips to Phase 2: Kiosk Setup',
-    btnStart: 'Start Setup',
-    changeDeviceType: 'Change device type',
-    deviceTypeBadgeUsed: 'Configuring: USED Phone (Phase 1 + 2)',
-    deviceTypeBadgeNew: 'Configuring: NEW Phone (Phase 2 Only)',
+      'SENEAR works as a connected pair — or standalone for the senior. Choose whether to set up the Senior’s phone, the Caregiver’s phone, or walk through both step by step:',
 
-    // Phase Headers
-    phase1Tag: 'Phase 1: Wipe',
-    phase2Tag: 'Phase 2: Kiosk',
-    phase1Heading: 'Phase 1: Factory Reset',
-    phase1Subheading: 'Wipe all previous data to unlock firmware-level kiosk permissions.',
-    phase2Heading: 'Phase 2: Kiosk Installation',
-    phase2Subheading: 'Android Enterprise QR provisioning on the clean Welcome screen.',
+    seniorPhoneTitle: '1. Senior’s Phone (Care Receiver)',
+    seniorPhoneSubtitle:
+      'Sets up the elderly person’s phone: profile details, system & battery permissions, 4 photo speed-dial contacts, daily routine & medication alarms, SOS button, 6-digit pairing code, Kiosk lock, and how to exit back to normal phone mode.',
+    seniorPhoneBadge: '8 Steps • Protected Kiosk Setup',
 
-    // Phase 1 Steps
-    p1s1Title: 'Step 1: Open Settings',
-    p1s1Category: 'Device Preparation',
-    p1s1Desc: 'On the target device, open the standard Android Settings application.',
-    p1s1Tip: 'Look for the gear icon on the home screen or swipe down to tap the quick settings gear.',
-    p1s1VisualText: 'Android Settings App',
+    caregiverPhoneTitle: '2. Caregiver’s Phone (Family / Relative)',
+    caregiverPhoneSubtitle:
+      'Sets up the family member’s phone: Caregiver registration, 6-digit pairing, remote photo contact & daily routine management, Home Safe Zone, hands-free auto-answer, Wi-Fi calling without SIM, and alert history.',
+    caregiverPhoneBadge: '6 Steps • Remote Dashboard Setup',
 
-    p1s2Title: 'Step 2: Find Reset Options',
-    p1s2Category: 'System Menu',
-    p1s2Desc:
-      'Navigate to System > Reset options (on Samsung and some other models, this is located under General Management > Reset).',
-    p1s2Tip: 'You can also tap the search icon at the top of Settings and type "Reset".',
-    p1s2VisualText: 'System > Reset options',
+    bothPhonesTitle: 'Complete Setup (Both Phones)',
+    bothPhonesSubtitle:
+      'Walks through all 14 steps in sequence: first preparing the Senior’s phone, then pairing and configuring the Caregiver’s phone.',
 
-    p1s3Title: 'Step 3: Erase All Data',
-    p1s3Category: 'Wipe Selection',
-    p1s3Desc: 'Select "Erase all data (factory reset)" from the list of options.',
-    p1s3Tip:
-      'The phone will summarize that Google accounts, apps, and storage will be erased. This is required.',
-    p1s3VisualText: 'Erase all data (factory reset)',
-    p1s3VisualSubText:
-      'Before starting, back up all important photos and data from the phone.',
+    btnStartSenior: 'Set Up Senior’s Phone',
+    btnStartCaregiver: 'Set Up Caregiver’s Phone',
+    btnStartBoth: 'Show All 14 Steps (Both Phones)',
 
-    p1s4Title: 'Step 4: Confirm and Reboot',
-    p1s4Category: 'Wipe Execution',
-    p1s4Desc:
-      'Confirm the action. The phone will completely wipe all previous data and will reboot to the initial "Welcome" language selection screen.',
-    p1s4Tip:
-      'Rebooting takes approximately 2 to 4 minutes. Do not interrupt until the welcome screen appears.',
-    p1s4VisualText: 'Rebooting to factory state...',
+    deviceTypeBadgeSenior: 'Configuring: SENIOR’S Phone (Steps 1–8)',
+    deviceTypeBadgeCaregiver: 'Configuring: CAREGIVER’S Phone (Steps 1–6)',
+    deviceTypeBadgeBoth: 'Configuring: BOTH Phones (Full 14-Step Walkthrough)',
 
-    // Phase 2 Steps
-    p2s1Title: 'Step 1: Power On & Language Screen',
-    p2s1Category: 'Boot Verification',
-    p2s1Desc: 'Turn on the device and wait for the initial "Welcome" or language selection screen.',
-    p2s1Tip: 'IMPORTANT: Stay on this greeting screen! Do NOT tap "Start" or configure Wi-Fi manually.',
-    p2s1VisualText: 'Initial "Welcome" / "Hi there" Screen',
-    p2s1VisualWarning: '⚠ Stay on this screen! Do NOT press Start',
+    // Phase Tags
+    phase1Tag: 'Senior’s Phone',
+    phase2Tag: 'Caregiver’s Phone',
 
-    p2s2Title: 'Step 2: The Secret 6 Taps',
-    p2s2Category: 'Hidden Activation Gesture',
-    p2s2Desc: 'Tap quickly 6 times on an empty area of the screen (avoiding any buttons or text).',
-    p2s2Tip:
-      'Tap rapidly on the blank space. The device will chime or show a prompt launching the enterprise QR wizard.',
-    p2s2VisualText: '6 Rapid Taps on Blank Screen Area',
-    p2s2PracticeLabel: 'Practice the 6-tap gesture here:',
-    p2s2PracticeSuccess: '✓ QR Mode Triggered!',
-    p2s2TapScreenBtn: 'Tap Screen (+1)',
+    // -------------------------------------------------------------------------
+    // SENIOR PHONE STEPS (Phase 1: Steps 1 - 8)
+    // -------------------------------------------------------------------------
+    s1Title: 'Step 1: Install & Open the SENEAR App',
+    s1Category: 'Standard Installation',
+    s1Desc:
+      'Install the SENEAR application on the senior’s (care receiver’s) phone from the Google Play Store, then open the application.',
+    s1Tip:
+      'When launching for the first time, accept the pop-up system permissions (phone calls, SMS, location, and notifications).',
+    s1VisualText: 'Google Play Store Install',
+    s1VisualSub: 'Grant Call, SMS, GPS & Notification permissions on first launch',
 
-    p2s3Title: 'Step 3: Scan the QR Code',
-    p2s3Category: 'Camera Viewfinder & Wi-Fi',
-    p2s3Desc:
-      'The device will automatically recognize setup mode, prompt you to connect to Wi-Fi, and open its native QR code scanner. Scan the SENEAR QR code displayed below.',
-    p2s3Tip: 'Point the phone camera steadily at the provisioning QR code displayed in the box below.',
-    p2s3VisualText: 'Native Camera QR Scanner',
-    p2s3QrBadge: 'SENEAR Provisioning QR Code',
-    p2s3QrSubtitle: 'Point the phone camera at this QR code to initiate provisioning.',
-    p2s3QrPathLabel: 'Image location: public/qr/senear-provisioning-qr.png',
+    s2Title: 'Step 2: Choose I am the Senior & Basic Information (1/2)',
+    s2Category: 'Role Selection',
+    s2Desc:
+      'On the welcome screen, tap **I am the Senior**. On **Step 1: Basic Information**, enter the senior’s name, phone number, and birth year, then tap **Next**.',
+    s2Tip:
+      'The senior’s name will appear on the Caregiver’s dashboard and inside every SOS, battery, or wandering alert notification.',
+    s2VisualText: '“I am the Senior” → Basic Information',
+    s2VisualSub: 'Enter Name, Phone Number & Birth Year',
 
-    p2s4Title: 'Step 4: Automatic Setup & Kiosk Lock',
-    p2s4Category: 'Enrollment Finalization',
-    p2s4Desc:
-      'The device will download the SENEAR app directly from our secure servers, install it, and grant the necessary Device Owner (kiosk) permissions instantly. No Google account login is required.',
-    p2s4Tip:
-      'SENEAR launches immediately into protected kiosk mode, fully secured and ready for everyday use.',
-    p2s4VisualText: 'Kiosk Initialized & Verified',
+    s3Title: 'Step 3: System Permissions & Kiosk Guard (2/2)',
+    s3Category: 'System Permissions',
+    s3Desc:
+      'On the screen, tap the red permission cards one by one:\n1. **System Permission: Screen Pinning & Pop-up Messages** — in the app list that opens, find **SENEAR** and enable it. Then return to the settings and the tile will turn green.\n2. **Default Senior Ringtone** — in the list that opens, find **SENEAR** and enable it. Then return to the settings and the tile will turn green.\n3. **Default Home Screen (Recommended)** — in the list that opens, find and select **SENEAR**. Then return to the settings and the tile will turn green.\n4. **Kiosk Guard (Accessibility)** — on the Accessibility page that opens, tap **Installed apps**, find **SENEAR**, and switch both toggles ON. Then return to the settings and the tile will turn green.',
+    s3Tip:
+      'IMPORTANT: Every successfully granted permission shows a green **Granted** badge. The **Next** button only becomes active after the required permissions have been granted.',
+    s3VisualText: 'Screen + Ringtone + Home + Kiosk Guard',
+    s3VisualSub: 'Find & enable SENEAR in each system list',
+
+    s4Title: 'Step 4: General Settings, Legal Info, Quick Messages & Sound/Display',
+    s4Category: 'Caregiver Settings (Top Menu Items)',
+    s4Desc:
+      'In the **Caregiver Settings** menu that opens, go through the top buttons from top to bottom:\n1. **General Settings** — here you can change the admin (caregiver) password (default: 1234), and view the senior’s **6-Digit Pairing Code** after accepting the GDPR notice (you will enter this code on the Caregiver’s phone to connect the devices). On this screen, you can also permanently delete all cloud and local data (**Permanently delete cloud profile and data (GDPR)**) if the app is no longer used.\n2. **Safety & Legal Info / User Manual** — review the Non-Medical / Emergency Disclaimer and setup guide at any time.\n3. **Quick Messages Settings** — pre-written SMS messages that the senior can quickly send to any of the 4 main contacts.\n4. **Sound & Display Settings** — enable the **senior-friendly ringtone**, turn on **automatic speakerphone** for calls, and adjust the **brightness and volume** of both the Kiosk and the Admin menu.',
+    s4Tip:
+      'Write down or take a photo of the 6-digit Pairing Code (e.g. K4M9A2) in General Settings — you will use it to link the Caregiver’s phone.',
+    s4VisualText: '6-Digit Pairing Code: K4M9A2',
+    s4VisualSub: 'General Settings + Legal Info + Quick SMS + Sound & Display',
+
+    s5Title: 'Step 5: Background Protection & Battery (By Phone Brand)',
+    s5Category: 'Background Protection & Battery',
+    s5Desc:
+      'Next in the Caregiver Settings list is **Background Protection & Battery**. If you need to adjust anything here, this menu item will be displayed with a **red exclamation mark (!)**. In that case, select the phone’s brand below and apply the corresponding instructions so the phone’s battery saver never stops the background **SOS**, **Home Safe Zone (Geofencing)**, **Daily Routine Alarms**, and **Online Heartbeat** services:',
+    s5Tip:
+      'IMPORTANT: Without unrestricted battery access, Android may put the app to sleep when the screen is off, delaying alerts or alarms.',
+    s5VisualText: 'Battery: Unrestricted + Autostart',
+    s5VisualSub: 'Prevents phone power savers from stopping SOS, GPS & alarms',
+
+    s6Title: 'Step 6: Call Permissions, Contacts & Photos, Daily Routines & SOS',
+    s6Category: 'Caregiver Settings (Bottom Menu Items)',
+    s6Desc:
+      'Continue down the remaining buttons in the **Caregiver Settings** menu:\n1. **Call Permissions (Whitelist)** — configure which additional people (besides the 4 main contacts) are allowed to call the senior. Unknown callers are automatically rejected.\n2. **Contact Settings** — enter the name, relationship (e.g. Daughter), and phone number for the **4 large photo call tiles**, and choose a photo from the gallery (automatically center-cropped and compressed). You can also adjust the font size, and when paired, edit these 4 contacts remotely from the Caregiver’s phone.\n3. **Daily Routines & Reminders** — create reminders in 4 categories (**⏰ Wake-up Alarm**, **💊 Medication**, **💧 Hydration**, **📅 Custom Task**) with multi-line instructions and an optional pill-box photo. When the alarm rings on the Kiosk screen, the senior taps **VIEW DETAILS** (which silences the sound and shows what to take and how much), then taps the giant green **DONE / TAKEN** button.\n4. **SOS Configuration** — set the emergency number to call (e.g. Ambulance or a family member) and select which people additionally receive an SMS with the GPS location.',
+    s6Tip:
+      'The 4 main contacts are always allowed automatically in call filtering, so only additional trusted numbers (e.g. neighbor, doctor) need to be added under Call Permissions (Whitelist).',
+    s6VisualText: 'Whitelist + 4 Photo Contacts + Routines + SOS',
+    s6VisualSub: 'Anti-scam call filter, auto-cropped photos, 2-step alarms & SOS',
+
+    s7Title: 'Step 7: Lock Device & Start Kiosk Mode',
+    s7Category: 'Kiosk Activation',
+    s7Desc:
+      'At the bottom of the Caregiver Settings menu, tap the green **Lock Device and Start Kiosk** button. The senior’s phone immediately enters the protected, fail-safe SENEAR Kiosk home screen!',
+    s7Tip:
+      'If the **Missing Kiosk Protection!** warning appears, set SENEAR as the **default Home screen** and enable **Kiosk Guard (Accessibility)**.',
+    s7VisualText: 'Kiosk Active & Locked',
+    s7VisualSub: 'Foolproof 4-tile Senior Home Screen is now live',
+
+    s8Title: 'Step 8: How to Exit Kiosk Mode Back to the Normal Phone',
+    s8Category: 'Exiting Kiosk & Normal Mode',
+    s8Desc:
+      'If you entered the Kiosk after setting up all blocking mechanisms, here is how you can return to the normal mobile interface: on the Kiosk screen, tap the clock 5 times and enter the admin password (1234). Then, in the menu that opens, tap the red button again (**Back to Phone Menu**) and select the other option instead of SENEAR — after that, the phone can be used normally again.',
+    s8Tip:
+      'IMPORTANT: If you only want to change the settings, you do not need to select another Home screen — after making your changes, simply tap the green **Lock Device and Start Kiosk** button again. Use the red **Back to Phone Menu** button when you want to return to normal phone use.',
+    s8VisualText: '5× Clock → 1234 → Red Button',
+    s8VisualSub: 'Tap “Back to Phone Menu” & choose the other launcher instead of SENEAR',
+
+    // -------------------------------------------------------------------------
+    // CAREGIVER PHONE STEPS (Phase 2: Steps 1 - 6)
+    // -------------------------------------------------------------------------
+    c1Title: 'Step 1: Install SENEAR on the Caregiver’s Phone',
+    c1Category: 'Caregiver App Install',
+    c1Desc:
+      'Install and open the same SENEAR application on the family member’s (Caregiver’s) smartphone. Allow notification permissions when prompted so critical alerts arrive immediately with sound.',
+    c1Tip:
+      'Make sure Android Notification permissions are allowed — this guarantees you receive instant SOS, low-battery (<20%), power-off, and wandering alerts, as well as incoming Wi-Fi calls even when your phone is locked.',
+    c1VisualText: 'Caregiver Smartphone Install',
+    c1VisualSub: 'Allow Push Notifications for instant SOS & battery alerts',
+
+    c2Title: 'Step 2: Choose I am a Caregiver & Register',
+    c2Category: 'Caregiver Profile',
+    c2Desc:
+      'On the welcome screen, tap the blue **I am a Caregiver** button. Enter your first and last name, phone number, and email address, then tap **Continue to Dashboard**.',
+    c2Tip:
+      'Your Caregiver profile automatically registers a secure push channel and places your phone number onto the paired Senior’s speed-dial tile.',
+    c2VisualText: 'Select: “I am a Caregiver”',
+    c2VisualSub: 'Enter Caregiver Name, Phone Number & Email Address',
+
+    c3Title: 'Step 3: Pair with the Senior’s 6-Digit Code',
+    c3Category: 'Device Pairing',
+    c3Desc:
+      'In the main menu of the Caregiver Dashboard, open **My Seniors & Pairing**. After accepting the GDPR notice, enter the 6-digit code shown on the Senior’s phone (in General Settings, e.g. K4M9A2) into the **Pair a New Senior** field, then tap the **Pair Device** button.',
+    c3Tip:
+      'Multiple family members can pair with the same senior using the same 6-digit code, and one caregiver can monitor multiple seniors at the same time!',
+    c3VisualText: 'Enter 6-Digit Code & Pair',
+    c3VisualSub: 'Links Senior & Caregiver in real time',
+
+    c4Title: 'Step 4: Remote Speed-Dial Contacts & Daily Routine Reminders',
+    c4Category: 'Remote Contacts & Routines',
+    c4Desc:
+      'On the paired senior’s profile page, you can manage their daily life remotely:\n1. **Remote Speed-Dial Contacts & Photos** — edit the senior’s **4 large photo call tiles** directly from your phone. Selecting a photo from your gallery automatically center-crops and compresses it for instant cloud sync, updating the Senior’s Kiosk screen in real time.\n2. **Daily Routines, Wake-up Alarms & Medication Reminders** — create routines in 4 categories (**⏰ Wake-up Alarm**, **💊 Medication**, **💧 Hydration**, **📅 Custom Task**) with multi-line dosage/instructions and an optional photo of the pill box.\n3. **2-Step Senior Confirmation** — when the alarm rings on the Senior’s phone, the senior taps **VIEW DETAILS** (which silences the alarm and shows the instructions and photo), then taps the giant green **DONE / TAKEN** button. This immediately updates your Caregiver screen with a green **✅ Confirmed** badge and timestamp.',
+    c4Tip:
+      'Any contact, photo, or daily routine you save on the Caregiver Dashboard is automatically synchronized to the Senior’s phone within seconds.',
+    c4VisualText: 'Remote Contacts + 2-Step Routine Alarms',
+    c4VisualSub: 'VIEW DETAILS → DONE / TAKEN → ✅ Confirmed on your phone',
+
+    c5Title: 'Step 5: Home Zone, Auto-Answer & Two-Way Wi-Fi Calling',
+    c5Category: 'Geofence & Calls',
+    c5Desc:
+      'On the senior’s detailed profile page:\n1. You can start a **regular phone call** or a **Wi-Fi-based call** if the senior does not have a SIM card but has internet access via Wi-Fi. During a Wi-Fi call, **Video Calling** can also be switched on.\n2. **Set Current Location as Home** — when the senior is at home, tap this button and from then on this will be their home location.\n3. **Wandering Alerts**, which you can configure under **Notification Settings**, will be checked against the location set as Home.\n4. **Auto-Answer (Speakerphone)** means that the senior’s phone answers your call hands-free on speakerphone without the senior having to tap anything.\n5. If the senior has a SIM card (and therefore mobile internet), the **Navigate** button opens Google Maps to help you quickly get to the senior if they wander off.',
+    c5Tip:
+      'If the senior’s phone has no SIM card, enable **Allow Wi-Fi Calling (if no SIM / mobile network)** in **Notification Settings** — then both you and the senior (using any of their 4 contact tiles) can make two-way Wi-Fi voice and video calls!',
+    c5VisualText: 'Home Zone + Auto-Answer + Wi-Fi Call',
+    c5VisualSub: 'Adjustable wandering distance & two-way calls without SIM',
+
+    c6Title: 'Step 6: Alert History, Safety & Legal Info & GDPR Deletion',
+    c6Category: 'Monitoring, Legal & GDPR',
+    c6Desc:
+      '- Under **Alert History**, you can review and filter SOS emergency alerts, wandering events, battery warnings, and system messages.\n- In **Notification Settings**, choose which push notifications you want to receive: battery dropping below 20%, phone switched on, switched off / offline status, charger connected, Wi-Fi calling, and wandering alerts.\n- **Safety & Legal Info / User Manual** — you can review the Non-Medical / Emergency Disclaimer and setup instructions anytime on the Welcome screen or inside the Caregiver Dashboard menu.\n- **One-Tap GDPR Deletion** — under **My Profile → Permanently delete account and all data (GDPR)**, you can permanently wipe all cloud and local data with a single tap.',
+    c6Tip:
+      'In **My Profile**, you can edit your details or permanently delete your account and all synchronized cloud data (GDPR) at any time.',
+    c6VisualText: 'Alert History, Legal Info & GDPR Wipe',
+    c6VisualSub: 'Filterable event log, safety disclaimer & one-tap data erasure',
 
     // Stepper buttons
     btnDoneNext: 'Done — Next Step',
     btnPrevious: 'Previous Step',
-    btnComplete: 'Complete Setup',
-    stepActiveBadge: 'In Progress',
+    btnComplete: 'Finish Setup Guide',
+    btnContinueToCaregiver: 'Continue to Caregiver’s Phone Setup →',
+    stepActiveBadge: 'Current Step',
     stepCompletedBadge: 'Completed',
     stepPendingBadge: 'Upcoming',
 
     // Completion Card
-    completionTitle: 'Installation Completed Successfully!',
+    completionTitle: 'Setup Completed Successfully!',
     completionSubtitle:
-      'SENEAR is now active as the Device Owner. Accidental app deletion, settings confusion, and play-store prompts are completely locked down.',
-    btnRestartWizard: 'Restart Wizard',
+      'Both the Senior’s Kiosk phone and the Caregiver’s Dashboard are now configured and connected. You can switch between the Senior and Caregiver guides anytime above.',
+    btnRestartWizard: 'Restart Guide',
     btnOpenSimulator: 'Test Web Simulator',
-    btnContactSupport: 'Contact Technical Support',
-
-    // QR Box
-    qrBoxTitle: 'SENEAR Provisioning QR Code',
-    qrBoxSubtitle: 'Scan this code with the target phone during Step 3',
-    qrTabInteractive: 'Interactive QR Code',
-    qrTabPayload: 'JSON Payload',
-    btnCopyJson: 'Copy JSON Config',
-    btnCopied: 'Copied!',
-    btnPrintCard: 'Print Setup Card',
-    qrHoldDistance: 'Ready for scanning (Hold phone 20–30 cm away)',
+    btnContactSupport: 'Contact Support',
 
     // FAQs
-    faqTitle: 'Frequently Asked Setup Questions',
-    faq1Q: 'What if tapping 6 times does not open the QR scanner?',
+    faqTitle: 'Frequently Asked Questions about Setup',
+    faq0Q: 'How can I enter Setup (Caregiver Settings) from the locked Kiosk screen?',
+    faq0A:
+      'You can always enter the Caregiver Settings menu using the admin password — by default it is 1234, and you can change it anytime in General Settings. On the Kiosk screen, simply tap the clock 5 times in a row and enter the password 1234.',
+    faq1Q: 'Do I still need to Factory Reset the phone or scan a QR code with 6 taps?',
     faq1A:
-      'Ensure the phone is on the clean "Welcome" screen right after a factory reset, before pressing "Start". Tap rapidly in the upper empty white area of the screen.',
-    faq2Q: 'Is a SIM card needed during this setup?',
+      'No! SENEAR installs like a standard Android app. You do not need to wipe the phone or use a 6-tap QR code wizard. Simply install the app, grant the requested permissions in the 2-step setup wizard, and enable the SENEAR Kiosk Guard (Accessibility Service).',
+    faq2Q: 'Where do I find the 6-digit Pairing Code to link the two phones?',
     faq2A:
-      'No SIM card is needed! The phone only requires a standard Wi-Fi connection to download the SENEAR package. A SIM card will only be needed later for regular use.',
-    faq3Q: 'Why is no Google account required?',
+      'On the Senior’s phone, open Caregiver Settings > General Settings. The 6-digit Pairing Code is displayed in a blue card. Enter this code on the Caregiver’s phone under My Seniors & Pairing.',
+    faq3Q: 'How does Remote Auto-Answer on Speakerphone work?',
     faq3A:
-      'Android Enterprise Device Owner mode installs the app at firmware root level, bypassing Google Play accounts and preventing unwanted popups for seniors.',
+      'In the Caregiver app, you can toggle “Auto-Answer (Speakerphone)” on the senior’s profile. A secure signal is sent immediately to the senior’s phone so when you call them, their phone automatically answers the call and switches to loud speakerphone.',
+    faq4Q: 'Can the senior’s phone work without pairing to a caregiver phone, or without a SIM card?',
+    faq4A:
+      'Yes! Standalone Kiosk mode (4 photo speed-dial tiles, daily routine alarms, SOS call, quick SMS, loud senior ringtone) works 100% independently and free of charge. And when paired with a Caregiver over Wi-Fi, both phones can make two-way Wi-Fi voice and video calls even if the senior’s phone has no SIM card.',
 
     // Visual Card & Badge Labels
     selectedBadge: 'Selected',
     childModeBadge: 'Child Mode',
-    dpcLockedBadge: 'DPC Locked',
-    stepsTotalLabel: 'Total Steps',
+    dpcLockedBadge: 'Kiosk Protected',
+    stepsTotalLabel: 'Steps',
     stepsDoneLabel: 'of',
-    stepsCompletedLabel: 'Done',
-    p1s1GearTip: 'Tap the Settings gear on home screen',
-    p1s2SystemStep: '1. System',
-    p1s2ResetStep: '2. Reset options',
-    p1s4RebootSub: 'Wiping phone & preparing Welcome screen',
-    p2s1WelcomeTitle: 'Welcome / Hi there',
-    p2s2TapsSub: 'Triggers hidden Android Enterprise camera',
-    p2s3WifiReady: 'Wi-Fi Ready',
-    p2s3Scanner: 'Scanner',
-    p2s4ApkDownload: 'APK Download',
-    p2s4DeviceOwnerBypassed: 'Device Owner Granted • Google Login Bypassed',
-    p2s2TapCounter: 'taps',
+    stepsCompletedLabel: 'Completed',
+    visualRoleSeniorBtn: 'I am the Senior',
+    visualRoleCaregiverBtn: 'I am a Caregiver',
+    visualLockKioskBtn: '✓ Lock Device and Start Kiosk',
+    visualExitKioskBtn: '⬅ Back to Phone Menu',
+    visualAutoAnswerLabel: '🔊 Auto-Answer (Speaker)',
+    visualRoutineConfirmBadge: '✅ Confirmed • 08:05',
   },
 
   de: {
     backToHome: 'Zurück zur Übersicht',
-    breadcrumb: 'Installations-Assistent',
-    pageTitle: 'Installationsanleitung',
+    breadcrumb: 'Schritt-für-Schritt-Einrichtung',
+    pageTitle: 'SENEAR Einrichtungsanleitung',
     pageSubtitle:
-      'Schritt-für-Schritt-Assistent für die Installation von SENEAR oder JUNEAR. Einfach, fehlbedienungssicher und ohne Google-Konto.',
+      'Schritt-für-Schritt-Anleitung für das Smartphone des Seniors und das Smartphone des Betreuers. Normale App-Installation – kein Zurücksetzen auf Werkseinstellungen und kein QR-Code nötig.',
     pageNote:
-      'Diese Installation ist nur auf dem Smartphone des Seniors oder Kindes erforderlich. Als Betreuer/Familienmitglied laden Sie die App einfach aus dem Google Play Store herunter.',
-    deviceOwnerPill: 'Device Owner Kiosk-Modus',
-    noGoogleAccountPill: 'Einrichtung ohne Google-Konto',
+      'Gute Nachricht: Das Senioren-Telefon braucht für Sprach- und Videoanrufe nicht mehr unbedingt eine SIM-Karte! Eine WLAN-Internetverbindung genügt — so kann der Senior weiterhin Anrufe annehmen und seine 4 ausgewählten Hauptkontakte anrufen.',
+    standardInstallPill: 'Normale App-Installation',
+    dualPhonePill: 'Senioren- + Betreuer-Telefon Anleitung',
     langSelectorLabel: 'Sprache:',
 
-    // Conditional phone question
-    phoneQuestionTitle: 'Installieren Sie SENEAR oder JUNEAR auf einem NEUEN oder einem GEBRAUCHTEN Telefon?',
+    // Role / Phone selector section
+    phoneQuestionTitle: 'Welches Telefon möchten Sie jetzt einrichten?',
     phoneQuestionSubtitle:
-      'Android Enterprise Device Owner-Rechte erfordern ein vollständig unkonfiguriertes System. Wählen Sie Ihr Szenario:',
-    usedPhoneTitle: 'GEBRAUCHTES Telefon',
-    usedPhoneSubtitle:
-      'Wir starten mit einem schnellen Zurücksetzen auf Werkseinstellungen. Sichern Sie vorher alle wichtigen Fotos und Daten vom Telefon.',
-    usedPhoneBadge: 'Startet mit Phase 1: Werkseinstellungen',
-    newPhoneTitle: 'FABRIKNEUES Telefon',
-    newPhoneSubtitle:
-      'Frisch ausgepackt. Es wurde noch nie ein Google-Konto hinzugefügt. Springt direkt zur 6-Tipp-QR-Einrichtung.',
-    newPhoneBadge: 'Springt direkt zu Phase 2: Kiosk-Setup',
-    btnStart: 'Einrichtung starten',
-    changeDeviceType: 'Gerätezustand ändern',
-    deviceTypeBadgeUsed: 'Konfiguration: GEBRAUCHTES Telefon (Phase 1 + 2)',
-    deviceTypeBadgeNew: 'Konfiguration: FABRIKNEUES Telefon (nur Phase 2)',
+      'Wählen Sie, ob Sie das Telefon des Seniors (Pflegeempfängers), das Telefon des Betreuers (Angehörigen) oder beide nacheinander einrichten möchten:',
 
-    // Phase Headers
-    phase1Tag: 'Phase 1: Bereinigung',
-    phase2Tag: 'Phase 2: Kiosk',
-    phase1Heading: 'Phase 1: Werkseinstellungen',
-    phase1Subheading: 'Alle vorherigen Daten löschen, um Kioskrechte auf Firmware-Ebene freizuschalten.',
-    phase2Heading: 'Phase 2: Kiosk-Installation',
-    phase2Subheading: 'Android Enterprise QR-Bereitstellung auf dem sauberen Willkommensbildschirm.',
+    seniorPhoneTitle: '1. Telefon des Seniors (Pflegeempfänger)',
+    seniorPhoneSubtitle:
+      'Einrichtung des Senioren-Telefons: Profil, System- & Akku-Berechtigungen, 4 Foto-Kurzwahlkontakte, Tagesroutinen & Medikamentenwecker, SOS-Taste, 6-stelliger Kopplungscode, Kiosk-Sperre und Rückkehr zum normalen Telefonmodus.',
+    seniorPhoneBadge: '8 Schritte • Kiosk-Einrichtung',
 
-    // Phase 1 Steps
-    p1s1Title: 'Schritt 1: Einstellungen öffnen',
-    p1s1Category: 'Gerätevorbereitung',
-    p1s1Desc: 'Öffnen Sie auf dem Zielgerät die Standard-App „Einstellungen“ (Settings).',
-    p1s1Tip: 'Suchen Sie nach dem Zahnrad-Symbol auf dem Startbildschirm oder in den Schnelleinstellungen.',
-    p1s1VisualText: 'Android Einstellungen App',
+    caregiverPhoneTitle: '2. Telefon des Betreuers (Angehöriger)',
+    caregiverPhoneSubtitle:
+      'Einrichtung des Betreuer-Telefons: Registrierung, 6-stellige Kopplung, Fernverwaltung von Foto-Kontakten & Tagesroutinen, Zuhause-Zone, automatische Rufannahme, WLAN-Anrufe ohne SIM und Alarmverlauf.',
+    caregiverPhoneBadge: '6 Schritte • Betreuer-Dashboard',
 
-    p1s2Title: 'Schritt 2: Zurücksetzen finden',
-    p1s2Category: 'Systemmenü',
-    p1s2Desc:
-      'Navigieren Sie zu System > Optionen zum Zurücksetzen (bei Samsung-Geräten unter Allgemeine Verwaltung > Zurücksetzen).',
-    p1s2Tip: 'Sie können auch die Suchleiste in den Einstellungen nutzen und „Zurücksetzen“ eingeben.',
-    p1s2VisualText: 'System > Optionen zum Zurücksetzen',
+    bothPhonesTitle: 'Komplette Einrichtung (Beide Telefone)',
+    bothPhonesSubtitle:
+      'Zeigt alle 14 Schritte nacheinander: zuerst das Senioren-Telefon, danach das Betreuer-Telefon.',
 
-    p1s3Title: 'Schritt 3: Alle Daten löschen',
-    p1s3Category: 'Auswahl Zurücksetzen',
-    p1s3Desc: 'Wählen Sie „Alle Daten löschen (Werkseinstellungen)“ aus der Liste.',
-    p1s3Tip:
-      'Das Telefon weist darauf hin, dass Google-Konten, Apps und Daten gelöscht werden. Dies ist erforderlich.',
-    p1s3VisualText: 'Alle Daten löschen (Werkseinstellungen)',
-    p1s3VisualSubText:
-      'Sichern Sie vorher alle wichtigen Fotos und Daten vom Telefon.',
+    btnStartSenior: 'Senioren-Telefon einrichten',
+    btnStartCaregiver: 'Betreuer-Telefon einrichten',
+    btnStartBoth: 'Alle 14 Schritte anzeigen (Beide Telefone)',
 
-    p1s4Title: 'Schritt 4: Bestätigen und Neustart',
-    p1s4Category: 'Ausführung Zurücksetzen',
-    p1s4Desc:
-      'Bestätigen Sie die Aktion. Das Telefon löscht alle bisherigen Daten und startet anschließend mit dem anfänglichen „Willkommen“-Bildschirm neu.',
-    p1s4Tip:
-      'Der Neustart dauert ca. 2 bis 4 Minuten. Warten Sie, bis der Begrüßungsbildschirm erscheint.',
-    p1s4VisualText: 'Neustart in den Werkszustand...',
+    deviceTypeBadgeSenior: 'Aktuell: SENIOREN-Telefon (Schritte 1–8)',
+    deviceTypeBadgeCaregiver: 'Aktuell: BETREUER-Telefon (Schritte 1–6)',
+    deviceTypeBadgeBoth: 'Aktuell: BEIDE Telefone (Alle 14 Schritte)',
 
-    // Phase 2 Steps
-    p2s1Title: 'Schritt 1: Einschalten & Willkommensbildschirm',
-    p2s1Category: 'Startüberprüfung',
-    p2s1Desc: 'Schalten Sie das Gerät ein und warten Sie auf den anfänglichen „Willkommen“-Bildschirm.',
-    p2s1Tip: 'WICHTIG: Bleiben Sie auf diesem Bildschirm! Tippen Sie NICHT auf „Start“ und richten Sie kein WLAN manuell ein.',
-    p2s1VisualText: 'Anfänglicher Begrüßungsbildschirm',
-    p2s1VisualWarning: '⚠ Auf diesem Bildschirm bleiben! NICHT auf Start tippen',
+    // Phase Tags
+    phase1Tag: 'Senioren-Telefon',
+    phase2Tag: 'Betreuer-Telefon',
 
-    p2s2Title: 'Schritt 2: Die geheimen 6 Fingertipps',
-    p2s2Category: 'Versteckte Aktivierungsgeste',
-    p2s2Desc: 'Tippen Sie zügig 6-mal auf einen leeren Bereich des Bildschirms (vermeiden Sie Schaltflächen und Textfelder).',
-    p2s2Tip:
-      'Tippen Sie schnell hintereinander auf den freien Bereich. Das Gerät signalisiert den Modus und öffnet den QR-Assistenten.',
-    p2s2VisualText: '6 schnelle Fingertipps auf freie Fläche',
-    p2s2PracticeLabel: 'Geste hier üben:',
-    p2s2PracticeSuccess: '✓ QR-Modus ausgelöst!',
-    p2s2TapScreenBtn: 'Bildschirm antippen (+1)',
+    // -------------------------------------------------------------------------
+    // SENIOR PHONE STEPS (Phase 1: Steps 1 - 8)
+    // -------------------------------------------------------------------------
+    s1Title: 'Schritt 1: SENEAR App installieren & öffnen',
+    s1Category: 'Normale Installation',
+    s1Desc:
+      'Installieren Sie die SENEAR-App aus dem Google Play Store auf dem Telefon des Pflegeempfängers (Seniors) und öffnen Sie anschließend die App.',
+    s1Tip:
+      'Akzeptieren Sie beim ersten Start die angezeigten Systemberechtigungen (Telefonanrufe, SMS, Standort und Benachrichtigungen).',
+    s1VisualText: 'Installation über Google Play',
+    s1VisualSub: 'Anruf-, SMS-, Standort- und Benachrichtigungsberechtigungen erlauben',
 
-    p2s3Title: 'Schritt 3: QR-Code scannen',
-    p2s3Category: 'Kamera-Sucher & WLAN',
-    p2s3Desc:
-      'Das Gerät erkennt den Einrichtungsmodus, fordert zur WLAN-Verbindung auf und öffnet den integrierten QR-Scanner. Scannen Sie den unten angezeigten SENEAR QR-Code.',
-    p2s3Tip: 'Halten Sie die Kamera ruhig auf den Bereitstellungs-QR-Code im Kasten unten.',
-    p2s3VisualText: 'Integrierter Setup-QR-Scanner',
-    p2s3QrBadge: 'SENEAR Provisioning QR-Code',
-    p2s3QrSubtitle: 'Richten Sie die Telefonkamera auf diesen QR-Code, um das Setup zu starten.',
-    p2s3QrPathLabel: 'Dateipfad: public/qr/senear-provisioning-qr.png',
+    s2Title: 'Schritt 2: Ich bin Pflegeempfänger & Grunddaten (1/2)',
+    s2Category: 'Rollenauswahl',
+    s2Desc:
+      'Tippen Sie auf dem Begrüßungsbildschirm auf **Ich bin Pflegeempfänger**. Geben Sie unter **Schritt 1: Grunddaten eingeben** den Namen des Seniors, die Telefonnummer und das Geburtsjahr ein und tippen Sie auf **Weiter**.',
+    s2Tip:
+      'Der eingegebene Name wird im Betreuer-Dashboard sowie bei allen SOS-, Akku- und Standort-Alarmen angezeigt.',
+    s2VisualText: '„Ich bin Pflegeempfänger“ → Grunddaten',
+    s2VisualSub: 'Name, Telefonnummer & Geburtsjahr eintragen',
 
-    p2s4Title: 'Schritt 4: Automatische Einrichtung & Kiosksperre',
-    p2s4Category: 'Abschluss Bereitstellung',
-    p2s4Desc:
-      'Das Gerät lädt die SENEAR-App direkt von unseren sicheren Servern herunter, installiert sie und erteilt sofort alle Device Owner (Kiosk)-Rechte. Es ist kein Google-Konto erforderlich.',
-    p2s4Tip:
-      'SENEAR startet sofort im geschützten Kioskmodus – manipulationssicher und sofort einsatzbereit.',
-    p2s4VisualText: 'Kiosk initialisiert & verifiziert',
+    s3Title: 'Schritt 3: Systemberechtigungen & Kiosk-Wächter (2/2)',
+    s3Category: 'Systemberechtigungen',
+    s3Desc:
+      'Tippen Sie auf dem Bildschirm nacheinander auf die roten Berechtigungskarten:\n1. **Systemberechtigung: Bildschirmfixierung und Pop-up-Meldungen** — suchen Sie in der sich öffnenden App-Liste nach **SENEAR** und aktivieren Sie die Berechtigung. Kehren Sie danach zu den Einstellungen zurück und die Kachel wird grün.\n2. **Standard-Seniorenklingelton** — suchen Sie in der sich öffnenden Liste nach **SENEAR** und aktivieren Sie die Berechtigung. Kehren Sie danach zu den Einstellungen zurück und die Kachel wird grün.\n3. **Standard-Startbildschirm (Empfohlen)** — suchen Sie in der sich öffnenden Liste nach **SENEAR** und wählen Sie es aus. Kehren Sie danach zu den Einstellungen zurück und die Kachel wird grün.\n4. **Kiosk-Wächter (Bedienungshilfen)** — tippen Sie auf der sich öffnenden Bedienungshilfen-Seite auf **Installierte Apps**, suchen Sie nach **SENEAR** und schalten Sie beide Schalter ein. Kehren Sie danach zu den Einstellungen zurück und die Kachel wird grün.',
+    s3Tip:
+      'WICHTIG: Bei jeder erfolgreich erteilten Berechtigung erscheint eine grüne **Erteilt**-Markierung. Die Schaltfläche **Weiter** ist erst aktiv, nachdem die erforderlichen Berechtigungen erteilt wurden.',
+    s3VisualText: 'Bildschirm + Klingelton + Startbildschirm + Kiosk-Wächter',
+    s3VisualSub: 'SENEAR in jeder Systemliste suchen & aktivieren',
+
+    s4Title: 'Schritt 4: Allgemeine Einstellungen, Rechtliches, Schnellnachrichten & Ton/Anzeige',
+    s4Category: 'Betreuer-Einstellungen (Obere Menüpunkte)',
+    s4Desc:
+      'Gehen Sie im sich öffnenden Menü **Betreuer-Einstellungen** die oberen Schaltflächen von oben nach unten durch:\n1. **Allgemeine Einstellungen** — hier können Sie das Admin-Passwort (standardmäßig 1234) ändern und sehen nach Zustimmung zur DSGVO-Erklärung den **6-stelligen Kopplungscode** des Seniors (diesen geben Sie später auf dem Betreuer-Telefon ein). Zudem können auf dieser Seite sämtliche Cloud- und Lokaldaten gemäß DSGVO endgültig gelöscht werden (**Cloud-Profil und Daten endgültig löschen (DSGVO)**).\n2. **Sicherheit & Rechtliches / Anleitung** — hier können Sie jederzeit die rechtlichen Sicherheitshinweise (Nicht-Medizinprodukt / Notruf-Hinweis) und die Anleitung einsehen.\n3. **Schnellnachrichten einstellen** — vorformulierte SMS-Nachrichten, die der Senior schnell an einen der 4 Hauptkontakte senden kann.\n4. **Ton- und Anzeigeeinstellungen** — schalten Sie den **seniorenfreundlichen Klingelton** und die **automatische Freisprechfunktion** bei Anrufen ein und passen Sie **Helligkeit und Lautstärke** für den Kiosk und das Admin-Menü an.',
+    s4Tip:
+      'Notieren oder fotografieren Sie den 6-stelligen Kopplungscode (z. B. K4M9A2) in den Allgemeinen Einstellungen — damit verbinden Sie das Betreuer-Telefon.',
+    s4VisualText: '6-stelliger Code: K4M9A2',
+    s4VisualSub: 'Allgemeine Einstellungen + Rechtliches + Schnell-SMS + Ton & Anzeige',
+
+    s5Title: 'Schritt 5: Hintergrundschutz & Akku (Nach Smartphone-Marke)',
+    s5Category: 'Hintergrundschutz & Akku',
+    s5Desc:
+      'Als Nächstes folgt in der Liste der Menüpunkt **Hintergrundschutz & Akku**. Falls Sie hier etwas einstellen müssen, wird dieser Menüpunkt mit einem **roten Ausrufezeichen (!)** angezeigt. Wählen Sie in diesem Fall unten das Smartphone-Modell bzw. die Marke aus und führen Sie die beschriebenen Einstellungen durch, damit Hintergrunddienste für **SOS**, **Zuhause-Zone (Geofencing)**, **Tagesroutinen-Wecker** und **Online-Status** niemals durch Energiesparfunktionen beendet werden:',
+    s5Tip:
+      'WICHTIG: Ohne diese Einstellung kann das Betriebssystem die App bei ausgeschaltetem Bildschirm in den Tiefschlaf versetzen.',
+    s5VisualText: 'Akku: Nicht eingeschränkt + Autostart',
+    s5VisualSub: 'Verhindert das Beenden von SOS, GPS & Weckern im Hintergrund',
+
+    s6Title: 'Schritt 6: Anrufberechtigungen, Kontakte, Tagesroutinen & SOS-Konfiguration',
+    s6Category: 'Betreuer-Einstellungen (Untere Menüpunkte)',
+    s6Desc:
+      'Gehen Sie nun die unteren vier Schaltflächen in den **Betreuer-Einstellungen** der Reihe nach durch:\n1. **Anrufberechtigungen (Whitelist)** — legen Sie fest, welche weiteren Personen (außer den 4 Hauptkontakten) den Senior anrufen dürfen. Unbekannte Anrufer werden automatisch abgewiesen.\n2. **Kontakte einstellen** — geben Sie Name, Beziehung (z. B. Tochter) und Telefonnummer der **4 großen Foto-Anrufkacheln** ein und wählen Sie ein Foto aus der Galerie (automatisch mittig zugeschnitten und komprimiert). Auch die Schriftgröße ist hier einstellbar, und bei Kopplung lassen sich die 4 Kontakte aus der Ferne bearbeiten.\n3. **Tagesroutinen und Erinnerungen** — erstellen Sie Erinnerungen in 4 Kategorien (**⏰ Wecker**, **💊 Medikamente**, **💧 Trinken**, **📅 Eigene Aufgabe**) mit mehrzeiligen Dosierungsanweisungen und optionalem Foto der Medikamentenschachtel. Klingelt der Alarm auf dem Kiosk-Bildschirm, tippt der Senior zuerst auf **DETAILS ANZEIGEN** (der Ton verstummt und die genaue Anweisung samt Foto erscheint) und danach auf die große grüne Taste **ERLEDIGT**.\n4. **SOS-Konfiguration** — legen Sie die anzurufende Notrufnummer fest und bestimmen Sie, wer bei einem Notruf zusätzlich eine SMS mit dem GPS-Standort erhält.',
+    s6Tip:
+      'Die 4 Hauptkontakte sind im Anruffilter immer automatisch erlaubt — nur zusätzliche vertrauenswürdige Nummern (z. B. Nachbar, Arzt) müssen unter Anrufberechtigungen (Whitelist) ergänzt werden.',
+    s6VisualText: 'Whitelist + 4 Foto-Kontakte + Routinen + SOS',
+    s6VisualSub: 'Anruffilter, automatischer Foto-Zuschnitt, 2-stufige Alarme & SOS',
+
+    s7Title: 'Schritt 7: Gerät sperren und Kiosk starten',
+    s7Category: 'Kiosk-Aktivierung',
+    s7Desc:
+      'Tippen Sie ganz unten im Einstellungsmenü auf die grüne Schaltfläche **Gerät sperren und Kiosk starten**. Das Telefon wechselt sofort in die geschützte, unverstellbare SENEAR Kiosk-Oberfläche!',
+    s7Tip:
+      'Wenn die Warnung **Fehlender Kiosk-Schutz!** erscheint, legen Sie SENEAR als **Standard-Startbildschirm** fest und schalten Sie den **Kiosk-Wächter (Bedienungshilfen)** ein.',
+    s7VisualText: 'Kiosk Aktiv & Gesichert',
+    s7VisualSub: 'Fehlersicherer Senioren-Startbildschirm ist jetzt aktiv',
+
+    s8Title: 'Schritt 8: Kiosk-Modus verlassen & zurück zum normalen Telefon',
+    s8Category: 'Kiosk verlassen & Normalmodus',
+    s8Desc:
+      'Wenn Sie nach dem Einrichten aller Sperrmechanismen in den Kiosk gewechselt sind, können Sie so wieder zur normalen Smartphone-Oberfläche zurückkehren: Tippen Sie auf dem Kiosk-Bildschirm 5-mal auf die Uhr und geben Sie das Admin-Passwort (1234) ein. Tippen Sie anschließend im sich öffnenden Menü erneut auf die rote Taste (**Zurück zum Telefonmenü**) und wählen Sie dort anstelle von SENEAR die andere Option aus — danach kann das Telefon wieder ganz normal verwendet werden.',
+    s8Tip:
+      'WICHTIG: Wenn Sie nur Einstellungen ändern möchten, müssen Sie keinen anderen Startbildschirm auswählen — drücken Sie nach der Änderung einfach wieder auf die grüne Taste **Gerät sperren und Kiosk starten**. Verwenden Sie die rote Taste **Zurück zum Telefonmenü**, wenn Sie zur normalen Telefonnutzung zurückkehren möchten.',
+    s8VisualText: '5× Uhr → 1234 → Rote Taste',
+    s8VisualSub: '„Zurück zum Telefonmenü“ → andere Option statt SENEAR wählen',
+
+    // -------------------------------------------------------------------------
+    // CAREGIVER PHONE STEPS (Phase 2: Steps 1 - 6)
+    // -------------------------------------------------------------------------
+    c1Title: 'Schritt 1: SENEAR auf dem Betreuer-Telefon installieren',
+    c1Category: 'Betreuer-App installieren',
+    c1Desc:
+      'Installieren und öffnen Sie dieselbe SENEAR App auf dem Smartphone des betreuenden Familienmitglieds. Erlauben Sie beim Start unbedingt die Benachrichtigungsberechtigung.',
+    c1Tip:
+      'Durch erlaubte Push-Benachrichtigungen erhalten Sie sofortige Alarme bei SOS, niedrigem Akku (<20 %), Ausschalten des Geräts oder Verlassen der Sicherheitszone sowie eingehende WLAN-Anrufe auch bei gesperrtem Bildschirm.',
+    c1VisualText: 'Installation auf Betreuer-Telefon',
+    c1VisualSub: 'Push-Benachrichtigungen für sofortige Alarme erlauben',
+
+    c2Title: 'Schritt 2: Ich bin Betreuer wählen & Registrieren',
+    c2Category: 'Betreuer-Profil',
+    c2Desc:
+      'Tippen Sie auf dem Begrüßungsbildschirm auf die blaue Schaltfläche **Ich bin Betreuer**. Geben Sie Ihren Vor- und Nachnamen, Ihre Telefonnummer und Ihre E-Mail-Adresse ein und tippen Sie auf **Weiter zum Dashboard**.',
+    c2Tip:
+      'Ihr Betreuer-Profil speichert automatisch den sicheren Push-Kanal und hinterlegt Ihre Telefonnummer auf der Kurzwahlkachel des gekoppelten Seniors.',
+    c2VisualText: 'Rolle: „Ich bin Betreuer“',
+    c2VisualSub: 'Name, Telefonnummer und E-Mail-Adresse des Betreuers eingeben',
+
+    c3Title: 'Schritt 3: Mit dem 6-stelligen Code des Seniors koppeln',
+    c3Category: 'Gerätekopplung',
+    c3Desc:
+      'Öffnen Sie im Hauptmenü des Betreuer-Dashboards den Punkt **Meine Senioren & Kopplung**. Nachdem Sie der DSGVO-Meldung zugestimmt haben, geben Sie in das Feld **Neuen Senior koppeln** den auf dem Telefon des Seniors (unter Allgemeine Einstellungen) angezeigten 6-stelligen Code (z. B. K4M9A2) ein und tippen Sie auf die Schaltfläche **Gerät koppeln**.',
+    c3Tip:
+      'Mehrere Familienmitglieder können sich mit demselben 6-stelligen Code verbinden, und ein Betreuer kann auch mehrere Senioren gleichzeitig überwachen.',
+    c3VisualText: '6-stelligen Code eingeben',
+    c3VisualSub: 'Verbindet Senioren- & Betreuer-Telefon in Echtzeit',
+
+    c4Title: 'Schritt 4: Ferngesteuerte Foto-Kontakte & Tagesroutinen / Medikamentenwecker',
+    c4Category: 'Kontakte & Tagesroutinen',
+    c4Desc:
+      'Auf dem Profilblatt des gekoppelten Seniors können Sie Kontakte und Erinnerungen bequem aus der Ferne verwalten:\n1. **Ferngesteuerte Kurzwahlkontakte & Fotos** — bearbeiten Sie die **4 großen Foto-Anrufkacheln** direkt von Ihrem Telefon aus. Wenn Sie ein Foto aus der Galerie auswählen, wird es automatisch mittig zugeschnitten und komprimiert und aktualisiert den Kiosk-Bildschirm des Seniors sofort in Echtzeit.\n2. **Tagesroutinen, Wecker & Medikamentenerinnerungen** — erstellen Sie Erinnerungen in 4 Kategorien (**⏰ Wecker**, **💊 Medikamente**, **💧 Trinken**, **📅 Eigene Aufgabe**) mit mehrzeiligen Dosierungsanweisungen und einem optionalen Foto der Medikamentenschachtel.\n3. **2-stufige Bestätigung durch den Senior** — wenn der Alarm klingelt, tippt der Senior auf **DETAILS ANZEIGEN** (der Alarmton verstummt und zeigt die genaue Dosierung samt Foto) und anschließend auf die große grüne Taste **ERLEDIGT**. Dadurch erscheint auf Ihrem Betreuer-Bildschirm sofort ein grünes **✅ Bestätigt**-Abzeichen mit Uhrzeit.',
+    c4Tip:
+      'Alle im Betreuer-Dashboard gespeicherten Kontakte, Fotos und Tagesroutinen werden automatisch innerhalb weniger Sekunden mit dem Senioren-Telefon synchronisiert.',
+    c4VisualText: 'Fernkontakte + 2-Stufen-Routinen',
+    c4VisualSub: 'DETAILS ANZEIGEN → ERLEDIGT → ✅ Bestätigt auf Ihrem Telefon',
+
+    c5Title: 'Schritt 5: Zuhause-Zone, Auto-Rufannahme & Zwei-Wege-WLAN-Anrufe',
+    c5Category: 'Sicherheitszone & Anrufe',
+    c5Desc:
+      'Auf dem detaillierten Profilblatt des Seniors:\n1. Sie können einen **herkömmlichen Anruf** oder einen **WLAN-basierten Anruf** starten, falls der Senior keine SIM-Karte hat, aber über WLAN mit dem Internet verbunden ist. Beim WLAN-Anruf kann auch ein **Videoanruf** zugeschaltet werden.\n2. **Aktuellen Standort als Zuhause festlegen** — wenn der Senior zu Hause ist, tippen Sie auf diese Schaltfläche, und ab diesem Zeitpunkt gilt dieser Ort als seine Wohnadresse.\n3. Die **Weglauf-Alarme**, die Sie unter **Benachrichtigungseinstellungen** konfigurieren können, werden anhand der als Zuhause festgelegten Position überprüft.\n4. **Automatische Rufannahme (Freisprecher)** bedeutet, dass das Telefon des Seniors Ihren Anruf berührungslos und auf Lautsprecher annimmt, ohne dass der Senior auf den Bildschirm tippen muss.\n5. Wenn der betreute Nutzer eine SIM-Karte (und damit mobiles Internet) hat, hilft Ihnen Google Maps über die Schaltfläche **Navigieren** jederzeit, schnell zum Senior zu gelangen, falls dieser sich verirrt.',
+    c5Tip:
+      'Hat das Senioren-Telefon keine SIM-Karte, aktivieren Sie in den **Benachrichtigungseinstellungen** die Option **WLAN-Anruf erlauben (ohne SIM/Mobilfunk)** — dann können sowohl Sie als auch der Senior (über seine 4 Kontaktkacheln) gegenseitig WLAN-Sprach- und Videoanrufe führen!',
+    c5VisualText: 'Zuhause-Zone + Auto-Rufannahme + WLAN-Anruf',
+    c5VisualSub: 'Einstellbarer Weglauf-Abstand & Zwei-Wege-Anrufe ohne SIM',
+
+    c6Title: 'Schritt 6: Alarmverlauf, Sicherheitshinweise & DSGVO-Datenlöschung',
+    c6Category: 'Protokoll, Rechtliches & DSGVO',
+    c6Desc:
+      '- Unter **Alarmverlauf** können Sie alle SOS-Notrufe, Weglauf-Ereignisse, Akku- und Systemmeldungen gefiltert einsehen.\n- Im Menü **Benachrichtigungseinstellungen** wählen Sie aus, wofür Sie Push-Benachrichtigungen erhalten möchten: Akkustand unter 20 %, Ein-/Ausschalten des Telefons, Ladegerät angeschlossen, WLAN-Anrufe und Weglauf-Alarm.\n- **Sicherheit & Rechtliches / Benutzerhandbuch** — den Hinweis zum Nicht-Medizinprodukt / Notruf-Haftungsausschluss sowie die Bedienungsanleitung können Sie jederzeit auf dem Begrüßungsbildschirm oder im Menü des Betreuer-Dashboards einsehen.\n- **Ein-Klick-DSGVO-Datenlöschung** — unter **Mein Profil → Konto und alle Daten endgültig löschen (DSGVO)** können Sie sämtliche Cloud- und Lokaldaten mit einem Fingertipp unwiderruflich löschen.',
+    c6Tip:
+      'Unter **Mein Profil** können Sie Ihre Daten jederzeit bearbeiten oder Ihr Konto samt allen synchronisierten Daten endgültig löschen (DSGVO).',
+    c6VisualText: 'Alarmverlauf, Rechtliches & DSGVO-Löschung',
+    c6VisualSub: 'Filterbares Protokoll, Sicherheitshinweise & Ein-Klick-Löschung',
 
     // Stepper buttons
     btnDoneNext: 'Erledigt — Nächster Schritt',
     btnPrevious: 'Vorheriger Schritt',
     btnComplete: 'Einrichtung abschließen',
-    stepActiveBadge: 'In Bearbeitung',
+    btnContinueToCaregiver: 'Weiter zur Einrichtung des Betreuer-Telefons →',
+    stepActiveBadge: 'Aktueller Schritt',
     stepCompletedBadge: 'Erledigt',
     stepPendingBadge: 'Ausstehend',
 
     // Completion Card
-    completionTitle: 'Installation erfolgreich abgeschlossen!',
+    completionTitle: 'Einrichtung erfolgreich abgeschlossen!',
     completionSubtitle:
-      'SENEAR ist jetzt als Device Owner aktiv. Versehentliches Löschen von Apps, Systemeinstellungen und Play Store-Käufe sind vollständig gesperrt.',
-    btnRestartWizard: 'Assistent neu starten',
+      'Sowohl das Senioren-Telefon (Kiosk) als auch das Betreuer-Dashboard sind jetzt fertig eingerichtet und miteinander verbunden.',
+    btnRestartWizard: 'Anleitung neu starten',
     btnOpenSimulator: 'Web-Simulator testen',
-    btnContactSupport: 'Technischen Support kontaktieren',
-
-    // QR Box
-    qrBoxTitle: 'SENEAR Bereitstellungs-QR-Code',
-    qrBoxSubtitle: 'Scannen Sie diesen Code in Schritt 3 mit dem Zieltelefon',
-    qrTabInteractive: 'Interaktiver QR-Code',
-    qrTabPayload: 'JSON-Konfiguration',
-    btnCopyJson: 'JSON kopieren',
-    btnCopied: 'Kopiert!',
-    btnPrintCard: 'Anleitung drucken',
-    qrHoldDistance: 'Bereit zum Scannen (Abstand ca. 20–30 cm)',
+    btnContactSupport: 'Support kontaktieren',
 
     // FAQs
-    faqTitle: 'Häufig gestellte Fragen zur Einrichtung',
-    faq1Q: 'Was, wenn 6-maliges Tippen den QR-Scanner nicht öffnet?',
+    faqTitle: 'Häufige Fragen zur Einrichtung',
+    faq0Q: 'Wie gelange ich vom gesperrten Kiosk-Bildschirm in die Betreuer-Einstellungen?',
+    faq0A:
+      'Mit dem Admin-Passwort können Sie jederzeit in das Betreuer-Menü wechseln — standardmäßig lautet es 1234, kann aber in den Allgemeinen Einstellungen geändert werden. Tippen Sie auf dem Kiosk-Bildschirm einfach 5-mal hintereinander auf die Uhr und geben Sie das Passwort 1234 ein.',
+    faq1Q: 'Muss das Telefon noch auf Werkseinstellungen zurückgesetzt oder per QR-Code installiert werden?',
     faq1A:
-      'Stellen Sie sicher, dass das Telefon auf dem anfänglichen Willkommensbildschirm steht, bevor Sie auf „Start“ drücken. Tippen Sie schnell auf die obere freie weiße Fläche.',
-    faq2Q: 'Wird während des Setups eine SIM-Karte benötigt?',
+      'Nein! SENEAR wird wie eine ganz normale Android-App installiert. Es ist kein Zurücksetzen auf Werkseinstellungen und kein 6-maliges Tippen für einen QR-Code nötig. Installieren Sie einfach die App, erteilen Sie die Berechtigungen im 2-stufigen Einrichtungsassistenten und aktivieren Sie den SENEAR Kiosk-Wächter (Bedienungshilfen).',
+    faq2Q: 'Wo finde ich den 6-stelligen Kopplungscode?',
     faq2A:
-      'Nein! Das Telefon benötigt lediglich eine normale WLAN-Verbindung, um das SENEAR-Paket herunterzuladen. Eine SIM-Karte wird erst später für den regulären Gebrauch benötigt.',
-    faq3Q: 'Warum ist kein Google-Konto erforderlich?',
+      'Auf dem Telefon des Seniors unter „Betreuer-Einstellungen“ > „Allgemeine Einstellungen“. Geben Sie diesen 6-stelligen Code auf dem Betreuer-Telefon unter „Meine Senioren & Kopplung“ ein.',
+    faq3Q: 'Wie funktioniert die automatische Rufannahme mit Freisprecher?',
     faq3A:
-      'Der Android Enterprise Device Owner-Modus installiert die App direkt auf Systemebene, wodurch Google Play-Konten und verwirrende Passworteingaben für Senioren entfallen.',
+      'Der Betreuer kann in seiner App den Schalter „Automatische Rufannahme (Freisprecher)“ aktivieren. Das Signal wird sofort an das Senioren-Telefon gesendet, sodass eingehende Anrufe automatisch angenommen und auf den Lautsprecher geschaltet werden.',
+    faq4Q: 'Funktioniert das Senioren-Telefon auch ohne Kopplung oder ohne SIM-Karte?',
+    faq4A:
+      'Ja! Der eigenständige Kiosk-Modus (4 große Foto-Kurzwahltasten, Tagesroutinen-Wecker, SOS-Notruf, Schnell-SMS, lauter Senioren-Klingelton) funktioniert komplett unabhängig und kostenlos. Und bei Verbindung mit einem Betreuer über WLAN können beide Telefone auch ohne SIM-Karte im Senioren-Telefon gegenseitig Sprach- und Videoanrufe über WLAN führen.',
 
     // Visual Card & Badge Labels
     selectedBadge: 'Ausgewählt',
     childModeBadge: 'Kindermodus',
-    dpcLockedBadge: 'DPC Gesperrt',
-    stepsTotalLabel: 'Schritte Gesamt',
+    dpcLockedBadge: 'Kiosk Geschützt',
+    stepsTotalLabel: 'Schritte',
     stepsDoneLabel: 'von',
     stepsCompletedLabel: 'Erledigt',
-    p1s1GearTip: 'Tippen Sie auf das Einstellungen-Zahnrad auf dem Startbildschirm',
-    p1s2SystemStep: '1. System',
-    p1s2ResetStep: '2. Optionen zum Zurücksetzen',
-    p1s4RebootSub: 'Telefon wird gelöscht & Startbildschirm vorbereitet',
-    p2s1WelcomeTitle: 'Willkommen / Hallo',
-    p2s2TapsSub: 'Aktiviert die versteckte Android Enterprise Kamera',
-    p2s3WifiReady: 'WLAN Bereit',
-    p2s3Scanner: 'Scanner',
-    p2s4ApkDownload: 'APK-Download',
-    p2s4DeviceOwnerBypassed: 'Device Owner erteilt • Google-Anmeldung übersprungen',
-    p2s2TapCounter: 'Fingertipps',
+    visualRoleSeniorBtn: 'Ich bin Pflegeempfänger',
+    visualRoleCaregiverBtn: 'Ich bin Betreuer',
+    visualLockKioskBtn: '✓ Gerät sperren und Kiosk starten',
+    visualExitKioskBtn: '⬅ Zurück zum Telefonmenü',
+    visualAutoAnswerLabel: '🔊 Auto-Rufannahme',
+    visualRoutineConfirmBadge: '✅ Bestätigt • 08:05',
   },
 
   hu: {
     backToHome: 'Vissza a főoldalra',
-    breadcrumb: 'Telepítési Varázsló',
-    pageTitle: 'Telepítési Útmutató',
+    breadcrumb: 'Lépésről Lépésre Beállítási Útmutató',
+    pageTitle: 'Beállítási Útmutató',
     pageSubtitle:
-      'Lépésről lépésre követhető varázsló SENEAR vagy JUNEAR telepítéséhez. Egyszerű, elállíthatatlan és Google-fiók mentes.',
+      'Részletes, lépésről lépésre követhető beállítási útmutató a Gondozott telefonjához és a Gondozó telefonjához. Egyszerű, normál telepítéssel — gyári visszaállítás és QR-kód nélkül.',
     pageNote:
-      'Ez a telepítés csak az idős vagy gyermek felhasználó telefonjára szükséges. Segítőként / családtagként elég az appot a Google Play Áruházból letölteni.',
-    deviceOwnerPill: 'Device Owner Kioszk Mód',
-    noGoogleAccountPill: 'Google-fiók mentes beállítás',
+      'Jó hír: a gondozott telefonjába mostantól nem feltétlenül kell SIM-kártya a hang- és videóhívásokhoz! Elég, ha Wi-Fi-n keresztül van internetkapcsolata — így is tud hívást fogadni, és a 4 kiválasztott fő kontaktját is fel tudja hívni.',
+    standardInstallPill: 'Normál Alkalmazás Telepítés',
+    dualPhonePill: 'Gondozott + Gondozó Telefon Beállítása',
     langSelectorLabel: 'Nyelv:',
 
-    // Conditional phone question
-    phoneQuestionTitle: 'ÚJ vagy HASZNÁLT telefonra telepíted a SENEAR-t vagy JUNEAR-t?',
+    // Role / Phone selector section
+    phoneQuestionTitle: 'Melyik telefont szeretnéd most beállítani?',
     phoneQuestionSubtitle:
-      'Az Android Enterprise Device Owner jogosultsághoz teljesen tiszta rendszer szükséges. Válaszd ki az aktuális kiindulási állapotot:',
-    usedPhoneTitle: 'HASZNÁLT telefon',
-    usedPhoneSubtitle:
-      'Egy gyors Gyári Visszaállítást kezdünk. Előtte ments le a telefonról minden fontos képet és adatot.',
-    usedPhoneBadge: 'Az 1. Fázissal indul: Gyári Visszaállítás',
-    newPhoneTitle: 'VADONATÚJ telefon',
-    newPhoneSubtitle:
-      'Most bontottad ki a dobozból, nincs még rajta Google-fiók. Azonnal a 2. fázisra (a 6 koppintásos QR beállításra) ugrik.',
-    newPhoneBadge: 'Közvetlenül a 2. Fázisra ugrik: Kioszk Beállítás',
-    btnStart: 'Kezdés',
-    changeDeviceType: 'Készülék állapotának módosítása',
-    deviceTypeBadgeUsed: 'Beállítás típusa: HASZNÁLT telefon (1. + 2. Fázis)',
-    deviceTypeBadgeNew: 'Beállítás típusa: VADONATÚJ telefon (csak 2. Fázis)',
+      'Válaszd ki, hogy az idős hozzátartozó (Gondozott) telefonját, a családtag (Gondozó) telefonját, vagy mindkét készüléket egymás után szeretnéd-e beállítani:',
 
-    // Phase Headers
-    phase1Tag: '1. Fázis: Törlés',
-    phase2Tag: '2. Fázis: Kioszk',
-    phase1Heading: '1. Fázis: Gyári Visszaállítás',
-    phase1Subheading: 'Minden korábbi adat törlése a kioszk jogosultságok feloldásához.',
-    phase2Heading: '2. Fázis: Kioszk Telepítés',
-    phase2Subheading: 'Android Enterprise QR regisztráció a nyitó „Üdvözöljük” képernyőn.',
+    seniorPhoneTitle: '1. Gondozott Telefonja (Idős hozzátartozó)',
+    seniorPhoneSubtitle:
+      'Az idős felhasználó telefonjának beállítása: alapadatok, rendszer- és akkumulátor-engedélyek, 4 fényképes gyorshívó kontakt, napi rutinok és gyógyszeremlékeztető, SOS gomb, 6-jegyű párosító kód, Kioszk lezárás és visszalépés a normál telefonba.',
+    seniorPhoneBadge: '8 lépés • Védett Kioszk beállítása',
 
-    // Phase 1 Steps
-    p1s1Title: '1. Lépés: Beállítások megnyitása',
-    p1s1Category: 'Készülék Előkészítés',
-    p1s1Desc: 'A céleszközön nyisd meg a standard Android Beállítások (Settings) alkalmazást.',
-    p1s1Tip: 'Keresd a fogaskerék ikont a kezdőképernyőn vagy az alkalmazáslistában.',
-    p1s1VisualText: 'Android Beállítások Alkalmazás',
+    caregiverPhoneTitle: '2. Gondozó Telefonja (Családtag / Segítő)',
+    caregiverPhoneSubtitle:
+      'A gondozó saját telefonjának beállítása: regisztráció, összekapcsolás a 6-jegyű kóddal, távoli névjegy-, fotó- és napi rutin kezelés, Otthon Zóna, kihangosított automatikus hívásfogadás, Wi-Fi hívás SIM nélkül és riasztási előzmények.',
+    caregiverPhoneBadge: '6 lépés • Távfelügyeleti Vezérlőpult',
 
-    p1s2Title: '2. Lépés: Keresd meg a visszaállítást',
-    p1s2Category: 'Rendszer Menü',
-    p1s2Desc:
-      'Navigálj a Rendszer > Visszaállítási opciók menübe (Samsung telefonokon: Általános kezelés > Visszaállítás).',
-    p1s2Tip: 'Használhatod a Beállítások felső keresőmezőjét is: írd be, hogy „Visszaállítás”.',
-    p1s2VisualText: 'Rendszer > Visszaállítási opciók',
+    bothPhonesTitle: 'Mindkét Telefon Teljes Beállítása (1–14. lépés)',
+    bothPhonesSubtitle:
+      'Végigvezet a teljes folyamaton: először a Gondozott telefonjának előkészítésén, majd a Gondozó telefonjával való összekapcsoláson.',
 
-    p1s3Title: '3. Lépés: Minden adat törlése',
-    p1s3Category: 'Törlés Kiválasztása',
-    p1s3Desc: 'Válaszd az „Összes adat törlése (gyári visszaállítás)” menüpontot.',
-    p1s3Tip:
-      'A telefon összegzi, hogy a fiókok, alkalmazások és adatok törlődni fognak. Erre szükség van.',
-    p1s3VisualText: 'Összes adat törlése (gyári visszaállítás)',
-    p1s3VisualSubText:
-      'Előtte ments le a telefonról minden fontos képet és adatot.',
+    btnStartSenior: 'Gondozott Telefonjának Beállítása',
+    btnStartCaregiver: 'Gondozó Telefonjának Beállítása',
+    btnStartBoth: 'Mindkét Telefon Beállítása (Teljes folyamat, 14 lépés)',
 
-    p1s4Title: '4. Lépés: Megerősítés és újraindítás',
-    p1s4Category: 'Törlés Végrehajtása',
-    p1s4Desc:
-      'Erősítsd meg a műveletet. A telefon teljesen törli az adatokat, majd újraindul a kezdeti „Üdvözöljük” nyelvválasztó képernyőre.',
-    p1s4Tip:
-      'Az újraindulás 2–4 percet vesz igénybe. Ne szakítsd meg, várd meg a nyitóképernyőt.',
-    p1s4VisualText: 'Újraindulás gyári állapotba...',
+    deviceTypeBadgeSenior: 'Kiválasztott útmutató: GONDOZOTT Telefonja (1–8. lépés)',
+    deviceTypeBadgeCaregiver: 'Kiválasztott útmutató: GONDOZÓ Telefonja (1–6. lépés)',
+    deviceTypeBadgeBoth: 'Kiválasztott útmutató: MINDKÉT Telefon (1–14. lépés)',
 
-    // Phase 2 Steps
-    p2s1Title: '1. Lépés: Bekapcsolás & Nyitóképernyő',
-    p2s1Category: 'Kezdeti Ellenőrzés',
-    p2s1Desc: 'Kapcsold be az eszközt, és várd meg a kezdeti „Üdvözöljük” nyelvválasztó képernyőt.',
-    p2s1Tip: 'FONTOS: Maradj ezen a nyitóképernyőn! Ne kattints a „Kezdés” gombra és ne állíts be Wi-Fi-t előre.',
-    p2s1VisualText: 'Kezdeti „Üdvözöljük” Képernyő',
-    p2s1VisualWarning: '⚠ Maradj ezen a képernyőn! NE nyomd meg a Kezdést!',
+    // Phase Tags
+    phase1Tag: 'Gondozott Telefonja',
+    phase2Tag: 'Gondozó Telefonja',
 
-    p2s2Title: '2. Lépés: A titkos 6 koppintás',
-    p2s2Category: 'Rejtett Aktiváló Gesztus',
-    p2s2Desc: 'Koppints gyorsan egymás után 6-szor a képernyő egy üres felületére (elkerülve a gombokat és mezőket).',
-    p2s2Tip:
-      'Koppints tempósan a fehér üres területre. A telefon hangjelzést ad, és elindítja a beépített QR-kódos varázslót.',
-    p2s2VisualText: '6 Gyors Koppintás az Üres Képernyőre',
-    p2s2PracticeLabel: 'Gyakorold a 6 koppintást itt:',
-    p2s2PracticeSuccess: '✓ QR Telepítő Mód Aktiválva!',
-    p2s2TapScreenBtn: 'Koppints a képernyőre (+1)',
+    // -------------------------------------------------------------------------
+    // SENIOR PHONE STEPS (Phase 1: Steps 1 - 8)
+    // -------------------------------------------------------------------------
+    s1Title: '1. Lépés: Alkalmazás telepítése és megnyitása',
+    s1Category: 'Normál Telepítés',
+    s1Desc:
+      'Telepítsd a SENEAR alkalmazást a gondozott (idős hozzátartozó) telefonjára a Google Play Áruházból, majd nyisd meg az alkalmazást.',
+    s1Tip:
+      'Az első indításkor fogadd el a felugró rendszerengedélyeket (hívásindítás, SMS, helymeghatározás és értesítések).',
+    s1VisualText: 'Telepítés a Google Play Áruházból',
+    s1VisualSub: 'Hívás, SMS, GPS és értesítési engedélyek megadása első indításkor',
 
-    p2s3Title: '3. Lépés: Olvasd be a QR-kódot',
-    p2s3Category: 'Kamera Kereső & Wi-Fi',
-    p2s3Desc:
-      'A készülék automatikusan felismeri a telepítési módot, kéri a Wi-Fi csatlakozást, majd megnyitja a gyári QR-kód olvasót. Olvasd be az alább található SENEAR QR-kódot.',
-    p2s3Tip: 'Irányítsd a telefon kameráját stabilan az alábbi dobozban lévő provisioning QR-kódra.',
-    p2s3VisualText: 'Gyári QR-kód Olvasó',
-    p2s3QrBadge: 'SENEAR Provisioning QR-kód',
-    p2s3QrSubtitle: 'Irányítsd a telefon kameráját erre a QR-kódra a beolvasáshoz.',
-    p2s3QrPathLabel: 'Fájl helye: public/qr/senear-provisioning-qr.png',
+    s2Title: '2. Lépés: Gondozott vagyok profil és Alapadatok (1/2)',
+    s2Category: 'Profil Kiválasztása',
+    s2Desc:
+      'Az üdvözlő képernyőn (**Üdvözöljük a SENEAR alkalmazásban!**) nyomd meg a **Gondozott vagyok** gombot. Az **1. Lépés: Alapadatok megadása** képernyőn add meg a gondozott nevét (pl. Kovács István), telefonszámát és születési évét, majd nyomd meg a **Tovább** gombot.',
+    s2Tip:
+      'A megadott név fog megjelenni a Gondozó telefonján a vezérlőpulton, valamint minden SOS-, akkumulátor- és elkóborlási riasztásban.',
+    s2VisualText: '„Gondozott vagyok” → Alapadatok',
+    s2VisualSub: 'Név, telefonszám és születési év kitöltése',
 
-    p2s4Title: '4. Lépés: Automatikus beállítás & Kioszk zárolás',
-    p2s4Category: 'Telepítés Véglegesítése',
-    p2s4Desc:
-      'A készülék közvetlenül a biztonságos szervereinkről letölti a SENEAR alkalmazást, feltelepíti, és azonnal megadja a Device Owner (kioszk) jogokat. Google-fiókos belépés NEM szükséges.',
-    p2s4Tip:
-      'A SENEAR azonnal elindul védett kioszk módban, elállíthatatlanul és készen a használatra.',
-    p2s4VisualText: 'Kioszk Inicializálva & Ellenőrizve',
+    s3Title: '3. Lépés: Rendszerengedélyek és Kioszk Őrszem (2/2)',
+    s3Category: 'Rendszerengedélyek',
+    s3Desc:
+      'A képernyőn sorban koppints a piros engedélykártyákra:\n1. **Rendszerengedély: képernyőrögzítésre és felugró üzenetekre** — a megnyíló alkalmazáslistában keresd meg a **SENEAR**-t és engedélyezd. Ezután lépj vissza a beállításokba és a csempe zöldre vált.\n2. **Alapértelmezett idős csengőhang** — a megnyíló listában keresd meg a **SENEAR**-t és engedélyezd. Ezután lépj vissza a beállításokba és a csempe zöldre vált.\n3. **Alapértelmezett Kezdőképernyő (Ajánlott)** — a megnyíló listában keresd meg és válaszd ki a **SENEAR**-t. Ezután lépj vissza a beállításokba és a csempe zöldre vált.\n4. **Kioszk Őrszem (Kisegítő lehetőségek)** — a megnyíló Kisegítő lehetőségek oldalon kattints a **Telepített alkalmazások**-ra, keresd meg a **SENEAR**-t és kapcsold be mind a kettő gombot. Ezután lépj vissza a beállításokba és a csempe zöldre vált.',
+    s3Tip:
+      'FONTOS: Minden sikeresen megadott engedélynél zöld **Megadva** jelzés jelenik meg. A **Tovább** gomb csak a kötelező engedélyek megadása után aktív.',
+    s3VisualText: 'Képernyő + Csengőhang + Kezdőképernyő + Kioszk Őrszem',
+    s3VisualSub: 'A megnyíló listákban keresd meg és engedélyezd a SENEAR-t',
+
+    s4Title: '4. Lépés: Általános beállítások, Jogi tájékoztató, Gyors üzenetek és Hang/Képernyő',
+    s4Category: 'Gondozói Beállítások (Felső menüpontok)',
+    s4Desc:
+      'A megnyíló **Gondozói Beállítások** menüben fentről lefelé haladva állítsd be az első négy gombot:\n1. **Általános beállítások** — itt módosíthatod az admin (gondozói) jelszót (alapértelmezetten 1234), és itt látod a gondozott **6-jegyű Párosítási Kód**-ját is, miután elfogadtad a GDPR tájékoztatót (ezt a 6-jegyű kódot kell majd beírni a Gondozó telefonján az összekapcsoláshoz). Ugyanitt törölhető véglegesen minden felhőbeli és helyi adat (**Felhőprofil és adatok végleges törlése (GDPR)**), ha az alkalmazást már nem használjátok.\n2. **Biztonsági és Jogi Tájékoztató / Útmutató** — itt bármikor elolvasható a nem-orvostechnikai / segélyhívó felelősségkizáró nyilatkozat és a használati útmutató.\n3. **Gyors üzenetek beállítása** — előre megírt SMS-ek, amiket a gondozott gyorsan elküldhet a 4 fő kontakt valamelyikének.\n4. **Hang és képernyő beállítások** — itt kapcsolhatod be az **idősbarát csengőhangot**, a **hívások automatikus kihangosítását**, valamint beállíthatod a Kioszk és az Admin menü **fényerejét és hangerejét**.',
+    s4Tip:
+      'Írd fel vagy fotózd le az Általános beállításokban látható 6-jegyű Párosítási Kódot (pl. K4M9A2), mert a Gondozó telefonján ezzel kötöd össze a két készüléket.',
+    s4VisualText: '6-jegyű Párosítási Kód: K4M9A2',
+    s4VisualSub: 'Általános beállítások + Jogi tájékoztató + Gyors üzenetek + Hang és képernyő',
+
+    s5Title: '5. Lépés: Háttérvédelem & Akku (Telefonmárkák szerint)',
+    s5Category: 'Háttérvédelem & Akku',
+    s5Desc:
+      'A menüsorban a következő gomb a **Háttérvédelem & Akku**. Amennyiben itt be kell valamit állítanod, akkor ez a menüpont egy **piros felkiáltójellel (!)** lesz látható. Ebben az esetben kell alul a mobil típusát (márkáját) megadni és a leírtakat beállítani, hogy a telefon energiatakarékos rendszere soha ne állítsa le a háttérben futó **SOS**, **Otthon Zóna**, **Napi Rutin ébresztő** és **Online életjel** szolgáltatásokat:',
+    s5Tip:
+      'FONTOS: Enélkül a telefon lezárt képernyőnél elaltathatja az alkalmazást, ami késleltetheti a riasztásokat vagy az ébresztőket.',
+    s5VisualText: 'Háttérvédelem & Akku: Nem korlátozott',
+    s5VisualSub: 'Megakadályozza, hogy a telefon leállítsa az SOS-t, a GPS-t és az emlékeztetőket',
+
+    s6Title: '6. Lépés: Hívási Engedélyek, Kontaktok, Napi rutinok és SOS Konfiguráció',
+    s6Category: 'Gondozói Beállítások (Alsó menüpontok)',
+    s6Desc:
+      'Haladj tovább lefelé a **Gondozói Beállítások** menü alsó négy gombján:\n1. **Hívási Engedélyek (Whitelist)** — állítsd be, kik azok a további személyek (a 4 fő kontakton kívül), akik hívhatják a gondozott személyt. Az ismeretlen hívók automatikusan elutasításra kerülnek.\n2. **Kontaktok beállítása** — megadhatod a **4 nagy fényképes hívócsempe** nevét, kapcsolatát (pl. Lánya) és telefonszámát, valamint fényképet választhatsz a galériából (amelyet az app automatikusan középre vág és tömörít). A név és a kapcsolat betűmérete is állítható, és párosítás után ez a 4 kontakt távolról, a Gondozó telefonjáról is szerkeszthető.\n3. **Napi rutinok és emlékeztetők** — 4 kategóriában (**⏰ Ébresztő**, **💊 Gyógyszer**, **💧 Folyadékpótlás**, **📅 Egyéni feladat**) hozhatsz létre emlékeztetőket többsoros adagolási leírással és a gyógyszeres doboz opcionális fotójával. Amikor az emlékeztető megszólal a Kioszk képernyőn, a gondozott rányom a **MEGNÉZEM** gombra (ekkor a hang elhalkul és megjelenik a pontos adagolás + fotó), majd megnyomja a hatalmas zöld **BEVETTEM** gombot.\n4. **SOS Konfiguráció** — beállítható a hívandó segélyszám (pl. Mentők vagy egy családtag száma), és az is, hogy vészhelyzeti híváskor (SOS) kik kapjanak még SMS-t a GPS-helyzettel.',
+    s6Tip:
+      'A 4 fő kontakt a hívásszűrésben mindig automatikusan engedélyezett, így a Hívási Engedélyek (Whitelist) alatt csak az egyéb (pl. szomszéd, orvos) számokat kell külön felvenni.',
+    s6VisualText: 'Whitelist + 4 Fotós Kontakt + Napi rutinok + SOS',
+    s6VisualSub: 'Hívásszűrés, automatikusan körbevágott fotók, 2 lépéses emlékeztetők & SOS',
+
+    s7Title: '7. Lépés: Eszköz lezárása és Kioszk indítása',
+    s7Category: 'Kioszk Élesítése',
+    s7Desc:
+      'A Gondozói Beállítások menü alján nyomd meg a zöld **Eszköz lezárása és Kioszk indítása** gombot. A telefon ezzel belép a védett, elállíthatatlan SENEAR Kioszk főképernyőre, és készen áll a használatra!',
+    s7Tip:
+      'Ha a **Hiányzó Kioszk Védelem!** figyelmeztetés jelenik meg, állítsd be a SENEAR-t **alapértelmezett kezdőképernyőnek** és kapcsold be a **Kioszk Őrszemet (Kisegítő lehetőségek)**.',
+    s7VisualText: 'Kioszk Lezárva & Aktív',
+    s7VisualSub: 'Az elállíthatatlan 4-csempés idősbarát felület elindult',
+
+    s8Title: '8. Lépés: Hogyan tudok kilépni a Kioszkból vissza a normál telefonba?',
+    s8Category: 'Kilépés a Kioszkból & Normál Mód',
+    s8Desc:
+      'Ha beléptél a Kioszkba, miután beállítottál minden blokkoló mechanizmust, így tudsz visszalépni a normál mobilfelületre: a Kioszk kijelzőn kattints 5-ször az órára, és add meg az admin jelszót (1234). Ezután a megnyíló menüben megint a piros gombra kell nyomni (**Vissza a telefon menüjébe**), és ott a SENEAR helyett a másik opciót kell kiválasztani — utána újra normál módon használható a telefon.',
+    s8Tip:
+      'FONTOS: Ha csak a beállításokon szeretnél módosítani, nem kell másik kezdőképernyőt választanod — a módosítás után egyszerűen nyomj újra a zöld **Eszköz lezárása és Kioszk indítása** gombra. A piros **Vissza a telefon menüjébe** gombot akkor használd, ha vissza szeretnél térni a normál telefonos használathoz.',
+    s8VisualText: '5× Óra → 1234 → Piros gomb',
+    s8VisualSub: '„Vissza a telefon menüjébe” → SENEAR helyett a másik opció kiválasztása',
+
+    // -------------------------------------------------------------------------
+    // CAREGIVER PHONE STEPS (Phase 2: Steps 1 - 6)
+    // -------------------------------------------------------------------------
+    c1Title: '1. Lépés: SENEAR telepítése a Gondozó telefonjára',
+    c1Category: 'Gondozói App Telepítése',
+    c1Desc:
+      'Telepítsd és nyisd meg ugyanazt a SENEAR alkalmazást a gondozó (családtag) saját telefonján is. Az első indításkor engedélyezd az értesítéseket (Notifications).',
+    c1Tip:
+      'Az értesítések engedélyezése elengedhetetlen ahhoz, hogy az SOS vészjelzések, a 20% alatti akkumulátor-riasztások, a kikapcsolási jelzések, az elkóborlási értesítések és a bejövő Wi-Fi hívások lezárt képernyőn is azonnal megérkezzenek.',
+    c1VisualText: 'Telepítés a Gondozó Telefonjára',
+    c1VisualSub: 'Értesítési engedélyek megadása az azonnali riasztásokhoz',
+
+    c2Title: '2. Lépés: Gondozó vagyok profil és Gondozói Regisztráció',
+    c2Category: 'Gondozói Profil',
+    c2Desc:
+      'Az üdvözlő képernyőn válaszd a **Gondozó vagyok** gombot. A **Gondozói Regisztráció** képernyőn add meg a vezeték- és keresztneved (pl. Nagy Mária), a telefonszámod és az e-mail címed, majd koppints a **Tovább a Vezérlőpultra** gombra.',
+    c2Tip:
+      'A rendszer automatikusan létrehozza a gondozói profilodat, regisztrálja a push-értesítési csatornát, és párosításkor beállítja a telefonszámodat a Gondozott gyorstárcsázó csempéjére.',
+    c2VisualText: '„Gondozó vagyok” → Regisztráció',
+    c2VisualSub: 'Gondozó nevének, telefonszámának és e-mail címének megadása',
+
+    c3Title: '3. Lépés: Összekapcsolás a 6-jegyű Párosítási Kóddal',
+    c3Category: 'Készülékek Párosítása',
+    c3Desc:
+      'A Gondozói Vezérlőpult főmenüjében lépj a **Gondozottaim & Párosítás** menüpontba. Miután elfogadtad a GDPR üzenetet, az **Új Gondozott Párosítása** mezőbe írd be a Gondozott telefonján (az Általános beállításokban) látható 6-jegyű kódot (pl. K4M9A2), majd nyomd meg az **Eszköz párosítása** gombot.',
+    c3Tip:
+      'Egy gondozotthoz több családtag is csatlakozhat ugyanazzal a 6-jegyű kóddal, és egy gondozó több idős hozzátartozót is felügyelhet egyszerre!',
+    c3VisualText: '6-jegyű Kód Beírása & Párosítás',
+    c3VisualSub: 'Azonnali, valós idejű kapcsolat a két telefon között',
+
+    c4Title: '4. Lépés: Távoli Névjegy- és Fotókezelés, Napi Rutinok és Gyógyszeremlékeztető',
+    c4Category: 'Távoli Névjegyek & Napi Rutinok',
+    c4Desc:
+      'A gondozott adatlapján távolról, a saját telefonodról is beállíthatod a névjegyeket és a napi emlékeztetőket:\n1. **Távoli Névjegy- és Fotókezelés** — szerkesztheted a gondozott **4 nagy fényképes hívócsempéjét** (név, rokonság, telefonszám, fotó). A galériából kiválasztott képet az app automatikusan középre vágja és tömöríti az azonnali felhőszinkronizációhoz, így az valós időben frissül a Gondozott Kioszk képernyőjén.\n2. **Napi Rutinok, Ébresztő és Gyógyszeremlékeztető** — 4 kategóriában (**⏰ Ébresztő**, **💊 Gyógyszer**, **💧 Folyadékpótlás**, **📅 Egyéni feladat**) hozhatsz létre emlékeztetőket többsoros adagolási leírással és a gyógyszeres doboz opcionális fényképével.\n3. **2 lépéses visszaigazolás a Gondozottnál** — amikor az emlékeztető megszólal, a gondozott rányom a **MEGNÉZEM** gombra (ekkor a hang elhalkul és megjelenik a pontos adagolás + fotó), majd megnyomja az óriási zöld **BEVETTEM** gombot. Ekkor a te képernyődön azonnal megjelenik a zöld **✅ Elfogadva / Bevette** jelzés a pontos időponttal.',
+    c4Tip:
+      'Minden távolról elmentett névjegy, fénykép és napi rutin néhány másodpercen belül automatikusan megjelenik a Gondozott telefonján.',
+    c4VisualText: 'Távoli Fotós Kontaktok + Napi Rutinok',
+    c4VisualSub: 'MEGNÉZEM → BEVETTEM → ✅ Bevette visszajelzés a telefonodon',
+
+    c5Title: '5. Lépés: Otthon Zóna, Automatikus Hívásfogadás és Kétirányú Wi-Fi hívás',
+    c5Category: 'Zónavédelem & Hívások',
+    c5Desc:
+      'A gondozott részletes adatlapján:\n1. Indíthatsz **hagyományos hívást** vagy akár **Wi-Fi alapú hívást** is, ha a gondozottnak nem lenne SIM-kártyája, de van internete Wi-Fi-ről. A Wi-Fi hívásnál **Videóhívás** is bekapcsolható.\n2. **Jelenlegi hely beállítása otthonként** — amikor a gondozott otthon van, kattints erre a gombra és onnantól kezdve ez lesz az otthoni pozíciója.\n3. Az **Elkóborlási Riasztások**, amit az **Értesítési beállítások** alatt állíthatsz be, az otthonként beállított pozícióhoz lesz ellenőrizve.\n4. Az **Automatikus hívásfogadás (Kihangosítva)** azt jelenti, hogy a gondozott telefonja érintés nélkül, kihangosítva veszi fel a te hívásodat, anélkül, hogy a gondozottnak rá kelljen kattintania.\n5. Ha a gondozott felhasználónak van SIM-kártyája (és ezzel mobilnete), akkor a **Navigálás** gombbal a Google Maps mindig segít gyorsan a gondozotthoz menni, ha elkóborolna.',
+    c5Tip:
+      'Ha a gondozott telefonjában nincs SIM-kártya, az **Értesítési beállítások** menüben kapcsold be a **Wi-Fi hívás engedélyezése (ha nincs SIM/Mobilnet)** opciót — így te is és a gondozott is (a 4 kontaktcsempe bármelyikével) kétirányú Wi-Fi hang- és videóhívást indíthattok!',
+    c5VisualText: 'Otthon Zóna + Auto-hívásfogadás + Wi-Fi hívás',
+    c5VisualSub: 'Állítható elkóborlási távolság & kétirányú hívás SIM nélkül',
+
+    c6Title: '6. Lépés: Riasztási előzmények, Biztonsági tájékoztató és GDPR adattörlés',
+    c6Category: 'Eseménynapló, Jogi Info & GDPR',
+    c6Desc:
+      '- A főmenüben a **Riasztási előzmények** alatt szűrhetően visszanézheted az SOS vészjelzéseket, elkóborlásokat, akkumulátor- és rendszerüzeneteket.\n- Az **Értesítési beállítások** menüben választhatod ki, miről kérsz push-értesítést: akkumulátor 20% alá merülése, a telefon bekapcsolása, kikapcsolása / offline állapota, töltőre csatlakozása, Wi-Fi hívás és elkóborlási riasztás.\n- **Biztonsági és Jogi Tájékoztató / Használati Útmutató** — a nem-orvostechnikai / segélyhívó felelősségkizáró nyilatkozatot és a beállítási segédletet bármikor megtekintheted az Üdvözlő képernyőn vagy a Gondozói Vezérlőpult menüjében.\n- **Egynyomásos GDPR Adattörlés** — a **Saját profil → Fiók és minden adat végleges törlése (GDPR)** menüpontban egyetlen gombnyomással véglegesen törölheted az összes felhőbeli és helyi adatot.',
+    c6Tip:
+      'A **Saját profil** menüben bármikor módosíthatod az adataidat, vagy egyetlen érintéssel véglegesen törölheted a fiókodat és minden szinkronizált adatot (GDPR).',
+    c6VisualText: 'Riasztási Előzmények, Jogi Info & GDPR Törlés',
+    c6VisualSub: 'Szűrhető eseménynapló, biztonsági tájékoztató és egynyomásos törlés',
 
     // Stepper buttons
     btnDoneNext: 'Kész — Következő Lépés',
     btnPrevious: 'Előző Lépés',
-    btnComplete: 'Telepítés Befejezése',
+    btnComplete: 'Beállítás Befejezése',
+    btnContinueToCaregiver: 'Tovább a Gondozó telefonjának beállítására →',
     stepActiveBadge: 'Folyamatban',
     stepCompletedBadge: 'Kész',
     stepPendingBadge: 'Következő',
 
     // Completion Card
-    completionTitle: 'A telepítés sikeresen befejeződött!',
+    completionTitle: 'A beállítás sikeresen elkészült!',
     completionSubtitle:
-      'A SENEAR sikeresen élesítve van Device Owner módban. A véletlen alkalmazástörlés, a rendszer elállítása és a Play Áruházas felugró ablakok teljesen le vannak zárva.',
-    btnRestartWizard: 'Varázsló újrakezdése',
-    btnOpenSimulator: 'Webes Szimulátor tesztelése',
+      'A Gondozott Kioszk telefonja és a Gondozó Vezérlőpultja mostantól összehangoltan, biztonságosan működik. Fent bármikor válthatsz a Gondozott és a Gondozó útmutatója között.',
+    btnRestartWizard: 'Útmutató újrakezdése',
+    btnOpenSimulator: 'Webes Szimulátor kipróbálása',
     btnContactSupport: 'Technikai támogatás felkeresése',
 
-    // QR Box
-    qrBoxTitle: 'SENEAR Telepítő QR-kód',
-    qrBoxSubtitle: 'Olvasd be ezt a kódot a 3. lépés során a céltelefonnal',
-    qrTabInteractive: 'Interaktív QR-kód',
-    qrTabPayload: 'JSON Konfiguráció',
-    btnCopyJson: 'JSON másolása',
-    btnCopied: 'Másolva!',
-    btnPrintCard: 'Kártya nyomtatása',
-    qrHoldDistance: 'Készen áll a beolvasásra (Tartsd 20–30 cm távolságra)',
-
     // FAQs
-    faqTitle: 'Gyakori Kérdések a Telepítésről',
-    faq1Q: 'Mi történik, ha a 6 koppintás nem nyitja meg a QR-kód olvasót?',
+    faqTitle: 'Gyakori Kérdések a Beállításról',
+    faq0Q: 'Hogyan tudok belépni a setupba (Gondozói Beállításokba)?',
+    faq0A:
+      'Az admin jelszóval bármikor ki lehet ugrani a gondozói menübe: alaphelyzetben ez 1234, de az Általános beállításokban tetszőlegesen át is lehet állítani. A Kioszk kijelzőn 5-ször egymás után kell rákattintani az órára, majd megadni az 1234 jelszót.',
+    faq1Q: 'Szükséges még gyári visszaállítás (Factory Reset) vagy 6-koppintásos QR-kód a telepítéshez?',
     faq1A:
-      'Győződj meg róla, hogy a nyitó „Üdvözöljük” képernyőn vagy a gyári visszaállítás után, még mielőtt a „Kezdés” gombra nyomnál. Koppints tempósan a felső üres fehér részre.',
-    faq2Q: 'Szükséges SIM-kártya a beállítás közben?',
+      'Nem! A SENEAR mostantól normál Android alkalmazásként telepíthető, így nincs szükség sem a telefon törlésére, sem a 6-koppintásos QR-kód olvasásra. Elég feltelepíteni az appot, a 2 lépéses varázslóban megadni az engedélyeket, és bekapcsolni a SENEAR Kioszk Őrszemet (Kisegítő lehetőségek).',
+    faq2Q: 'Hol találom a 6-jegyű Párosítási Kódot, amivel összeköthetem a két telefont?',
     faq2A:
-      'Nem! A telefonnak csupán Wi-Fi hálózatra van szüksége a SENEAR csomag automatikus letöltéséhez. Sim-kártyára a késöbbiekben lesz szüksége a telefonnak, hogy rendesen használható legyen.',
-    faq3Q: 'Miért nincs szükség Google-fiókra?',
+      'A Gondozott telefonján a „Gondozói Beállítások” > „Általános beállítások” menüpontban, egy kék kártyán nagy számokkal jelenik meg a 6-jegyű Párosítási Kód. Ezt kell beírni a Gondozó telefonján a „Gondozottaim & Párosítás” menüben.',
+    faq3Q: 'Hogyan működik a távolról élesíthető Automatikus Hívásfogadás kihangosítva?',
     faq3A:
-      'Az Android Enterprise Device Owner mód közvetlenül firmware szinten telepíti és zárolja az appot, így nincs szükség fiókra és elkerülhetők a jelszó kérések az idős használónál.',
+      'A Gondozó a saját telefonján (a Gondozott részletes adatlapján) egyetlen kapcsolóval élesítheti az „Automatikus hívásfogadás (kihangosítva)” funkciót. A rendszer azonnal továbbítja a parancsot a gondozott telefonjára, amely a bejövő hívást automatikusan felveszi és kihangosítja.',
+    faq4Q: 'Használható a Gondozott telefonja önállóan vagy SIM-kártya nélkül is?',
+    faq4A:
+      'Igen! A Gondozott Kioszk felülete (a 4 fényképes gyorshívó gomb, a napi rutin ébresztők, az SOS segélyhívás, a gyors SMS-ek és az idősbarát csengőhang) párosítás nélkül is teljes értékűen és ingyenesen működik. Gondozóval összekapcsolva pedig Wi-Fi-n keresztül SIM-kártya nélkül is kétirányú hang- és videóhívást indíthattok egymásnak.',
 
     // Visual Card & Badge Labels
     selectedBadge: 'Kiválasztva',
     childModeBadge: 'Gyermek Mód',
-    dpcLockedBadge: 'DPC Zárolva',
-    stepsTotalLabel: 'Lépés Összesen',
+    dpcLockedBadge: 'Kioszk Védelem',
+    stepsTotalLabel: 'lépés összesen',
     stepsDoneLabel: '/',
-    stepsCompletedLabel: 'Kész',
-    p1s1GearTip: 'Koppints a Beállítások fogaskerékre a kezdőképernyőn',
-    p1s2SystemStep: '1. Rendszer',
-    p1s2ResetStep: '2. Visszaállítási lehetőségek',
-    p1s4RebootSub: 'Telefon törlése & Üdvözlő képernyő előkészítése',
-    p2s1WelcomeTitle: 'Üdvözöljük',
-    p2s2TapsSub: 'Aktiválja a rejtett Android Enterprise kamerát',
-    p2s3WifiReady: 'Wi-Fi Kész',
-    p2s3Scanner: 'Szkenner',
-    p2s4ApkDownload: 'Csomag letöltése (APK)',
-    p2s4DeviceOwnerBypassed: 'Device Owner Jogosultság Megadva • Google Belépés Kihagyva',
-    p2s2TapCounter: 'koppintás',
+    stepsCompletedLabel: 'kész',
+    visualRoleSeniorBtn: 'Gondozott vagyok',
+    visualRoleCaregiverBtn: 'Gondozó vagyok',
+    visualLockKioskBtn: '✓ Eszköz lezárása és Kioszk indítása',
+    visualExitKioskBtn: '⬅ Vissza a telefon menüjébe',
+    visualAutoAnswerLabel: '🔊 Auto-Hívásfogadás',
+    visualRoutineConfirmBadge: '✅ Elfogadva • 08:05',
   },
 };
 
-type PhoneType = 'used' | 'new';
+type GuideTarget = 'senior' | 'caregiver' | 'both';
 
 interface StepDefinition {
   id: string;
@@ -535,131 +725,259 @@ interface StepDefinition {
   descKey: keyof typeof I18N_WIZARD.en;
   tipKey: keyof typeof I18N_WIZARD.en;
   visualTextKey: keyof typeof I18N_WIZARD.en;
-  type: 'settings' | 'navigation' | 'erase' | 'reboot' | 'welcome' | 'taps' | 'qr_scan' | 'automatic';
+  visualSubKey: keyof typeof I18N_WIZARD.en;
+  isRedWarning?: boolean;
+  visualType:
+    | 'senior_install'
+    | 'senior_role'
+    | 'senior_a11y_ringtone'
+    | 'senior_battery_oem'
+    | 'senior_contacts_sos'
+    | 'senior_pairing_code'
+    | 'senior_kiosk_lock'
+    | 'senior_kiosk_exit'
+    | 'caregiver_install'
+    | 'caregiver_role'
+    | 'caregiver_pair'
+    | 'caregiver_contacts_routines'
+    | 'caregiver_home_autoanswer'
+    | 'caregiver_history';
 }
 
 const ALL_STEPS: StepDefinition[] = [
-  // Phase 1: Factory Reset
+  // Phase 1: Senior's Phone Setup (8 Steps)
   {
-    id: 'p1_s1',
+    id: 's_1',
     phase: 1,
     stepNumber: 1,
-    titleKey: 'p1s1Title',
-    categoryKey: 'p1s1Category',
-    descKey: 'p1s1Desc',
-    tipKey: 'p1s1Tip',
-    visualTextKey: 'p1s1VisualText',
-    type: 'settings',
+    titleKey: 's1Title',
+    categoryKey: 's1Category',
+    descKey: 's1Desc',
+    tipKey: 's1Tip',
+    visualTextKey: 's1VisualText',
+    visualSubKey: 's1VisualSub',
+    visualType: 'senior_install',
   },
   {
-    id: 'p1_s2',
+    id: 's_2',
     phase: 1,
     stepNumber: 2,
-    titleKey: 'p1s2Title',
-    categoryKey: 'p1s2Category',
-    descKey: 'p1s2Desc',
-    tipKey: 'p1s2Tip',
-    visualTextKey: 'p1s2VisualText',
-    type: 'navigation',
+    titleKey: 's2Title',
+    categoryKey: 's2Category',
+    descKey: 's2Desc',
+    tipKey: 's2Tip',
+    visualTextKey: 's2VisualText',
+    visualSubKey: 's2VisualSub',
+    visualType: 'senior_role',
   },
   {
-    id: 'p1_s3',
+    id: 's_3',
     phase: 1,
     stepNumber: 3,
-    titleKey: 'p1s3Title',
-    categoryKey: 'p1s3Category',
-    descKey: 'p1s3Desc',
-    tipKey: 'p1s3Tip',
-    visualTextKey: 'p1s3VisualText',
-    type: 'erase',
+    titleKey: 's3Title',
+    categoryKey: 's3Category',
+    descKey: 's3Desc',
+    tipKey: 's3Tip',
+    visualTextKey: 's3VisualText',
+    visualSubKey: 's3VisualSub',
+    visualType: 'senior_a11y_ringtone',
   },
   {
-    id: 'p1_s4',
+    id: 's_4',
     phase: 1,
     stepNumber: 4,
-    titleKey: 'p1s4Title',
-    categoryKey: 'p1s4Category',
-    descKey: 'p1s4Desc',
-    tipKey: 'p1s4Tip',
-    visualTextKey: 'p1s4VisualText',
-    type: 'reboot',
+    titleKey: 's4Title',
+    categoryKey: 's4Category',
+    descKey: 's4Desc',
+    tipKey: 's4Tip',
+    visualTextKey: 's4VisualText',
+    visualSubKey: 's4VisualSub',
+    visualType: 'senior_pairing_code',
   },
-  // Phase 2: Kiosk Installation
   {
-    id: 'p2_s1',
+    id: 's_5',
+    phase: 1,
+    stepNumber: 5,
+    titleKey: 's5Title',
+    categoryKey: 's5Category',
+    descKey: 's5Desc',
+    tipKey: 's5Tip',
+    visualTextKey: 's5VisualText',
+    visualSubKey: 's5VisualSub',
+    visualType: 'senior_battery_oem',
+  },
+  {
+    id: 's_6',
+    phase: 1,
+    stepNumber: 6,
+    titleKey: 's6Title',
+    categoryKey: 's6Category',
+    descKey: 's6Desc',
+    tipKey: 's6Tip',
+    visualTextKey: 's6VisualText',
+    visualSubKey: 's6VisualSub',
+    visualType: 'senior_contacts_sos',
+  },
+  {
+    id: 's_7',
+    phase: 1,
+    stepNumber: 7,
+    titleKey: 's7Title',
+    categoryKey: 's7Category',
+    descKey: 's7Desc',
+    tipKey: 's7Tip',
+    visualTextKey: 's7VisualText',
+    visualSubKey: 's7VisualSub',
+    visualType: 'senior_kiosk_lock',
+  },
+  {
+    id: 's_8',
+    phase: 1,
+    stepNumber: 8,
+    titleKey: 's8Title',
+    categoryKey: 's8Category',
+    descKey: 's8Desc',
+    tipKey: 's8Tip',
+    visualTextKey: 's8VisualText',
+    visualSubKey: 's8VisualSub',
+    isRedWarning: true,
+    visualType: 'senior_kiosk_exit',
+  },
+
+  // Phase 2: Caregiver's Phone Setup (6 Steps)
+  {
+    id: 'c_1',
     phase: 2,
     stepNumber: 1,
-    titleKey: 'p2s1Title',
-    categoryKey: 'p2s1Category',
-    descKey: 'p2s1Desc',
-    tipKey: 'p2s1Tip',
-    visualTextKey: 'p2s1VisualText',
-    type: 'welcome',
+    titleKey: 'c1Title',
+    categoryKey: 'c1Category',
+    descKey: 'c1Desc',
+    tipKey: 'c1Tip',
+    visualTextKey: 'c1VisualText',
+    visualSubKey: 'c1VisualSub',
+    visualType: 'caregiver_install',
   },
   {
-    id: 'p2_s2',
+    id: 'c_2',
     phase: 2,
     stepNumber: 2,
-    titleKey: 'p2s2Title',
-    categoryKey: 'p2s2Category',
-    descKey: 'p2s2Desc',
-    tipKey: 'p2s2Tip',
-    visualTextKey: 'p2s2VisualText',
-    type: 'taps',
+    titleKey: 'c2Title',
+    categoryKey: 'c2Category',
+    descKey: 'c2Desc',
+    tipKey: 'c2Tip',
+    visualTextKey: 'c2VisualText',
+    visualSubKey: 'c2VisualSub',
+    visualType: 'caregiver_role',
   },
   {
-    id: 'p2_s3',
+    id: 'c_3',
     phase: 2,
     stepNumber: 3,
-    titleKey: 'p2s3Title',
-    categoryKey: 'p2s3Category',
-    descKey: 'p2s3Desc',
-    tipKey: 'p2s3Tip',
-    visualTextKey: 'p2s3VisualText',
-    type: 'qr_scan',
+    titleKey: 'c3Title',
+    categoryKey: 'c3Category',
+    descKey: 'c3Desc',
+    tipKey: 'c3Tip',
+    visualTextKey: 'c3VisualText',
+    visualSubKey: 'c3VisualSub',
+    visualType: 'caregiver_pair',
   },
   {
-    id: 'p2_s4',
+    id: 'c_4',
     phase: 2,
     stepNumber: 4,
-    titleKey: 'p2s4Title',
-    categoryKey: 'p2s4Category',
-    descKey: 'p2s4Desc',
-    tipKey: 'p2s4Tip',
-    visualTextKey: 'p2s4VisualText',
-    type: 'automatic',
+    titleKey: 'c4Title',
+    categoryKey: 'c4Category',
+    descKey: 'c4Desc',
+    tipKey: 'c4Tip',
+    visualTextKey: 'c4VisualText',
+    visualSubKey: 'c4VisualSub',
+    visualType: 'caregiver_contacts_routines',
+  },
+  {
+    id: 'c_5',
+    phase: 2,
+    stepNumber: 5,
+    titleKey: 'c5Title',
+    categoryKey: 'c5Category',
+    descKey: 'c5Desc',
+    tipKey: 'c5Tip',
+    visualTextKey: 'c5VisualText',
+    visualSubKey: 'c5VisualSub',
+    visualType: 'caregiver_home_autoanswer',
+  },
+  {
+    id: 'c_6',
+    phase: 2,
+    stepNumber: 6,
+    titleKey: 'c6Title',
+    categoryKey: 'c6Category',
+    descKey: 'c6Desc',
+    tipKey: 'c6Tip',
+    visualTextKey: 'c6VisualText',
+    visualSubKey: 'c6VisualSub',
+    visualType: 'caregiver_history',
   },
 ];
 
 export function SenearInstallGuidePage({
   onBackToHome,
-  onOpenSimulator,
-  onContactClick,
+  onBackToProduct,
 }: SenearInstallGuidePageProps) {
   const { language } = useLanguage();
-  const currentLang = (language in I18N_WIZARD ? language : 'en') as SupportedLanguage;
+  const currentLang = (language in I18N_WIZARD ? language : 'en') as keyof typeof I18N_WIZARD;
   const t = I18N_WIZARD[currentLang];
 
-  // State: selected phone type ('used' | 'new')
-  const [selectedPhoneType, setSelectedPhoneType] = useState<PhoneType>('used');
+  // Helper to render **bold** segments without quotes and clean multi-line spacing
+  const renderRichText = (text: string, isRed = false) => {
+    const lines = text.split('\n');
+    const renderLine = (line: string, lineIdx: number) => {
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      return (
+        <span key={lineIdx} className="block">
+          {parts.map((part, pIdx) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return (
+                <strong
+                  key={pIdx}
+                  className={isRed ? 'font-extrabold text-red-950' : 'font-bold text-[#1F2421]'}
+                >
+                  {part.slice(2, -2)}
+                </strong>
+              );
+            }
+            return <span key={pIdx}>{part}</span>;
+          })}
+        </span>
+      );
+    };
 
-  // Compute active steps based on condition
+    if (lines.length <= 1) {
+      return renderLine(text, 0);
+    }
+    return <span className="flex flex-col gap-2">{lines.map((l, idx) => renderLine(l, idx))}</span>;
+  };
+
+  // State: selected guide target ('senior' | 'caregiver' | 'both')
+  const [selectedTarget, setSelectedTarget] = useState<GuideTarget>('senior');
+
+  // Compute active steps based on selected target
   const activeSteps =
-    selectedPhoneType === 'used'
-      ? ALL_STEPS
-      : ALL_STEPS.filter((step) => step.phase === 2);
+    selectedTarget === 'senior'
+      ? ALL_STEPS.filter((step) => step.phase === 1)
+      : selectedTarget === 'caregiver'
+      ? ALL_STEPS.filter((step) => step.phase === 2)
+      : ALL_STEPS;
 
-  // State: active accordion step id (defaults to first step in activeSteps)
-  const [activeStepId, setActiveStepId] = useState<string>('p1_s1');
+  // State: active accordion step id
+  const [activeStepId, setActiveStepId] = useState<string>('s_1');
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [isWizardComplete, setIsWizardComplete] = useState(false);
 
-  const [interactiveTapCount, setInteractiveTapCount] = useState(0);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [highlightedStepId, setHighlightedStepId] = useState<string | null>(null);
+  const [selectedPhoneBrand, setSelectedPhoneBrand] = useState<string>('');
 
-  // Smooth scroll helper that dynamically tracks element position on every animation frame,
-  // preventing overshoot or slipping down when preceding accordion items collapse
+  // Smooth scroll helper
   const smoothScrollToElement = (
     element: HTMLElement,
     duration = 550,
@@ -678,15 +996,10 @@ export function SenearInstallGuidePage({
       const dt = Math.max(0.001, Math.min(0.05, (currentTime - (lastTime || currentTime)) / 1000));
       lastTime = currentTime;
 
-      // Current live distance to target:
-      // positive = element is below target (scroll down)
-      // negative = element is above target (scroll up)
       const rect = element.getBoundingClientRect();
       const currentDiff = rect.top - offset;
 
-      // Check if settled or time exceeded
       if (timeElapsed >= duration || Math.abs(currentDiff) <= 1.0) {
-        // Final sub-pixel align to exact offset
         if (Math.abs(currentDiff) > 0.5) {
           window.scrollBy(0, currentDiff);
         }
@@ -702,7 +1015,6 @@ export function SenearInstallGuidePage({
         return;
       }
 
-      // Critically-damped spring factor: smoothly approaches zero error without overshoot
       const dampingFactor = 1 - Math.exp(-dt * 12);
       const scrollStep = currentDiff * dampingFactor;
 
@@ -713,7 +1025,6 @@ export function SenearInstallGuidePage({
     requestAnimationFrame(step);
   };
 
-  // Scroll and focus helper for stepper transitions
   const scrollToStep = (stepId: string, delay = 40) => {
     setTimeout(() => {
       const el =
@@ -725,24 +1036,21 @@ export function SenearInstallGuidePage({
     }, delay);
   };
 
-  // When switching phone type:
-  const handleSelectPhoneType = (type: PhoneType) => {
-    setSelectedPhoneType(type);
+  const handleSelectTarget = (target: GuideTarget) => {
+    setSelectedTarget(target);
     setIsWizardComplete(false);
     setCompletedSteps(new Set());
-    if (type === 'new') {
-      setActiveStepId('p2_s1');
+    if (target === 'caregiver') {
+      setActiveStepId('c_1');
     } else {
-      setActiveStepId('p1_s1');
+      setActiveStepId('s_1');
     }
   };
 
-  // Start button handler: sets phone type and slowly glides focus to the first step
-  const handleStartStep = (type: PhoneType) => {
-    handleSelectPhoneType(type);
-    const targetStepId = type === 'used' ? 'p1_s1' : 'p2_s1';
+  const handleStartStep = (target: GuideTarget) => {
+    handleSelectTarget(target);
+    const targetStepId = target === 'caregiver' ? 'c_1' : 's_1';
 
-    // Allow state update to apply to the DOM, then smoothly scroll and highlight
     setTimeout(() => {
       const el =
         document.getElementById(`step-${targetStepId}`) ||
@@ -759,9 +1067,7 @@ export function SenearInstallGuidePage({
   };
 
   const currentStepIndex = activeSteps.findIndex((s) => s.id === activeStepId);
-  const currentStep = activeSteps[currentStepIndex] || activeSteps[0];
 
-  // "Done / Next" handler with smooth closing animation sequence
   const handleStepDoneNext = () => {
     const newCompleted = new Set(completedSteps);
     newCompleted.add(activeStepId);
@@ -772,7 +1078,6 @@ export function SenearInstallGuidePage({
       setActiveStepId(nextStep.id);
       scrollToStep(nextStep.id, 40);
     } else {
-      // Completed all steps
       setTimeout(() => {
         setIsWizardComplete(true);
         setTimeout(() => {
@@ -781,11 +1086,10 @@ export function SenearInstallGuidePage({
             smoothScrollToElement(wizardEl, 550, 100);
           }
         }, 80);
-      }, 400);
+      }, 350);
     }
   };
 
-  // "Previous" handler
   const handleStepPrev = () => {
     if (currentStepIndex > 0) {
       const prevStep = activeSteps[currentStepIndex - 1];
@@ -794,115 +1098,70 @@ export function SenearInstallGuidePage({
     }
   };
 
-  const handleTapSimulation = () => {
-    setInteractiveTapCount((prev) => (prev >= 6 ? 1 : prev + 1));
-  };
-
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12 sm:space-y-16">
         {/* ------------------------------------------------------------------- */}
         {/* Hero Section                                                        */}
         {/* ------------------------------------------------------------------- */}
-        <section className="relative">
-          <div className="bg-gradient-to-br from-[#FFFFFF] via-[#FAF7F2] to-[#F5EFE6] rounded-3xl border-2 border-[#C5A880] p-6 sm:p-10 lg:p-12 shadow-lg overflow-hidden relative">
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#C5A880]/15 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative pt-2 pb-6">
+          {/* Ambient Gold Glows */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#C5A880]/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/2 -left-36 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
-              <div className="lg:col-span-8 space-y-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#FFFFFF] text-[#8C7355] border border-[#C5A880]/40 shadow-2xs flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{t.deviceOwnerPill}</span>
-                  </span>
-                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/30 shadow-2xs flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#C5A880]" />
-                    <span>{t.noGoogleAccountPill}</span>
-                  </span>
-                </div>
+          {/* Breadcrumb: Home › SENEAR › Setup guide */}
+          <nav className="relative z-10 flex flex-wrap items-center gap-1.5 text-xs font-medium text-[#8C7355] mb-8">
+            <button type="button" onClick={onBackToHome} className="hover:text-[#2C2C2C] cursor-pointer">
+              {t.backToHome}
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <button type="button" onClick={onBackToProduct} className="hover:text-[#2C2C2C] cursor-pointer">
+              SENEAR
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <span className="text-[#2C2C2C] font-semibold">{t.breadcrumb}</span>
+          </nav>
 
-                <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2C2C2C] tracking-tight leading-[1.15]">
-                  {t.pageTitle}
-                </h1>
-
-                <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed max-w-2xl">
-                  {t.pageSubtitle}
-                </p>
-
-                {/* Important Note for Caregivers & Relatives - Red Alert Style */}
-                <div className="bg-red-50/75 border border-red-200/90 rounded-2xl p-3.5 sm:p-4 max-w-2xl flex items-start gap-3 shadow-2xs">
-                  <div className="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                  </div>
-                  <p className="text-xs sm:text-sm text-red-950 leading-relaxed font-medium">
-                    {t.pageNote}
-                  </p>
-                </div>
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <div className="space-y-6 text-center flex flex-col items-center">
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#FFFFFF] text-[#8C7355] border border-[#C5A880]/40 shadow-xs flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{t.standardInstallPill}</span>
+                </span>
+                <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/30 shadow-xs flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C5A880]" />
+                  <span>{t.dualPhonePill}</span>
+                </span>
               </div>
 
-              {/* Smartphone Mockup Images (Senear in front, Junear peeking behind tilted to the right) */}
-              <div className="lg:col-span-4 flex justify-center lg:justify-end">
-                <div className="relative group max-w-[270px] w-full pt-4 pr-6 sm:pr-8">
-                  {/* JUNEAR Phone Mockup - Tilted to the right behind SENEAR, only top/upper portion peeking out */}
-                  <div
-                    className="absolute -top-3 sm:-top-4 -right-1 sm:right-0 w-[88%] bg-[#1F2421] rounded-[34px] p-2.5 shadow-xl border-4 border-[#2D3748] ring-1 ring-emerald-500/40 overflow-hidden transform rotate-[13deg] translate-x-4 -translate-y-2 z-0 opacity-95 transition-transform duration-500 group-hover:rotate-[16deg] group-hover:translate-x-6"
-                    title="JUNEAR Kiosk"
-                  >
-                    {/* Phone speaker & camera notch */}
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-2">
-                      <div className="w-9 h-1 bg-[#4A5568] rounded-full" />
-                      <div className="w-2 h-2 bg-[#111111] rounded-full border border-[#4A5568]" />
-                    </div>
-
-                    <div className="relative rounded-[26px] overflow-hidden bg-[#0F172A] aspect-[9/19.5]">
-                      <img
-                        src={`/screenshots/junear/junear-1_${language}.png`}
-                        alt="JUNEAR App Mockup"
-                        className="w-full h-full object-cover object-top filter brightness-[0.96]"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            '/screenshots/junear/junear-1.png';
-                        }}
-                      />
-                      {/* Top badge on Junear phone to clearly identify it */}
-                      <div className="absolute top-6 left-2 right-2 bg-emerald-950/85 backdrop-blur-md px-2 py-1 rounded-md text-emerald-300 text-[10px] font-bold flex items-center justify-between border border-emerald-500/30">
-                        <span className="tracking-wide">JUNEAR</span>
-                        <span className="text-[8px] text-emerald-400 font-mono">{t.childModeBadge}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SENEAR Phone Mockup - Main phone in front */}
-                  <div className="relative z-10 bg-[#1A1A1A] rounded-[36px] p-2.5 shadow-2xl border-4 border-[#2C2C2C] ring-1 ring-[#C5A880]/50 overflow-hidden">
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-2">
-                      <div className="w-10 h-1 bg-[#3A3A3A] rounded-full" />
-                      <div className="w-2.5 h-2.5 bg-[#111111] rounded-full border border-[#333333]" />
-                    </div>
-
-                    <div className="relative rounded-[28px] overflow-hidden bg-[#FAFAFA] aspect-[9/19.5]">
-                      <img
-                        src="senear-device-mockup.png"
-                        alt="SENEAR App Mockup"
-                        className="w-full h-full object-cover object-top"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            '/screenshots/senear/senear-1_hu.png';
-                        }}
-                      />
-                      <div className="absolute bottom-2 left-2 right-2 bg-[#2C2C2C]/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg text-white text-[11px] flex items-center justify-between border border-white/20">
-                        <span className="font-bold">SENEAR Kiosk</span>
-                        <span className="text-[9px] text-[#C5A880] font-mono">{t.dpcLockedBadge}</span>
-                      </div>
-                    </div>
-                  </div>
+              <div className="space-y-3 flex flex-col items-center">
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <img src="/logos/senear-logo.png" alt="SENEAR logo" className="w-14 h-14 sm:w-16 sm:h-16 object-contain" />
+                  <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2C2C2C] tracking-tight leading-[1.14]">
+                    SENEAR {t.pageTitle.replace(/^SENEAR\s*/, '')}
+                  </h1>
                 </div>
+                <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed max-w-3xl mx-auto">
+                  {t.pageSubtitle}
+                </p>
+              </div>
+
+              {/* Helpful Green Info Banner */}
+              <div className="bg-emerald-50/90 border border-emerald-300/90 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-center gap-3 shadow-xs text-center max-w-3xl mx-auto">
+                <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+                  <Wifi className="w-4 h-4 text-emerald-700" />
+                </div>
+                <p className="text-xs sm:text-sm text-emerald-950 leading-relaxed font-medium">
+                  {t.pageNote}
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* ------------------------------------------------------------------- */}
-        {/* REQUIREMENT 2: Conditional Starting Point (New vs. Used Phone)      */}
+        {/* Phone Role Selection: Senior Phone vs. Caregiver Phone              */}
         {/* ------------------------------------------------------------------- */}
         <section id="device-selection" className="space-y-6">
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -915,114 +1174,51 @@ export function SenearInstallGuidePage({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Option 1: USED PHONE */}
+            {/* Option 1: SENIOR'S PHONE */}
             <div
               role="button"
               tabIndex={0}
-              onClick={() => handleStartStep('used')}
+              onClick={() => handleStartStep('senior')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleStartStep('used');
+                  handleStartStep('senior');
                 }
               }}
               className={`p-6 sm:p-8 rounded-3xl text-left transition-all duration-300 cursor-pointer border-2 relative overflow-hidden flex flex-col justify-between ${
-                selectedPhoneType === 'used'
-                  ? 'bg-gradient-to-br from-[#FFFFFF] via-[#FFFBF5] to-[#F9F3EA] border-[#8C7355] shadow-lg ring-2 ring-[#C5A880]/40 scale-[1.01]'
-                  : 'bg-[#FFFFFF] border-[#E8DFD4] hover:border-[#C5A880]/60 hover:bg-[#FAF8F5] shadow-2xs'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                      selectedPhoneType === 'used'
-                        ? 'bg-[#8C7355] text-white shadow-xs'
-                        : 'bg-[#F5F0EB] text-[#8C7355]'
-                    }`}
-                  >
-                    <RotateCcw className="w-6 h-6" />
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
-                    {t.usedPhoneTitle}
-                  </h3>
-                  <p className="text-sm text-[#5C5A56] mt-2 leading-relaxed">
-                    {t.usedPhoneSubtitle}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                {selectedPhoneType === 'used' && (
-                  <div className="mt-4 flex items-center justify-end text-xs font-bold">
-                    <span className="flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                      <Check className="w-3.5 h-3.5" /> {t.selectedBadge}
-                    </span>
-                  </div>
-                )}
-
-                {/* Kezdés Button Highlighted in Green like "Selected" text */}
-                <div className="mt-4 pt-3 border-t border-[#C5A880]/15">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleStartStep('used');
-                    }}
-                    className="w-full py-3.5 px-5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 active:scale-[0.98] text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
-                  >
-                    <span>{t.btnStart}</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1.5 transition-transform duration-200" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Option 2: NEW PHONE */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => handleStartStep('new')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleStartStep('new');
-                }
-              }}
-              className={`p-6 sm:p-8 rounded-3xl text-left transition-all duration-300 cursor-pointer border-2 relative overflow-hidden flex flex-col justify-between ${
-                selectedPhoneType === 'new'
+                selectedTarget === 'senior'
                   ? 'bg-gradient-to-br from-[#FFFFFF] via-[#F4F9F6] to-[#EBF5EF] border-emerald-600 shadow-lg ring-2 ring-emerald-500/30 scale-[1.01]'
                   : 'bg-[#FFFFFF] border-[#E8DFD4] hover:border-[#C5A880]/60 hover:bg-[#FAF8F5] shadow-2xs'
               }`}
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <div
                     className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                      selectedPhoneType === 'new'
+                      selectedTarget === 'senior'
                         ? 'bg-emerald-600 text-white shadow-xs'
                         : 'bg-[#F5F0EB] text-emerald-700'
                     }`}
                   >
-                    <Sparkles className="w-6 h-6" />
+                    <Smartphone className="w-6 h-6" />
                   </div>
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {t.seniorPhoneBadge}
+                  </span>
                 </div>
 
                 <div>
                   <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
-                    {t.newPhoneTitle}
+                    {t.seniorPhoneTitle}
                   </h3>
                   <p className="text-sm text-[#5C5A56] mt-2 leading-relaxed">
-                    {t.newPhoneSubtitle}
+                    {t.seniorPhoneSubtitle}
                   </p>
                 </div>
               </div>
 
               <div>
-                {selectedPhoneType === 'new' && (
+                {selectedTarget === 'senior' && (
                   <div className="mt-4 flex items-center justify-end text-xs font-bold">
                     <span className="flex items-center gap-1 text-emerald-700 font-bold bg-white px-2.5 py-1 rounded-full border border-emerald-300">
                       <Check className="w-3.5 h-3.5" /> {t.selectedBadge}
@@ -1030,49 +1226,130 @@ export function SenearInstallGuidePage({
                   </div>
                 )}
 
-                {/* Kezdés Button Highlighted in Green like "Selected" text */}
                 <div className="mt-4 pt-3 border-t border-emerald-200/50">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleStartStep('new');
+                      handleStartStep('senior');
                     }}
-                    className="w-full py-3.5 px-5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 active:scale-[0.98] text-emerald-700 border-2 border-emerald-400 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
+                    className="w-full py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
                   >
-                    <span>{t.btnStart}</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1.5 transition-transform duration-200" />
+                    <span>{t.btnStartSenior}</span>
+                    <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1.5 transition-transform duration-200" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Option 2: CAREGIVER'S PHONE */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => handleStartStep('caregiver')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleStartStep('caregiver');
+                }
+              }}
+              className={`p-6 sm:p-8 rounded-3xl text-left transition-all duration-300 cursor-pointer border-2 relative overflow-hidden flex flex-col justify-between ${
+                selectedTarget === 'caregiver'
+                  ? 'bg-gradient-to-br from-[#FFFFFF] via-[#FFFBF5] to-[#F9F3EA] border-[#8C7355] shadow-lg ring-2 ring-[#C5A880]/40 scale-[1.01]'
+                  : 'bg-[#FFFFFF] border-[#E8DFD4] hover:border-[#C5A880]/60 hover:bg-[#FAF8F5] shadow-2xs'
+              }`}
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      selectedTarget === 'caregiver'
+                        ? 'bg-[#8C7355] text-white shadow-xs'
+                        : 'bg-[#F5F0EB] text-[#8C7355]'
+                    }`}
+                  >
+                    <HeartHandshake className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#F5F0EB] text-[#8C7355] border border-[#C5A880]/40">
+                    {t.caregiverPhoneBadge}
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
+                    {t.caregiverPhoneTitle}
+                  </h3>
+                  <p className="text-sm text-[#5C5A56] mt-2 leading-relaxed">
+                    {t.caregiverPhoneSubtitle}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                {selectedTarget === 'caregiver' && (
+                  <div className="mt-4 flex items-center justify-end text-xs font-bold">
+                    <span className="flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                      <Check className="w-3.5 h-3.5" /> {t.selectedBadge}
+                    </span>
+                  </div>
+                )}
+
+                <div className="mt-4 pt-3 border-t border-[#C5A880]/20">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartStep('caregiver');
+                    }}
+                    className="w-full py-3.5 px-5 rounded-2xl bg-[#2C2C2C] hover:bg-black active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all duration-200 cursor-pointer group"
+                  >
+                    <span>{t.btnStartCaregiver}</span>
+                    <ArrowRight className="w-4 h-4 text-[#C5A880] group-hover:translate-x-1.5 transition-transform duration-200" />
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Active selection summary bar */}
-          <div className="max-w-4xl mx-auto bg-[#F5F0EB] p-3.5 rounded-2xl border border-[#C5A880]/30 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
-            <div className="flex items-center gap-2 text-[#2C2C2C] font-semibold">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>
-                {selectedPhoneType === 'used'
-                  ? t.deviceTypeBadgeUsed
-                  : t.deviceTypeBadgeNew}
+          {/* Full combined walkthrough button */}
+          <div className="max-w-4xl mx-auto">
+            <button
+              type="button"
+              onClick={() => handleStartStep('both')}
+              className={`w-full p-4 rounded-2xl border-2 transition-all flex flex-wrap items-center justify-between gap-3 cursor-pointer ${
+                selectedTarget === 'both'
+                  ? 'bg-[#2C2C2C] text-white border-[#C5A880] shadow-md'
+                  : 'bg-white text-[#2C2C2C] border-[#E8DFD4] hover:border-[#C5A880]'
+              }`}
+            >
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-9 h-9 rounded-xl bg-[#C5A880]/20 text-[#C5A880] flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-heading font-bold text-sm sm:text-base">
+                    {t.bothPhonesTitle}
+                  </div>
+                  <div
+                    className={`text-xs ${
+                      selectedTarget === 'both' ? 'text-stone-300' : 'text-[#5C5A56]'
+                    }`}
+                  >
+                    {t.bothPhonesSubtitle}
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#C5A880] text-[#1F2421] shrink-0">
+                {t.btnStartBoth}
               </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-[#8C7355] text-xs">
-                {activeSteps.length} {t.stepsTotalLabel} &bull;{' '}
-                {completedSteps.size} {t.stepsDoneLabel} {activeSteps.length} {t.stepsCompletedLabel}
-              </span>
-            </div>
+            </button>
           </div>
         </section>
 
         {/* ------------------------------------------------------------------- */}
-        {/* REQUIREMENT 3: Interactive Accordion / Stepper UI                   */}
+        {/* Interactive Accordion / Stepper UI (Single Unified Section)         */}
         {/* ------------------------------------------------------------------- */}
         <section id="stepper-wizard" className="space-y-6 max-w-4xl mx-auto">
-          {/* Completion Celebration Card (if all steps finished) */}
           {isWizardComplete ? (
             <div className="bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-[#C5A880] text-center space-y-6 animate-in fade-in duration-300">
               <div className="w-20 h-20 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center shadow-lg">
@@ -1089,11 +1366,21 @@ export function SenearInstallGuidePage({
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                {selectedTarget === 'senior' && (
+                  <button
+                    onClick={() => handleStartStep('caregiver')}
+                    className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <HeartHandshake className="w-4 h-4" />
+                    <span>{t.btnContinueToCaregiver}</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => {
                     setCompletedSteps(new Set());
                     setIsWizardComplete(false);
-                    setActiveStepId(selectedPhoneType === 'used' ? 'p1_s1' : 'p2_s1');
+                    setActiveStepId(selectedTarget === 'caregiver' ? 'c_1' : 's_1');
                   }}
                   className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 transition-all cursor-pointer flex items-center gap-2"
                 >
@@ -1110,12 +1397,12 @@ export function SenearInstallGuidePage({
               </div>
             </div>
           ) : (
-            /* The Interactive Accordion Steps List */
             <div className="space-y-4">
               {activeSteps.map((step, idx) => {
                 const isActive = step.id === activeStepId;
                 const isCompleted = completedSteps.has(step.id);
                 const isHighlighted = highlightedStepId === step.id;
+                const isRed = Boolean(step.isRedWarning);
 
                 return (
                   <div
@@ -1123,7 +1410,11 @@ export function SenearInstallGuidePage({
                     id={`step-${step.id}`}
                     tabIndex={-1}
                     className={`rounded-3xl transition-all duration-350 border-2 overflow-hidden scroll-mt-36 outline-none ${
-                      isHighlighted
+                      isRed
+                        ? isActive
+                          ? 'bg-red-50/70 border-red-600 shadow-lg ring-2 ring-red-500/30'
+                          : 'bg-red-50/40 border-red-400 hover:border-red-600 shadow-xs'
+                        : isHighlighted
                         ? 'bg-[#FFFFFF] border-emerald-500 shadow-xl ring-4 ring-emerald-500/40 scale-[1.015]'
                         : isActive
                         ? 'bg-[#FFFFFF] border-[#C5A880] shadow-md ring-2 ring-[#C5A880]/20'
@@ -1132,54 +1423,68 @@ export function SenearInstallGuidePage({
                         : 'bg-[#FFFFFF] border-[#E8DFD4] hover:border-[#C5A880]/50'
                     }`}
                   >
-                    {/* Collapsed/Header Bar */}
+                    {/* Header Bar */}
                     <button
                       onClick={() => {
                         setActiveStepId(step.id);
                         scrollToStep(step.id, 40);
                       }}
                       className={`w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer transition-colors duration-350 ${
-                        isActive ? 'bg-[#FAF7F2]/60' : 'hover:bg-[#FAF8F5]'
+                        isRed
+                          ? isActive
+                            ? 'bg-red-100/70'
+                            : 'hover:bg-red-100/50'
+                          : isActive
+                          ? 'bg-[#FAF7F2]/60'
+                          : 'hover:bg-[#FAF8F5]'
                       }`}
                     >
                       <div className="flex items-center gap-4">
-                        {/* Step Circle Indicator */}
                         <div
                           className={`w-10 h-10 rounded-2xl flex items-center justify-center font-heading font-black text-base shrink-0 transition-all duration-350 ${
-                            isCompleted
+                            isRed
+                              ? 'bg-red-600 text-white shadow-sm'
+                              : isCompleted
                               ? 'bg-emerald-600 text-white shadow-xs'
                               : isActive
                               ? 'bg-[#2C2C2C] text-[#FAFAFA] shadow-xs'
                               : 'bg-[#F0EAE1] text-[#6E6B65]'
                           }`}
                         >
-                          {isCompleted ? (
+                          {isCompleted && !isRed ? (
                             <Check className="w-5 h-5" strokeWidth={3} />
                           ) : (
                             step.stepNumber
                           )}
                         </div>
 
-                        {/* Title and Phase Tag */}
                         <div>
                           <div className="flex items-center gap-2">
                             <span
                               className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md ${
-                                step.phase === 1
-                                  ? 'bg-[#F5F0EB] text-[#8C7355]'
-                                  : 'bg-emerald-50 text-emerald-700'
+                                isRed
+                                  ? 'bg-red-600 text-white border border-red-700'
+                                  : step.phase === 1
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  : 'bg-[#F5F0EB] text-[#8C7355] border border-[#C5A880]/40'
                               }`}
                             >
                               {step.phase === 1 ? t.phase1Tag : t.phase2Tag}
                             </span>
-                            <span className="text-[11px] text-[#8C7355] hidden sm:inline">
+                            <span
+                              className={`text-[11px] hidden sm:inline font-semibold ${
+                                isRed ? 'text-red-700' : 'text-[#8C7355]'
+                              }`}
+                            >
                               &bull; {t[step.categoryKey]}
                             </span>
                           </div>
 
                           <h3
                             className={`font-heading text-lg sm:text-xl font-bold mt-1 ${
-                              isActive
+                              isRed
+                                ? 'text-red-700'
+                                : isActive
                                 ? 'text-[#2C2C2C]'
                                 : isCompleted
                                 ? 'text-stone-800'
@@ -1191,11 +1496,12 @@ export function SenearInstallGuidePage({
                         </div>
                       </div>
 
-                      {/* Status pill & Expand chevron */}
                       <div className="flex items-center gap-3">
                         <span
                           className={`text-xs font-semibold px-2.5 py-1 rounded-full hidden sm:inline-block ${
-                            isCompleted
+                            isRed
+                              ? 'bg-red-100 text-red-800 border border-red-300 font-bold'
+                              : isCompleted
                               ? 'bg-emerald-100 text-emerald-800'
                               : isActive
                               ? 'bg-[#2C2C2C] text-white'
@@ -1210,284 +1516,367 @@ export function SenearInstallGuidePage({
                         </span>
 
                         <ChevronDown
-                          className={`w-5 h-5 text-[#8C7355] shrink-0 transition-transform duration-350 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                            isActive ? 'rotate-180 text-[#2C2C2C]' : ''
-                          }`}
+                          className={`w-5 h-5 shrink-0 transition-transform duration-350 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                            isRed
+                              ? 'text-red-700'
+                              : 'text-[#8C7355]'
+                          } ${isActive ? 'rotate-180 text-[#2C2C2C]' : ''}`}
                         />
                       </div>
                     </button>
 
-                    {/* Expanded Detail Body with Stately, Slow Closing Animation */}
+                    {/* Expanded Detail Body */}
                     <div className={`step-accordion-collapse ${isActive ? 'is-expanded' : ''}`}>
                       <div className="min-h-0 overflow-hidden">
-                        <div className="p-6 sm:p-8 pt-2 sm:pt-4 border-t border-[#F0EAE1] space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                          {/* Left: Step Description, Tips, Practice */}
-                          <div className="lg:col-span-7 space-y-4">
-                            <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed">
-                              {t[step.descKey]}
-                            </p>
-
-                            {/* Tip box */}
-                            {step.id === 'p2_s1' || (typeof t[step.tipKey] === 'string' && (t[step.tipKey].startsWith('FONTOS') || t[step.tipKey].startsWith('IMPORTANT') || t[step.tipKey].startsWith('WICHTIG'))) ? (
-                              <div className="bg-red-50/75 p-4 rounded-2xl border border-red-200/90 flex items-start gap-3 text-xs sm:text-sm text-red-950 shadow-2xs">
-                                <div className="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                                  <AlertTriangle className="w-4 h-4 text-red-600" />
-                                </div>
-                                <span className="font-medium leading-relaxed">{t[step.tipKey]}</span>
+                        <div
+                          className={`p-6 sm:p-8 pt-2 sm:pt-4 border-t space-y-6 ${
+                            isRed ? 'border-red-200 bg-white/80' : 'border-[#F0EAE1]'
+                          }`}
+                        >
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            {/* Left: Step Description & Tip */}
+                            <div className="lg:col-span-7 space-y-4">
+                              <div
+                                className={`text-base sm:text-lg leading-relaxed ${
+                                  isRed
+                                    ? 'text-red-800 font-semibold bg-red-50 p-4 rounded-2xl border border-red-300'
+                                    : 'text-[#5C5A56]'
+                                }`}
+                              >
+                                {renderRichText(t[step.descKey], isRed)}
                               </div>
-                            ) : (
-                              <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#C5A880]/35 flex items-start gap-3 text-xs sm:text-sm text-[#5C5A56]">
-                                <Info className="w-4 h-4 text-[#8C7355] shrink-0 mt-0.5" />
-                                <span>{t[step.tipKey]}</span>
-                              </div>
-                            )}
 
-                            {/* Special Interactive Widget for Phase 2 Step 2 (6 taps) */}
-                            {step.id === 'p2_s2' && (
-                              <div className="p-4 bg-white rounded-2xl border border-[#C5A880]/30 space-y-2">
-                                <div className="text-xs font-bold text-[#8C7355] flex items-center justify-between">
-                                  <span>{t.p2s2PracticeLabel}</span>
-                                  <span className="font-mono text-[#2C2C2C]">
-                                    ({interactiveTapCount} / 6 {t.p2s2TapCounter})
+                              {step.visualType === 'senior_battery_oem' && (() => {
+                                const brandSelectorI18n = {
+                                  en: {
+                                    label: 'Select the phone brand:',
+                                    placeholder: '— Choose phone brand —',
+                                    options: [
+                                      {
+                                        id: 'xiaomi',
+                                        name: 'Xiaomi / Redmi / POCO (MIUI & HyperOS)',
+                                        text: '**Xiaomi / Redmi / POCO (MIUI & HyperOS):** Enable **Autostart** AND set Battery Saver to **No restrictions**.',
+                                      },
+                                      {
+                                        id: 'samsung',
+                                        name: 'Samsung (One UI)',
+                                        text: '**Samsung (One UI):** Open **App Info → Battery** → select **Unrestricted**, and ensure SENEAR is not in **Sleeping / Deep sleeping apps**.',
+                                      },
+                                      {
+                                        id: 'huawei',
+                                        name: 'Huawei / Honor',
+                                        text: '**Huawei / Honor:** Open **Phone Manager → App Launch** → turn off **Manage automatically** and enable all 3 toggles (**Auto-launch**, **Secondary launch**, **Run in background**).',
+                                      },
+                                      {
+                                        id: 'oneplus',
+                                        name: 'OnePlus / OPPO / Realme',
+                                        text: '**OnePlus / OPPO / Realme:** Open **App Info → Battery usage** → enable both **Allow background activity** and **Allow auto-launch**.',
+                                      },
+                                      {
+                                        id: 'motorola',
+                                        name: 'Motorola / Lenovo / Vivo / Asus / Nokia',
+                                        text: '**Motorola / Lenovo / Vivo / Asus / Nokia:** Open **App Info → Battery** → select **Unrestricted** and allow background autostart.',
+                                      },
+                                      {
+                                        id: 'mediatek',
+                                        name: 'MediaTek phones (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee)',
+                                        text: '**MediaTek phones (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee):** Set Battery to **Unrestricted** and turn **OFF DuraSpeed** (or whitelist SENEAR).',
+                                      },
+                                    ],
+                                  },
+                                  de: {
+                                    label: 'Telefonmarke auswählen:',
+                                    placeholder: '— Bitte Telefonmarke wählen —',
+                                    options: [
+                                      {
+                                        id: 'xiaomi',
+                                        name: 'Xiaomi / Redmi / POCO (MIUI & HyperOS)',
+                                        text: '**Xiaomi / Redmi / POCO (MIUI & HyperOS):** **Autostart** aktivieren UND Energiesparmodus auf **Keine Beschränkungen** setzen.',
+                                      },
+                                      {
+                                        id: 'samsung',
+                                        name: 'Samsung (One UI)',
+                                        text: '**Samsung (One UI):** **App-Info → Akku** → **Nicht eingeschränkt** wählen und prüfen, dass SENEAR nicht unter **Standby / Tiefer Standby** steht.',
+                                      },
+                                      {
+                                        id: 'huawei',
+                                        name: 'Huawei / Honor',
+                                        text: '**Huawei / Honor:** **Telefonmanager → App-Start** → **Automatisch verwalten** ausschalten und alle 3 Schalter (**Auto-Start**, **Sekundärer Start**, **Im Hintergrund ausführen**) aktivieren.',
+                                      },
+                                      {
+                                        id: 'oneplus',
+                                        name: 'OnePlus / OPPO / Realme',
+                                        text: '**OnePlus / OPPO / Realme:** **App-Info → Akkunutzung** → sowohl **Hintergrundaktivität zulassen** als auch **Auto-Start zulassen** aktivieren.',
+                                      },
+                                      {
+                                        id: 'motorola',
+                                        name: 'Motorola / Lenovo / Vivo / Asus / Nokia',
+                                        text: '**Motorola / Lenovo / Vivo / Asus / Nokia:** **App-Info → Akku** → **Nicht eingeschränkt** wählen und Hintergrund-Autostart erlauben.',
+                                      },
+                                      {
+                                        id: 'mediatek',
+                                        name: 'MediaTek-Geräte (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee)',
+                                        text: '**MediaTek-Geräte (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee):** Akku auf **Nicht eingeschränkt** setzen und **DuraSpeed ausschalten** (oder SENEAR freigeben).',
+                                      },
+                                    ],
+                                  },
+                                  hu: {
+                                    label: 'Válaszd ki a telefon márkáját:',
+                                    placeholder: '— Válaszd ki a telefon márkáját —',
+                                    options: [
+                                      {
+                                        id: 'xiaomi',
+                                        name: 'Xiaomi / Redmi / POCO (MIUI & HyperOS)',
+                                        text: '**Xiaomi / Redmi / POCO (MIUI & HyperOS):** Kapcsold be az **Automatikus indítás** (Autostart) opciót, ÉS az Akkumulátorkímélőnél válaszd a **Nincs korlátozás** beállítást.',
+                                      },
+                                      {
+                                        id: 'samsung',
+                                        name: 'Samsung (One UI)',
+                                        text: '**Samsung (One UI):** Nyisd meg az **Alkalmazás adatai → Akkumulátor** menüt → válaszd a **Nem korlátozott** opciót, és ellenőrizd, hogy a SENEAR nincs az **Alvó / Mélyalvó alkalmazások** között.',
+                                      },
+                                      {
+                                        id: 'huawei',
+                                        name: 'Huawei / Honor',
+                                        text: '**Huawei / Honor:** Nyisd meg a **Telefonkezelő → Alkalmazásindítás** menüt → kapcsold ki az **Automatikus kezelés** kapcsolót, és engedélyezd mind a 3 opciót (**Automatikus indítás**, **Másodlagos indítás**, **Futtatás a háttérben**).',
+                                      },
+                                      {
+                                        id: 'oneplus',
+                                        name: 'OnePlus / OPPO / Realme',
+                                        text: '**OnePlus / OPPO / Realme:** Nyisd meg az **Alkalmazás adatai → Akkumulátorhasználat** menüt → kapcsold be a **Háttértevékenység engedélyezése** és az **Automatikus indítás engedélyezése** opciókat.',
+                                      },
+                                      {
+                                        id: 'motorola',
+                                        name: 'Motorola / Lenovo / Vivo / Asus / Nokia',
+                                        text: '**Motorola / Lenovo / Vivo / Asus / Nokia:** Nyisd meg az **Alkalmazás adatai → Akkumulátor** menüt → válaszd a **Nem korlátozott** opciót és engedélyezd a háttérbeli automatikus indítást.',
+                                      },
+                                      {
+                                        id: 'mediatek',
+                                        name: 'MediaTek készülékek (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee)',
+                                        text: '**MediaTek készülékek (TCL, Alcatel, ZTE, Ulefone, Cubot, Doogee):** Állítsd az Akkumulátort **Nem korlátozott** értékre, és kapcsold **KI a DuraSpeed** funkciót (vagy engedélyezd benne a SENEAR-t).',
+                                      },
+                                    ],
+                                  },
+                                };
+
+                                const bData = brandSelectorI18n[currentLang] ?? brandSelectorI18n.en;
+                                const activeOption = bData.options.find(
+                                  (o) => o.id === selectedPhoneBrand
+                                );
+
+                                return (
+                                  <div className="space-y-3 pt-1">
+                                    <div className="space-y-1.5">
+                                      <label
+                                        htmlFor="phone-brand-select"
+                                        className="block text-xs sm:text-sm font-bold text-[#2C2C2C]"
+                                      >
+                                        {bData.label}
+                                      </label>
+                                      <div className="relative">
+                                        <select
+                                          id="phone-brand-select"
+                                          value={selectedPhoneBrand}
+                                          onChange={(e) => setSelectedPhoneBrand(e.target.value)}
+                                          className="w-full appearance-none rounded-2xl border-2 border-[#C5A880] bg-[#FAF8F5] px-4 py-3.5 pr-10 text-sm sm:text-base font-bold text-[#1F2421] shadow-2xs focus:border-emerald-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 cursor-pointer"
+                                        >
+                                          <option value="">{bData.placeholder}</option>
+                                          {bData.options.map((opt) => (
+                                            <option key={opt.id} value={opt.id}>
+                                              {opt.name}
+                                            </option>
+                                          ))}
+                                        </select>
+                                        <ChevronDown className="w-5 h-5 text-[#8C7355] pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" />
+                                      </div>
+                                    </div>
+
+                                    {activeOption && (
+                                      <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/90 border-2 border-emerald-500 text-sm sm:text-base text-emerald-950 leading-relaxed flex items-start gap-3 shadow-xs">
+                                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>{renderRichText(activeOption.text)}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })()}
+
+                              {typeof t[step.tipKey] === 'string' &&
+                              (t[step.tipKey].startsWith('FONTOS') ||
+                                t[step.tipKey].startsWith('IMPORTANT') ||
+                                t[step.tipKey].startsWith('WICHTIG')) ? (
+                                <div className="bg-amber-50/90 p-4 rounded-2xl border border-amber-300 flex items-start gap-3 text-xs sm:text-sm text-amber-950 shadow-2xs">
+                                  <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                                    <AlertTriangle className="w-4 h-4 text-amber-700" />
+                                  </div>
+                                  <span className="font-medium leading-relaxed">
+                                    {renderRichText(t[step.tipKey], false)}
                                   </span>
                                 </div>
+                              ) : (
+                                <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#C5A880]/35 flex items-start gap-3 text-xs sm:text-sm text-[#5C5A56]">
+                                  <Info className="w-4 h-4 text-[#8C7355] shrink-0 mt-0.5" />
+                                  <span>{renderRichText(t[step.tipKey], false)}</span>
+                                </div>
+                              )}
+                            </div>
 
-                                <div className="flex flex-wrap items-center gap-3">
-                                  <button
-                                    onClick={handleTapSimulation}
-                                    className="px-4 py-2 rounded-xl bg-[#2C2C2C] hover:bg-black text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
-                                  >
-                                    <Hand className="w-4 h-4 text-[#C5A880]" />
-                                    <span>{t.p2s2TapScreenBtn}</span>
-                                  </button>
-
-                                  <div className="flex gap-1.5">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                      <div
-                                        key={i}
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                                          interactiveTapCount >= i
-                                            ? 'bg-emerald-600 text-white scale-110 shadow-xs'
-                                            : 'bg-[#EAEAEA] text-[#888888]'
-                                        }`}
-                                      >
-                                        {i}
-                                      </div>
-                                    ))}
-                                  </div>
-
-                                  {interactiveTapCount >= 6 && (
-                                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 animate-bounce">
-                                      {t.p2s2PracticeSuccess}
-                                    </span>
+                            {/* Right: Step Visual Mockup Card */}
+                            <div className="lg:col-span-5 flex justify-center">
+                              <div
+                                className={`w-full max-w-[300px] rounded-2xl p-5 border shadow-sm text-center space-y-3 ${
+                                  isRed
+                                    ? 'bg-red-50/80 border-red-300'
+                                    : 'bg-[#FAF8F5] border-[#C5A880]/40'
+                                }`}
+                              >
+                                <div
+                                  className={`w-14 h-14 mx-auto rounded-2xl flex items-center justify-center shadow-md ${
+                                    isRed
+                                      ? 'bg-red-600 text-white'
+                                      : 'bg-[#2C2C2C] text-[#C5A880]'
+                                  }`}
+                                >
+                                  {step.visualType === 'senior_install' && (
+                                    <Download className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'senior_role' && (
+                                    <UserCheck className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'senior_a11y_ringtone' && (
+                                    <Volume2 className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'senior_battery_oem' && (
+                                    <Settings className="w-7 h-7 text-amber-400" />
+                                  )}
+                                  {step.visualType === 'senior_contacts_sos' && (
+                                    <Users className="w-7 h-7 text-[#C5A880]" />
+                                  )}
+                                  {step.visualType === 'senior_pairing_code' && (
+                                    <KeyRound className="w-7 h-7 text-sky-400" />
+                                  )}
+                                  {step.visualType === 'senior_kiosk_lock' && (
+                                    <Lock className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'senior_kiosk_exit' && (
+                                    <RotateCcw className="w-7 h-7 text-white" />
+                                  )}
+                                  {step.visualType === 'caregiver_install' && (
+                                    <Bell className="w-7 h-7 text-[#C5A880]" />
+                                  )}
+                                  {step.visualType === 'caregiver_role' && (
+                                    <HeartHandshake className="w-7 h-7 text-sky-400" />
+                                  )}
+                                  {step.visualType === 'caregiver_pair' && (
+                                    <KeyRound className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'caregiver_contacts_routines' && (
+                                    <Clock className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'caregiver_home_autoanswer' && (
+                                    <PhoneCall className="w-7 h-7 text-emerald-400" />
+                                  )}
+                                  {step.visualType === 'caregiver_history' && (
+                                    <MapPin className="w-7 h-7 text-[#C5A880]" />
                                   )}
                                 </div>
-                              </div>
-                            )}
 
-                            {/* Embedded QR Code Image Card for Phase 2 Step 3 */}
-                            {step.id === 'p2_s3' && (
-                              <div className="pt-2">
-                                <div className="bg-[#FFFFFF] rounded-3xl p-5 sm:p-6 border-2 border-[#C5A880] shadow-md inline-block max-w-sm text-center">
-                                  <div className="relative group mx-auto w-52 h-52 sm:w-60 sm:h-60 bg-[#FAFAFA] rounded-2xl p-3 border border-[#E8DFD4] flex items-center justify-center overflow-hidden">
-                                    <img
-                                      src="/qr/senear-provisioning-qr.png"
-                                      alt="SENEAR Android Enterprise Provisioning QR Code"
-                                      className="w-full h-full object-contain rounded-xl"
-                                      onError={(e) => {
-                                        (e.target as HTMLImageElement).src = '/senear-qr.png';
-                                      }}
-                                    />
-                                    {/* Scan line indicator effect */}
-                                    <div className="absolute inset-x-3 top-2 h-1 bg-[#C5A880]/70 rounded-full animate-pulse pointer-events-none" />
-                                  </div>
+                                <div
+                                  className={`font-heading font-bold text-sm ${
+                                    isRed ? 'text-red-800' : 'text-[#2C2C2C]'
+                                  }`}
+                                >
+                                  {t[step.visualTextKey]}
+                                </div>
 
-                                  <div className="mt-3.5 text-center">
-                                    <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed">
-                                      {t.p2s3QrSubtitle}
-                                    </p>
+                                {/* Contextual visual preview inside card */}
+                                {step.visualType === 'senior_role' && (
+                                  <div className="py-2 px-3 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-2xs">
+                                    {t.visualRoleSeniorBtn}
                                   </div>
+                                )}
+                                {step.visualType === 'caregiver_role' && (
+                                  <div className="py-2 px-3 rounded-xl bg-sky-700 text-white font-bold text-xs shadow-2xs">
+                                    {t.visualRoleCaregiverBtn}
+                                  </div>
+                                )}
+                                {(step.visualType === 'senior_pairing_code' ||
+                                  step.visualType === 'caregiver_pair') && (
+                                  <div className="py-2 px-3 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 font-mono font-extrabold text-lg tracking-widest">
+                                    K4M9A2
+                                  </div>
+                                )}
+                                {step.visualType === 'senior_kiosk_lock' && (
+                                  <div className="py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs">
+                                    {t.visualLockKioskBtn}
+                                  </div>
+                                )}
+                                {step.visualType === 'senior_kiosk_exit' && (
+                                  <div className="py-2.5 px-3 rounded-xl bg-red-600 text-white font-bold text-xs shadow-xs">
+                                    {t.visualExitKioskBtn}
+                                  </div>
+                                )}
+                                {step.visualType === 'caregiver_contacts_routines' && (
+                                  <div className="py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold text-xs">
+                                    {t.visualRoutineConfirmBadge}
+                                  </div>
+                                )}
+                                {step.visualType === 'caregiver_home_autoanswer' && (
+                                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl text-[11px] font-bold text-emerald-900">
+                                    <span>{t.visualAutoAnswerLabel}</span>
+                                    <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px]">
+                                      ON
+                                    </span>
+                                  </div>
+                                )}
+
+                                <div className="text-[11px] text-[#5C5A56] bg-white p-2.5 rounded-xl border border-[#C5A880]/25 leading-snug">
+                                  {t[step.visualSubKey]}
                                 </div>
                               </div>
-                            )}
+                            </div>
                           </div>
 
-                          {/* Right: Step Visual Mockup Box */}
-                          <div className="lg:col-span-5 flex justify-center">
-                            {/* Visual card for Settings */}
-                            {step.type === 'settings' && (
-                              <div className="w-full max-w-[280px] bg-[#FAF8F5] rounded-2xl p-6 border border-[#C5A880]/40 shadow-sm text-center space-y-3">
-                                <div className="w-16 h-16 mx-auto rounded-2xl bg-[#2C2C2C] text-[#C5A880] flex items-center justify-center shadow-md">
-                                  <Settings
-                                    className="w-8 h-8 animate-spin"
-                                    style={{ animationDuration: '25s' }}
-                                  />
-                                </div>
-                                <div className="font-heading font-bold text-sm text-[#2C2C2C]">
-                                  {t.p1s1VisualText}
-                                </div>
-                                <div className="text-[11px] text-[#5C5A56] bg-white p-2 rounded-lg border border-[#C5A880]/20">
-                                  {t.p1s1GearTip}
-                                </div>
-                              </div>
-                            )}
+                          {/* Accordion Action Buttons Bar */}
+                          <div className="pt-4 border-t border-[#F0EAE1] flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                              {idx > 0 && (
+                                <button
+                                  onClick={handleStepPrev}
+                                  className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#5C5A56] hover:text-[#2C2C2C] hover:bg-[#F5F0EB] transition-colors cursor-pointer"
+                                >
+                                  &larr; {t.btnPrevious}
+                                </button>
+                              )}
+                            </div>
 
-                            {/* Visual card for Navigation */}
-                            {step.type === 'navigation' && (
-                              <div className="w-full max-w-[280px] bg-white rounded-2xl p-5 border border-[#C5A880]/40 shadow-sm space-y-2.5">
-                                <div className="flex items-center gap-2 text-xs font-bold text-[#8C7355] uppercase pb-1 border-b border-[#F5F0EB]">
-                                  <Sliders className="w-3.5 h-3.5 text-[#C5A880]" />
-                                  <span>{t.p1s2VisualText}</span>
-                                </div>
-                                <div className="space-y-1.5 text-xs">
-                                  <div className="bg-[#F5F0EB] p-2 rounded-lg font-medium text-[#2C2C2C] flex items-center justify-between">
-                                    <span>{t.p1s2SystemStep}</span>
-                                    <span className="text-[10px] text-[#8C7355]">&rarr;</span>
-                                  </div>
-                                  <div className="bg-[#FAF7F2] p-2 rounded-lg font-medium text-[#2C2C2C] flex items-center justify-between">
-                                    <span>{t.p1s2ResetStep}</span>
-                                    <span className="text-[10px] text-[#8C7355]">&rarr;</span>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
+                            <div className="flex flex-wrap items-center gap-3">
+                              {selectedTarget === 'senior' &&
+                                idx === activeSteps.length - 1 && (
+                                  <button
+                                    onClick={() => handleStartStep('caregiver')}
+                                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-bold hover:bg-emerald-700 transition-all cursor-pointer shadow-sm"
+                                  >
+                                    <span>{t.btnContinueToCaregiver}</span>
+                                  </button>
+                                )}
 
-                            {/* Visual card for Erase */}
-                            {step.type === 'erase' && (
-                              <div className="w-full max-w-[280px] bg-red-50/70 rounded-2xl p-5 border border-red-200 text-center space-y-3">
-                                <div className="w-12 h-12 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                                  <Trash2 className="w-6 h-6" />
-                                </div>
-                                <div className="font-heading font-bold text-sm text-red-900">
-                                  {t.p1s3VisualText}
-                                </div>
-                                <div className="text-[11px] text-red-800 bg-white/80 p-2 rounded-lg border border-red-200">
-                                  {t.p1s3VisualSubText}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Visual card for Reboot */}
-                            {step.type === 'reboot' && (
-                              <div className="w-full max-w-[280px] bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white rounded-2xl p-5 text-center space-y-3">
-                                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center text-emerald-400">
-                                  <RefreshCw
-                                    className="w-6 h-6 animate-spin"
-                                    style={{ animationDuration: '6s' }}
-                                  />
-                                </div>
-                                <div className="font-heading font-bold text-sm text-white">
-                                  {t.p1s4VisualText}
-                                </div>
-                                <div className="text-[11px] text-stone-300">
-                                  {t.p1s4RebootSub}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Visual card for Welcome */}
-                            {step.type === 'welcome' && (
-                              <div className="w-full max-w-[280px] bg-gradient-to-b from-[#2C2C2C] to-[#1F2421] rounded-2xl p-5 text-white text-center space-y-3">
-                                <div className="w-8 h-8 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase">
-                                  {language}
-                                </div>
-                                <div className="font-heading font-bold text-base text-white">
-                                  {t.p2s1WelcomeTitle}
-                                </div>
-                                <div className="text-[11px] text-red-200 bg-red-900/60 p-2.5 rounded-xl border border-red-400/50 font-medium leading-relaxed">
-                                  {t.p2s1VisualWarning}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Visual card for Taps */}
-                            {step.type === 'taps' && (
-                              <div className="w-full max-w-[280px] bg-[#FAF8F5] rounded-2xl p-5 border-2 border-dashed border-[#C5A880] text-center space-y-3">
-                                <div className="w-16 h-16 mx-auto rounded-full bg-[#C5A880]/20 flex items-center justify-center text-[#8C7355]">
-                                  <Hand className="w-8 h-8" />
-                                </div>
-                                <div className="font-heading font-bold text-sm text-[#2C2C2C]">
-                                  {t.p2s2VisualText}
-                                </div>
-                                <div className="text-[11px] text-[#5C5A56]">
-                                  {t.p2s2TapsSub}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Visual card for QR Scan */}
-                            {step.type === 'qr_scan' && (
-                              <div className="w-full max-w-[280px] bg-[#1F2421] rounded-2xl p-4 text-white space-y-3 text-center">
-                                <div className="flex justify-between text-[11px] text-stone-300">
-                                  <span className="flex items-center gap-1 text-emerald-400">
-                                    <Wifi className="w-3.5 h-3.5" /> {t.p2s3WifiReady}
-                                  </span>
-                                  <span>{t.p2s3Scanner}</span>
-                                </div>
-                                <div className="aspect-square bg-black/60 rounded-xl border border-white/20 flex items-center justify-center relative">
-                                  <div className="absolute inset-x-2 h-0.5 bg-[#C5A880] animate-pulse" />
-                                  <QrCode className="w-16 h-16 text-white/40" />
-                                </div>
-                                <div className="text-[11px] text-stone-300">
-                                  {t.p2s3VisualText}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Visual card for Automatic Setup */}
-                            {step.type === 'automatic' && (
-                              <div className="w-full max-w-[280px] bg-[#FAF8F5] rounded-2xl p-5 border border-[#C5A880]/40 space-y-3">
-                                <div className="flex items-center gap-2 text-emerald-700 font-bold text-xs">
-                                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                  <span>{t.p2s4VisualText}</span>
-                                </div>
-                                <div className="space-y-1 text-xs">
-                                  <div className="flex justify-between font-semibold text-[#5C5A56]">
-                                    <span>{t.p2s4ApkDownload}</span>
-                                    <span>100%</span>
-                                  </div>
-                                  <div className="h-2 w-full bg-[#EAEAEA] rounded-full overflow-hidden">
-                                    <div className="h-full bg-emerald-500 rounded-full w-full" />
-                                  </div>
-                                </div>
-                                <div className="text-[11px] text-[#5C5A56] bg-white p-2 rounded-lg border border-[#C5A880]/20">
-                                  {t.p2s4DeviceOwnerBypassed}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Accordion Action Buttons Bar: Done/Next & Previous */}
-                        <div className="pt-4 border-t border-[#F0EAE1] flex flex-wrap items-center justify-between gap-4">
-                          <div>
-                            {idx > 0 && (
                               <button
-                                onClick={handleStepPrev}
-                                className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#5C5A56] hover:text-[#2C2C2C] hover:bg-[#F5F0EB] transition-colors cursor-pointer"
+                                onClick={handleStepDoneNext}
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2C2C2C] text-[#FAFAFA] text-xs sm:text-sm font-bold hover:bg-black active:scale-98 transition-all cursor-pointer shadow-sm hover:shadow-md"
                               >
-                                &larr; {t.btnPrevious}
+                                <span>
+                                  {idx === activeSteps.length - 1
+                                    ? t.btnComplete
+                                    : t.btnDoneNext}
+                                </span>
+                                <ArrowRight className="w-4 h-4 text-[#C5A880]" />
                               </button>
-                            )}
+                            </div>
                           </div>
-
-                          <button
-                            onClick={handleStepDoneNext}
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2C2C2C] text-[#FAFAFA] text-xs sm:text-sm font-bold hover:bg-black active:scale-98 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                          >
-                            <span>
-                              {idx === activeSteps.length - 1
-                                ? t.btnComplete
-                                : t.btnDoneNext}
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-[#C5A880]" />
-                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 );
               })}
             </div>
@@ -1506,9 +1895,11 @@ export function SenearInstallGuidePage({
 
           <div className="space-y-2.5">
             {[
+              { q: t.faq0Q, a: t.faq0A },
               { q: t.faq1Q, a: t.faq1A },
               { q: t.faq2Q, a: t.faq2A },
               { q: t.faq3Q, a: t.faq3A },
+              { q: t.faq4Q, a: t.faq4A },
             ].map((faq, idx) => {
               const isOpen = activeFaq === idx;
               return (

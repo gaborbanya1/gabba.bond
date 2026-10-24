@@ -1,17 +1,18 @@
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { Senear3DShowcaseTile } from './Senear3DShowcaseTile';
+import { DualProductShowcase } from './DualProductShowcase';
+import { ProductKey } from '../routing';
 
 interface HeroProps {
   onViewProjects: () => void;
   onGetInTouch: () => void;
-  onOpenNogondDemo: () => void;
+  onOpenProduct: (product: ProductKey) => void;
 }
 
 export function Hero({
   onViewProjects,
   onGetInTouch,
-  onOpenNogondDemo,
+  onOpenProduct,
 }: HeroProps) {
   const { t } = useLanguage();
 
@@ -34,7 +35,7 @@ export function Hero({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           
           {/* Left Column: Brand name "gabba", tagline, CTAs */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left space-y-7">
+          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-7">
             {/* Main Brand Title */}
             <div className="space-y-4">
               <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#2C2C2C] leading-[1.12]">
@@ -85,11 +86,9 @@ export function Hero({
 
           </div>
 
-          {/* Right Column: SENEAR 3D Showcase */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
-              <Senear3DShowcaseTile onOpenSimulator={onOpenNogondDemo} />
-            </div>
+          {/* Right Column: SENEAR + JUNEAR floating dual showcase */}
+          <div className="lg:col-span-6 relative flex justify-center items-center">
+            <DualProductShowcase onOpenProduct={onOpenProduct} />
           </div>
 
         </div>

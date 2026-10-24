@@ -1,0 +1,1358 @@
+import { useState, useEffect } from 'react';
+import {
+  ShieldCheck,
+  Lock,
+  Server,
+  Trash2,
+  Eye,
+  FileCheck2,
+  ChevronRight,
+  Mail,
+  Phone,
+  Globe,
+  CheckCircle2,
+  Scale,
+  Smartphone,
+  AlertCircle,
+  Database,
+  AlertTriangle,
+} from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
+
+export interface PrivacyPolicyPageProps {
+  onBackToHome?: () => void;
+  onBackToSenear?: () => void;
+  focusDeletion?: boolean;
+}
+
+type PolicyLang = 'en' | 'hu' | 'de';
+
+interface PolicySectionItem {
+  label?: string;
+  text: string;
+}
+
+interface PolicySection {
+  id: string;
+  number: string;
+  title: string;
+  isWarningBox?: boolean;
+  intro?: string;
+  subsections?: {
+    subtitle: string;
+    badge?: string;
+    paragraphs?: string[];
+    bullets?: PolicySectionItem[];
+  }[];
+  paragraphs?: string[];
+  bullets?: PolicySectionItem[];
+  footerNote?: string;
+}
+
+interface PolicyTranslation {
+  breadcrumbHome: string;
+  breadcrumbCurrent: string;
+  badgeEuGdpr: string;
+  badgeRegion: string;
+  badgePlaySafety: string;
+  title: string;
+  subtitle: string;
+  effectiveDateLabel: string;
+  effectiveDateValue: string;
+  langSwitchLabel: string;
+  autoDetectedNote: string;
+  controllerCardTitle: string;
+  controllerNameLabel: string;
+  controllerNameValue: string;
+  controllerEmailLabel: string;
+  controllerPhoneLabel: string;
+  controllerJurisdictionLabel: string;
+  controllerJurisdictionValue: string;
+  controllerServiceLabel: string;
+  controllerServiceValue: string;
+  quickSummaryTitle: string;
+  quickSummaryItems: { title: string; desc: string }[];
+  sections: PolicySection[];
+  ctaDeleteTitle: string;
+  ctaDeleteDesc: string;
+  ctaDeleteInAppBadge: string;
+  ctaDeleteEmailBtn: string;
+  backToSenearBtn: string;
+  backToHomeBtn: string;
+}
+
+const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
+  // ===========================================================================
+  // ENGLISH (DEFAULT)
+  // ===========================================================================
+  en: {
+    breadcrumbHome: 'Home',
+    breadcrumbCurrent: 'Privacy Policy & GDPR Compliance',
+    badgeEuGdpr: 'GDPR (EU) 2016/679 Compliant',
+    badgeRegion: 'EU Data Residency: europe-west1 (Belgium)',
+    badgePlaySafety: 'Google Play Data Safety Verified',
+    title: 'PRIVACY POLICY – SENEAR',
+    subtitle:
+      'This Privacy Policy explains how the SENEAR mobile application (package ID: bond.gabba.senear) and official website (gabba.bond) collect, process, minimize, and protect personal data in strict compliance with the European Union General Data Protection Regulation (GDPR – Regulation (EU) 2016/679), the ePrivacy framework, EU/DACH consumer protection standards, and Google Play User Data policies.',
+    effectiveDateLabel: 'Effective Date & Last Updated:',
+    effectiveDateValue: 'October 21, 2026',
+    langSwitchLabel: 'Document Language:',
+    autoDetectedNote: 'Automatically displayed in your browser language (Default: English)',
+    controllerCardTitle: '1. Data Controller & Operator Information (GDPR Art. 13(1)(a))',
+    controllerNameLabel: 'Name / Data Controller',
+    controllerNameValue: 'Gabor Banyai (Bányai Gábor)',
+    controllerEmailLabel: 'Privacy & DPO Contact Email',
+    controllerPhoneLabel: 'Telephone',
+    controllerJurisdictionLabel: 'Place of Establishment / Jurisdiction',
+    controllerJurisdictionValue: 'Budapest, Hungary (European Union)',
+    controllerServiceLabel: 'Application & Service Scope',
+    controllerServiceValue: 'SENEAR (NEAR Ecosystem) — Android App (bond.gabba.senear) & Web Platform',
+    quickSummaryTitle: 'Key GDPR & Technical Safeguards at a Glance',
+    quickSummaryItems: [
+      {
+        title: '100% EU Data Residency',
+        desc: 'All Cloud Firestore, Realtime Database, and Cloud Functions are strictly pinned to europe-west1 (Belgium, EU).',
+      },
+      {
+        title: 'Zero-Storage Base64 Photos',
+        desc: 'Contact & routine photos are locally compressed (300×300px) and stored as encrypted Base64 strings inside our EU database—never on public image servers.',
+      },
+      {
+        title: 'Encrypted P2P WebRTC & GPS Minimization',
+        desc: 'DTLS-SRTP calls are never recorded; signaling data is wiped on call end. No continuous GPS breadcrumb history is stored.',
+      },
+      {
+        title: 'One-Tap Art. 17 Erasure',
+        desc: 'Bilateral Consent & One-Tap "Delete All Data / Unpair" instantly wipes all cloud and local records on both Senior and Caregiver devices.',
+      },
+    ],
+    sections: [
+      {
+        id: 'modes',
+        number: '2',
+        title: 'Operating Modes & Core Privacy Principle (Privacy by Design & Default – GDPR Art. 25)',
+        intro:
+          'SENEAR is engineered around the principle of Data Protection by Design and by Default. Depending on user choice, the application operates in two strictly separated modes:',
+        subsections: [
+          {
+            subtitle: 'A) Standalone Senior Mode (Unpaired / Offline-First)',
+            badge: 'Zero Cloud Transmission',
+            paragraphs: [
+              'When used without Caregiver pairing on the older adult’s ("Senior") device, all configuration data (approved speed-dial contacts, local daily routine alarms, font sizes, audio settings, and locked Kiosk state) is stored exclusively locally on the device inside Android SharedPreferences (ContactPreferences).',
+              'In Standalone mode, zero personal data is transmitted to external servers or the cloud, and no Firebase network connections are initiated.',
+            ],
+          },
+          {
+            subtitle: 'B) Connected Caregiver Mode (Paired)',
+            badge: 'Bilateral Explicit Consent Required',
+            paragraphs: [
+              'Cloud synchronization and remote assistance are activated strictly after a bilateral GDPR consent gate is completed on both devices:',
+            ],
+            bullets: [
+              {
+                label: 'Senior Consent Gate:',
+                text: 'On the Senior device, the 6-digit pairing code is hidden by default. The Senior is presented with a high-contrast disclosure explaining that pairing enables battery monitoring, GPS location sharing, remote contact and daily routine management, and Wi-Fi audio/video calling. The pairing code is generated and revealed only after the Senior taps "Accept" ("Elfogadom"), recording seniorConsentAccepted: true and a UTC timestamp locally and in Firestore.',
+              },
+              {
+                label: 'Caregiver Legal Declaration Gate:',
+                text: 'On the Caregiver device, the pairing code input field is hidden until the Caregiver explicitly accepts a binding declaration confirming they are linking the device with the Senior’s express consent or as their authorized legal representative, recording caregiverConsentAccepted: true and a UTC timestamp.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'legal-basis',
+        number: '3',
+        title: 'Legal Basis for Processing Personal Data (GDPR Art. 6 & Art. 9)',
+        intro:
+          'Under the EU General Data Protection Regulation, SENEAR processes personal data exclusively on the following lawful bases:',
+        bullets: [
+          {
+            label: 'Explicit Consent (GDPR Art. 6(1)(a) & Art. 9(2)(a)):',
+            text: 'Processing of geolocation coordinates (Home Safe Zone and SOS), device health and OEM battery telemetry, remote speed-dial contact administration, user-defined daily routines/reminders, and WebRTC audio/video calling in Paired Mode is based on the explicit, informed bilateral consent of the Senior and Caregiver. Consent may be withdrawn at any time with immediate effect by unpairing or deleting the profile.',
+          },
+          {
+            label: 'Performance of a Service / Contract – App Functionality (GDPR Art. 6(1)(b)):',
+            text: 'Processing Caregiver registration data (Name, Email address, Phone number, and Firebase UID), pairing codes, synchronized contact lists, and routine schedules is necessary to deliver the connected family assistance service requested by the users—including automatically populating the paired Caregiver’s name and phone number into the Senior’s first available speed-dial tile (Slot 1 for the first caregiver, and Slots 2, 3, and 4 for additional paired caregivers) for immediate one-tap calling.',
+          },
+          {
+            label: 'Protection of Vital Interests (GDPR Art. 6(1)(d) & Art. 9(2)(c)):',
+            text: 'Dispatches of emergency SOS alerts, physical fall detection alarms, and Safe Zone entry/exit notifications are processed to protect the vital interests, physical safety, and life of the Senior in distress situations.',
+          },
+          {
+            label: 'Legitimate Interests & Security (GDPR Art. 6(1)(f)):',
+            text: 'Enforcing Firebase Authentication tokens (request.auth != null), preventing unauthorized access to pairing codes, and filtering unknown/scam calls locally on the device.',
+          },
+        ],
+      },
+      {
+        id: 'data-collected',
+        number: '4',
+        title: 'Data Categories, Processing Purposes & Technical Architecture (GDPR Art. 5(1)(c), Art. 13 & Art. 14)',
+        intro:
+          'In strict compliance with GDPR Article 5(1)(c) (Data Minimization), SENEAR processes only essential data categories required for Phases 1–4 of the connected family safety ecosystem:',
+        bullets: [
+          {
+            label: 'A) Remote Speed-Dial Contacts & Zero-Storage Photos (Phase 1):',
+            text: 'When paired with a Caregiver, speed-dial contact names, phone numbers, and optional contact photos are synchronized between the Caregiver and Senior devices. Zero-Storage Base64 Architecture: All contact photos are cropped and compressed locally on the device (300×300px) and stored as encrypted Base64 text strings directly inside our EU-based Firebase database (europe-west1)—they are NEVER uploaded to public image servers, external CDNs, or shared with third parties.',
+          },
+          {
+            label: 'B) Daily Routines, Reminders & Acknowledgments (Phase 2):',
+            text: 'Routine titles, alarm times, text instructions (e.g., medication or hydration notes), optional item photos (locally compressed 300×300px Base64 strings), and acknowledgment timestamps ("Confirmed/Taken at HH:mm") are synchronized between the paired Senior and Caregiver devices and cached locally on the Senior phone for reliable offline alarm execution. Strict Non-Profiling Guarantee: SENEAR treats these entries strictly as user-defined general daily reminders and does NOT perform clinical profiling, medical analysis, automated health decision-making, or health data monetization.',
+          },
+          {
+            label: 'C) Device Status & OEM Battery Telemetry (Phase 3):',
+            text: 'The paired Senior device periodically transmits battery percentage (batteryLevel), charging state (isCharging), online heartbeat timestamp (lastSeen / RTDB /presence), device manufacturer brand (Build.MANUFACTURER, e.g., Xiaomi, Samsung, Huawei), and battery optimization status (isBatteryUnrestricted) via event-driven Delta-Sync. This data is processed solely to alert the Caregiver of low battery or offline states and to display accurate, brand-specific background setup guides.',
+          },
+          {
+            label: 'D) Encrypted WebRTC Audio & Video Calls (Phase 4):',
+            text: 'In-app Wi-Fi and mobile data audio/video calls use mandatory encrypted peer-to-peer WebRTC (DTLS-SRTP). Call signaling metadata (SDP offers/answers and ICE candidates in seniors/{id}/voip_stream/webrtc_signaling) is temporarily processed via Firebase and immediately deleted upon call termination. Encrypted TURN relay servers are used strictly when a direct P2P connection is blocked by network firewalls or NAT. Audio and video streams are NEVER recorded, inspected, or stored. Audible tones (ToneGenerator) and full-screen live indicators notify the Senior whenever a call or remote camera stream becomes active, with an oversized red button to hang up at any time.',
+          },
+          {
+            label: 'E) Home Safe Zone / Geofencing & SOS Alerts:',
+            text: 'Background location (latitude, longitude) is processed strictly to detect entry/exit of the Caregiver-defined Home Safe Zone (geofence) and during SOS emergencies. SENEAR stores NO continuous breadcrumb tracking history and never uses location data for advertising or analytics. Each new coordinate overwrites the previous state in seniors/{seniorId}, and in the alerts subcollection GPS coordinates are attached exclusively to location-critical events (SOS and WANDERING), never to routine battery or power state notifications.',
+          },
+          {
+            label: 'F) Caregiver Account / Registration Data & Pairing Identifiers:',
+            text: '1) Data Collected During Caregiver Registration: During Caregiver registration, SENEAR collects the Caregiver’s Name, Email address, and Phone number (along with the Firebase UID, Senior display name, temporary 6-digit pairing code with automatic expiration, FCM push notification tokens, and bilateral consent timestamps seniorConsentAccepted / caregiverConsentAccepted). 2) Purpose of Processing (GDPR Art. 6(1)(b) – Contract / App Functionality): When a Caregiver pairs their device with a Senior device, the Caregiver’s name and phone number are automatically populated into the Senior’s first available speed-dial tile (Slot 1 for the first caregiver, and Slots 2, 3, and 4 for additional paired caregivers) so the Senior can call their caregiver immediately with one tap. If no pairing takes place, the Senior device uses local default values only. 3) Data Portability & Erasure: The Caregiver’s phone number is included in the in-app GDPR Data Export and is permanently erased upon triggering One-Tap Account/Data Deletion. On the Senior device, Firebase Anonymous Authentication is used solely to enforce authenticated database security rules without requiring the Senior to register an email address.',
+          },
+          {
+            label: 'G) Crash Diagnostics (system_crashes) & Anonymous Setup/Uninstall Telemetry (uninstall_analytics):',
+            text: 'To ensure reliability of life-safety Kiosk and SOS features, technical exception stack traces, Android OS version, device brand/model, and app version are logged in the Firestore system_crashes collection when an unexpected runtime error occurs (GDPR Art. 6(1)(f) legitimate interest in software stability). When an account is deleted or an app uninstall is detected via FCM token invalidation, non-identifying technical setup telemetry (whether onboarding permissions were granted, device brand, and install duration without personal names, emails, or phone numbers) is recorded in uninstall_analytics to help diagnose OEM-specific setup barriers.',
+          },
+        ],
+      },
+      {
+        id: 'permissions',
+        number: '5',
+        title: 'Android Permissions & Accessibility API Disclosure (Google Play Compliance)',
+        intro:
+          'SENEAR requests sensitive Android permissions strictly for user-facing safety and accessibility features, only after displaying clear in-app disclosures:',
+        bullets: [
+          {
+            label: 'AccessibilityService API (android.permission.BIND_ACCESSIBILITY_SERVICE):',
+            text: 'Used exclusively on the Senior device when Kiosk Mode is active to prevent accidental navigation away from the protected home screen (locking Home, Back, and Recents / confirming Screen Pinning). SENEAR does NOT read personal screen content, does NOT capture keystrokes or passwords, does NOT monitor other apps, and does NOT allow remote click injection or unauthorized remote control.',
+          },
+          {
+            label: 'Exact Alarms (android.permission.SCHEDULE_EXACT_ALARM & USE_FULL_SCREEN_INTENT):',
+            text: 'Used solely to trigger time-critical local wake-up checks, full-screen incoming Wi-Fi calls, and daily routine reminder alarms at the exact minute configured for the Senior device.',
+          },
+          {
+            label: 'Battery Optimization Exemption (android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS):',
+            text: 'Used strictly to prevent aggressive OEM battery savers (e.g., Xiaomi MIUI/HyperOS, Samsung One UI, Huawei EMUI) from terminating background safety services (SOS dispatch, Home Safe Zone geofencing, and online Heartbeat).',
+          },
+          {
+            label: 'Phone, Call Screening & SMS (SEND_SMS / RECEIVE_SMS / READ_SMS / CALL_PHONE / ANSWER_PHONE_CALLS / READ_CALL_LOG / CallScreeningService / NotificationListenerService):',
+            text: 'Used exclusively for user-initiated one-tap speed-dial calls, the dedicated SOS emergency button (sending emergency SMS and dialing trusted Caregivers), displaying missed call indicators ("Called you!") on the Senior home screen, filtering unknown scam numbers locally via Android CallScreeningService (NogondCallScreeningService – Anti-Scam Whitelist), displaying incoming SMS messages in large senior-friendly format on the Kiosk screen via NotificationListenerService (SenearSmsNotificationService) / RECEIVE_SMS / READ_SMS, and enabling hands-free speakerphone auto-answer for paired Caregivers. Incoming SMS contents and call logs are NEVER sold or shared with third parties.',
+          },
+          {
+            label: 'Location (ACCESS_FINE_LOCATION / ACCESS_BACKGROUND_LOCATION):',
+            text: 'Used strictly in Paired Mode to detect entry/exit of the Caregiver-defined Home Safe Zone and to attach coordinates during SOS emergencies even when the screen is off.',
+          },
+          {
+            label: 'Camera & Microphone (CAMERA / RECORD_AUDIO) & Motion Sensors (HIGH_SAMPLING_RATE_SENSORS):',
+            text: 'Camera and Microphone are used solely during active WebRTC calls (always accompanied by audible and visual indicators). Accelerometer sensors are evaluated 100% locally in device memory to detect severe falls (with a 30-second audible cancellation countdown); raw sensor data never leaves the device.',
+          },
+        ],
+      },
+      {
+        id: 'eu-residency-security',
+        number: '6',
+        title: 'EU Data Residency, Sub-Processors & Technical Security Measures (GDPR Art. 28, 32, 44)',
+        intro:
+          'We implement state-of-the-art Technical and Organizational Measures (TOMs) in accordance with GDPR Article 32 to ensure data confidentiality, integrity, and resilience:',
+        bullets: [
+          {
+            label: 'Strict EU Data Residency (europe-west1 – Belgium):',
+            text: 'All cloud databases (Firebase Cloud Firestore, Firebase Realtime Database) and serverless backend functions (Cloud Functions v2 pinned via setGlobalOptions({ region: "europe-west1" })) are hosted and executed exclusively within the European Union (St. Ghislain, Belgium / EU multi-region).',
+          },
+          {
+            label: 'Authorized Data Processor (Sub-Processor) & Web Contact Form:',
+            text: 'Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Ireland) acts as our cloud infrastructure Data Processor (Google Cloud Platform / Firebase) governed by the Google Cloud Data Processing and Security Terms (GDPR Art. 28 DPA) and EU Standard Contractual Clauses where applicable. When you voluntarily submit a message via the website contact form on gabba.bond, your name, email address, and message are transmitted via FormSubmit (formsubmit.co) strictly to deliver your inquiry to gabba@gabba.bond.',
+          },
+          {
+            label: 'Encryption in Transit & at Rest:',
+            text: 'All client-server communication is encrypted in transit via HTTPS / TLS 1.3. Direct VoIP audio/video streams are encrypted end-to-end via WebRTC DTLS 1.2+ and SRTP (AES-GCM). All stored cloud data (including Base64 contact and routine photos) is encrypted at rest using AES-256.',
+          },
+          {
+            label: 'Strict Access Control & Security Rules:',
+            text: 'Firestore Security Rules (firestore.rules), Realtime Database Rules (database.rules.json), and all callable Cloud Functions enforce strict authentication checks (request.auth != null / assertAuthenticated). Unauthenticated public read or write access is completely blocked.',
+          },
+          {
+            label: 'Zero Advertising, Zero Profiling & Zero Data Selling:',
+            text: 'SENEAR contains no advertising SDKs, no third-party behavioral trackers, and performs no automated decision-making or clinical/behavioral profiling (GDPR Art. 22). We never sell, rent, or monetize personal data.',
+          },
+        ],
+      },
+      {
+        id: 'retention',
+        number: '7',
+        title: 'Data Retention Schedule (GDPR Art. 5(1)(e) & Art. 13(2)(a))',
+        intro:
+          'Personal data is retained strictly for the minimum duration necessary to fulfill the safety purpose for which it was collected:',
+        bullets: [
+          {
+            label: 'WebRTC VoIP Signaling & Relay Buffers (webrtc_signaling & /voip_stream):',
+            text: '0 seconds after call completion. Automatically and permanently deleted immediately when a call ends, fails, or times out.',
+          },
+          {
+            label: 'Current GPS Location & OEM Device Telemetry (seniors/{seniorId}):',
+            text: 'Overwritten in place upon each subsequent delta update. Never accumulated into historical movement trails. Deleted immediately upon unpairing or profile deletion.',
+          },
+          {
+            label: 'Synced Contacts, Base64 Photos, Daily Routines & Alert Logs:',
+            text: 'Retained only for the duration of the active pairing so the Senior and Caregiver can use speed-dial, daily reminders, and safety logs; permanently purged the instant either party triggers "Delete All Data / Unpair".',
+          },
+          {
+            label: 'Deleted Accounts & Profiles:',
+            text: '0 days in active databases upon in-app deletion (instant recursive erasure). Email deletion requests are fulfilled within a maximum of 72 hours.',
+          },
+        ],
+      },
+      {
+        id: 'user-rights',
+        number: '8',
+        title: 'One-Tap Permanent Data Erasure (GDPR Art. 17 – Right to be Forgotten) & Data Subject Rights',
+        intro:
+          'Under the GDPR (Articles 15–22), both Seniors and Caregivers have enforceable rights to access, rectification, restriction, portability, objection, and immediate erasure free of charge:',
+        bullets: [
+          {
+            label: 'Bilateral Consent & One-Tap Permanent Deletion ("Delete All Data / Unpair"):',
+            text: 'At any time, either the Senior Admin (5 taps on the Kiosk clock + PIN → General Settings → "Permanently Delete Cloud Profile & Data (GDPR)") or the Caregiver (Caregiver Dashboard → "Permanently Delete Account & All Data (GDPR)" / Unpair) can trigger one-tap deletion inside the app. This immediately and permanently wipes all synced contacts, Base64 photos, daily routines, routine acknowledgments, Home Safe Zone coordinates, device/battery telemetry, alert logs, pairing codes, and WebRTC signaling nodes from our EU cloud servers (Firestore & Realtime Database in europe-west1) as well as local device storage.',
+          },
+          {
+            label: 'Comprehensive GDPR Rights (Art. 15–22 & Art. 7(3)):',
+            text: 'Users may exercise their Right of Access (Art. 15), Right to Rectification (Art. 16), Right to Erasure (Art. 17), Right to Restriction of Processing (Art. 18), Right to Data Portability (Art. 20), Right to Object (Art. 21), and Right to Withdraw Consent at any time without affecting the lawfulness of prior processing.',
+          },
+          {
+            label: 'Deletion & Rights Requests via Email (Without the App Installed):',
+            text: 'Users may also request complete data deletion, data export, or exercise any GDPR right without using the app by emailing gabba@gabba.bond (indicating their registered email address or 6-digit pairing code). All requests are processed and confirmed within 72 hours.',
+          },
+        ],
+      },
+      {
+        id: 'medical-disclaimer',
+        number: '9',
+        title: 'Medical & Emergency Liability Disclaimer (Mandatory EU / DACH Legal Notice)',
+        isWarningBox: true,
+        intro:
+          'Please read this mandatory legal and operational notice carefully before relying on SENEAR for family assistance:',
+        bullets: [
+          {
+            label: 'Not a Certified Medical Device (EU MDR 2017/745) or Emergency Dispatch Service:',
+            text: 'SENEAR is a family communication and daily routine helper application. It is NOT a certified medical device under EU Regulation (EU) 2017/745 (Medical Device Regulation – MDR) and is NOT a certified 24/7 emergency dispatch service (such as 112, 911, or certified German/Austrian "Hausnotruf" services). Daily routine reminders (including medication or hydration notes) are strictly user-managed organizational aids and do not replace professional medical care, nursing supervision, or clinical diagnosis.',
+          },
+          {
+            label: 'Technical & Network Dependencies:',
+            text: 'The delivery and execution of SOS calls/SMS, Home Safe Zone (geofencing) notifications, WebRTC audio/video calls, and Daily Routine alarms depend on third-party factors outside the Data Controller’s control—including mobile network coverage, active SIM card balance, Wi-Fi/internet connectivity, GPS satellite reception, sufficient device battery charge, and the smartphone operating system’s background power-management settings.',
+          },
+        ],
+      },
+      {
+        id: 'supervisory-authority',
+        number: '10',
+        title: 'Supervisory Authorities & Right to Lodge a Complaint (GDPR Art. 77)',
+        intro:
+          'If you believe that the processing of your personal data infringes the GDPR, you have the right to lodge a complaint with a supervisory authority, in particular in the EU Member State of your habitual residence, place of work, or place of the alleged infringement:',
+        bullets: [
+          {
+            label: 'Lead Supervisory Authority (Hungary – Place of Establishment):',
+            text: 'Hungarian National Authority for Data Protection and Freedom of Information (Nemzeti Adatvédelmi és Információszabadság Hatóság – NAIH). Address: 1055 Budapest, Falk Miksa utca 9-11., Hungary • Postal address: 1363 Budapest, Pf. 9. • Telephone: +36 (1) 391-1400 • Email: ugyfelszolgalat@naih.hu • Website: https://www.naih.hu',
+          },
+          {
+            label: 'Germany & Austria (DACH Region Authorities):',
+            text: 'Der Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI – Graurheindorfer Str. 153, 53117 Bonn, Germany, https://www.bfdi.bund.de), the competent State Data Protection Authority (Landesdatenschutzbehörde) of your federal state, or the Austrian Data Protection Authority (Österreichische Datenschutzbehörde – DSB, Barichgasse 40-42, 1030 Wien, https://www.dsb.gv.at).',
+          },
+          {
+            label: 'All Other EU / EEA Member States:',
+            text: 'A complete directory of national European Data Protection Authorities is available on the official website of the European Data Protection Board (EDPB): https://edpb.europa.eu/about-edpb/about-edpb/members_en',
+          },
+        ],
+      },
+    ],
+    ctaDeleteTitle: 'Questions or Data Deletion Request?',
+    ctaDeleteDesc:
+      'You can wipe all cloud and local data instantaneously inside the SENEAR app at any time ("Delete All Data / Unpair"), or contact the Data Controller directly for assistance or email-based erasure within 72 hours.',
+    ctaDeleteInAppBadge: 'Instant In-App GDPR Wipe Available',
+    ctaDeleteEmailBtn: 'Contact Data Controller (gabba@gabba.bond)',
+    backToSenearBtn: 'Back to SENEAR Product Page',
+    backToHomeBtn: 'Back to Home',
+  },
+
+  // ===========================================================================
+  // HUNGARIAN (MAGYAR)
+  // ===========================================================================
+  hu: {
+    breadcrumbHome: 'Főoldal',
+    breadcrumbCurrent: 'Adatkezelési Tájékoztató (GDPR)',
+    badgeEuGdpr: 'GDPR (EU) 2016/679 Megfelelőség',
+    badgeRegion: 'EU Adattárolás: europe-west1 (Belgium)',
+    badgePlaySafety: 'Google Play Data Safety Auditált',
+    title: 'ADATKEZELÉSI TÁJÉKOZTATÓ – SENEAR',
+    subtitle:
+      'Jelen Adatkezelési Tájékoztató részletesen ismerteti, hogyan gyűjti, kezeli, minimalizálja és védi a SENEAR mobilalkalmazás (csomagazonosító: bond.gabba.senear) és a hivatalos weboldal (gabba.bond) a felhasználók személyes adatait az Európai Unió Általános Adatvédelmi Rendelete (GDPR – 2016/679/EU rendelet), a magyar információs önrendelkezési törvény (Infotv.), az EU/DACH fogyasztóvédelmi előírások, valamint a Google Play User Data irányelvei szerint.',
+    effectiveDateLabel: 'Hatálybalépés és utolsó frissítés dátuma:',
+    effectiveDateValue: '2026. október 21.',
+    langSwitchLabel: 'Tájékoztató nyelve:',
+    autoDetectedNote: 'Automatikusan a böngésződ nyelvén megjelenítve (Alapértelmezett: Angol)',
+    controllerCardTitle: '1. Az Adatkezelő adatai (GDPR 13. cikk (1) a))',
+    controllerNameLabel: 'Név / Üzemeltető (Adatkezelő)',
+    controllerNameValue: 'Bányai Gábor',
+    controllerEmailLabel: 'Adatvédelmi és kapcsolatfelvételi e-mail',
+    controllerPhoneLabel: 'Telefonszám',
+    controllerJurisdictionLabel: 'Székhely / Joghatóság',
+    controllerJurisdictionValue: 'Budapest, Magyarország (Európai Unió)',
+    controllerServiceLabel: 'Alkalmazás és szolgáltatás neve',
+    controllerServiceValue: 'SENEAR (NEAR Ecosystem) — Android Alkalmazás (bond.gabba.senear) és Weboldal',
+    quickSummaryTitle: 'A SENEAR GDPR- és Technikai Garanciái Röviden',
+    quickSummaryItems: [
+      {
+        title: '100% EU-s Adattárolás',
+        desc: 'Minden Firestore, Realtime Database és Cloud Function kizárólag az EU-ban (europe-west1 – Belgium) fut.',
+      },
+      {
+        title: 'Zero-Storage Base64 Fotók',
+        desc: 'A névjegy- és rutin-fotók helyben tömörítve (300×300px), titkosított Base64 szövegként tárolódnak az EU-s adatbázisban — soha nem kerülnek nyilvános képszerverre.',
+      },
+      {
+        title: 'Titkosított WebRTC & GPS Minimalizálás',
+        desc: 'A P2P DTLS-SRTP hívásokat nem rögzítjük; a jelzések hívás végén törlődnek. Nem épül folyamatos GPS útvonal-történet.',
+      },
+      {
+        title: 'Egynyomásos Törlés (GDPR 17. cikk)',
+        desc: 'Kétoldalú hozzájárulás és azonnali „Minden adat törlése / Párosítás bontása” gomb mind a Gondozott, mind a Gondozó készülékén.',
+      },
+    ],
+    sections: [
+      {
+        id: 'modes',
+        number: '2',
+        title: 'Működési módok és az adatkezelés alapelve (Beépített és alapértelmezett adatvédelem – GDPR 25. cikk)',
+        intro:
+          'A SENEAR a „Privacy by Design és Privacy by Default” elv mentén készült, és két, egymástól szigorúan elkülönülő üzemmódban használható:',
+        subsections: [
+          {
+            subtitle: 'A) Önálló (Összeköttetésmentes) Gondozott mód',
+            badge: '0% Felhő Adatforgalom',
+            paragraphs: [
+              'Amennyiben az alkalmazást gondozói párosítás nélkül, önállóan használják az idős hozzátartozó („Gondozott”) telefonján, az alkalmazás kizárólag helyben, a készülék belső memóriájában (Android SharedPreferences / ContactPreferences) tárolja a beállításokat (engedélyezett gyorstárcsázó telefonszámok, helyi napi emlékeztetők, szövegméret, csengetési profil, védett Kioszk felület állapota).',
+              'Ebben az üzemmódban semmilyen személyes adat nem kerül továbbításra külső szerverre vagy felhőbe, és az alkalmazás nem létesít Firebase adatbázis-kapcsolatot.',
+            ],
+          },
+          {
+            subtitle: 'B) Gondozói összeköttetés (Párosított) mód',
+            badge: 'Kétoldalú Kifejezett Hozzájárulási Kapu',
+            paragraphs: [
+              'A felhőalapú szinkronizáció és távoli gondozói segítségnyújtás kizárólag akkor lép működésbe, ha a 6-jegyű párosító kód használata előtt mindkét készüléken kifejezetten elfogadják az adatmegosztási és felelősségi nyilatkozatot (Bilateral GDPR Consent Gate):',
+            ],
+            bullets: [
+              {
+                label: 'Gondozotti hozzájárulási kapu (Senior Consent Gate):',
+                text: 'A Gondozott telefonján a párosítási képernyő megnyitásakor a 6-jegyű kód alapértelmezetten rejtett (nem is generálódik le). Először egy jól olvasható, nagy kontrasztú nyilatkozat jelenik meg: „A párosítással engedélyezem, hogy a Gondozóm lássa a telefonom töltöttségét, tartózkodási helyét (GPS), távolról kezelje a névjegyeimet, és Wi-Fi hang-/videóhívást indítson.” A párosító kód csak az „Elfogadom” gomb megnyomása után jelenik meg, a rendszer pedig rögzíti a seniorConsentAccepted: true jelzést és a hozzájárulás pontos időbélyegét.',
+              },
+              {
+                label: 'Gondozói jognyilatkozat kapu (Caregiver Declaration Gate):',
+                text: 'A Gondozó telefonján a 6-jegyű kód beviteli mezője mindaddig rejtett, amíg a Gondozó az „Elfogadom” gombbal jóvá nem hagyja a nyilatkozatot: „Kijelentem, hogy a Gondozott kifejezett hozzájárulásával vagy törvényes képviselőjeként kötöm össze a készülékeket, és az adatokat kizárólag a biztonsága érdekében használom.” Ezt a rendszer a caregiverConsentAccepted: true mezőben és időbélyeggel naplózza.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'legal-basis',
+        number: '3',
+        title: 'Az adatkezelés jogalapjai (GDPR 6. cikk és 9. cikk)',
+        intro:
+          'A GDPR előírásainak megfelelően a SENEAR az alábbi pontosan meghatározott jogalapokon kezeli a személyes adatokat:',
+        bullets: [
+          {
+            label: 'Kifejezett hozzájárulás (GDPR 6. cikk (1) a) és 9. cikk (2) a)):',
+            text: 'Párosított módban a földrajzi helyzet (Otthoni Biztonsági Zóna és SOS GPS), az akkumulátor- és gyártói (OEM) eszközállapot-telemetria, a távoli fényképes névjegykezelés, a felhasználó által megadott napi rutinok/emlékeztetők, valamint a WebRTC hang- és videóhívások kezelése a Gondozott és a Gondozó előzetes, kifejezett, kétoldalú hozzájárulásán alapul. A hozzájárulás a párosítás bontásával vagy az adatok törlésével bármikor, azonnali hatállyal visszavonható.',
+          },
+          {
+            label: 'Szerződés teljesítése / Alkalmazás-funkcionalitás (GDPR 6. cikk (1) b)):',
+            text: 'A Gondozó regisztrációs adatainak (Név, E-mail cím, Telefonszám és Firebase UID), a párosítási kapcsolatnak, a szinkronizált névjegyeknek és a napi emlékeztető ütemezéseknek a kezelése a felhasználók által igényelt családi támogató alkalmazás működtetéséhez szükséges — ideértve azt is, hogy párosításkor a Gondozó neve és telefonszáma automatikusan bekerül a Gondozott első szabad gyorstárcsázó csempéjébe (az első gondozónál az 1. helyre, további párosított gondozóknál a 2., 3. és 4. helyre) az azonnali, egyérintéses hívásindításhoz.',
+          },
+          {
+            label: 'Létfontosságú érdekek védelme (GDPR 6. cikk (1) d) és 9. cikk (2) c)):',
+            text: 'Az SOS segélyhívások, a fizikai zuhanásérzékelési riasztások és az Otthoni Biztonsági Zóna elhagyási értesítések továbbítása a Gondozott életének és testi épségének közvetlen védelmét szolgálja.',
+          },
+          {
+            label: 'Jogos érdek és IT-biztonság (GDPR 6. cikk (1) f)):',
+            text: 'A kriptográfiai hitelesítés (Firebase Auth request.auth != null) kikényszerítése, a jogosulatlan hozzáférések megakadályozása, valamint a kéretlen/csaló telefonhívások (Anti-Scam fehérlista) helyi szűrése.',
+          },
+        ],
+      },
+      {
+        id: 'data-collected',
+        number: '4',
+        title: 'Új Adatkategóriák, Adatkezelési Célok és Technikai Felépítés (GDPR 5. cikk (1) c), 13. és 14. cikk)',
+        intro:
+          'A GDPR adattakarékossági elvének (5. cikk (1) c)) megfelelően a SENEAR kizárólag az 1–4. fejlesztési fázis családi biztonsági funkcióihoz elengedhetetlen adatokat kezeli:',
+        bullets: [
+          {
+            label: 'A) Távoli Gyorstárcsázó Névjegyek és „Zero-Storage Base64” Fotók (1. Fázis):',
+            text: 'Gondozói párosítás esetén a gyorstárcsázó névjegyek neve, telefonszáma és opcionális profilképe szinkronizálódik a Gondozó és a Gondozott készüléke között. Zero-Storage Base64 Architektúra: A névjegyfotókat az alkalmazás közvetlenül a készüléken körbevágja és tömöríti (300×300 képpontra), majd titkosított Base64 szöveges karakterláncként közvetlenül az EU-s Firebase adatbázisunkban (europe-west1) tárolja — a képek SOHA nem kerülnek feltöltésre nyilvános képmegosztó szerverekre, külső tárhelyekre, és soha nem adjuk át őket harmadik félnek.',
+          },
+          {
+            label: 'B) Napi Rutinok, Emlékeztetők és Visszaigazolások (2. Fázis):',
+            text: 'Az emlékeztető címe, az ébresztési időpontok, a szöveges útmutatások (pl. gyógyszerbevételi vagy folyadékfogyasztási jegyzetek), az opcionális tárgyfotók (helyben tömörített Base64 szövegként) és a nyugtázási időbélyegek („Beveszem / Elfogadva ekkor: ÓÓ:PP”) szinkronizálódnak a párosított Gondozott és Gondozó készülékek között, valamint helyben is eltárolódnak a Gondozott telefonján az internet nélküli (offline) ébresztéshez. Klinikai profilalkotás kizárása: A SENEAR ezeket a bejegyzéseket szigorúan a felhasználó által szabadon megadott általános napi emlékeztetőként kezeli, és NEM végez klinikai profilalkotást, orvosi elemzést, automatizált döntéshozatalt vagy egészségügyi adathasznosítást.',
+          },
+          {
+            label: 'C) Eszközállapot és Gyártói (OEM) Akkumulátor-Telemetria (3. Fázis):',
+            text: 'A párosított Gondozott készülék időszakosan (Delta-Sync változáskövetéssel) továbbítja az akkumulátor töltöttségi szintjét (batteryLevel), a töltési állapotot (isCharging), az online életjel időbélyegét (lastSeen / RTDB /presence), a készülék gyártói márkajelzését (Build.MANUFACTURER, pl. Xiaomi, Samsung, Huawei), valamint az akkumulátor-optimalizálás mentességi állapotát (isBatteryUnrestricted). Ezeket az adatokat kizárólag azért kezeljük, hogy értesítsük a Gondozót a merülő akkumulátorról vagy kapcsolatvesztésről, és márkára szabott háttérfutási beállítási útmutatót jelenítsünk meg.',
+          },
+          {
+            label: 'D) Titkosított WebRTC Hang- és Videóhívások (4. Fázis):',
+            text: 'Az alkalmazáson belüli Wi-Fi / mobilnetes hang- és videóhívások titkosított, közvetlen készülékek közötti (Peer-to-Peer) WebRTC (DTLS-SRTP) kapcsolatot használnak. A hívásfelépítési (signaling) metaadatokat a rendszer csak átmenetileg dolgozza fel a Firebase-en keresztül (majd a hívás végén azonnal törli), titkosított TURN átjátszó (relay) szervereket pedig kizárólag akkor vesz igénybe, ha a közvetlen P2P kapcsolatot hálózati tűzfalak blokkolják. A hang- és videófolyamokat SOHA nem rögzítjük és nem tároljuk. Automatikus hívásfogadáskor és kamerakapcsoláskor jól hallható hangjelzés (ToneGenerator) és teljes képernyős élő kijelző tájékoztatja a Gondozottat.',
+          },
+          {
+            label: 'E) Otthoni Biztonsági Zóna (Geofencing) és SOS Riasztások:',
+            text: 'A háttérbeli helymeghatározás (GPS) kizárólag a Gondozó által beállított Otthoni Biztonsági Zónába való belépés / kilépés (elkóborlás) észlelésére, valamint az SOS vészhelyzeti riasztások céljából történik. A rendszer NEM épít folyamatos útvonal-történetet (breadcrumb tracking), és a helyadatokat soha nem használja hirdetési célra. Az alerts alkollekcióban GPS koordináta kizárólag SOS és WANDERING eseményekhez kapcsolódik.',
+          },
+          {
+            label: 'F) Gondozói Fiók- / Regisztrációs Adatok és Párosítási Azonosítók:',
+            text: '1) A Gondozói regisztráció során gyűjtött adatok: A Gondozói regisztráció során a SENEAR rögzíti a Gondozó Nevét, E-mail címét és Telefonszámát (valamint a Firebase UID azonosítót, a Gondozott megjelenített nevét, az automatikusan lejáró ideiglenes 6-jegyű párosító kódot, az FCM push tokeneket és a kétoldalú GDPR hozzájárulási időbélyegeket: seniorConsentAccepted, caregiverConsentAccepted). 2) Az adatkezelés célja (GDPR 6. cikk (1) b) – Szerződés teljesítése / Alkalmazás-funkcionalitás): Amikor a Gondozó párosítja a készülékét a Gondozott készülékével, a Gondozó neve és telefonszáma automatikusan betöltődik a Gondozott első szabad gyorstárcsázó csempéjébe (az 1. helyre az első gondozó, a 2., 3. és 4. helyre pedig a további párosított gondozók számára), így a Gondozott egyetlen érintéssel azonnal felhívhatja a gondozóját. Ha nem történik párosítás, a Gondozott készüléke kizárólag helyi alapértelmezett értékeket használ. 3) Adathordozhatóság és végleges törlés: A Gondozó telefonszáma szerepel az alkalmazáson belüli GDPR Adatexportban, és az Egynyomásos Fiók-/Adattörlés indításakor véglegesen törlésre kerül.',
+          },
+          {
+            label: 'G) Hibadiagnosztika (system_crashes) és Anonim Telepítési/Eltávolítási Telemetria (uninstall_analytics):',
+            text: 'Az életvédelmi Kioszk és SOS funkciók megbízhatósága érdekében váratlan alkalmazáshiba esetén a technikai hibaüzenet (stack trace), az Android verzió, a készülék típusa és az app verziószáma a Firestore system_crashes kollekcióba kerül (GDPR 6. cikk (1) f) jogos érdek). Fióktörléskor vagy az alkalmazás eltávolításakor (FCM token megszűnésekor) az uninstall_analytics kollekció személyes azonosítók (név, e-mail, telefonszám) nélkül rögzíti a technikai beállítási állapotot a gyártóspecifikus (OEM) hibák javításához.',
+          },
+        ],
+      },
+      {
+        id: 'permissions',
+        number: '5',
+        title: 'Android Rendszerengedélyek és Kisegítő Lehetőségek (Accessibility API) Nyilatkozat (Google Play Megfelelőség)',
+        intro:
+          'A SENEAR az alábbi Android rendszerengedélyeket kizárólag átlátható előzetes tájékoztatás után, a felhasználó biztonsága érdekében használja:',
+        bullets: [
+          {
+            label: 'AccessibilityService API (android.permission.BIND_ACCESSIBILITY_SERVICE):',
+            text: 'Kizárólag a Gondozott készülékén, aktív Kioszk módban használatos annak megakadályozására, hogy a Gondozott véletlenül elnavigáljon a védett kezdőképernyőről (a Kezdőlap / Vissza / Előzmények gombok védelme és a képernyőrögzítés megerősítése). A SENEAR NEM olvas személyes képernyőtartalmat, NEM rögzít jelszavakat vagy billentyűleütéseket, és NEM tesz lehetővé távoli kattintás-injektálást vagy távoli irányítást.',
+          },
+          {
+            label: 'Pontos Ébresztések (android.permission.SCHEDULE_EXACT_ALARM & USE_FULL_SCREEN_INTENT):',
+            text: 'Kizárólag az időkritikus helyi ébresztések, a teljes képernyős bejövő Wi-Fi hívások és a napi rutin emlékeztetők percre pontos megszólaltatására szolgál a Gondozott készülékén.',
+          },
+          {
+            label: 'Akkumulátor-optimalizálás mellőzése (android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS):',
+            text: 'Kizárólag arra szolgál, hogy a gyártói (OEM) energiatakarékos algoritmusok ne állítsák le a háttérben futó biztonsági szolgáltatásokat (SOS segélyhívás, Otthoni Biztonsági Zóna figyelés, online életjel).',
+          },
+          {
+            label: 'Telefonhívás, Hívásszűrés és SMS (SEND_SMS / RECEIVE_SMS / READ_SMS / CALL_PHONE / ANSWER_PHONE_CALLS / READ_CALL_LOG / CallScreeningService / NotificationListenerService):',
+            text: 'Kizárólag a felhasználó által indított egyérintéses gyorstárcsázó hívásokhoz, a dedikált SOS vészhelyzeti gombhoz (segélykérő SMS küldése és hívás indítása), a nem fogadott hívások („Keresett!”) kijelzéséhez, az ismeretlen/csaló számok helyi szűréséhez az Android CallScreeningService (NogondCallScreeningService – Anti-Scam fehérlista) segítségével, a bejövő SMS-ek Kioszk képernyőn történő nagybetűs megjelenítéséhez a NotificationListenerService (SenearSmsNotificationService) / RECEIVE_SMS / READ_SMS révén, valamint a Gondozó hívásainak kihangosított fogadásához használatos. Az SMS-ek és hívásadatok SOHA nem kerülnek átadásra harmadik félnek.',
+          },
+          {
+            label: 'Helymeghatározás (ACCESS_FINE_LOCATION / ACCESS_BACKGROUND_LOCATION) és Kamera/Mikrofon (CAMERA / RECORD_AUDIO):',
+            text: 'A helymeghatározás kizárólag párosított módban az Otthoni Biztonsági Zóna és az SOS riasztások működéséhez, a kamera és mikrofon pedig kizárólag az aktív WebRTC hang-/videóhívások során használatos.',
+          },
+        ],
+      },
+      {
+        id: 'eu-residency-security',
+        number: '6',
+        title: 'EU-s Adattárolás, Adatfeldolgozó és Technikai Biztonsági Intézkedések (GDPR 28., 32., 44. cikk)',
+        intro:
+          'A GDPR 32. cikkének megfelelően korszerű technikai és szervezési intézkedésekkel (TOM) védjük a kezelt személyes adatokat:',
+        bullets: [
+          {
+            label: '100% EU-s adattárolás (europe-west1 – Belgium):',
+            text: 'Minden felhőalapú adatbázis (Firebase Cloud Firestore, Realtime Database) és szerveroldali funkció (Cloud Functions v2 – setGlobalOptions({ region: "europe-west1" })) kizárólag az Európai Unió területén (europe-west1 – St. Ghislain, Belgium) található és fut.',
+          },
+          {
+            label: 'Adatfeldolgozó (Sub-processor) és Webes Kapcsolati Űrlap:',
+            text: 'Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Írország) – Google Cloud / Firebase infrastruktúra, a GDPR 28. cikk szerinti Google Cloud Data Processing Addendum (DPA) adatfeldolgozói szerződés hatálya alatt. A gabba.bond weboldalon található kapcsolati űrlap önkéntes beküldésekor a megadott név, e-mail cím és üzenet a FormSubmit (formsubmit.co) szolgáltatón keresztül továbbítódik a gabba@gabba.bond címre.',
+          },
+          {
+            label: 'Titkosítás átvitel közben és nyugalmi állapotban:',
+            text: 'Minden hálózati adatátvitel HTTPS / TLS 1.3 titkosítással, a közvetlen VoIP hívások pedig WebRTC DTLS-SRTP végponti titkosítással védettek. A szervereken tárolt adatok (beleértve a Base64 fotókat is) nyugalmi állapotban AES-256 titkosítással vannak ellátva.',
+          },
+          {
+            label: 'Szigorított jogosultságkezelés (Security Rules):',
+            text: 'A Firestore (firestore.rules), a Realtime Database (database.rules.json) és az összes Cloud Function végpont kötelező kriptográfiai hitelesítést (request.auth != null / assertAuthenticated) követel meg; nyilvános hozzáférés nincs.',
+          },
+        ],
+      },
+      {
+        id: 'retention',
+        number: '7',
+        title: 'Adatmegőrzési időtartamok (GDPR 5. cikk (1) e) és 13. cikk (2) a))',
+        intro:
+          'A személyes adatokat kizárólag a cél eléréséhez feltétlenül szükséges ideig őrizzük meg:',
+        bullets: [
+          {
+            label: 'WebRTC VoIP hívásjelzések és tartalék csomagok (webrtc_signaling & /voip_stream):',
+            text: 'A hívás végétől számított 0 másodperc. A hívás lezárásakor, hibájakor vagy időtúllépésekor azonnal és véglegesen törlődnek.',
+          },
+          {
+            label: 'Aktuális GPS pozíció és eszközállapot (seniors/{seniorId}):',
+            text: 'Minden újabb változáskor felülíródik (nem épül belőle idősoros előzmény). A párosítás megszüntetésekor vagy a profil törlésekor azonnal törlődik.',
+          },
+          {
+            label: 'Szinkronizált névjegyek, Base64 fotók, napi rutinok és riasztási naplók:',
+            text: 'Kizárólag az aktív párosítás fennállása alatt érhetők el; a „Minden adat törlése / Párosítás bontása” funkció indításakor azonnal és véglegesen megsemmisülnek.',
+          },
+          {
+            label: 'Törölt fiókok és profilok:',
+            text: 'Alkalmazáson belüli törlés esetén 0 nap (azonnali, visszaállíthatatlan rekurzív törlés). E-mailes törlési kérelem esetén legfeljebb 72 órán belül törlésre kerül.',
+          },
+        ],
+      },
+      {
+        id: 'user-rights',
+        number: '8',
+        title: 'Egynyomásos Végleges Adattörlés (GDPR 17. cikk – Elfeledtetéshez való jog) és Érintetti Jogok',
+        intro:
+          'A felhasználóknak (mind a Gondozónak, mind a Gondozottnak) a GDPR 15–22. cikkei alapján bármikor díjmentesen jogukban áll:',
+        bullets: [
+          {
+            label: 'Kétoldalú Hozzájárulás és Egynyomásos Végleges Adattörlés („Minden adat törlése / Párosítás bontása”):',
+            text: 'Bármikor, akár a Gondozott Adminisztrátor (Kioszk óra 5x érintése + PIN → Általános beállítások → „Felhőprofil és adatok végleges törlése (GDPR)”), akár a Gondozó (Gondozói vezérlőpult → „Fiók és minden adat végleges törlése (GDPR)” / Párosítás bontása) egyetlen gombnyomással elindíthatja az adatok törlését az alkalmazáson belül. Ez azonnal és véglegesen törli az összes szinkronizált névjegyet, Base64 fotót, napi rutint és nyugtázást, Otthoni Biztonsági Zóna koordinátát, eszköz- és akkumulátor-telemetriát, riasztási naplót, párosító kódot és WebRTC hívásjelzési csomópontot az EU-s felhőszervereinkről (Firestore és Realtime Database – europe-west1), valamint a készülékek helyi tárhelyéről.',
+          },
+          {
+            label: 'Teljes körű GDPR érintetti jogok (15–22. cikk):',
+            text: 'Tájékoztatást és hozzáférést kérni a kezelt adatokról (15. cikk), kérni azok helyesbítését (16. cikk), végleges törlését (17. cikk), az adatkezelés korlátozását (18. cikk), az adathordozhatóságot (20. cikk), tiltakozni az adatkezelés ellen (21. cikk), valamint a hozzájárulást bármikor visszavonni (7. cikk (3)).',
+          },
+          {
+            label: 'Törlés kérése e-mailben (az alkalmazás használata nélkül is):',
+            text: 'Felhasználóink az alkalmazás eltávolítása után is bármikor kérhetik adataik teljes körű törlését a gabba@gabba.bond e-mail címre küldött üzenettel (a regisztrált e-mail cím vagy a 6-jegyű párosító kód megadásával), amelyet legfeljebb 72 órán belül teljesítünk.',
+          },
+        ],
+      },
+      {
+        id: 'medical-disclaimer',
+        number: '9',
+        title: 'Orvostechnikai és Segélyhívó Felelősségkizáró Nyilatkozat (Kötelező EU / DACH Jogi Nyilatkozat)',
+        isWarningBox: true,
+        intro:
+          'Kérjük, a SENEAR alkalmazás használata előtt figyelmesen olvassa el az alábbi kötelező európai uniós jogi és működési nyilatkozatot:',
+        bullets: [
+          {
+            label: 'Nem minősül orvostechnikai eszköznek (EU MDR 2017/745) vagy hivatalos segélyhívó szolgálatnak:',
+            text: 'A SENEAR egy családi kommunikációs és napi rutin-segítő alkalmazás. NEM minősül az (EU) 2017/745 európai parlamenti és tanácsi rendelet (MDR) szerinti tanúsított orvostechnikai eszköznek, és NEM minősül hivatalos, 24 órás sürgősségi diszpécserszolgálatnak (mint például a 112, a 911 vagy a minősített „Hausnotruf” jelzőrendszerek). A napi rutin emlékeztetők (beleértve a gyógyszerbevételi vagy folyadékfogyasztási jegyzeteket) kizárólag a család által beállított általános szervezési segédeszközök, és nem helyettesítik a szakorvosi ellátást vagy a személyes ápolói felügyeletet.',
+          },
+          {
+            label: 'Hálózati és operációs rendszerbeli függőségek:',
+            text: 'Az SOS hívások és SMS-ek, az Otthoni Biztonsági Zóna (geofencing) értesítések, a WebRTC hang-/videóhívások és a Napi Rutin ébresztések célba érése függ a mobilhálózati lefedettségtől, a SIM kártya egyenlegétől, az internetkapcsolat meglététől, a GPS műholdas vételtől, a készülék töltöttségétől, valamint az okostelefon operációs rendszerének beállításaitól.',
+          },
+        ],
+      },
+      {
+        id: 'supervisory-authority',
+        number: '10',
+        title: 'Felügyeleti hatóságok és Jogorvoslati lehetőség (GDPR 77. cikk)',
+        intro:
+          'Amennyiben úgy ítéli meg, hogy személyes adatainak kezelése sérti a GDPR előírásait, jogosult panasszal fordulni az illetékes adatvédelmi felügyeleti hatósághoz:',
+        bullets: [
+          {
+            label: 'Illetékes vezető felügyeleti hatóság (Magyarország):',
+            text: 'Nemzeti Adatvédelmi és Információszabadság Hatóság (NAIH) • Székhely: 1055 Budapest, Falk Miksa utca 9-11. • Levelezési cím: 1363 Budapest, Pf. 9. • Telefon: +36 (1) 391-1400 • E-mail: ugyfelszolgalat@naih.hu • Weboldal: https://www.naih.hu',
+          },
+          {
+            label: 'Németországi és Ausztriai felügyeleti hatóságok (DACH régió):',
+            text: 'Der Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI – Graurheindorfer Str. 153, 53117 Bonn, https://www.bfdi.bund.de), a lakóhely szerinti tartományi adatvédelmi hatóság (Landesdatenschutzbehörde), illetve Ausztriában az Österreichische Datenschutzbehörde (DSB – Barichgasse 40-42, 1030 Wien, https://www.dsb.gv.at).',
+          },
+          {
+            label: 'Lakóhely szerinti egyéb EU / EGT adatvédelmi hatóságok:',
+            text: 'A felhasználó a szokásos tartózkodási helye vagy munkahelye szerinti bármely európai uniós tagállam adatvédelmi hatóságához is fordulhat (az összes EU hatóság listája: https://edpb.europa.eu/about-edpb/about-edpb/members_hu).',
+          },
+        ],
+      },
+    ],
+    ctaDeleteTitle: 'Kérdése van, vagy adatai törlését szeretné kérni?',
+    ctaDeleteDesc:
+      'Adatait bármikor, egyetlen gombnyomással azonnal törölheti a SENEAR alkalmazáson belül („Minden adat törlése / Párosítás bontása”), vagy közvetlenül írhat az Adatkezelőnek (72 órán belüli teljesítéssel).',
+    ctaDeleteInAppBadge: 'Azonnali alkalmazáson belüli GDPR törlés biztosított',
+    ctaDeleteEmailBtn: 'Kapcsolatfelvétel az Adatkezelővel (gabba@gabba.bond)',
+    backToSenearBtn: 'Vissza a SENEAR termékoldalra',
+    backToHomeBtn: 'Vissza a főoldalra',
+  },
+
+  // ===========================================================================
+  // GERMAN (DEUTSCH)
+  // ===========================================================================
+  de: {
+    breadcrumbHome: 'Startseite',
+    breadcrumbCurrent: 'Datenschutzerklärung (DSGVO)',
+    badgeEuGdpr: 'DSGVO (EU) 2016/679 Konform',
+    badgeRegion: 'EU-Datenhaltung: europe-west1 (Belgien)',
+    badgePlaySafety: 'Google Play Data Safety Geprüft',
+    title: 'DATENSCHUTZERKLÄRUNG – SENEAR',
+    subtitle:
+      'Diese Datenschutzerklärung erläutert detailliert, wie die mobile Anwendung SENEAR (Paketname: bond.gabba.senear) und die offizielle Website (gabba.bond) personenbezogene Daten gemäß der Datenschutz-Grundverordnung der Europäischen Union (DSGVO – Verordnung (EU) 2016/679), dem Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz (TDDDG), den EU-/DACH-Verbraucherschutzstandards sowie den Google Play-Richtlinien erheben, verarbeiten, minimieren und schützen.',
+    effectiveDateLabel: 'Inkrafttreten & Letzte Aktualisierung:',
+    effectiveDateValue: '21. Oktober 2026',
+    langSwitchLabel: 'Dokumentensprache:',
+    autoDetectedNote: 'Automatisch in Ihrer Browsersprache angezeigt (Standard: Englisch)',
+    controllerCardTitle: '1. Verantwortlicher für die Datenverarbeitung (Art. 13 Abs. 1 lit. a DSGVO)',
+    controllerNameLabel: 'Name / Betreiber (Verantwortlicher)',
+    controllerNameValue: 'Gabor Banyai (Bányai Gábor)',
+    controllerEmailLabel: 'Datenschutz- & Kontakt-E-Mail',
+    controllerPhoneLabel: 'Telefonnummer',
+    controllerJurisdictionLabel: 'Niederlassung / Rechtsordnung',
+    controllerJurisdictionValue: 'Budapest, Ungarn (Europäische Union)',
+    controllerServiceLabel: 'Anwendung & Dienstleistung',
+    controllerServiceValue: 'SENEAR (NEAR Ecosystem) — Android-App (bond.gabba.senear) & Webplattform',
+    quickSummaryTitle: 'Wichtigste DSGVO- & Technische Garantien im Überblick',
+    quickSummaryItems: [
+      {
+        title: '100 % EU-Serverstandort',
+        desc: 'Alle Cloud Firestore-, Realtime Database- und Cloud Functions-Instanzen werden ausschließlich in europe-west1 (Belgien, EU) betrieben.',
+      },
+      {
+        title: 'Zero-Storage Base64-Fotos',
+        desc: 'Kontakt- & Routinefotos werden lokal komprimiert (300×300px) und als verschlüsselte Base64-Strings in unserer EU-Datenbank gespeichert – nie auf öffentlichen Bildservern.',
+      },
+      {
+        title: 'Verschlüsseltes WebRTC & GPS-Schutz',
+        desc: 'P2P-verschlüsselte Anrufe (DTLS-SRTP) werden nie aufgezeichnet. Keine fortlaufende GPS-Bewegungshistorie.',
+      },
+      {
+        title: 'Sofort-Löschung (Art. 17 DSGVO)',
+        desc: 'Beidseitige Einwilligung & Ein-Klick-Funktion „Alle Daten löschen / Entkoppeln“ löscht sofort alle Cloud- und Lokaldaten.',
+      },
+    ],
+    sections: [
+      {
+        id: 'modes',
+        number: '2',
+        title: 'Betriebsmodi & Grundprinzip des Datenschutzes (Privacy by Design & by Default – Art. 25 DSGVO)',
+        intro:
+          'SENEAR wurde streng nach dem Grundsatz „Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen“ entwickelt und arbeitet in zwei klar getrennten Betriebsmodi:',
+        subsections: [
+          {
+            subtitle: 'A) Eigenständiger Senioren-Modus (Ungekoppelt / Offline-First)',
+            badge: 'Keine Cloud-Datenübertragung',
+            paragraphs: [
+              'Wird die App ohne Kopplung mit einer Betreuungsperson auf dem Smartphone der älteren Person („Senior“ / „Betreute Person“) genutzt, werden sämtliche Konfigurationsdaten (freigegebene Kurzwahlkontakte, lokale Tagesroutinen, Schriftgrößen, Lautstärkeprofile, geschützter Kiosk-Status) ausschließlich lokal im internen Gerätespeicher (Android SharedPreferences / ContactPreferences) gespeichert.',
+              'Im eigenständigen Modus werden keinerlei personenbezogene Daten an externe Server oder die Cloud übertragen.',
+            ],
+          },
+          {
+            subtitle: 'B) Verbundener Betreuer-Modus (Gekoppelt)',
+            badge: 'Beidseitige ausdrückliche Einwilligung erforderlich',
+            paragraphs: [
+              'Die Cloud-Synchronisation und Fernunterstützung werden erst aktiviert, nachdem auf beiden Geräten vor der Generierung bzw. Eingabe des 6-stelligen Kopplungscodes eine ausdrückliche Einwilligungs- und Verantwortungserklärung (Bilateral GDPR Consent Gate) bestätigt wurde:',
+            ],
+            bullets: [
+              {
+                label: 'Einwilligungsschranke auf dem Seniorengerät (Senior Consent Gate):',
+                text: 'Beim Öffnen des Kopplungsbildschirms wird der 6-stellige Code standardmäßig weder generiert noch angezeigt. Stattdessen erscheint ein kontrastreicher Hinweis: „Mit der Kopplung erlaube ich meiner Betreuungsperson, meinen Akkustand und meinen Standort (GPS) einzusehen, meine Kontakte aus der Ferne zu verwalten und WLAN-Sprach-/Videoanrufe zu starten.“ Erst nach dem Tippen auf „Ich stimme zu“ („Elfogadom“) wird seniorConsentAccepted: true samt Zeitstempel gespeichert und der 6-stellige Code eingeblendet.',
+              },
+              {
+                label: 'Rechtserklärung auf dem Betreuergerät (Caregiver Declaration Gate):',
+                text: 'Auf dem Gerät der Betreuungsperson bleibt das Eingabefeld für den Kopplungscode gesperrt, bis die Betreuungsperson ausdrücklich bestätigt: „Ich erkläre, dass ich die Geräte mit ausdrücklicher Einwilligung der betreuten Person oder als deren gesetzlicher Vertreter verbinde und die Daten ausschließlich zu ihrer Sicherheit verwende.“ Dies wird als caregiverConsentAccepted: true mit Zeitstempel dokumentiert.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'legal-basis',
+        number: '3',
+        title: 'Rechtsgrundlagen der Verarbeitung (Art. 6 und Art. 9 DSGVO)',
+        intro:
+          'Die Verarbeitung personenbezogener Daten innerhalb von SENEAR stützt sich ausschließlich auf folgende Rechtsgrundlagen der DSGVO:',
+        bullets: [
+          {
+            label: 'Ausdrückliche Einwilligung (Art. 6 Abs. 1 lit. a & Art. 9 Abs. 2 lit. a DSGVO):',
+            text: 'Die Verarbeitung von GPS-Standortdaten (Heimzone und SOS), Akku- und OEM-Gerätetelemetrie, ferngesteuerten Kurzwahlkontakten, nutzerdefinierten Tagesroutinen/Erinnerungen sowie WebRTC-Sprach-/Videoanrufen im gekoppelten Modus erfolgt auf Grundlage der informierten, ausdrücklichen und beidseitigen Einwilligung. Die Einwilligung kann jederzeit mit sofortiger Wirkung durch Entkoppeln oder Datenlöschung widerrufen werden (Art. 7 Abs. 3 DSGVO).',
+          },
+          {
+            label: 'Vertragserfüllung / App-Funktionalität (Art. 6 Abs. 1 lit. b DSGVO):',
+            text: 'Die Verarbeitung der Registrierungsdaten der Betreuungsperson (Name, E-Mail-Adresse, Telefonnummer und Firebase-UID), der Kopplungscodes, der synchronisierten Kontaktlisten und der Erinnerungszeiten ist für die Bereitstellung der angeforderten Familien-Assistenzfunktionen erforderlich – einschließlich des automatischen Eintragens von Name und Telefonnummer der gekoppelten Betreuungsperson in die erste freie Kurzwahlkachel des Seniors (Platz 1 für die erste Betreuungsperson sowie Plätze 2, 3 und 4 für weitere gekoppelte Betreuungspersonen) für sofortige Ein-Klick-Anrufe.',
+          },
+          {
+            label: 'Schutz lebenswichtiger Interessen (Art. 6 Abs. 1 lit. d & Art. 9 Abs. 2 lit. c DSGVO):',
+            text: 'Die Übermittlung von SOS-Notrufen, Sturzerkennungsalarmen und Sicherheitszonen-Warnungen (Geofencing) dient dem unmittelbaren Schutz des Lebens und der körperlichen Unversehrtheit des Seniors.',
+          },
+          {
+            label: 'Berechtigte Interessen & IT-Sicherheit (Art. 6 Abs. 1 lit. f DSGVO):',
+            text: 'Durchsetzung kryptografischer Authentifizierungsprüfungen (request.auth != null), Schutz vor unbefugtem Zugriff sowie lokale Filterung von unbekannten/betrügerischen Anrufern (Anti-Scam-Whitelist).',
+          },
+        ],
+      },
+      {
+        id: 'data-collected',
+        number: '4',
+        title: 'Neue Datenkategorien, Verarbeitungszwecke & Technische Architektur (Art. 5 Abs. 1 lit. c, Art. 13 & 14 DSGVO)',
+        intro:
+          'Gemäß dem Grundsatz der Datenminimierung (Art. 5 Abs. 1 lit. c DSGVO) verarbeitet SENEAR ausschließlich die für die Phasen 1 bis 4 erforderlichen Datenkategorien:',
+        bullets: [
+          {
+            label: 'A) Ferngesteuerte Kurzwahlkontakte & „Zero-Storage Base64“-Fotos (Phase 1):',
+            text: 'Bei Kopplung mit einer Betreuungsperson werden die Namen, Telefonnummern und optionalen Kontaktfotos der Kurzwahlkontakte zwischen dem Betreuer- und dem Seniorengerät synchronisiert. Zero-Storage Base64-Architektur: Kontaktfotos werden lokal auf dem Gerät zugeschnitten und komprimiert (300×300 Pixel) und als verschlüsselte Base64-Textzeichenfolgen direkt in unserer EU-basierten Firebase-Datenbank (europe-west1) gespeichert – sie werden NIEMALS auf öffentliche Bildserver hochgeladen oder an Dritte weitergegeben.',
+          },
+          {
+            label: 'B) Tagesroutinen, Erinnerungen & Bestätigungen (Phase 2):',
+            text: 'Routinetitel, Weck-/Erinnerungszeiten, Textanweisungen (z. B. Medikamenten- oder Trinkhinweise), optionale Objektfotos (als lokal komprimierte Base64-Strings) sowie Bestätigungs-Zeitstempel („Bestätigt/Eingenommen um HH:mm“) werden zwischen den gekoppelten Senioren- und Betreuergeräten synchronisiert und lokal auf dem Seniorentelefon für die Offline-Alarmausführung gespeichert. Kein klinisches Profiling: SENEAR behandelt diese Einträge streng als benutzerdefinierte allgemeine Alltagserinnerungen und führt KEIN klinisches Profiling, KEINE medizinische Analyse und KEINE Monetarisierung von Gesundheitsdaten durch.',
+          },
+          {
+            label: 'C) Gerätestatus & OEM-Akku-Telemetrie (Phase 3):',
+            text: 'Das gekoppelte Seniorengerät überträgt regelmäßig Akkustand in Prozent (batteryLevel), Ladestatus (isCharging), Online-Heartbeat-Zeitstempel (lastSeen / RTDB /presence), Gerätehersteller-Marke (Build.MANUFACTURER, z. B. Xiaomi, Samsung, Huawei) sowie den Status der Akku-Optimierung (isBatteryUnrestricted). Dies dient ausschließlich dazu, die Betreuungsperson bei niedrigem Akkustand oder Verbindungsabbruch zu warnen und herstellerspezifische Einrichtungsanleitungen für den Hintergrundbetrieb anzuzeigen.',
+          },
+          {
+            label: 'D) Verschlüsselte WebRTC-Sprach- und Videoanrufe (Phase 4):',
+            text: 'App-interne WLAN-/Mobilfunk-Sprach- und Videoanrufe nutzen verschlüsseltes Peer-to-Peer-WebRTC (DTLS-SRTP). Anruf-Signalisierungsmetadaten (SDP/ICE) werden nur temporär über Firebase verarbeitet (und bei Gesprächsende sofort gelöscht); verschlüsselte TURN-Relay-Server kommen nur dann zum Einsatz, wenn eine direkte P2P-Verbindung durch Netzwerk-Firewalls blockiert wird. Audio- und Videostreams werden NIEMALS aufgezeichnet oder gespeichert. Akustische Signaltöne (ToneGenerator) und eine vollflächige Live-Anzeige informieren den Senior jederzeit über aktive Anrufe oder Kameraübertragungen.',
+          },
+          {
+            label: 'E) Sichere Heimzone (Geofencing) & SOS-Alarme:',
+            text: 'Der Hintergrund-Standort (GPS) wird ausschließlich verarbeitet, um das Betreten oder Verlassen der von der Betreuungsperson definierten sicheren Heimzone (Home Safe Zone) zu erkennen sowie bei SOS-Notfällen zu helfen – völlig ohne kontinuierliche Bewegungsprofile (Breadcrumb-Tracking) und ohne Werbenutzung. In der Unterkollektion alerts werden GPS-Koordinaten nur bei SOS und WANDERING beigefügt.',
+          },
+          {
+            label: 'F) Betreuer-Konto- / Registrierungsdaten & Kopplungs-IDs:',
+            text: '1) Bei der Betreuer-Registrierung erhobene Daten: Während der Registrierung der Betreuungsperson erhebt SENEAR den Namen, die E-Mail-Adresse und die Telefonnummer der Betreuungsperson (sowie die Firebase-UID, den Anzeigenamen des Seniors, den automatisch ablaufenden temporären 6-stelligen Kopplungscode, FCM-Push-Tokens und die beidseitigen Einwilligungs-Zeitstempel seniorConsentAccepted / caregiverConsentAccepted). 2) Zweck der Verarbeitung (Art. 6 Abs. 1 lit. b DSGVO – Vertragserfüllung / App-Funktionalität): Wenn eine Betreuungsperson ihr Gerät mit einem Seniorengerät koppelt, werden Name und Telefonnummer der Betreuungsperson automatisch in die erste freie Kurzwahlkachel des Seniors eingetragen (Platz 1 für die erste Betreuungsperson sowie Plätze 2, 3 und 4 für weitere gekoppelte Betreuungspersonen), damit der Senior seine Betreuungsperson sofort mit einem Fingertipp anrufen kann. Findet keine Kopplung statt, verwendet das Seniorengerät ausschließlich lokale Standardwerte. 3) Datenexport & Löschung: Die Telefonnummer der Betreuungsperson ist im In-App-DSGVO-Datenexport enthalten und wird beim Auslösen der Ein-Klick-Konto-/Datenlöschung dauerhaft und unwiderruflich gelöscht.',
+          },
+          {
+            label: 'G) Fehlerdiagnose (system_crashes) & Anonyme Einrichtungs-/Deinstallations-Telemetrie (uninstall_analytics):',
+            text: 'Zur Gewährleistung der Zuverlässigkeit von Kiosk- und SOS-Funktionen werden bei unerwarteten App-Abstürzen technische Stack-Traces, Android-Version, Gerätemodell und App-Version in der Firestore-Kollektion system_crashes protokolliert (Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an der Systemstabilität). Bei Kontolöschung oder App-Deinstallation werden in uninstall_analytics anonymisierte technische Einrichtungsmerkmale (ohne Namen, E-Mail oder Telefonnummer) gespeichert, um herstellerspezifische Einrichtungsprobleme zu beheben.',
+          },
+        ],
+      },
+      {
+        id: 'permissions',
+        number: '5',
+        title: 'Offenlegung der Android-Berechtigungen & Accessibility API (Google Play Compliance)',
+        intro:
+          'SENEAR fordert Systemberechtigungen ausschließlich für transparente Sicherheitsfunktionen auf dem Gerät an:',
+        bullets: [
+          {
+            label: 'AccessibilityService API (android.permission.BIND_ACCESSIBILITY_SERVICE):',
+            text: 'Wird ausschließlich auf dem Seniorengerät bei aktivem Kiosk-Modus verwendet, um ein versehentliches Verlassen des Startbildschirms zu verhindern (Sperren von Home/Zurück/Letzte Apps). SENEAR liest KEINE persönlichen Bildschirminhalte aus, erfasst KEINE Passwörter oder Tastatureingaben und erlaubt KEINE ferngesteuerte Klick-Injektion oder Fernsteuerung.',
+          },
+          {
+            label: 'Exakte Alarme (android.permission.SCHEDULE_EXACT_ALARM & USE_FULL_SCREEN_INTENT):',
+            text: 'Wird ausschließlich verwendet, um zeitkritische lokale Weckrufe, eingehende Vollbild-WLAN-Anrufe und tägliche Routine-Erinnerungen auf dem Seniorengerät minutengenau auszulösen.',
+          },
+          {
+            label: 'Ausnahme von der Akku-Optimierung (android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS):',
+            text: 'Wird verwendet, um zu verhindern, dass herstellerseitige (OEM) Energiesparfunktionen wichtige Sicherheitsdienste im Hintergrund (SOS, Geofencing, Heartbeat) beenden.',
+          },
+          {
+            label: 'Telefon, Anruffilter & SMS (SEND_SMS / RECEIVE_SMS / READ_SMS / CALL_PHONE / ANSWER_PHONE_CALLS / READ_CALL_LOG / CallScreeningService / NotificationListenerService):',
+            text: 'Wird ausschließlich für vom Nutzer ausgelöste Ein-Klick-Kurzwahlanrufe, die dedizierte SOS-Notruftaste (Notfall-SMS und Notruf), die Anzeige verpasster Anrufe („Hat angerufen!“), den lokalen Anti-Scam-Anruffilter über Android CallScreeningService (NogondCallScreeningService – Whitelist), die großformatige Anzeige eingehender SMS im Kiosk-Modus über NotificationListenerService (SenearSmsNotificationService) / RECEIVE_SMS / READ_SMS sowie die Freisprech-Anrufannahme für autorisierte Betreuer verwendet. SMS-Inhalte und Anrufdaten werden NIEMALS an Dritte weitergegeben.',
+          },
+          {
+            label: 'Standort (ACCESS_FINE_LOCATION / ACCESS_BACKGROUND_LOCATION) & Kamera/Mikrofon (CAMERA / RECORD_AUDIO):',
+            text: 'Standortzugriff dient ausschließlich der Heimzonen-Erkennung und SOS-Notrufen im gekoppelten Modus; Kamera und Mikrofon werden ausschließlich für aktive WebRTC-Gespräche unter akustischer und visueller Anzeige genutzt.',
+          },
+        ],
+      },
+      {
+        id: 'eu-residency-security',
+        number: '6',
+        title: 'EU-Datenhaltung, Auftragsverarbeiter & Technische Sicherheitsmaßnahmen (Art. 28, 32, 44 DSGVO)',
+        intro:
+          'Gemäß Art. 32 DSGVO setzen wir modernste technische und organisatorische Maßnahmen (TOMs) ein:',
+        bullets: [
+          {
+            label: 'Ausschließliche Datenhaltung in der Europäischen Union (europe-west1 – Belgien):',
+            text: 'Sämtliche Cloud-Datenbanken (Firebase Cloud Firestore, Realtime Database) und serverseitigen Funktionen (Cloud Functions v2 mit setGlobalOptions({ region: "europe-west1" })) werden ausschließlich in der Europäischen Union (Rechenzentrum europe-west1 – St. Ghislain, Belgien) betrieben.',
+          },
+          {
+            label: 'Auftragsverarbeiter (Sub-Processor) & Web-Kontaktformular:',
+            text: 'Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Irland) als Infrastruktur-Auftragsverarbeiter (Google Cloud / Firebase) auf Grundlage des Google Cloud Data Processing Addendum (Art. 28 DSGVO). Beim freiwilligen Absenden des Kontaktformulars auf gabba.bond werden Ihr Name, Ihre E-Mail-Adresse und Ihre Nachricht über FormSubmit (formsubmit.co) ausschließlich zur Zustellung Ihrer Anfrage an gabba@gabba.bond übermittelt.',
+          },
+          {
+            label: 'Verschlüsselung bei der Übertragung und im Ruhezustand:',
+            text: 'Alle Datenübertragungen sind über HTTPS / TLS 1.3 sowie bei VoIP-Verbindungen über WebRTC DTLS-SRTP Ende-zu-Ende verschlüsselt. Gespeicherte Daten (einschließlich Base64-Fotos) werden im Ruhezustand mit AES-256 verschlüsselt.',
+          },
+          {
+            label: 'Strenge Zugriffskontrolle (Firebase Security Rules):',
+            text: 'Sowohl die Firestore-Regeln (firestore.rules) und Realtime Database-Regeln (database.rules.json) als auch alle Cloud Functions erzwingen eine gültige Authentifizierung (request.auth != null / assertAuthenticated).',
+          },
+        ],
+      },
+      {
+        id: 'retention',
+        number: '7',
+        title: 'Speicherdauer & Löschfristen (Art. 5 Abs. 1 lit. e & Art. 13 Abs. 2 lit. a DSGVO)',
+        intro:
+          'Personenbezogene Daten werden nur so lange gespeichert, wie es für die jeweiligen Sicherheitsfunktionen zwingend erforderlich ist:',
+        bullets: [
+          {
+            label: 'WebRTC-Signalisierungsdaten & Relay-Puffer (webrtc_signaling & /voip_stream):',
+            text: '0 Sekunden nach Gesprächsende. Werden unmittelbar beim Beenden, Abbruch oder Timeout eines Anrufs automatisch und unwiderruflich gelöscht.',
+          },
+          {
+            label: 'Aktuelle GPS-Position & Gerätetelemetrie (seniors/{seniorId}):',
+            text: 'Werden bei jeder relevanten Änderung überschrieben (keine Speicherung von Bewegungsprofilen) und beim Entkoppeln oder Löschen des Profils sofort entfernt.',
+          },
+          {
+            label: 'Synchronisierte Kontakte, Base64-Fotos, Tagesroutinen & Notfallprotokolle:',
+            text: 'Werden nur für die Dauer der aktiven Kopplung gespeichert und beim Auslösen von „Alle Daten löschen / Entkoppeln“ sofort und restlos gelöscht.',
+          },
+          {
+            label: 'Gelöschte Konten & Profile:',
+            text: '0 Tage bei Löschung direkt in der App (sofortige rekursive Löschung aller Cloud- und Lokaldaten). Löschungsanfragen per E-Mail werden innerhalb von maximal 72 Stunden ausgeführt.',
+          },
+        ],
+      },
+      {
+        id: 'user-rights',
+        number: '8',
+        title: 'Endgültige Ein-Klick-Datenlöschung (Art. 17 DSGVO – Recht auf Vergessenwerden) & Betroffenenrechte',
+        intro:
+          'Nutzer (sowohl Senioren als auch Betreuungspersonen) haben jederzeit folgende unentgeltliche Rechte nach Art. 15–22 DSGVO:',
+        bullets: [
+          {
+            label: 'Beidseitige Einwilligung & Sofortige Ein-Klick-Löschung („Alle Daten löschen / Entkoppeln“):',
+            text: 'Jederzeit kann entweder der Senior-Administrator (5× Tippen auf die Kiosk-Uhr + PIN → Allgemeine Einstellungen → „Cloud-Profil und Daten endgültig löschen (DSGVO)“) oder die Betreuungsperson (Betreuer-Dashboard → „Konto und alle Daten endgültig löschen (DSGVO)“ / Entkoppeln) die vollständige Datenlöschung in der App auslösen. Dadurch werden sofort und unwiderruflich alle synchronisierten Kontakte, Base64-Fotos, Tagesroutinen, Bestätigungen, Koordinaten der sicheren Heimzone, Geräte-/Akku-Telemetriedaten, Alarmprotokolle, Kopplungscodes und WebRTC-Signalisierungsknoten von unseren EU-Cloud-Servern (europe-west1) sowie aus dem lokalen Gerätespeicher gelöscht.',
+          },
+          {
+            label: 'Umfassende Betroffenenrechte (Art. 15–22 & Art. 7 Abs. 3 DSGVO):',
+            text: 'Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20), Widerspruch (Art. 21) sowie das Recht auf jederzeitigen Widerruf einer erteilten Einwilligung (Art. 7 Abs. 3).',
+          },
+          {
+            label: 'Löschung per E-Mail (auch ohne installierte App):',
+            text: 'Nutzer können jederzeit auch per E-Mail an gabba@gabba.bond (unter Angabe ihrer E-Mail-Adresse oder des 6-stelligen Kopplungscodes) die vollständige Löschung ihrer Daten beantragen. Anfragen werden innerhalb von 72 Stunden vollständig umgesetzt.',
+          },
+        ],
+      },
+      {
+        id: 'medical-disclaimer',
+        number: '9',
+        title: 'Medizinischer & Notruf-Haftungsausschluss (Verpflichtender EU- / DACH-Rechtshinweis)',
+        isWarningBox: true,
+        intro:
+          'Bitte beachten Sie diesen wichtigen rechtlichen und technischen Hinweis für die Nutzung im EU- und DACH-Raum:',
+        bullets: [
+          {
+            label: 'Kein zertifiziertes Medizinprodukt (EU-MDR 2017/745) und kein offizieller Notrufdienst:',
+            text: 'SENEAR ist eine Anwendung zur Familienkommunikation und Unterstützung bei der täglichen Routine. Sie ist KEIN zertifiziertes Medizinprodukt im Sinne der EU-Verordnung (EU) 2017/745 (Medical Device Regulation – MDR) und KEIN zertifizierter 24/7-Notruf- oder Rettungsdienst (wie 112, 911 oder ein zertifizierter Hausnotruf). Tagesroutine-Erinnerungen (einschließlich Medikamenten- oder Trinkhinweisen) sind rein familiäre Organisationshilfen und ersetzen keine ärztliche Behandlung, Pflegeaufsicht oder medizinische Diagnose.',
+          },
+          {
+            label: 'Technische & netzwerkseitige Abhängigkeiten:',
+            text: 'Die Zustellung und Ausführung von SOS-Anrufen/SMS, Benachrichtigungen der sicheren Heimzone (Geofencing), WebRTC-Sprach-/Videoanrufen sowie Tagesroutine-Alarmen hängt von der Mobilfunknetzabdeckung, dem SIM-Kartenguthaben, einer aktiven Internetverbindung, dem GPS-Empfang, dem Akkustand sowie den Betriebssystem-Einstellungen des Smartphones ab.',
+          },
+        ],
+      },
+      {
+        id: 'supervisory-authority',
+        number: '10',
+        title: 'Aufsichtsbehörden & Beschwerderecht (Art. 77 DSGVO)',
+        intro:
+          'Sie haben gemäß Art. 77 DSGVO das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, insbesondere in dem EU-Mitgliedstaat Ihres gewöhnlichen Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes:',
+        bullets: [
+          {
+            label: 'Federführende Aufsichtsbehörde (Ungarn – Sitz des Verantwortlichen):',
+            text: 'Nationale Behörde für Datenschutz und Informationsfreiheit (Nemzeti Adatvédelmi és Információszabadság Hatóság – NAIH) • Anschrift: 1055 Budapest, Falk Miksa utca 9-11., Ungarn • Postanschrift: 1363 Budapest, Pf. 9. • Telefon: +36 (1) 391-1400 • E-Mail: ugyfelszolgalat@naih.hu • Website: https://www.naih.hu',
+          },
+          {
+            label: 'Aufsichtsbehörden in Deutschland & Österreich (DACH-Region):',
+            text: 'Der Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI – Graurheindorfer Str. 153, 53117 Bonn, Deutschland, https://www.bfdi.bund.de), die jeweils zuständige Landesdatenschutzbehörde Ihres Bundeslandes oder in Österreich die Österreichische Datenschutzbehörde (DSB – Barichgasse 40-42, 1030 Wien, https://www.dsb.gv.at).',
+          },
+          {
+            label: 'Alle weiteren EU- / EWR-Mitgliedstaaten:',
+            text: 'Ein vollständiges Verzeichnis aller europäischen Datenschutzbehörden finden Sie beim Europäischen Datenschutzausschuss (EDSA / EDPB): https://edpb.europa.eu/about-edpb/about-edpb/members_de',
+          },
+        ],
+      },
+    ],
+    ctaDeleteTitle: 'Fragen zum Datenschutz oder Antrag auf Datenlöschung?',
+    ctaDeleteDesc:
+      'Sie können sämtliche Cloud- und Lokaldaten jederzeit sofort in der SENEAR-App löschen („Alle Daten löschen / Entkoppeln“) oder sich direkt per E-Mail an den Verantwortlichen wenden (Bearbeitung innerhalb von 72 Stunden).',
+    ctaDeleteInAppBadge: 'Sofortige In-App-DSGVO-Löschung verfügbar',
+    ctaDeleteEmailBtn: 'Verantwortlichen kontaktieren (gabba@gabba.bond)',
+    backToSenearBtn: 'Zurück zur SENEAR-Produktseite',
+    backToHomeBtn: 'Zurück zur Startseite',
+  },
+};
+
+function resolvePolicyLang(browserLang: string): PolicyLang {
+  if (browserLang === 'hu') return 'hu';
+  if (browserLang === 'de') return 'de';
+  return 'en';
+}
+
+export function PrivacyPolicyPage({
+  onBackToHome = () => {
+    window.location.href = '/';
+  },
+  onBackToSenear = () => {
+    window.location.href = '/senear';
+  },
+  focusDeletion = false,
+}: PrivacyPolicyPageProps = {}) {
+  const { language } = useLanguage();
+  const [activeLang, setActiveLang] = useState<PolicyLang>(() => resolvePolicyLang(language));
+
+  // Sync automatically if the global detected language changes
+  useEffect(() => {
+    setActiveLang(resolvePolicyLang(language));
+  }, [language]);
+
+  useEffect(() => {
+    if (focusDeletion) {
+      setTimeout(() => {
+        const el = document.getElementById('account-deletion');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [focusDeletion]);
+
+  const content = PRIVACY_CONTENT[activeLang] ?? PRIVACY_CONTENT.en;
+
+  return (
+    <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10 sm:space-y-12">
+        {/* Breadcrumb + Language Switcher Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E8DFD4] pb-5">
+          <nav className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-[#8C7355]">
+            <button
+              type="button"
+              onClick={onBackToHome}
+              className="hover:text-[#2C2C2C] transition-colors cursor-pointer"
+            >
+              {content.breadcrumbHome}
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <button
+              type="button"
+              onClick={onBackToSenear}
+              className="hover:text-[#2C2C2C] transition-colors cursor-pointer"
+            >
+              SENEAR
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <span className="text-[#2C2C2C] font-semibold">{content.breadcrumbCurrent}</span>
+          </nav>
+
+          {/* Language Switcher (Auto-detected to user's language, default EN, switchable between EN / HU / DE) */}
+          <div className="flex items-center gap-2">
+            <Globe className="w-3.5 h-3.5 text-[#8C7355]" />
+            <span className="text-xs font-medium text-[#6E6B65]">{content.langSwitchLabel}</span>
+            <div className="inline-flex rounded-xl bg-[#F0EAE1] p-0.5 border border-[#C5A880]/30">
+              {(['en', 'hu', 'de'] as const).map((code) => {
+                const isActive = activeLang === code;
+                const labels: Record<PolicyLang, string> = {
+                  en: 'EN (English)',
+                  hu: 'HU (Magyar)',
+                  de: 'DE (Deutsch)',
+                };
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => setActiveLang(code)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-[#2C2C2C] text-white shadow-2xs'
+                        : 'text-[#5C5A56] hover:text-[#2C2C2C]'
+                    }`}
+                  >
+                    {labels[code]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Header */}
+        <header className="space-y-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{content.badgeEuGdpr}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/40">
+              <Server className="w-3.5 h-3.5 text-[#8C7355]" />
+              <span>{content.badgeRegion}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/40">
+              <FileCheck2 className="w-3.5 h-3.5 text-[#8C7355]" />
+              <span>{content.badgePlaySafety}</span>
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2C2C2C] tracking-tight">
+              {content.title}
+            </h1>
+            <p className="text-xs sm:text-sm font-semibold text-[#8C7355]">
+              {content.effectiveDateLabel}{' '}
+              <span className="text-[#2C2C2C] font-bold">{content.effectiveDateValue}</span>
+              {' · '}
+              <span className="text-[#6E6B65] font-normal">{content.autoDetectedNote}</span>
+            </p>
+            <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed max-w-4xl">
+              {content.subtitle}
+            </p>
+          </div>
+        </header>
+
+        {/* Quick GDPR Safeguards Summary Grid */}
+        <section className="bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white rounded-3xl p-6 sm:p-8 shadow-lg border border-[#C5A880]/40 space-y-5">
+          <div className="flex items-center gap-2.5">
+            <Lock className="w-5 h-5 text-[#C5A880]" />
+            <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-white">
+              {content.quickSummaryTitle}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {content.quickSummaryItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-1.5"
+              >
+                <div className="flex items-center gap-2 text-[#C5A880] font-bold text-xs sm:text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{item.title}</span>
+                </div>
+                <p className="text-xs text-stone-300 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 1: Data Controller Card */}
+        <section className="bg-[#FFFFFF] rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#F5F0EB] text-[#8C7355] flex items-center justify-center font-bold">
+              <Scale className="w-5 h-5" />
+            </div>
+            <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
+              {content.controllerCardTitle}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8DFD4]">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                {content.controllerNameLabel}
+              </div>
+              <div className="text-sm sm:text-base font-bold text-[#2C2C2C] mt-1">
+                {content.controllerNameValue}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8DFD4]">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                {content.controllerEmailLabel}
+              </div>
+              <a
+                href="mailto:gabba@gabba.bond"
+                className="text-sm sm:text-base font-bold text-emerald-700 hover:underline mt-1 inline-flex items-center gap-1.5"
+              >
+                <Mail className="w-4 h-4" />
+                <span>gabba@gabba.bond</span>
+              </a>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8DFD4]">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                {content.controllerPhoneLabel}
+              </div>
+              <a
+                href="tel:+36304655049"
+                className="text-sm sm:text-base font-bold text-[#2C2C2C] hover:text-[#8C7355] mt-1 inline-flex items-center gap-1.5"
+              >
+                <Phone className="w-4 h-4 text-[#8C7355]" />
+                <span>+36 30 465 5049</span>
+              </a>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8DFD4]">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                {content.controllerJurisdictionLabel}
+              </div>
+              <div className="text-sm font-semibold text-[#2C2C2C] mt-1">
+                {content.controllerJurisdictionValue}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8DFD4] sm:col-span-2">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                {content.controllerServiceLabel}
+              </div>
+              <div className="text-sm font-semibold text-[#2C2C2C] mt-1">
+                {content.controllerServiceValue}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Detailed Policy Sections (2 - 10) */}
+        <div className="space-y-6">
+          {content.sections.map((sec) => {
+            const getIcon = (id: string) => {
+              switch (id) {
+                case 'modes':
+                  return <Smartphone className="w-5 h-5" />;
+                case 'legal-basis':
+                  return <Scale className="w-5 h-5" />;
+                case 'data-collected':
+                  return <Database className="w-5 h-5" />;
+                case 'permissions':
+                  return <Eye className="w-5 h-5" />;
+                case 'eu-residency-security':
+                  return <Server className="w-5 h-5" />;
+                case 'retention':
+                  return <AlertCircle className="w-5 h-5" />;
+                case 'user-rights':
+                  return <Trash2 className="w-5 h-5" />;
+                case 'medical-disclaimer':
+                  return <AlertTriangle className="w-5 h-5" />;
+                default:
+                  return <ShieldCheck className="w-5 h-5" />;
+              }
+            };
+
+            return (
+              <section
+                key={sec.id}
+                id={sec.id}
+                className={
+                  sec.isWarningBox
+                    ? 'bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 border-2 border-amber-400/80 shadow-xs space-y-5'
+                    : 'bg-[#FFFFFF] rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5'
+                }
+              >
+                <div className="flex items-start gap-3.5">
+                  <div
+                    className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 ${
+                      sec.isWarningBox
+                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                        : 'bg-[#F5F0EB] text-[#8C7355]'
+                    }`}
+                  >
+                    {getIcon(sec.id)}
+                  </div>
+                  <div className="space-y-1.5">
+                    <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
+                      {sec.number}. {sec.title}
+                    </h2>
+                    {sec.intro && (
+                      <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed">
+                        {sec.intro}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {sec.subsections && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                    {sec.subsections.map((sub, sIdx) => (
+                      <div
+                        key={sIdx}
+                        className="rounded-2xl p-5 bg-[#FAF8F5] border border-[#E8DFD4] space-y-3"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <h3 className="font-heading text-base sm:text-lg font-bold text-[#2C2C2C]">
+                            {sub.subtitle}
+                          </h3>
+                          {sub.badge && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              {sub.badge}
+                            </span>
+                          )}
+                        </div>
+                        {sub.paragraphs?.map((p, pIdx) => (
+                          <p
+                            key={pIdx}
+                            className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed"
+                          >
+                            {p}
+                          </p>
+                        ))}
+                        {sub.bullets && (
+                          <ul className="space-y-2.5 pt-1">
+                            {sub.bullets.map((b, bIdx) => (
+                              <li
+                                key={bIdx}
+                                className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed flex items-start gap-2"
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0 mt-2" />
+                                <span>
+                                  {b.label && (
+                                    <strong className="text-[#2C2C2C] font-bold">{b.label} </strong>
+                                  )}
+                                  {b.text}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {sec.bullets && (
+                  <ul className="space-y-3.5 pt-1">
+                    {sec.bullets.map((b, bIdx) => (
+                      <li
+                        key={bIdx}
+                        className={`p-4 rounded-2xl text-xs sm:text-sm text-[#5C5A56] leading-relaxed flex items-start gap-3 ${
+                          sec.isWarningBox
+                            ? 'bg-amber-50/70 border border-amber-200'
+                            : 'bg-[#FAF8F5] border border-[#E8DFD4]/80'
+                        }`}
+                      >
+                        {sec.isWarningBox ? (
+                          <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                        ) : (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        )}
+                        <div>
+                          {b.label && (
+                            <strong className="text-[#2C2C2C] font-bold block sm:inline mb-0.5 sm:mb-0">
+                              {b.label}{' '}
+                            </strong>
+                          )}
+                          <span>{b.text}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            );
+          })}
+        </div>
+
+        {/* Bottom Action / Right to Erasure Card (Also serves /delete-account Google Play Data Deletion URL) */}
+        <section
+          id="account-deletion"
+          className="bg-gradient-to-br from-[#F5F0EB] to-[#EFE7DC] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+        >
+          <div className="space-y-2 max-w-2xl">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white">
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>{content.ctaDeleteInAppBadge}</span>
+            </span>
+            <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
+              {content.ctaDeleteTitle}
+            </h3>
+            <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed">
+              {content.ctaDeleteDesc}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <a
+              href="mailto:gabba@gabba.bond?subject=SENEAR%20GDPR%20Request"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2C2C2C] text-white text-xs sm:text-sm font-bold hover:bg-[#1F2421] transition-colors shadow-xs"
+            >
+              <Mail className="w-4 h-4 text-[#C5A880]" />
+              <span>{content.ctaDeleteEmailBtn}</span>
+            </a>
+            <button
+              type="button"
+              onClick={onBackToSenear}
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white text-[#2C2C2C] border border-[#C5A880]/50 text-xs sm:text-sm font-semibold hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+            >
+              <span>{content.backToSenearBtn}</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export { PrivacyPolicyPage as PrivacyPage };
+export default PrivacyPolicyPage;

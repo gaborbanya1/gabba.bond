@@ -6,7 +6,7 @@ export const BRAND_INFO = {
   subtitle: 'Software & Digital Products',
   tagline: 'Engineering software. Built for people.',
   description: 'Specialized software engineering studio building fail-safe Android systems and mission-critical applications.',
-  email: 'banyai.gabor.danken@gmail.com',
+  email: 'gabba@gabba.bond',
   location: 'Budapest, Hungary (Central European Time / CET)',
   availability: 'Available for Select Projects & Architecture',
   github: 'https://github.com',

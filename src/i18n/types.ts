@@ -1,4 +1,13 @@
-export type SupportedLanguage = 'en' | 'hu' | 'de';
+/** All 20 auto-detected language codes. `in` is the canonical key for Indonesian. */
+export const SUPPORTED_LANGUAGES = [
+  'en', 'hu', 'de', 'it', 'sk', 'sl', 'ro', 'es', 'fr', 'pt',
+  'ru', 'ja', 'zh', 'ko', 'tr', 'in', 'hi', 'ar', 'ur', 'bn',
+] as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+
+/** Right-to-left scripts. */
+export const RTL_LANGUAGES: readonly SupportedLanguage[] = ['ar', 'ur'];
 
 export interface TranslationData {
   pageTitle: string;
