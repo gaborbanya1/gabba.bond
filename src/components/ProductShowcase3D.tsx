@@ -41,20 +41,20 @@ function getCallouts(product: ProductKey, lang: Lang): { left: Callout; right: C
   if (product === 'senear') {
     return [
       {
-        left: { icon: Smartphone, label: L(lang, '4 nagy csempe', '4 large tiles', '4 große Kacheln') },
-        right: { icon: ShieldCheck, label: L(lang, 'Elállíthatatlan kioszk', 'Fail-safe kiosk', 'Sicherer Kiosk') },
+        left: { icon: Smartphone, label: L(lang, '4 fotós gomb + SOS hívó', '4 photo buttons + SOS', '4 Foto-Tasten + SOS') },
+        right: { icon: ShieldCheck, label: L(lang, 'Zárolt, egyszerű kezdőképernyő', 'Locked, simple home screen', 'Einfacher Startbildschirm') },
       },
       {
-        left: { icon: Radio, label: L(lang, 'Azonnali SOS', 'Instant SOS', 'Sofort-Notruf') },
-        right: { icon: MapPin, label: L(lang, 'GPS koordináta SMS-ben', 'GPS location by SMS', 'GPS-Standort per SMS') },
+        left: { icon: Radio, label: L(lang, 'Azonnali SOS hívás', 'Instant SOS call', 'Sofort-Notruf') },
+        right: { icon: MapPin, label: L(lang, 'GPS helyzet SMS-ben', 'GPS location by SMS', 'GPS-Standort per SMS') },
       },
       {
-        left: { icon: HeartHandshake, label: L(lang, 'Távgondozói portál', 'Caregiver portal', 'Betreuer-Portal') },
-        right: { icon: Radio, label: L(lang, 'Élő akku & státusz', 'Live battery & status', 'Live-Akku & Status') },
+        left: { icon: HeartHandshake, label: L(lang, 'Családi vezérlőpult', 'Family dashboard', 'Familien-Dashboard') },
+        right: { icon: Radio, label: L(lang, 'Élő akku & állapot', 'Live battery & status', 'Live-Akku & Status') },
       },
       {
         left: { icon: Clock, label: L(lang, 'Azonnali értesítések', 'Instant alerts', 'Sofort-Benachrichtigungen') },
-        right: { icon: ShieldCheck, label: L(lang, 'Riasztási napló', 'Alert history', 'Alarm-Protokoll') },
+        right: { icon: ShieldCheck, label: L(lang, 'Eseménynapló', 'Event history', 'Ereignis-Protokoll') },
       },
     ];
   }
@@ -96,7 +96,7 @@ export function ProductShowcase3D({ product, footer, className = '' }: ProductSh
   const localizedT = translations[lang] ?? translations.en;
   const accent = PRODUCT_ACCENT[product];
 
-  const photos = useMemo(() => getProductPhotos(product, localizedT), [product, localizedT]);
+  const photos = useMemo(() => getProductPhotos(product, localizedT, lang), [product, localizedT, lang]);
   const callouts = useMemo(() => getCallouts(product, lang), [product, lang]);
 
   const [activeIndex, setActiveIndex] = useState(0);

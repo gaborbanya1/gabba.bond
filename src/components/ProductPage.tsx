@@ -7,20 +7,22 @@ import {
   ChevronRight,
   Clock,
   CloudCog,
+  Copy,
   HeartHandshake,
   HelpCircle,
-  Lock,
-  MapPin,
   MessageSquareQuote,
   Play,
-  Radio,
+  QrCode,
   ShieldCheck,
   Smartphone,
   Sparkles,
   Users,
-  WifiOff,
   Baby,
   BookOpen,
+  Lock,
+  MapPin,
+  Radio,
+  WifiOff,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ProductShowcase3D, PRODUCT_ACCENT } from './ProductShowcase3D';
@@ -28,6 +30,8 @@ import { PhoneFrame, ScreenImage } from './PhoneFrame';
 import { GooglePlayIcon } from './GooglePlayIcon';
 import { getProductPhotos, getScreenshotSources } from '../data/productPhotos';
 import { AppRoute, ProductKey } from '../routing';
+
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.nogond.app';
 
 type Lang = 'hu' | 'en' | 'de';
 
@@ -81,11 +85,6 @@ interface ScenarioCard {
   solution: string;
 }
 
-interface CorePillar {
-  title: string;
-  desc: string;
-}
-
 interface FaqItem {
   q: string;
   a: string;
@@ -109,13 +108,18 @@ interface SenearModeCard {
 
 interface SenearExtra {
   heroPrimaryDownloadBtn: string;
+  androidRequirementNote: string;
   heroHowLink: string;
   heroVideoLink: string;
   heroSetupLink: string;
+  desktopQrTitle: string;
+  desktopQrDesc: string;
+  copyLinkBtn: string;
+  copiedLinkBtn: string;
+  mobileFloatingCta: string;
   scenariosTitle: string;
   scenarios: ScenarioCard[];
-  corePillars: CorePillar[];
-  /** [0] = standalone (free), [1] = connected caregiver (premium) */
+  /** [0] = standalone (free), [1] = connected family member (premium) */
   modes: SenearModeCard[];
   howSteps: { title: string; desc: string }[];
   setupTimeBanner: string;
@@ -137,54 +141,47 @@ interface SenearExtra {
 const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
   hu: {
     heroPrimaryDownloadBtn: 'Letöltés a Google Playről – Ingyenes',
+    androidRequirementNote: 'Android 8.0+ készülékekre (a családtag telefonja is Android legyen)',
     heroHowLink: 'Hogyan működik? ↓',
     heroVideoLink: 'Beállítási videó (13 perc) ↓',
     heroSetupLink: 'Lépésről lépésre útmutató →',
+    desktopQrTitle: 'Gépről nézed az oldalt?',
+    desktopQrDesc: 'Olvasd be a QR-kódot az Android telefonoddal a letöltéshez, vagy másold ki a linket:',
+    copyLinkBtn: 'Link másolása telefonra küldéshez',
+    copiedLinkBtn: '✓ Link a vágólapra másolva!',
+    mobileFloatingCta: 'Letöltés a Google Playről (Android 8.0+)',
     scenariosTitle: 'Ismerős helyzet?',
     scenarios: [
       {
         quote: '„A mamám 78 éves, és mindig felveszi a telefont az ismeretlen csalóknak.”',
         solutionLabel: 'Megoldás:',
-        solution: 'A SENEAR hívásszűrője csak az általad jóváhagyott számokat engedi kicsörögni.',
+        solution:
+          'Csak az általad jóváhagyott számok hívhatják – az ismeretlen és csaló számok nem csörögnek ki.',
       },
       {
         quote: '„Apukám véletlenül elállítja a telefont, lehalkítja, vagy elfelejti a gyógyszerét.”',
         solutionLabel: 'Megoldás:',
         solution:
-          'Elállíthatatlan Kioszk képernyő, 100%-os kihangosított automatikus hívásfogadás és fényképes gyógyszeremlékeztető.',
+          'Zárolt, egyszerű kezdőképernyő, automatikus kihangosított hívásfogadás és fényképes gyógyszeremlékeztető.',
       },
       {
         quote: '„Másik városban élek, és napközben is látni szeretném, hogy minden rendben van-e vele.”',
         solutionLabel: 'Megoldás:',
         solution:
-          'Valós idejű töltöttség, gyógyszer-visszajelzés, GPS biztonsági zóna és ingyenes Wi-Fi hívás a saját telefonodon.',
-      },
-    ],
-    corePillars: [
-      {
-        title: 'Elállíthatatlan Kioszk védelem',
-        desc: 'Nincs félrenyomott menü, véletlen némítás vagy törölt alkalmazás.',
-      },
-      {
-        title: '100%-os védelem a csalók ellen',
-        desc: 'Csak az általad engedélyezett családtagok és ismerősök csörgethetik meg.',
-      },
-      {
-        title: 'Távoli gondoskodás és SOS',
-        desc: 'Élő akkumulátor, GPS biztonsági zóna, fotós gyógyszeremlékeztető és kihangosított hívás.',
+          'Élő akkumulátorszint, gyógyszer-visszajelzés, GPS biztonsági zóna és ingyenes Wi-Fi hívás a saját telefonodon.',
       },
     ],
     modes: [
       {
         title: 'Csak egy egyszerű, védett telefon kell',
-        body: 'Ha a cél egy egyszerűen kezelhető, elállíthatatlan és védett telefon: az idős hozzátartozó egy tiszta felületet kap, ahol kizárólag az előre beállított személyeket tudja felhívni, és csak tőlük fogadhat hívást – így teljesen védett az ismeretlen zaklatóktól és telefonos csalóktól.',
-        priceLabel: 'Árazás • Önálló Gondozott mód',
-        badge: '0 Ft – Örökké ingyenes és 100% reklámmentes',
+        body: 'Ha a cél egy könnyen kezelhető, védett telefon: az idős szülő vagy nagyszülő egy zárolt, egyszerű kezdőképernyőt kap, ahol csak az előre beállított családtagokat és ismerősöket tudja felhívni, és csak az általad jóváhagyott számok csörgethetik meg.',
+        priceLabel: 'Árazás • Önálló használat (idős szülő telefonján)',
+        badge: '0 Ft – Örökké ingyenes és reklámmentes',
       },
       {
         title: 'Én is látni akarom távolról, hogy jól van',
-        body: 'Ha távolról is teljes biztonságban szeretnéd tudni idős szerettedet: kösd össze a készülékét a saját telefonoddal! Gondozóként valós időben látod a telefon állapotát (akkumulátor, térerő, helyadatok), távolról kezelheted a névjegyeket, és azonnali riasztást kapsz SOS vagy lemerülés esetén.',
-        priceLabel: 'Árazás • Távgondozói összeköttetés',
+        body: 'Ha távolról is biztonságban szeretnéd tudni idős szerettedet: kapcsold össze a készülékét a saját Android telefonoddal! Családtagként élőben látod a telefon állapotát (akkumulátor, térerő, helyadatok), távolról beállíthatod a fényképes hívógombokat, és azonnali értesítést kapsz SOS hívás vagy alacsony töltöttség esetén.',
+        priceLabel: 'Árazás • Családi távoli összeköttetés',
         badge: '🎁 14 napig teljesen ingyen kipróbálható',
         trialBadge: '🎁 14 napig teljesen ingyen kipróbálható',
         pricingTiers: [
@@ -205,17 +202,17 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
           },
         ],
         reassurance:
-          'Fizetés biztonságosan a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
+          'Fizetés biztonságosan a Google Playen keresztül, kizárólag a családtag telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
       },
     ],
     howSteps: [
       {
         title: 'Telepítsd a szülőd telefonjára',
-        desc: 'Bármilyen meglévő Android készülékre felteheted, otthoni Wi-Fi-n akár SIM-kártya nélkül is.',
+        desc: 'Bármilyen meglévő Android 8.0+ készülékre felteheted, otthoni Wi-Fi-n akár SIM-kártya nélkül is.',
       },
       {
         title: 'Párosítsd a 6 jegyű kóddal',
-        desc: 'A szülő jóváhagyása után egyetlen kóddal összekapcsolhatod a két telefont.',
+        desc: 'A szülő jóváhagyása után egyetlen kóddal összekapcsolhatod a két Android telefont.',
       },
       {
         title: 'Kezeld távolról, nyugodtan',
@@ -223,131 +220,137 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
       },
     ],
     setupTimeBanner:
-      '⏱️ Mennyi idő a beállítás? Az első telepítés kb. 10–15 percet vesz igénybe az egyszeri Android biztonsági engedélyek (Kioszk védelem, automatikus kihangosítás) jóváhagyása miatt. A lenti videóban lépésről lépésre végigvezetünk rajta – utána pedig a telefon elállíthatatlan marad.',
+      '⏱️ Mennyi idő a beállítás? Az első telepítés kb. 10–15 percet vesz igénybe az egyszeri Android biztonsági engedélyek (a zárolt kezdőképernyő és az automatikus kihangosítás) jóváhagyása miatt. A lenti videóban lépésről lépésre végigvezetünk rajta – utána a beállítások védettek maradnak a véletlen elállítástól.',
     specsToggleBtn: 'Összes funkció és műszaki védelem megjelenítése (20+ funkció) ↓',
     specsHideBtn: 'Részletes funkciólista elrejtése ↑',
     featureTitles: [
-      'Gondozott telefonjához tartozó funkciók',
-      'Biztonságos összeköttetéshez tartozó funkciók',
-      'Gondozó telefonjához tartozó funkciók',
+      'Az idős szülő telefonjának funkciói',
+      'Biztonságos családi összeköttetés',
+      'A családtag telefonjának funkciói',
     ],
     features: [
       [
-        'Elállíthatatlan, zárolt Kioszk felület (akár önállóan, gondozó nélkül is működik)',
-        '4 vagy akár 6 arcképes hívócsempe keresztnévvel, kapcsolattal és nem fogadott hívás („Keresett!”) jelzéssel',
+        'Zárolt, egyszerű kezdőképernyő (akár önállóan, második telefon nélkül is használható)',
+        '4 vagy akár 6 nagy fényképes hívógomb keresztnévvel és nem fogadott hívás („Keresett!”) jelzéssel',
         'Személyre szabható szöveg-, fotó- és telefonikon-méretek (3 fokozatban állítható vagy kikapcsolható)',
         'Hagyományos SIM-kártyás hívások (internet nélkül is) és SIM nélküli Wi-Fi hang- és videóhívások',
-        'Automatikus kihangosítás 100%-os kezdő hangerővel, képernyőn állítható hangerőcsúszkával és a párhuzamos bejövő hívások néma blokkolásával beszélgetés közben',
+        'Automatikus kihangosítás teljes kezdő hangerővel, képernyőn állítható hangerőcsúszkával és a párhuzamos bejövő hívások néma blokkolásával beszélgetés közben',
         'Előre megírt gyors SMS-ek küldése és a bejövő SMS-ek óriásbetűs felugró kártyás megjelenítése',
         'Vészhelyzeti SOS hívás és automatikus GPS-helyzet SMS küldése',
         'Reggeli ébresztő és személyre szabott napi rutin emlékeztetők',
-        'Kétlépcsős gyógyszeremlékeztető pontos adagolással és fotóval, egygombos „Bevettem” nyugtázással a gondozó felé',
+        'Kétlépcsős gyógyszeremlékeztető pontos adagolással és fotóval, egygombos „Bevettem” nyugtázással a családtag felé',
       ],
       [
         'Gyors összekapcsolás 6-jegyű párosító kóddal',
-        'Több gondozó egyidejű csatlakoztatása (akár 6 családtag) és automatikus hívócsempe-feltöltés párosításkor (1–6. helyre)',
+        'Több családtag egyidejű csatlakoztatása (akár 6 fő) és automatikus hívógomb-feltöltés párosításkor (1–6. helyre)',
         'Valós idejű állapotfrissítések és azonnali szinkronizálás biztonságos EU-s felhőn keresztül',
-        'Megszakításbiztos működés: gyártó-specifikus akkumulátor-védelem és Watchdog (Xiaomi, Samsung, Huawei stb.)',
-        'Banki szintű adatátvitel és végponti titkosítás (TLS 1.3 / AES-256)',
+        'Megbízható háttérműködés: gyártó-specifikus akkumulátor-védelem (Xiaomi, Samsung, Huawei stb.)',
+        'Titkosított adatátvitel (TLS 1.3 / AES-256)',
         'EU GDPR-konform adatkezelés kétoldalú hozzájárulással és bármikor elérhető, egygombos végleges adattörléssel',
       ],
       [
-        'Azonnali értesítés a gondozott telefonjának ki- és bekapcsolásáról, valamint alacsony töltöttségéről (lemerülés előtt)',
-        'Hang- és videóhívás a gondozott telefonjára — akár SIM-kártya nélkül is, Wi-Fi-n keresztül',
-        'Automatikus hívásfogadás: a gondozó távolról, kihangosítva veheti fel a saját hívását a gondozott telefonján',
+        'Azonnali értesítés az idős szülő telefonjának ki- és bekapcsolásáról, valamint alacsony töltöttségéről (lemerülés előtt)',
+        'Hang- és videóhívás a szülő telefonjára — akár SIM-kártya nélkül is, Wi-Fi-n keresztül',
+        'Automatikus hívásfogadás: a családtag távolról, kihangosítva kapcsolódhat be, ha a szülő nem tudja felvenni',
         'Távoli csengetési hangerő-visszaállítás maximumra (ha a készüléket véletlenül lehalkították)',
-        'Távoli névjegy-, telefonszám- és fotócsere akár mind a 6 hívócsempén',
-        'Távoli Hívási Engedélyek (Fehérlista) kezelése az ismeretlen és csaló (spam) hívók blokkolására',
+        'Távoli névjegy-, telefonszám- és fotócsere akár mind a 6 hívógombon',
+        'Távoli Hívási Engedélyek (Fehérlista): csak az általad jóváhagyott számok csörgethetik meg a telefont',
         'Ébresztők és részletes gyógyszeremlékeztetők távoli beállítása, valós idejű „Bevettem” visszajelzéssel',
-        'Otthoni Biztonsági Zóna (Geofencing) elhagyási/hazaérkezési riasztás és beépített élő mini-térkép egygombos Google Térkép navigációval',
+        'Otthoni Biztonsági Zóna elhagyási/hazaérkezési értesítés és beépített élő mini-térkép egygombos Google Térkép navigációval',
       ],
     ],
     videoShowcase: {
       videoId: 'yLFO0MMnATo',
-      badge: 'Lépésről lépésre videós útmutató',
-      title: 'Teljes, 12 lépéses beállítási és működési útmutató',
+      badge: 'Lépésről lépésre videós bemutató',
+      title: 'Teljes beállítási és működési bemutató videó',
       subtitle:
-        'Bal oldalon a családtag távoli vezérlőpultja, jobb oldalon az idős hozzátartozó védett telefonja. Kattints bármelyik lépésre a listában, és ugorj egyből az adott funkcióhoz!',
-      leftPhoneLegend: '📱 Bal oldali telefon: Gondozó (Családtag) távoli vezérlőpultja',
-      rightPhoneLegend: '📱 Jobb oldali telefon: Gondozott (Idős) védett kioszk képernyője',
-      chapterListTitle: 'Gyorsugrás a funkciókhoz (16)',
+        'Bal oldalon a családtag távoli vezérlőpultja, jobb oldalon az idős szülő zárolt, egyszerű kezdőképernyője. Kattints bármelyik témakörre a listában, és ugorj egyből az adott részhez!',
+      leftPhoneLegend: '📱 Bal oldali telefon: Családtag távoli vezérlőpultja',
+      rightPhoneLegend: '📱 Jobb oldali telefon: Idős szülő zárolt, egyszerű kezdőképernyője',
+      chapterListTitle: 'Ugrás a bemutató fejezeteihez',
       totalDuration: '13:05 perc',
       chapters: [
-        { time: '00:00', seconds: 0, title: 'Bevezetés – Mi a SENEAR?', desc: 'Két készülék, teljes nyugalom a családnak' },
-        { time: '00:07', seconds: 7, title: '1. Alapbeállítások és Szerepkörök', desc: 'Gondozó és Gondozott mód kiválasztása' },
-        { time: '00:37', seconds: 37, title: '2. Védett Kioszk Mód & Őrszem', desc: 'Véletlen elnavigálás elleni védelem bekapcsolása' },
-        { time: '01:57', seconds: 117, title: '3. Készülékek párosítása', desc: 'Összekapcsolás 6 jegyű biztonsági kóddal' },
-        { time: '03:08', seconds: 188, title: '4. Távoli vezérlőpult & Hívócsempék', desc: 'Fotók és gyorshívók távoli beállítása valós időben', badge: 'Népszerű' },
-        { time: '04:17', seconds: 257, title: '4/6 csempés nézet & Látáskönnyítés', desc: 'Betűméret, arcképek és színek távoli finomhangolása' },
-        { time: '05:41', seconds: 341, title: '5. Hívásszűrés & Csalók blokkolása', desc: 'Fehérlista: csak az engedélyezett számok csörögnek ki' },
-        { time: '06:18', seconds: 378, title: '6. Automatikus hívásfogadás', desc: 'Érintés nélküli felvétel 100%-os kihangosítással', badge: 'Kiemelt' },
-        { time: '06:55', seconds: 415, title: 'Manuális hívás & Félretárcsázás védelem', desc: 'Igen/Nem megerősítő ablak és nem fogadott hívás jelzés' },
-        { time: '07:39', seconds: 459, title: '7. Nagybetűs SMS ablak', desc: 'Automatikusan felugró, jól olvasható üzenetek' },
-        { time: '07:49', seconds: 469, title: '8. Napi rutinok és Ébresztők', desc: 'Időzített emlékeztetők küldése távolról' },
+        { time: '00:00', seconds: 0, title: 'Bevezetés – Mi a SENEAR?', desc: 'Két készülék, közös nyugalom a családnak' },
+        { time: '00:07', seconds: 7, title: 'Alapbeállítások és szerepkörök', desc: 'Családtag és idős szülő mód kiválasztása' },
+        { time: '00:37', seconds: 37, title: 'Zárolt, egyszerű kezdőképernyő', desc: 'Véletlen elállítás elleni védelem bekapcsolása' },
+        { time: '01:57', seconds: 117, title: 'Két telefon párosítása', desc: 'Összekapcsolás 6 jegyű biztonsági kóddal' },
+        { time: '03:08', seconds: 188, title: 'Távoli vezérlőpult & fotós hívógombok', desc: 'Fotók és gyorshívók távoli beállítása valós időben', badge: 'Népszerű' },
+        { time: '04:17', seconds: 257, title: '4 vagy 6 gombos nézet & látáskönnyítés', desc: 'Betűméret, arcképek és színek távoli finomhangolása' },
+        { time: '05:41', seconds: 341, title: 'Hívásszűrés ismeretlen számok ellen', desc: 'Csak az általad jóváhagyott számok csörögnek ki' },
+        { time: '06:18', seconds: 378, title: 'Automatikus, kihangosított hívásfogadás', desc: 'Érintés nélküli felvétel maximális hangerővel', badge: 'Kiemelt' },
+        { time: '06:55', seconds: 415, title: 'Hívásmegerősítés & nem fogadott hívás', desc: 'Igen/Nem megerősítő ablak és „Keresett!” jelzés' },
+        { time: '07:39', seconds: 459, title: 'Nagybetűs SMS ablak', desc: 'Automatikusan felugró, jól olvasható üzenetek' },
+        { time: '07:49', seconds: 469, title: 'Napi rutinok és ébresztők', desc: 'Időzített emlékeztetők küldése távolról' },
         { time: '08:25', seconds: 505, title: 'Fotós gyógyszeremlékeztető', desc: 'Gyógyszer fotója + adagolás + „Bevettem” visszajelzés', badge: 'Kiemelt' },
-        { time: '09:47', seconds: 587, title: '9. GPS térkép & Elbóklászás riasztás', desc: 'Biztonsági zóna (Geofencing) és azonnali navigáció' },
+        { time: '09:47', seconds: 587, title: 'GPS térkép & biztonsági zóna', desc: 'Otthoni zóna és azonnali navigáció' },
         { time: '10:31', seconds: 631, title: 'PIN-védelem & SOS vészhelyzeti gomb', desc: 'Segélyhívás és automatikus GPS-koordinátás SMS' },
-        { time: '11:03', seconds: 663, title: '10. Riasztási napló & Kikapcsolás-védelem', desc: 'Azonnali értesítés lemerülés vagy kikapcsolás esetén' },
-        { time: '12:13', seconds: 733, title: 'Nagy gombos tárcsázó & Gyors SMS', desc: 'Előre beállított üzenetek küldése gépelés nélkül' },
+        { time: '11:03', seconds: 663, title: 'Értesítési napló & lemerülés-jelzés', desc: 'Azonnali értesítés lemerülés vagy kikapcsolás esetén' },
+        { time: '12:13', seconds: 733, title: 'Nagy gombos tárcsázó & gyors SMS', desc: 'Előre beállított üzenetek küldése gépelés nélkül' },
       ],
     },
     founderNote: {
       quote:
-        '„Miért készítettem a SENEAR-t? Olyan megoldást kerestem a családomnak, amihez nem kell drága, mégis bonyolult nyomógombos senior telefont venni, nem bombázza reklámokkal az időseket, és valódi biztonságot ad demencia vagy telefonos csalók esetén is. A SENEAR európai fejlesztés, 100%-ban reklámmentes és GDPR-konform.”',
+        '„Miért készítettem a SENEAR-t? Olyan megoldást kerestem a családomnak, amihez nem kell drága, mégis bonyolult nyomógombos senior telefont venni, nem zavarja reklámokkal az időseket, és valódi védelmet ad a telefonos csalók vagy az eltévedés ellen. A SENEAR európai fejlesztés, reklámmentes és GDPR-konform.”',
       author: 'Bányai Gábor',
       role: 'alapító & fejlesztő (Gabba Labs)',
-      badges: ['🇪🇺 Európai fejlesztés', '🛡️ 100% reklámmentes', '🔒 EU GDPR-konform'],
+      badges: ['🇪🇺 Európai fejlesztés', '🛡️ Reklámmentes', '🔒 EU GDPR-konform'],
     },
     faqTitle: 'Gyakori kérdések (GYIK)',
     faqs: [
       {
-        q: 'Milyen telefonokon működik a SENEAR?',
-        a: 'A védett senior Kioszk módhoz Android 8.0 vagy újabb rendszerű telefon szükséges (az Apple iOS nem engedélyezi a kezdőképernyő ilyen szintű védelmét). A gondozói vezérlőpult szintén Android készüléken érhető el.',
+        q: 'Mit lát a családtag, és kell-e hozzá az idős szülő beleegyezése?',
+        a: 'Igen, a két telefon összekapcsolása csak az idős szülő készülékén történő kifejezett, GDPR-konform jóváhagyással indítható el. A családtag látja az akkumulátorszintet, a gyógyszerbevétel visszaigazolását és (ha be van kapcsolva) a GPS-pozíciót, de nem látja a privát üzeneteket és nem hallja a beszélgetéseket. Minden adat bármikor egyetlen gombnyomással végleg törölhető.',
       },
       {
-        q: 'Kell SIM-kártya az idős hozzátartozó telefonjába?',
-        a: 'Nem feltétlenül! Otthoni Wi-Fi-n SIM-kártya nélkül is működik az ingyenes SENEAR Wi-Fi hívás, a gyógyszeremlékeztető és a távoli felügyelet. Hagyományos telefonszámok hívásához és SMS-hez szükséges SIM-kártya (a 112-es segélyhívó SIM nélkül is működik).',
-      },
-      {
-        q: 'Mit lát a gondozó, és kell-e hozzá az idős ember beleegyezése?',
-        a: 'Igen, a két telefon párosítása csak az idős hozzátartozó készülékén történő kifejezett, GDPR-konform jóváhagyással indítható el. A gondozó látja az akkumulátorszintet, a gyógyszerbevétel visszaigazolását és (ha be van kapcsolva) a GPS-pozíciót, de nem látja a privát üzeneteket vagy beszélgetéseket. Minden adat egyetlen gombnyomással végleg törölhető.',
-      },
-      {
-        q: 'Mi történik, ha lemondom a gondozói előfizetést?',
-        a: 'Az idős hozzátartozó telefonja továbbra is teljes értékű, reklámmentes, védett Kioszk telefonként és csalószűrőként működik tovább, teljesen ingyen! Csak a távoli gondozói szinkronizáció szünetel.',
+        q: 'Milyen telefonokon működik a SENEAR? iPhone-on is elérhető?',
+        a: 'Mind az idős szülő, mind a családtag telefonjának Android 8.0 vagy újabb rendszerűnek kell lennie (Samsung, Xiaomi, Redmi, Motorola, Honor, Pixel stb.). Az Apple iOS nem engedélyezi a kezdőképernyő ilyen szintű zárolását és a távoli kihangosítást.',
       },
       {
         q: 'Hogyan működik a 14 napos próbaidőszak és a fizetés? Megjelenik bármilyen fizetési ablak a szülőm telefonján?',
-        a: 'Soha. A szülő telefonján a SENEAR 100%-ban reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a gondozó a saját telefonján, a Google Playen keresztül választhat a havi (1 490 Ft), a kedvezményes éves (12 900 Ft) vagy a havidíjmentes, egyszeri örökös feloldás (29 900 Ft) között.',
+        a: 'Soha. A szülő telefonján a SENEAR reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a családtag a saját telefonján, a Google Playen keresztül választhat a havi (1 490 Ft), a kedvezményes éves (12 900 Ft) vagy a havidíjmentes, egyszeri örökös feloldás (29 900 Ft) között.',
+      },
+      {
+        q: 'Mi történik, ha lemondom a családi előfizetést?',
+        a: 'Az idős szülő telefonja továbbra is teljes értékű, reklámmentes, zárolt kezdőképernyős telefonként és hívásszűrőként működik tovább, teljesen ingyen! Csak a távoli szinkronizáció szünetel.',
+      },
+      {
+        q: 'Kell SIM-kártya az idős hozzátartozó telefonjába?',
+        a: 'Nem feltétlenül! Otthoni Wi-Fi-n SIM-kártya nélkül is működik az ingyenes SENEAR Wi-Fi hívás, a gyógyszeremlékeztető és a távoli beállítás. Hagyományos telefonszámok hívásához és SMS-hez szükséges SIM-kártya (a 112-es segélyhívó SIM nélkül is működik).',
       },
       {
         q: 'Vissza lehet térni a hagyományos Android menübe?',
-        a: 'Igen, a felső órára 5-ször koppintva, a 4 jegyű gondozói PIN-kód megadásával bármikor kikapcsolható a Kioszk mód.',
+        a: 'Igen, a felső órára 5-ször koppintva, a 4 jegyű PIN-kód megadásával bármikor kikapcsolható a zárolt kezdőképernyő.',
       },
       {
         q: 'Új telefont kell vennem, vagy jó a meglévő készülék is?',
-        a: 'Nem kell új telefont venni! Bármilyen meglévő vagy fiókban lévő Android okostelefon (Samsung, Xiaomi, Redmi, Motorola, Huawei stb.) tökéletes hozzá, és gyári visszaállításra sincs szükség.',
+        a: 'Nem kell új telefont venni! Bármilyen meglévő vagy fiókban lévő Android okostelefon tökéletes hozzá, és gyári visszaállításra sincs szükség.',
       },
     ],
   },
   en: {
     heroPrimaryDownloadBtn: 'Download on Google Play — Free',
+    androidRequirementNote: 'For Android 8.0+ devices (the family member’s phone also needs Android)',
     heroHowLink: 'How it works? ↓',
     heroVideoLink: 'Setup video (13 min) ↓',
     heroSetupLink: 'Step-by-step setup guide →',
+    desktopQrTitle: 'Viewing on a computer?',
+    desktopQrDesc: 'Scan the QR code with your Android phone to download, or copy the link to send to yourself:',
+    copyLinkBtn: 'Copy link to send to phone',
+    copiedLinkBtn: '✓ Link copied to clipboard!',
+    mobileFloatingCta: 'Download on Google Play (Android 8.0+)',
     scenariosTitle: 'Sound familiar?',
     scenarios: [
       {
         quote: '“My mom is 78 and always picks up calls from unknown phone scammers.”',
         solutionLabel: 'Solution:',
         solution:
-          'SENEAR’s Call Whitelist only lets pre-approved family and trusted contacts ring through.',
+          'Only numbers you approve can ring through — unknown and scam callers are silently blocked.',
       },
       {
         quote: '“My dad accidentally changes settings, mutes his phone, or forgets his medication.”',
         solutionLabel: 'Solution:',
         solution:
-          'Fail-safe Kiosk screen, hands-free 100% speakerphone auto-answer, and photo medication reminders.',
+          'Locked, simple home screen, hands-free speakerphone auto-answer, and photo medication reminders.',
       },
       {
         quote: '“I live in another city and want peace of mind knowing they are safe during the day.”',
@@ -356,31 +359,17 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
           'Real-time battery status, medication confirmation, GPS safe zone, and free Wi-Fi calls on your own phone.',
       },
     ],
-    corePillars: [
-      {
-        title: 'Fail-safe Kiosk protection',
-        desc: 'No accidental muting, deleted apps, or confusing menus.',
-      },
-      {
-        title: '100% scammer blocking',
-        desc: 'Only pre-approved family members and trusted contacts can ring through.',
-      },
-      {
-        title: 'Remote care & SOS safety',
-        desc: 'Live battery, GPS safe zone, photo medication reminders, and auto-speakerphone.',
-      },
-    ],
     modes: [
       {
         title: 'I just need a simple, protected phone',
-        body: 'If you want a simple, fail-safe and protected phone: your loved one gets a clean interface where they can only call — and only receive calls from — pre-approved people, fully protected from unknown harassers and phone scammers.',
-        priceLabel: 'Pricing • Standalone Senior Mode',
-        badge: 'Free forever — €0 / month, 100% ad-free',
+        body: 'If you want an easy-to-use, protected phone: your parent or grandparent gets a locked, simple home screen where they can only call pre-configured family members and only approved numbers can ring through.',
+        priceLabel: 'Pricing • Standalone Use (Parent’s Phone)',
+        badge: 'Free forever — €0 / month, ad-free',
       },
       {
         title: 'I also want to see from afar that they’re okay',
-        body: 'Want to know your loved one is safe, even from afar? Connect their device to your own phone! As a caregiver you see the phone’s status in real time (battery, signal, location), manage contacts remotely and get an instant alert on an SOS press or low battery.',
-        priceLabel: 'Pricing • Remote Caregiver Connection',
+        body: 'Want peace of mind from afar? Link their device to your own Android phone! As a family member you see live phone status (battery, signal, location), manage photo speed-dial buttons remotely, and receive instant alerts on SOS calls or low battery.',
+        priceLabel: 'Pricing • Family Remote Connection',
         badge: '🎁 14-day free trial included',
         trialBadge: '🎁 14-day free trial included',
         pricingTiers: [
@@ -400,203 +389,214 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
           },
         ],
         reassurance:
-          'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
+          'Billed securely via Google Play in your local currency on the family member’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
       },
     ],
     howSteps: [
       {
         title: 'Install on your parent’s phone',
-        desc: 'Works on any existing Android smartphone—even without a SIM card over home Wi-Fi.',
+        desc: 'Works on any existing Android 8.0+ smartphone—even without a SIM card over home Wi-Fi.',
       },
       {
         title: 'Pair with a 6-digit code',
-        desc: 'After the senior’s consent, link both phones in seconds using a one-time security code.',
+        desc: 'After your parent’s consent, link both Android phones in seconds using a one-time security code.',
       },
       {
         title: 'Manage remotely with peace of mind',
-        desc: 'Set up photo speed-dial tiles, medication reminders, and GPS safe zones from your own phone.',
+        desc: 'Set up photo speed-dial buttons, medication reminders, and GPS safe zones from your own phone.',
       },
     ],
     setupTimeBanner:
-      '⏱️ How long does setup take? Initial setup takes about 10–15 minutes because Android requires one-time security permissions for Kiosk protection and auto-speakerphone. Our step-by-step video guides you through every tap—and once done, the phone cannot be accidentally misconfigured.',
+      '⏱️ How long does setup take? Initial setup takes about 10–15 minutes because Android requires one-time security permissions for the locked home screen and auto-speakerphone. Our video walks you through every tap — and once set, the phone stays protected from accidental changes.',
     specsToggleBtn: 'Show all features & technical specifications (20+ features) ↓',
-    specsHideBtn: 'Hide detailed feature specifications ↑',
-    featureTitles: ['Senior’s phone features', 'Secure connection features', 'Caregiver’s phone features'],
+    specsHideBtn: 'Hide detailed feature list ↑',
+    featureTitles: [
+      'Features on the Parent’s Phone',
+      'Secure Family Connection',
+      'Features on the Family Member’s Phone',
+    ],
     features: [
       [
-        'Fail-safe, locked Kiosk interface (also works independently without a caregiver)',
-        '4 or up to 6 photo call tiles with first name, relationship, and missed call (“Called you!”) indicator',
-        'Customizable text, photo, and phone icon sizes (3-step adjustable or toggleable)',
-        'Regular SIM calls (even offline) and SIM-free Wi-Fi voice & video calls',
-        'Automatic speakerphone starting at 100% volume, on-screen volume slider, and silent blocking of parallel incoming calls during an active conversation',
-        'One-tap pre-written quick SMS sending and giant-print incoming SMS popup cards',
+        'Locked, simple home screen (also works standalone without a second phone)',
+        '4 or up to 6 large photo speed-dial buttons with first name and missed-call (“Missed call!”) badge',
+        'Customizable text, photo, and phone-icon sizes (3 adjustable levels or hidden)',
+        'Standard SIM cellular calls (works offline) plus SIM-free Wi-Fi voice and video calls',
+        'Automatic speakerphone at maximum starting volume, on-screen volume slider, and silent blocking of parallel incoming calls during an active conversation',
+        'Pre-written quick SMS sending and large-print pop-up cards for incoming text messages',
         'Emergency SOS call and automatic GPS location SMS dispatch',
         'Morning wake-up alarm and personalized daily routine reminders',
-        '2-step medication reminder with exact dosage instructions, photo, and one-tap “Taken / Done” confirmation to the caregiver',
+        '2-step medication reminder with exact dosage and photo, plus one-tap “Taken” confirmation sent to family',
       ],
       [
-        'Fast device linking with a 6-digit pairing code',
-        'Multi-caregiver support (up to 6 family members) & automatic speed-dial tile population upon pairing (Slots 1–6)',
-        'Real-time status updates and instant synchronization through a secure EU cloud',
-        'Interruption-proof operation: multi-brand battery optimization guard & Watchdog (Xiaomi, Samsung, Huawei, etc.)',
-        'Bank-grade data transfer and end-to-end encryption (TLS 1.3 / AES-256)',
-        'EU GDPR-compliant data handling with bilateral consent and one-tap permanent data deletion anytime',
+        'Instant linking via a 6-digit pairing code',
+        'Multi-family support (up to 6 family members) & automatic speed-dial button assignment on pairing (slots 1–6)',
+        'Real-time status updates and instant cloud sync hosted in the EU',
+        'Reliable background operation: manufacturer-specific battery protection (Xiaomi, Samsung, Huawei, etc.)',
+        'Encrypted data transmission (TLS 1.3 / AES-256)',
+        'EU GDPR-compliant privacy with bilateral consent and one-tap permanent data deletion anytime',
       ],
       [
-        'Instant alerts when the senior’s phone is switched on/off and before low battery depletion',
-        'Voice and video calls to the senior’s phone — even without a SIM card over Wi-Fi',
-        'Remote auto-answer: the caregiver can answer their own call on the senior’s phone, hands-free on speaker',
-        'Remote ringtone max-volume restoration (if the phone was accidentally muted)',
-        'Remote contact name, phone number, and photo replacement across all up to 6 call tiles',
-        'Remote Call Permissions (Whitelist) management to block unknown and scam callers',
-        'Remote setup of wake-up alarms and detailed medication reminders with real-time “Taken / Done” confirmation',
-        'Home Safe Zone (Geofencing) exit/return alerts and built-in live mini-map with one-tap Google Maps navigation',
+        'Instant notifications when your parent’s phone powers on/off or drops to low battery (before it dies)',
+        'Voice and video calls to your parent’s phone — even without a SIM card over Wi-Fi',
+        'Auto-answer: remotely connect on speakerphone if your parent cannot reach the phone',
+        'Remote ringer volume restoration to maximum (if the device was accidentally muted)',
+        'Remote name, phone number, and photo updates across all 6 speed-dial buttons',
+        'Remote Call Whitelist management so only approved numbers can ring through',
+        'Remote scheduling of alarms and photo medication reminders with real-time “Taken” confirmation',
+        'Home Safe Zone (Geofencing) departure/arrival alerts and built-in live mini-map with one-tap Google Maps navigation',
       ],
     ],
     videoShowcase: {
       videoId: '7UUD1rOxeOo',
-      badge: 'Step-by-Step Video Guide',
-      title: 'Complete 12-Step Setup & Feature Walkthrough',
+      badge: 'Step-by-step video walkthrough',
+      title: 'Complete Setup & Feature Walkthrough Video',
       subtitle:
-        'On the left is the family member’s remote dashboard, on the right is the senior loved one’s protected phone. Click any step in the list to jump straight to that feature!',
-      leftPhoneLegend: '📱 Left phone: Caregiver (Family member) remote dashboard',
-      rightPhoneLegend: '📱 Right phone: Senior (Loved one) protected kiosk screen',
-      chapterListTitle: 'Quick jump to features (12)',
+        "On the left is the family member's remote dashboard; on the right is your parent's locked, simple home screen. Click any chapter in the list to jump straight to that moment in the video!",
+      leftPhoneLegend: '📱 Left phone: Family member’s remote dashboard',
+      rightPhoneLegend: '📱 Right phone: Parent’s locked, simple home screen',
+      chapterListTitle: 'Jump to video chapters',
       totalDuration: '12:58 min',
       chapters: [
         {
           time: '00:00',
           seconds: 0,
           title: '1. Installation, Role Selection & Permissions',
-          desc: 'Launch the SENEAR app on both phones, approve essential permissions (camera, location, microphone, notifications, phone calls, and SMS), then select **Caregiver** mode on the left phone and **Senior** mode on the right phone.',
+          desc: 'Open SENEAR on both phones, grant initial permissions, and select **Caregiver** on the left phone and **Senior** on the right phone.',
         },
         {
           time: '00:24',
           seconds: 24,
-          title: '2. Profile Details & Protected Kiosk System Permissions',
-          desc: 'Enter Caregiver details (Mary Smith) to open the Caregiver Dashboard, then enter Senior details (John Smith) and enable the Kiosk system permissions step by step: *Appear on top*, *Modify system settings*, *Default Home app*, and *SENEAR Kiosk Guard* in Accessibility.',
+          title: '2. Profile Details & Protected Home Screen Permissions',
+          desc: "Enter profile details and enable the one-time Android protections on the parent's phone: *Appear on top*, *Modify system settings*, *Default Home app*, and *SENEAR Kiosk Guard* in Accessibility.",
         },
         {
           time: '01:45',
           seconds: 105,
           title: '3. Two Phones, One System – Instant Pairing',
-          desc: "Open *My Seniors & Pairing* on the Caregiver's phone and *General Settings* on the Senior's phone. Consent to pairing to generate the 6-digit security code (TD6F4T), link both phones with one tap, then enable SMS notification access and disable battery optimization under *SMS & Battery Management*.",
+          desc: 'Pair the two devices using the 6-digit security code (TD6F4T), then enable SMS notification access and unrestricted battery mode.',
         },
         {
           time: '02:52',
           seconds: 172,
-          title: '4. Remote Photo, Contact & Tile Setup (4 or 6 Tiles)',
-          desc: "Start the protected Kiosk mode on the Senior's phone. Remotely upload and crop portrait photos for Tiles 1–4 (Mary, Peter, Eva, George), switch to the **6-tile layout** (04:01) to add Eve and John, and remotely adjust icon, text, and photo sizes in real time under *Show Profile Photos* (04:46).",
+          title: '4. Photos, Contacts & Speed-Dial Setup (4 or 6 Buttons)',
+          desc: 'Upload family photos for speed-dial buttons 1–4, switch between **4-button and 6-button view** (04:01), and adjust photo, name, and phone icon sizes in real time (04:46).',
           badge: 'Popular',
         },
         {
           time: '05:31',
           seconds: 331,
-          title: '5. Call Permissions (Whitelist) & Scammer Protection',
-          desc: 'Under *Call Permissions*, add trusted contacts (such as Kate and Andrew) who are allowed to call the senior in addition to the 6 main speed-dial tiles, while unknown numbers and phone scammers are automatically blocked.',
+          title: '5. Call Permissions (Whitelist) & Scammer Blocking',
+          desc: 'Add trusted contacts to the Call Whitelist so only approved numbers can ring through while unknown scam callers are blocked.',
         },
         {
           time: '06:19',
           seconds: 379,
-          title: '6. Free Wi-Fi Call, 100% Speakerphone Auto-Answer & Callback',
-          desc: 'Remotely enable *Auto-answer* and *Auto-speaker* under *Advanced Call Settings* so incoming Wi-Fi calls are answered hands-free at 100% speakerphone volume with an on-screen volume slider. If auto-answer is off, missed calls display a red *Missed call!* badge on the tile for one-tap callback with *YES / NO* confirmation.',
+          title: '6. Free Wi-Fi Call, Hands-Free Auto-Answer & Callback',
+          desc: 'Enable *Auto-Answer* and *Auto-Speaker* so incoming family calls connect hands-free at full volume (06:40), or call back via the red *Missed call!* badge.',
           badge: 'Featured',
         },
         {
           time: '07:31',
           seconds: 451,
-          title: '7. Senior-Friendly, Large-Print Incoming SMS Popup',
-          desc: "Standard SMS text messages sent to the senior's phone automatically pop up in a high-contrast, large-print card on the Kiosk screen and can be closed with a single tap.",
+          title: '7. Senior-Friendly Large-Print Incoming SMS Popup',
+          desc: "Standard SMS text messages sent to the parent's phone automatically pop up in a high-contrast, large-print card.",
         },
         {
           time: '07:34',
           seconds: 454,
           title: '8. Alarms, Photo Medication Reminders & Power Alerts',
-          desc: 'Remotely schedule an 8:00 AM wake-up alarm and a photo medication reminder (*One vitamin drop in a glass of water*). At the scheduled time (08:40), the senior views the photo and taps *DONE / TAKEN* for instant confirmation. Also demonstrates *Notification Settings*, live power-off/restart and power-on push alerts, and *Alert History* (09:01).',
+          desc: 'Remotely schedule a wake-up alarm and a photo medication reminder (*One vitamin drop in a glass of water*) with instant *DONE / TAKEN* confirmation (08:40) and power-off/on push alerts (09:01).',
           badge: 'Featured',
         },
         {
           time: '09:51',
           seconds: 591,
           title: '9. Live Mini-Map, Safe Zone & SOS Emergency Call',
-          desc: "Check the senior's live location on the built-in Google Maps mini-map, launch turn-by-turn navigation, and configure the Home Safe Zone with a custom wandering alert radius (100m–1000m). On the Kiosk screen, pressing the red *SOS CALL* button or any contact tile shows a clear *YES / NO* confirmation screen (10:31).",
+          desc: "Check live location on the built-in Google Maps mini-map, configure the Home Safe Zone (100m–1000m), and see the red *SOS CALL* button with *YES / NO* confirmation (10:31).",
         },
         {
           time: '10:43',
           seconds: 643,
           title: '10. Large-Button Free-Dial Keypad & Quick SMS',
-          desc: 'Tap the keypad button in the bottom-right corner of the Kiosk screen to dial any phone number using the large-button keypad (10:52), or switch to the *SMS* tab (11:10) to send pre-written quick text messages (*Please call me!*) to family members without typing.',
+          desc: 'Dial any phone number using the large-button keypad (10:52) or switch to the *SMS* tab (11:10) to send pre-written quick text messages (*Please call me!*) without typing.',
         },
         {
           time: '11:23',
           seconds: 683,
-          title: '11. Returning from Kiosk Mode to Local Caregiver Settings',
-          desc: "Tap the top clock 5 times quickly on the senior's phone and enter the default 1234 PIN code (customizable anytime). Access all caregiver settings locally—including *Quick Messages Setup*, *Sound & Screen Settings* (ringer, speakerphone, automatic day/night brightness & volume sliders at 11:58), *Edit Contacts*, *Daily Routines*, and *SOS Configuration* with GPS emergency SMS contacts (12:21).",
+          title: '11. Accessing Local Settings via the 5-Tap PIN',
+          desc: "Tap the top clock 5 times quickly on the parent's phone and enter the 4-digit PIN (default 1234) to access local sound, screen, contact, routine, and SOS settings.",
         },
         {
           time: '12:37',
           seconds: 757,
-          title: '12. Exiting Caregiver Settings to the Android Menu',
-          desc: "Tap the red *Back to Phone Menu* button at the bottom of Caregiver Settings and select the phone's default Home app (*One UI Home*) to deactivate Kiosk mode and return to the standard Android menu. The protected Kiosk interface can be relaunched anytime via the SENEAR icon.",
+          title: '12. Returning to the Standard Android Menu',
+          desc: "Tap *Back to Phone Menu* at the bottom of settings and select the phone's default Home app (*One UI Home*) to return to the standard Android interface anytime.",
         },
       ],
     },
     founderNote: {
       quote:
-        '“Why I built SENEAR: I wanted a solution for my own family that didn’t require buying an expensive yet clunky physical senior phone, had zero ads, and offered real protection against phone scammers and wandering. SENEAR is built in Europe, 100% ad-free, and strictly GDPR-compliant.”',
+        '“Why I built SENEAR: I wanted a solution for my own family that didn’t require buying an expensive yet clunky physical senior phone, had zero ads, and offered real protection against phone scammers and wandering. SENEAR is built in Europe, ad-free, and strictly GDPR-compliant.”',
       author: 'Gábor Bányai',
       role: 'Founder & Developer (Gabba Labs)',
-      badges: ['🇪🇺 Built in Europe', '🛡️ 100% Ad-Free', '🔒 Strictly GDPR-Compliant'],
+      badges: ['🇪🇺 Built in Europe', '🛡️ Ad-Free', '🔒 Strictly GDPR-Compliant'],
     },
     faqTitle: 'Frequently Asked Questions (FAQ)',
     faqs: [
       {
-        q: 'Which phones does SENEAR support?',
-        a: 'SENEAR runs on Android 8.0 or newer (Apple iOS does not allow deep Kiosk home-screen lock or auto-speakerphone control).',
+        q: 'What can the family member see, and is my parent’s consent required?',
+        a: 'Yes. Pairing requires explicit GDPR-compliant consent on your parent’s device. The family member sees battery status, medication confirmations, and (if enabled) GPS location, but never private messages or call audio. All data can be permanently deleted with one tap anytime.',
       },
       {
-        q: "Does the senior's phone need a SIM card?",
-        a: 'Not necessarily! Over home Wi-Fi, free SENEAR Wi-Fi calls with paired caregivers, medication reminders, and remote management work even without a SIM card. A SIM card is only required for standard cellular calls and SMS.',
-      },
-      {
-        q: 'What can the caregiver see, and is the senior’s consent required?',
-        a: 'Yes. Pairing requires explicit GDPR-compliant consent on the senior’s device. The caregiver sees battery status, medication confirmations, and (if enabled) GPS location, but never private call audio. All data can be permanently deleted anytime.',
-      },
-      {
-        q: 'What happens if I cancel the caregiver subscription?',
-        a: 'Your loved one’s phone continues to work as a standalone, scammer-protected Kiosk phone for free forever! Only remote caregiver syncing pauses.',
+        q: 'Which phones does SENEAR support? Does it work on iPhone?',
+        a: 'Both the parent’s phone and the family member’s phone need Android 8.0 or newer (Samsung, Xiaomi, Redmi, Motorola, Honor, Pixel, etc.). Apple iOS does not allow home-screen locking or remote auto-speakerphone control.',
       },
       {
         q: 'How does the 14-day trial and billing work? Will my parent ever see a payment screen?',
-        a: 'Never. Your parent’s phone stays 100% free of ads and payment prompts. After the 14-day free trial, the caregiver can choose on their own phone via Google Play between the monthly plan (€4.99), discounted annual plan (€39.99), or one-time lifetime unlock (€79.99, shown in your local Google Play currency).',
+        a: 'Never. Your parent’s phone stays free of ads and payment prompts. After the 14-day free trial, the family member can choose on their own phone via Google Play between the monthly plan (€4.99), discounted annual plan (€39.99), or one-time lifetime unlock (€79.99, shown in your local Google Play currency).',
       },
       {
-        q: 'Can we exit Kiosk mode back to the normal Android menu?',
-        a: 'Yes, anytime by tapping the top clock 5 times and entering the 4-digit caregiver PIN code.',
+        q: 'What happens if I cancel the family subscription?',
+        a: 'Your parent’s phone continues to work as a standalone, locked-screen senior phone and call filter for free forever! Only remote syncing pauses.',
+      },
+      {
+        q: "Does my parent's phone need a SIM card?",
+        a: 'Not necessarily! Over home Wi-Fi, free SENEAR Wi-Fi calls with paired family members, medication reminders, and remote management work even without a SIM card. A SIM card is only required for standard cellular calls and SMS.',
+      },
+      {
+        q: 'Can we exit back to the normal Android menu?',
+        a: 'Yes, anytime by tapping the top clock 5 times and entering the 4-digit PIN code.',
       },
       {
         q: 'Do I need to buy a new phone, or can we use an existing one?',
-        a: 'No new hardware needed! Any existing or spare Android smartphone (Samsung, Xiaomi, Motorola, Pixel, etc.) works out of the box without a factory reset.',
+        a: 'No new hardware needed! Any existing or spare Android smartphone works out of the box without a factory reset.',
       },
     ],
   },
   de: {
     heroPrimaryDownloadBtn: 'Bei Google Play laden – Kostenlos',
+    androidRequirementNote: 'Für Android 8.0+ Geräte (auch das Handy des Familienmitglieds benötigt Android)',
     heroHowLink: 'So funktioniert’s ↓',
     heroVideoLink: 'Einrichtungsvideo (13 Min.) ↓',
     heroSetupLink: 'Schritt-für-Schritt-Anleitung →',
+    desktopQrTitle: 'Sie schauen am Computer?',
+    desktopQrDesc: 'Scannen Sie den QR-Code mit Ihrem Android-Handy zum Herunterladen oder kopieren Sie den Link:',
+    copyLinkBtn: 'Link fürs Handy kopieren',
+    copiedLinkBtn: '✓ Link in die Zwischenablage kopiert!',
+    mobileFloatingCta: 'Bei Google Play laden (Android 8.0+)',
     scenariosTitle: 'Kommt Ihnen das bekannt vor?',
     scenarios: [
       {
         quote: '„Meine Mutter ist 78 und geht immer bei unbekannten Telefonbetrügern ran.“',
         solutionLabel: 'Lösung:',
-        solution: 'Die SENEAR-Whitelist lässt nur vorab genehmigte Kontakte durchklingeln.',
+        solution:
+          'Nur von Ihnen freigegebene Nummern klingeln durch – unbekannte Anrufer und Betrüger werden lautlos blockiert.',
       },
       {
         quote: '„Mein Vater verstellt versehentlich das Handy, schaltet es stumm oder vergisst seine Medikamente.“',
         solutionLabel: 'Lösung:',
         solution:
-          'Geschützter Kiosk-Bildschirm, automatische Rufannahme mit 100 % Lautsprecher und Foto-Medikamentenerinnerungen.',
+          'Gesperrter, einfacher Startbildschirm, automatische Rufannahme per Lautsprecher und Foto-Medikamentenerinnerungen.',
       },
       {
         quote: '„Ich wohne in einer anderen Stadt und möchte sehen, ob tagsüber alles in Ordnung ist.“',
@@ -605,31 +605,17 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
           'Echtzeit-Akkustatus, Medikamentenbestätigung, GPS-Sicherheitszone und kostenlose WLAN-Anrufe.',
       },
     ],
-    corePillars: [
-      {
-        title: 'Unverstellbarer Kiosk-Schutz',
-        desc: 'Kein versehentliches Stummschalten, Löschen von Apps oder Verirren in Menüs.',
-      },
-      {
-        title: '100 % Schutz vor Telefonbetrügern',
-        desc: 'Nur vorab freigegebene Familienmitglieder und Kontakte klingeln durch.',
-      },
-      {
-        title: 'Fernbetreuung & SOS-Notruf',
-        desc: 'Live-Akkustatus, GPS-Sicherheitszone, Foto-Medikamentenerinnerung und Freisprechen.',
-      },
-    ],
     modes: [
       {
         title: 'Ich brauche nur ein einfaches, geschütztes Telefon',
-        body: 'Wenn Sie ein einfach bedienbares, unverstellbares und geschütztes Telefon wünschen: Ihr Angehöriger erhält eine klare Oberfläche, über die er nur voreingestellte Personen anrufen und nur von ihnen Anrufe empfangen kann – vollständig geschützt vor unbekannten Belästigern und Telefonbetrügern.',
-        priceLabel: 'Preise • Eigenständiger Senioren-Modus',
-        badge: 'Für immer kostenlos – 0 € / Monat, 100 % werbefrei',
+        body: 'Wenn Sie ein einfach bedienbares, geschütztes Telefon wünschen: Ihre Eltern oder Großeltern erhalten einen gesperrten, einfachen Startbildschirm, über den sie nur voreingestellte Personen anrufen können und nur freigegebene Nummern durchklingeln.',
+        priceLabel: 'Preise • Eigenständige Nutzung (Handy der Eltern)',
+        badge: 'Für immer kostenlos – 0 € / Monat, werbefrei',
       },
       {
         title: 'Ich möchte auch aus der Ferne sehen, dass alles gut ist',
-        body: 'Sie möchten Ihren Angehörigen auch aus der Ferne in Sicherheit wissen? Verbinden Sie sein Gerät mit Ihrem Telefon! Als Betreuer sehen Sie den Telefonstatus in Echtzeit (Akku, Empfang, Standort), verwalten Kontakte aus der Ferne und erhalten sofort einen Alarm bei SOS oder schwachem Akku.',
-        priceLabel: 'Preise • Fernbetreuer-Verbindung',
+        body: 'Sie möchten Ihre Eltern auch aus der Ferne in Sicherheit wissen? Verbinden Sie das Gerät mit Ihrem eigenen Android-Telefon! Als Familienmitglied sehen Sie den Telefonstatus in Echtzeit (Akku, Empfang, Standort), verwalten Foto-Anruftasten aus der Ferne und erhalten sofort eine Nachricht bei SOS oder schwachem Akku.',
+        priceLabel: 'Preise • Familien-Fernverbindung',
         badge: '🎁 14 Tage kostenlos testen',
         trialBadge: '🎁 14 Tage kostenlos testen',
         pricingTiers: [
@@ -649,120 +635,124 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
           },
         ],
         reassurance:
-          'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
+          'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Familienmitglieds (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
       },
     ],
     howSteps: [
       {
         title: 'Auf dem Handy der Eltern installieren',
-        desc: 'Läuft auf jedem vorhandenen Android-Smartphone – über WLAN sogar ohne SIM-Karte.',
+        desc: 'Läuft auf jedem vorhandenen Android 8.0+ Smartphone – über WLAN sogar ohne SIM-Karte.',
       },
       {
         title: 'Mit 6-stelligem Code koppeln',
-        desc: 'Nach Zustimmung des Seniors verbinden Sie beide Telefone sofort per Sicherheitscode.',
+        desc: 'Nach Zustimmung Ihrer Eltern verbinden Sie beide Android-Telefone sofort per Sicherheitscode.',
       },
       {
         title: 'Entspannt aus der Ferne verwalten',
-        desc: 'Richten Sie Foto-Kacheln, Medikamentenerinnerungen und GPS-Zonen vom eigenen Handy aus ein.',
+        desc: 'Richten Sie Foto-Tasten, Medikamentenerinnerungen und GPS-Zonen vom eigenen Handy aus ein.',
       },
     ],
     setupTimeBanner:
-      '⏱️ Wie lange dauert die Einrichtung? Die Ersteinrichtung dauert ca. 10–15 Minuten, da Android einmalige Sicherheitsberechtigungen für den Kiosk-Schutz benötigt. Unser Video führt Sie Schritt für Schritt durch – danach ist das Telefon verstell-sicher.',
+      '⏱️ Wie lange dauert die Einrichtung? Die Ersteinrichtung dauert ca. 10–15 Minuten, da Android einmalige Sicherheitsberechtigungen für den gesperrten Startbildschirm und das automatische Freisprechen benötigt. Unser Video führt Sie Schritt für Schritt durch – danach bleibt das Telefon vor versehentlichem Verstellen geschützt.',
     specsToggleBtn: 'Alle Funktionen & technische Details anzeigen (20+ Funktionen) ↓',
     specsHideBtn: 'Detaillierte Funktionsliste ausblenden ↑',
-    featureTitles: ['Funktionen des Senioren-Telefons', 'Funktionen der sicheren Verbindung', 'Funktionen des Betreuer-Telefons'],
+    featureTitles: [
+      'Funktionen auf dem Handy der Eltern',
+      'Sichere Familienverbindung',
+      'Funktionen auf dem Handy des Familienmitglieds',
+    ],
     features: [
       [
-        'Unverstellbare, gesperrte Kiosk-Oberfläche (funktioniert bei Bedarf auch eigenständig ohne Betreuer)',
-        '4 oder bis zu 6 Foto-Anrufkacheln mit Vorname, Beziehung und Anzeige verpasster Anrufe („Hat angerufen!“)',
+        'Gesperrter, einfacher Startbildschirm (funktioniert bei Bedarf auch eigenständig ohne zweites Telefon)',
+        '4 oder bis zu 6 große Foto-Anruftasten mit Vorname und Anzeige verpasster Anrufe („Hat angerufen!“)',
         'Anpassbare Text-, Foto- und Telefonsymbolgrößen (3-stufig einstellbar oder ausblendbar)',
         'Klassische SIM-Anrufe (auch ohne Internet) sowie SIM-lose WLAN-Sprach- und Videoanrufe',
-        'Automatische Freisprechfunktion mit 100 % Startlautstärke, Lautstärkeregler auf dem Bildschirm und lautloser Blockierung paralleler Anrufe während eines Gesprächs',
+        'Automatische Freisprechfunktion mit voller Startlautstärke, Lautstärkeregler auf dem Bildschirm und lautloser Blockierung paralleler Anrufe während eines Gesprächs',
         'Vorgefertigte Schnell-SMS senden und eingehende SMS als Großschrift-Pop-up-Karte lesen',
         'SOS-Notruf und automatischer SMS-Versand mit GPS-Standort',
         'Morgendlicher Wecker und persönliche Tagesroutinen-Erinnerungen',
-        '2-stufige Medikamentenerinnerung mit genauer Dosierung, Foto und Ein-Klick-Bestätigung („Eingenommen“) an den Betreuer',
+        '2-stufige Medikamentenerinnerung mit genauer Dosierung, Foto und Ein-Klick-Bestätigung („Eingenommen“) an die Familie',
       ],
       [
         'Schnelle Verbindung über einen 6-stelligen Kopplungscode',
-        'Unterstützung für mehrere Betreuer (bis zu 6 Familienmitglieder) & automatische Kurzwahlkachel-Belegung beim Koppeln (Platz 1–6)',
+        'Unterstützung für mehrere Familienmitglieder (bis zu 6 Personen) & automatische Kurzwahl-Belegung beim Koppeln (Platz 1–6)',
         'Statusaktualisierungen in Echtzeit und sofortige Synchronisierung über eine sichere EU-Cloud',
-        'Unterbrechungssicherer Betrieb: herstellerspezifischer Akku-Schutz & Watchdog (Xiaomi, Samsung, Huawei u.a.)',
-        'Datenübertragung auf Bankniveau und Ende-zu-Ende-Verschlüsselung (TLS 1.3 / AES-256)',
+        'Zuverlässiger Hintergrundbetrieb: herstellerspezifischer Akku-Schutz (Xiaomi, Samsung, Huawei u.a.)',
+        'Verschlüsselte Datenübertragung (TLS 1.3 / AES-256)',
         'EU-DSGVO-konforme Datenverarbeitung mit beidseitiger Einwilligung und endgültiger Ein-Klick-Datenlöschung jederzeit',
       ],
       [
-        'Sofortige Benachrichtigung beim Ein- und Ausschalten des Senioren-Telefons sowie bei niedrigem Akkustand (vor dem Entladen)',
-        'Sprach- und Videoanrufe zum Senioren-Telefon — auch ohne SIM-Karte über WLAN',
-        'Automatische Rufannahme: Der Betreuer kann seinen eigenen Anruf am Senioren-Telefon aus der Ferne per Lautsprecher annehmen',
+        'Sofortige Benachrichtigung beim Ein- und Ausschalten des Elterntelefons sowie bei niedrigem Akkustand (vor dem Entladen)',
+        'Sprach- und Videoanrufe zum Handy der Eltern — auch ohne SIM-Karte über WLAN',
+        'Automatische Rufannahme: Das Familienmitglied kann seinen Anruf am Elterntelefon aus der Ferne per Lautsprecher verbinden',
         'Fernwiederherstellung der maximalen Klingeltonlautstärke (falls das Gerät versehentlich stummgeschaltet wurde)',
-        'Fernverwaltung von Namen, Telefonnummern und Fotos für bis zu 6 Anrufkacheln',
-        'Fernverwaltung der Anrufberechtigungen (Whitelist) zur Blockierung unbekannter und betrügerischer (Spam-)Anrufer',
-        'Ferneinrichtung von Weckern und detaillierten Medikamenten-Erinnerungen mit Echtzeit-Bestätigung („Eingenommen“)',
-        'Sicherheitszonen-Warnungen (Geofencing) beim Verlassen/Zurückkehren sowie integrierte Live-Minikarte mit Ein-Klick-Navigation über Google Maps',
+        'Fernverwaltung von Namen, Telefonnummern und Fotos für bis zu 6 Anruftasten',
+        'Fernverwaltung der Anrufberechtigungen (Whitelist): Nur freigegebene Nummern klingeln durch',
+        'Ferneinrichtung von Weckern und Foto-Medikamentenerinnerungen mit Echtzeit-Bestätigung („Eingenommen“)',
+        'Sicherheitszonen-Benachrichtigungen beim Verlassen/Zurückkehren sowie integrierte Live-Minikarte mit Ein-Klick-Navigation über Google Maps',
       ],
     ],
     videoShowcase: {
       videoId: '7UUD1rOxeOo',
       badge: 'Schritt-für-Schritt-Videoanleitung',
-      title: 'Komplette 12-Schritte-Einrichtungsanleitung',
+      title: 'Komplettes Einrichtungs- und Funktionsvideo',
       subtitle:
-        'Links sehen Sie das Fernsteuerungs-Dashboard des Familienmitglieds, rechts das geschützte Telefon des Angehörigen. Klicken Sie auf einen beliebigen Schritt in der Liste, um direkt zu dieser Funktion zu springen!',
-      leftPhoneLegend: '📱 Linkes Telefon: Fernsteuerungs-Dashboard des Betreuers (Familienmitglied)',
-      rightPhoneLegend: '📱 Rechtes Telefon: Geschützter Kiosk-Bildschirm des Seniors (Angehörigen)',
-      chapterListTitle: 'Schnellzugriff auf Funktionen (12)',
+        'Links sehen Sie das Fernsteuerungs-Dashboard des Familienmitglieds, rechts den gesperrten, einfachen Startbildschirm Ihrer Eltern. Klicken Sie auf ein Kapitel in der Liste, um direkt zu dieser Stelle zu springen!',
+      leftPhoneLegend: '📱 Linkes Telefon: Fernsteuerungs-Dashboard des Familienmitglieds',
+      rightPhoneLegend: '📱 Rechtes Telefon: Gesperrter, einfacher Startbildschirm der Eltern',
+      chapterListTitle: 'Direkt zu den Videokapiteln springen',
       totalDuration: '12:58 Min.',
       chapters: [
         { time: '00:00', seconds: 0, title: '1. Installation, Rollenauswahl & Berechtigungen', desc: 'SENEAR auf beiden Telefonen starten, Berechtigungen freigeben und links **Betreuer**, rechts **Senior** wählen.' },
-        { time: '00:24', seconds: 24, title: '2. Profildaten & Geschützte Kiosk-Systemberechtigungen', desc: 'Profil eingeben und Kiosk-Berechtigungen aktivieren: *Über anderen Apps*, *Systemeinstellungen*, *Start-App* und *SENEAR Kiosk Guard*.' },
-        { time: '01:45', seconds: 105, title: '3. Zwei Telefone, Ein System – Sofortige Kopplung', desc: 'Kopplung mit dem 6-stelligen Sicherheitscode (TD6F4T) sowie SMS-Zugriff & Akku-Optimierung unter *SMS & Battery Management*.' },
-        { time: '02:52', seconds: 172, title: '4. Fotos, Kontakte & Kachel-Einrichtung (4 oder 6 Kacheln)', desc: 'Fotos für Kacheln 1–4 aus der Ferne hochladen, auf **6-Kachel-Ansicht** (04:01) wechseln und Größen in Echtzeit anpassen (04:46).', badge: 'Beliebt' },
-        { time: '05:31', seconds: 331, title: '5. Anrufberechtigungen (Whitelist) & Betrugsschutz', desc: 'Vertrauenswürdige Kontakte zur Whitelist hinzufügen, während unbekannte Nummern und Telefonbetrüger blockiert werden.' },
-        { time: '06:19', seconds: 379, title: '6. Kostenloser WLAN-Anruf, 100 % Freisprechen & Rückruf', desc: '*Auto-Answer* und *Auto-Speaker* aktivieren (100 % Lautstärke) oder Rückruf über das rote *Missed call!*-Abzeichen mit *JA / NEIN*-Bestätigung.', badge: 'Highlight' },
-        { time: '07:31', seconds: 451, title: '7. Seniorengerechtes Großschrift-SMS-Popup', desc: 'Eingehende SMS erscheinen automatisch als kontrastreiche Großschrift-Karte auf dem Kiosk-Bildschirm.' },
-        { time: '07:34', seconds: 454, title: '8. Wecker, Foto-Medikamentenerinnerung & Strom-Alarme', desc: 'Wecker und Foto-Medikamentenerinnerung mit *DONE / TAKEN*-Bestätigung (08:40) sowie Push-Alarme beim Aus-/Einschalten (09:01).', badge: 'Highlight' },
+        { time: '00:24', seconds: 24, title: '2. Profildaten & Startbildschirm-Schutz', desc: 'Profil eingeben und Berechtigungen aktivieren: *Über anderen Apps*, *Systemeinstellungen*, *Start-App* und *SENEAR Kiosk Guard*.' },
+        { time: '01:45', seconds: 105, title: '3. Zwei Telefone, Ein System – Sofortige Kopplung', desc: 'Kopplung mit dem 6-stelligen Sicherheitscode (TD6F4T) sowie SMS-Zugriff & Akku-Optimierung.' },
+        { time: '02:52', seconds: 172, title: '4. Fotos, Kontakte & Tasten-Einrichtung (4 oder 6 Tasten)', desc: 'Fotos für Tasten 1–4 aus der Ferne hochladen, auf **6-Tasten-Ansicht** (04:01) wechseln und Größen in Echtzeit anpassen (04:46).', badge: 'Beliebt' },
+        { time: '05:31', seconds: 331, title: '5. Anrufberechtigungen (Whitelist) & Schutz vor Betrügern', desc: 'Vertrauenswürdige Kontakte freigeben, sodass unbekannte Nummern und Telefonbetrüger nicht durchklingeln.' },
+        { time: '06:19', seconds: 379, title: '6. Kostenloser WLAN-Anruf, Freisprechen & Rückruf', desc: '*Auto-Answer* und *Auto-Speaker* aktivieren oder Rückruf über das rote *Missed call!*-Abzeichen mit *JA / NEIN*-Bestätigung.', badge: 'Highlight' },
+        { time: '07:31', seconds: 451, title: '7. Seniorengerechtes Großschrift-SMS-Popup', desc: 'Eingehende SMS erscheinen automatisch als kontrastreiche Großschrift-Karte auf dem Bildschirm.' },
+        { time: '07:34', seconds: 454, title: '8. Wecker, Foto-Medikamentenerinnerung & Strom-Alarme', desc: 'Wecker und Foto-Medikamentenerinnerung mit *DONE / TAKEN*-Bestätigung (08:40) sowie Push-Meldungen beim Aus-/Einschalten (09:01).', badge: 'Highlight' },
         { time: '09:51', seconds: 591, title: '9. Live-Minikarte, Sicherheitszone & SOS-Notruf', desc: 'Live-Standort auf der Google-Maps-Minikarte, Sicherheitszone (100–1000 m) und roter *SOS CALL*-Button mit *JA / NEIN*-Bestätigung (10:31).' },
         { time: '10:43', seconds: 643, title: '10. Großtasten-Wählfeld & Schnell-SMS', desc: 'Freies Wählen über das Großtasten-Wählfeld (10:52) oder vorgefertigte Schnell-SMS (*Please call me!*) ohne Tippen senden (11:10).' },
-        { time: '11:23', seconds: 683, title: '11. Vom Kiosk-Modus in die lokalen Betreuer-Einstellungen', desc: 'Oben 5-mal auf die Uhr tippen (PIN 1234): Schnellnachrichten, Ton & Bildschirm (11:58), Kontakte, Routinen und SOS-Konfiguration (12:21).' },
-        { time: '12:37', seconds: 757, title: '12. Betreuer-Einstellungen zum Android-Menü verlassen', desc: 'Unten auf *Back to Phone Menu* tippen und Standard-Start-App (*One UI Home*) wählen, um zum normalen Android-Menü zurückzukehren.' },
+        { time: '11:23', seconds: 683, title: '11. Lokale Einstellungen per 5-maligem Tippen öffnen', desc: 'Oben 5-mal auf die Uhr tippen (PIN 1234): Schnellnachrichten, Ton & Bildschirm (11:58), Kontakte, Routinen und SOS-Konfiguration (12:21).' },
+        { time: '12:37', seconds: 757, title: '12. Zurück zum normalen Android-Menü', desc: 'Unten auf *Back to Phone Menu* tippen und Standard-Start-App (*One UI Home*) wählen, um jederzeit zum normalen Android-Menü zurückzukehren.' },
       ],
     },
     founderNote: {
       quote:
-        '„Warum ich SENEAR entwickelt habe: Ich suchte für meine eigene Familie nach einer Lösung ohne teures, umständliches Tastenhandy – komplett werbefrei und mit echtem Schutz vor Telefonbetrügern. SENEAR wird in Europa entwickelt, ist 100 % werbefrei und DSGVO-konform.“',
+        '„Warum ich SENEAR entwickelt habe: Ich suchte für meine eigene Familie nach einer Lösung ohne teures, umständliches Tastenhandy – komplett werbefrei und mit echtem Schutz vor Telefonbetrügern. SENEAR wird in Europa entwickelt, ist werbefrei und DSGVO-konform.“',
       author: 'Gábor Bányai',
       role: 'Gründer & Entwickler (Gabba Labs)',
-      badges: ['🇪🇺 Entwickelt in Europa', '🛡️ 100 % Werbefrei', '🔒 Streng DSGVO-konform'],
+      badges: ['🇪🇺 Entwickelt in Europa', '🛡️ Werbefrei', '🔒 Streng DSGVO-konform'],
     },
     faqTitle: 'Häufige Fragen (FAQ)',
     faqs: [
       {
-        q: 'Auf welchen Handys läuft SENEAR?',
-        a: 'SENEAR läuft auf Android 8.0 oder neuer (Apple iOS erlaubt keinen tiefen Kiosk-Schutz oder automatisches Freisprechen).',
+        q: 'Was sieht das Familienmitglied und ist die Zustimmung meiner Eltern erforderlich?',
+        a: 'Ja, die Kopplung erfordert die ausdrückliche DSGVO-konforme Zustimmung auf dem Gerät Ihrer Eltern. Das Familienmitglied sieht Akkustand, Medikamentenbestätigungen und (falls aktiviert) den GPS-Standort, jedoch niemals private Nachrichten oder Gesprächsinhalte. Alle Daten können jederzeit mit einem Klick gelöscht werden.',
       },
       {
-        q: 'Braucht das Handy des Seniors eine SIM-Karte?',
-        a: 'Nicht zwingend! Über das Heim-WLAN funktionieren kostenlose SENEAR-WLAN-Anrufe mit gekoppelten Betreuern, Medikamentenerinnerungen und die Fernverwaltung auch ohne SIM-Karte.',
-      },
-      {
-        q: 'Was sieht der Betreuer und ist die Zustimmung des Seniors erforderlich?',
-        a: 'Ja, die Kopplung erfordert die ausdrückliche DSGVO-konforme Zustimmung auf dem Gerät des Seniors. Alle Daten können jederzeit vollständig gelöscht werden.',
-      },
-      {
-        q: 'Was passiert, wenn ich das Betreuer-Abo kündige?',
-        a: 'Das Telefon Ihres Angehörigen funktioniert dauerhaft kostenlos als geschütztes Kiosk-Seniorenhandy weiter! Lediglich die Fernverwaltung pausiert.',
+        q: 'Auf welchen Handys läuft SENEAR? Funktioniert es auch auf dem iPhone?',
+        a: 'Sowohl das Handy Ihrer Eltern als auch das Smartphone des Familienmitglieds benötigen Android 8.0 oder neuer (Samsung, Xiaomi, Redmi, Motorola, Honor, Pixel usw.). Apple iOS erlaubt keine solche Startbildschirm-Sperre oder automatische Freisprech-Steuerung.',
       },
       {
         q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sieht mein Elternteil jemals ein Zahlungsfenster?',
-        a: 'Niemals. Das Handy Ihres Angehörigen bleibt zu 100 % frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt der Betreuer auf seinem eigenen Smartphone über Google Play zwischen Monatsabo (4,99 €), Jahresabo (39,99 €) oder einmaliger lebenslanger Lizenz (79,99 €).',
+        a: 'Niemals. Das Handy Ihrer Eltern bleibt frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt das Familienmitglied auf seinem eigenen Smartphone über Google Play zwischen Monatsabo (4,99 €), Jahresabo (39,99 €) oder einmaliger lebenslanger Lizenz (79,99 €).',
       },
       {
-        q: 'Kann man den Kiosk-Modus wieder verlassen?',
-        a: 'Ja, jederzeit durch 5-maliges Tippen auf die obere Uhr und Eingabe des 4-stelligen Betreuer-PIN-Codes.',
+        q: 'Was passiert, wenn ich das Familien-Abo kündige?',
+        a: 'Das Telefon Ihrer Eltern funktioniert dauerhaft kostenlos als geschütztes Seniorenhandy mit Anruffilter weiter! Lediglich die Fernverwaltung pausiert.',
+      },
+      {
+        q: 'Braucht das Handy meiner Eltern eine SIM-Karte?',
+        a: 'Nicht zwingend! Über das Heim-WLAN funktionieren kostenlose SENEAR-WLAN-Anrufe mit gekoppelten Familienmitgliedern, Medikamentenerinnerungen und die Fernverwaltung auch ohne SIM-Karte.',
+      },
+      {
+        q: 'Kann man wieder zum normalen Android-Menü zurückkehren?',
+        a: 'Ja, jederzeit durch 5-maliges Tippen auf die obere Uhr und Eingabe des 4-stelligen PIN-Codes.',
       },
       {
         q: 'Muss ich ein neues Handy kaufen oder reicht das vorhandene Gerät?',
-        a: 'Kein Neukauf nötig! Jedes vorhandene Android-Smartphone (Samsung, Xiaomi, Motorola usw.) kann sofort und ohne Werksreset genutzt werden.',
+        a: 'Kein Neukauf nötig! Jedes vorhandene Android-Smartphone kann sofort und ohne Werksreset genutzt werden.',
       },
     ],
   },
@@ -774,21 +764,21 @@ const COPY: Record<ProductKey, Record<Lang, ProductCopy>> = {
       kicker: 'Idősbarát okostelefon-rendszer',
       heroTitle: 'Biztonság az időseknek. Nyugalom a családnak.',
       heroText:
-        'Egyszerű, csalóbiztos telefon az idős szüleidnek – te pedig távolról is látod, hogy minden rendben van.',
+        'Egyszerű, védett kezdőképernyő az idős szüleidnek, ahol csak a jóváhagyott számok csörögnek ki – te pedig távolról is látod, hogy minden rendben van.',
       chips: [],
       primaryCta: 'Beállítási útmutató',
       benefitsTitle: 'Miért a SENEAR?',
-      benefitsSubtitle: 'Három alappillér és átlátható, rugalmas használat a család igényei szerint.',
+      benefitsSubtitle: 'Válaszd a családodnak megfelelő működést — önállóan ingyen, vagy távoli összeköttetéssel.',
       howTitle: 'Így működik',
-      howSubtitle: 'Két telefon, egy rendszer — 3 egyszerű lépésben.',
+      howSubtitle: 'Két Android telefon, egy rendszer — 3 egyszerű lépésben.',
       how: [
         {
           title: 'Telepítsd a szülőd telefonjára',
-          desc: 'Bármilyen meglévő Android készülékre felteheted, otthoni Wi-Fi-n akár SIM-kártya nélkül is.',
+          desc: 'Bármilyen meglévő Android 8.0+ készülékre felteheted, otthoni Wi-Fi-n akár SIM-kártya nélkül is.',
         },
         {
           title: 'Párosítsd a 6 jegyű kóddal',
-          desc: 'A szülő jóváhagyása után egyetlen kóddal összekapcsolhatod a két telefont.',
+          desc: 'A szülő jóváhagyása után egyetlen kóddal összekapcsolhatod a két Android telefont.',
         },
         {
           title: 'Kezeld távolról, nyugodtan',
@@ -796,88 +786,88 @@ const COPY: Record<ProductKey, Record<Lang, ProductCopy>> = {
         },
       ],
       spotlightTitle: 'Közelebbről',
-      spotlightSubtitle: 'Nézd meg, mit lát az idős felhasználó és mit a gondozó.',
+      spotlightSubtitle: 'Nézd meg, mit lát az idős szülő és mit a családtag.',
       bullets: [
-        ['4 vagy akár 6 nagy, fényképes gyorshívó csempe', 'Óriási, jól olvasható dátum és idő', 'Nincs zavaró menü vagy elállítható beállítás'],
-        ['Kontaktok fényképpel és megnevezéssel', 'SOS szám és automatikus GPS SMS', 'Hívásszűrés ismeretlen és csaló hívók ellen'],
+        ['4 vagy akár 6 nagy, fényképes gyorshívó gomb', 'Óriási, jól olvasható dátum és idő', 'Nincs zavaró menü vagy véletlenül elállítható beállítás'],
+        ['Kontaktok fényképpel és megnevezéssel', 'SOS szám és automatikus GPS SMS', 'Hívásszűrés: csak a jóváhagyott számok csörögnek ki'],
         ['Élő akkumulátor- és töltésállapot', 'Pontos helyzet élő mini-térképen és Google Térképen', 'Távolról élesíthető automatikus hívásfogadás'],
-        ['Azonnali értesítés SOS esetén', 'Riasztás alacsony akkunál és ki-/bekapcsoláskor', 'Szűrhető eseménynapló'],
+        ['Azonnali értesítés SOS esetén', 'Jelzés alacsony akkunál és ki-/bekapcsoláskor', 'Szűrhető eseménynapló'],
       ],
       ctaTitle: 'Készen állsz a beállításra?',
       ctaText:
-        'Lépésről lépésre végigvezetünk a Gondozott és a Gondozó telefonjának beállításán — gyári visszaállítás és QR-kód nélkül.',
+        'Lépésről lépésre végigvezetünk az idős szülő és a családtag telefonjának beállításán — gyári visszaállítás nélkül.',
     },
     en: {
       kicker: 'Senior-friendly smartphone system',
       heroTitle: 'Safety for seniors. Peace of mind for families.',
       heroText:
-        'A simple, scammer-proof phone for your aging parents — while you see from afar that everything is okay.',
+        'A simple, locked home screen for your aging parents where only approved numbers ring through — while you see from afar that everything is okay.',
       chips: [],
       primaryCta: 'Setup guide',
       benefitsTitle: 'Why SENEAR?',
-      benefitsSubtitle: 'Three core pillars and transparent options tailored to your family.',
+      benefitsSubtitle: 'Choose the mode that fits your family — free standalone use or remote family connection.',
       howTitle: 'How it works',
-      howSubtitle: 'Two phones, one system — in 3 simple steps.',
+      howSubtitle: 'Two Android phones, one system — in 3 simple steps.',
       how: [
         {
           title: 'Install on your parent’s phone',
-          desc: 'Works on any existing Android smartphone—even without a SIM card over home Wi-Fi.',
+          desc: 'Works on any existing Android 8.0+ smartphone—even without a SIM card over home Wi-Fi.',
         },
         {
           title: 'Pair with a 6-digit code',
-          desc: 'After the senior’s consent, link both phones in seconds using a one-time security code.',
+          desc: 'After your parent’s consent, link both Android phones in seconds using a one-time security code.',
         },
         {
           title: 'Manage remotely with peace of mind',
-          desc: 'Set up photo speed-dial tiles, medication reminders, and GPS safe zones from your own phone.',
+          desc: 'Set up photo speed-dial buttons, medication reminders, and GPS safe zones from your own phone.',
         },
       ],
       spotlightTitle: 'A closer look',
-      spotlightSubtitle: 'See what the senior sees — and what the caregiver sees.',
+      spotlightSubtitle: 'See what your parent sees — and what the family member sees.',
       bullets: [
-        ['4 or up to 6 large photo speed-dial tiles', 'Huge, easy-to-read date and time', 'No confusing menus or settings to break'],
-        ['Contacts with photos and labels', 'SOS number with automatic GPS SMS', 'Call filtering against unknown and scam callers'],
+        ['4 or up to 6 large photo speed-dial buttons', 'Huge, easy-to-read date and time', 'No confusing menus or settings to break'],
+        ['Contacts with photos and labels', 'SOS number with automatic GPS SMS', 'Call whitelist: only approved numbers ring through'],
         ['Live battery and charging status', 'Exact location on live mini-map & Google Maps', 'Remotely enabled auto-answer on speaker'],
         ['Instant alert on SOS', 'Alerts on low battery and power on/off', 'Filterable event history'],
       ],
       ctaTitle: 'Ready to set it up?',
-      ctaText: 'We guide you step by step through setting up both the Senior’s and the Caregiver’s phone — no factory reset, no QR code.',
+      ctaText: 'We guide you step by step through setting up both your parent’s and your own Android phone — no factory reset needed.',
     },
     de: {
       kicker: 'Seniorenfreundliches Smartphone-System',
       heroTitle: 'Sicherheit für Senioren. Ruhe für die Familie.',
       heroText:
-        'Ein einfaches, betrugssicheres Telefon für Ihre älteren Eltern – während Sie aus der Ferne sehen, dass alles in Ordnung ist.',
+        'Ein einfacher, gesperrter Startbildschirm für Ihre älteren Eltern, bei dem nur freigegebene Nummern durchklingeln – während Sie aus der Ferne sehen, dass alles in Ordnung ist.',
       chips: [],
       primaryCta: 'Einrichtungsanleitung',
       benefitsTitle: 'Warum SENEAR?',
-      benefitsSubtitle: 'Drei Grundpfeiler und transparente Optionen für Ihre Familie.',
+      benefitsSubtitle: 'Wählen Sie den passenden Modus für Ihre Familie — kostenlos eigenständig oder mit Fernverbindung.',
       howTitle: 'So funktioniert es',
-      howSubtitle: 'Zwei Telefone, ein System — in 3 einfachen Schritten.',
+      howSubtitle: 'Zwei Android-Telefone, ein System — in 3 einfachen Schritten.',
       how: [
         {
           title: 'Auf dem Handy der Eltern installieren',
-          desc: 'Läuft auf jedem vorhandenen Android-Smartphone – über WLAN sogar ohne SIM-Karte.',
+          desc: 'Läuft auf jedem vorhandenen Android 8.0+ Smartphone – über WLAN sogar ohne SIM-Karte.',
         },
         {
           title: 'Mit 6-stelligem Code koppeln',
-          desc: 'Nach Zustimmung des Seniors verbinden Sie beide Telefone sofort per Sicherheitscode.',
+          desc: 'Nach Zustimmung Ihrer Eltern verbinden Sie beide Android-Telefone sofort per Sicherheitscode.',
         },
         {
           title: 'Entspannt aus der Ferne verwalten',
-          desc: 'Richten Sie Foto-Kacheln, Medikamentenerinnerungen und GPS-Zonen vom eigenen Handy aus ein.',
+          desc: 'Richten Sie Foto-Tasten, Medikamentenerinnerungen und GPS-Zonen vom eigenen Handy aus ein.',
         },
       ],
       spotlightTitle: 'Im Detail',
-      spotlightSubtitle: 'Sehen Sie, was der Senior sieht — und was der Betreuer sieht.',
+      spotlightSubtitle: 'Sehen Sie, was Ihre Eltern sehen — und was das Familienmitglied sieht.',
       bullets: [
-        ['4 oder bis zu 6 große Foto-Kurzwahlkacheln', 'Riesige, gut lesbare Uhrzeit und Datum', 'Keine verwirrenden Menüs oder Einstellungen'],
-        ['Kontakte mit Foto und Bezeichnung', 'SOS-Nummer mit automatischer GPS-SMS', 'Anruffilter gegen unbekannte und betrügerische Anrufer'],
+        ['4 oder bis zu 6 große Foto-Kurzwahltasten', 'Riesige, gut lesbare Uhrzeit und Datum', 'Keine verwirrenden Menüs oder Einstellungen'],
+        ['Kontakte mit Foto und Bezeichnung', 'SOS-Nummer mit automatischer GPS-SMS', 'Anruffilter: Nur freigegebene Nummern klingeln durch'],
         ['Live-Akku- und Ladestatus', 'Genauer Standort auf Live-Minikarte & Google Maps', 'Fernaktivierbare automatische Rufannahme'],
-        ['Sofortige Benachrichtigung bei SOS', 'Alarm bei niedrigem Akku und Ein-/Ausschalten', 'Filterbares Ereignisprotokoll'],
+        ['Sofortige Benachrichtigung bei SOS', 'Meldung bei niedrigem Akku und Ein-/Ausschalten', 'Filterbares Ereignisprotokoll'],
       ],
       ctaTitle: 'Bereit für die Einrichtung?',
-      ctaText: 'Wir führen Sie Schritt für Schritt durch die Einrichtung des Senioren- und des Betreuer-Telefons — ohne Werksreset und QR-Code.',
+      ctaText: 'Wir führen Sie Schritt für Schritt durch die Einrichtung beider Android-Telefone — ohne Werksreset.',
     },
   },
   junear: {
@@ -909,85 +899,85 @@ const COPY: Record<ProductKey, Record<Lang, ProductCopy>> = {
       spotlightTitle: 'Közelebbről',
       spotlightSubtitle: 'Nézd meg, mit lát a gyermek és mit a szülő.',
       bullets: [
-        ['Nagy, színes, könnyen érthető ikonok', 'Alkalmazások telepítése és törlése letiltva', 'Rendszerbeállítások elzárva'],
-        ['Valós idejű helymeghatározás', 'Otthon és iskola biztonsági zóna', 'Értesítés a zóna elhagyásakor'],
-        ['Akkumulátor és töltés állapota', 'Hívásnapló áttekintése', 'Korlátozások távoli módosítása'],
-        ['Csak a szülők által engedélyezett számok', 'Fényképes, egyérintéses hívás', 'Ismeretlen hívók automatikus szűrése'],
+        ['Játékos, mégis korlátozott kezdőképernyő', 'Nincs böngésző, áruház vagy idegen app', 'Nem törölhető és nem kerülhető meg'],
+        ['Valós idejű GPS-pozíció', 'Biztonsági zónák (iskola, otthon)', 'Azonnali értesítés zónaelhagyáskor'],
+        ['Töltöttség és hangerő távoli ellenőrzése', 'Hívásnapló és engedélyezett kontaktok', 'Távolról módosítható szabályok'],
+        ['Csak a szülők által jóváhagyott számok', 'Idegen hívók automatikus blokkolása', 'Egyérintéses szülőhívás'],
       ],
       ctaTitle: 'Készen állsz a beállításra?',
-      ctaText: 'Lépésről lépésre végigvezetünk a gyermek és a szülő telefonjának beállításán.',
+      ctaText: 'Lépésről lépésre végigvezetünk a Gyermek és a Szülő telefonjának beállításán.',
     },
     en: {
       kicker: 'Child-safe smartphone system',
-      heroTitle: 'A safe first phone. Relaxed parents.',
+      heroTitle: 'A safe first phone. Calm parents.',
       heroText:
-        'JUNEAR combines a kid-friendly, strictly restricted phone interface for your child with a parent dashboard — with live location and approved callers only.',
-      chips: ['Approved contacts only', 'Live GPS and safe zones', 'Protected even offline'],
+        'JUNEAR gives your child a playful, strictly locked phone interface and gives parents a remote console — with live GPS, safe zones and whitelisted callers only.',
+      chips: ['Approved contacts only', 'Live GPS & safe zones', 'Protected even offline'],
       primaryCta: 'Setup guide',
       benefitsTitle: 'Why JUNEAR?',
-      benefitsSubtitle: 'A safe digital space where children can be independent and parents can relax.',
+      benefitsSubtitle: 'A safe digital environment where children gain independence and parents keep peace of mind.',
       howTitle: 'How it works',
       howSubtitle: 'Two phones, one system — parents are always near.',
       how: [
         {
           title: 'Child’s phone',
-          desc: 'A playful yet strictly locked interface: your child can only reach approved apps and contacts.',
+          desc: 'A playful yet strictly locked launcher: the child can only reach approved apps and contacts.',
         },
         {
-          title: 'Secure connection',
-          desc: 'A pairing code instantly links the child’s and parent’s phones; data syncs through a secure cloud.',
+          title: 'Secure cloud link',
+          desc: 'A pairing code links the child’s and parent’s phones in seconds; state syncs through a secure cloud.',
         },
         {
           title: 'Parent’s phone',
-          desc: 'Parents see location, battery and call log, and get notified when a safe zone is left.',
+          desc: 'Parents see live location, battery and call list, and receive instant alerts when leaving a safe zone.',
         },
       ],
       spotlightTitle: 'A closer look',
       spotlightSubtitle: 'See what the child sees — and what the parent sees.',
       bullets: [
-        ['Large, colourful, easy-to-understand icons', 'Installing and removing apps is blocked', 'System settings are locked'],
-        ['Real-time location', 'Home and school safe zones', 'Alert when a zone is left'],
-        ['Battery and charging status', 'Call log overview', 'Change restrictions remotely'],
-        ['Only parent-approved numbers', 'One-tap calling with photos', 'Unknown callers filtered automatically'],
+        ['Playful yet restricted home screen', 'No browser, app store or unknown apps', 'Cannot be uninstalled or bypassed'],
+        ['Real-time GPS location', 'Safe zones (school, home)', 'Instant alert on leaving a zone'],
+        ['Remote battery and ringer check', 'Call log and approved contacts', 'Remotely adjustable rules'],
+        ['Only parent-approved numbers', 'Unknown callers blocked automatically', 'One-tap call to parents'],
       ],
       ctaTitle: 'Ready to set it up?',
-      ctaText: 'We guide you step by step through setting up both the child’s and the parent’s phone.',
+      ctaText: 'We guide you step by step through setting up both the Child’s and the Parent’s phone.',
     },
     de: {
       kicker: 'Kindersicheres Smartphone-System',
       heroTitle: 'Ein sicheres erstes Handy. Entspannte Eltern.',
       heroText:
-        'JUNEAR verbindet eine kinderfreundliche, streng eingeschränkte Telefonoberfläche mit einem Eltern-Dashboard — mit Live-Standort und nur erlaubten Anrufern.',
-      chips: ['Nur erlaubte Kontakte', 'Live-GPS und Sicherheitszonen', 'Auch offline geschützt'],
+        'JUNEAR bietet Ihrem Kind eine spielerische, streng geschützte Oberfläche und den Eltern eine Fernkonsole — mit Live-GPS, Sicherheitszonen und nur freigegebenen Kontakten.',
+      chips: ['Nur erlaubte Kontakte', 'Live-GPS & Sicherheitszonen', 'Auch offline geschützt'],
       primaryCta: 'Einrichtungsanleitung',
       benefitsTitle: 'Warum JUNEAR?',
-      benefitsSubtitle: 'Ein sicherer digitaler Raum, in dem Kinder selbstständig und Eltern entspannt sein können.',
+      benefitsSubtitle: 'Eine sichere digitale Umgebung, in der Kinder selbstständig sind und Eltern beruhigt bleiben.',
       howTitle: 'So funktioniert es',
       howSubtitle: 'Zwei Telefone, ein System — die Eltern sind immer nah.',
       how: [
         {
           title: 'Kinder-Telefon',
-          desc: 'Eine verspielte, aber streng gesperrte Oberfläche: Ihr Kind erreicht nur freigegebene Apps und Kontakte.',
+          desc: 'Spielerische, aber streng gesperrte Oberfläche: Das Kind erreicht nur freigegebene Apps und Kontakte.',
         },
         {
           title: 'Sichere Verbindung',
-          desc: 'Ein Kopplungscode verbindet Kinder- und Eltern-Telefon sofort; die Daten werden über eine sichere Cloud synchronisiert.',
+          desc: 'Per Kopplungscode verbinden sich Kinder- und Eltern-Telefon sofort über eine sichere Cloud.',
         },
         {
           title: 'Eltern-Telefon',
-          desc: 'Eltern sehen Standort, Akku und Anrufliste und werden beim Verlassen einer Zone benachrichtigt.',
+          desc: 'Eltern sehen Standort, Akku und Anrufliste und erhalten sofort eine Warnung beim Verlassen einer Zone.',
         },
       ],
       spotlightTitle: 'Im Detail',
       spotlightSubtitle: 'Sehen Sie, was das Kind sieht — und was die Eltern sehen.',
       bullets: [
-        ['Große, bunte, leicht verständliche Symbole', 'Installieren und Löschen von Apps gesperrt', 'Systemeinstellungen gesperrt'],
-        ['Standort in Echtzeit', 'Sicherheitszonen für Zuhause und Schule', 'Benachrichtigung beim Verlassen einer Zone'],
-        ['Akku- und Ladestatus', 'Übersicht der Anrufliste', 'Einschränkungen aus der Ferne ändern'],
-        ['Nur von Eltern erlaubte Nummern', 'Anruf mit einem Fingertipp und Foto', 'Unbekannte Anrufer automatisch gefiltert'],
+        ['Spielerischer, aber geschützter Startbildschirm', 'Kein Browser, Store oder fremde Apps', 'Nicht löschbar und nicht umgehbar'],
+        ['Echtzeit-GPS-Standort', 'Sicherheitszonen (Schule, Zuhause)', 'Sofort-Alarm beim Verlassen'],
+        ['Akku- und Klingeltonprüfung aus der Ferne', 'Anrufliste und erlaubte Kontakte', 'Fernsteuerbare Regeln'],
+        ['Nur von Eltern freigegebene Nummern', 'Fremde Anrufer automatisch blockiert', 'Ein-Tipp-Anruf zu den Eltern'],
       ],
       ctaTitle: 'Bereit für die Einrichtung?',
-      ctaText: 'Wir führen Sie Schritt für Schritt durch die Einrichtung des Kinder- und des Eltern-Telefons.',
+      ctaText: 'Wir führen Sie Schritt für Schritt durch die Einrichtung des Kinder- und Eltern-Telefons.',
     },
   },
 };
@@ -1001,8 +991,6 @@ const HOW_ICONS: Record<ProductKey, React.ComponentType<{ className?: string }>[
   senear: [Smartphone, CloudCog, Users],
   junear: [Baby, CloudCog, Users],
 };
-
-const PILLAR_ICONS = [Lock, ShieldCheck, HeartHandshake];
 
 interface ProductPageProps {
   product: ProductKey;
@@ -1040,7 +1028,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
   const name = product.toUpperCase();
   const tp = product === 'senear' ? t.senear : t.junear;
   const audience = product === 'senear' ? t.nearSection.appSeniorLabel : t.nearSection.appJuniorLabel;
-  const photos = getProductPhotos(product, t);
+  const photos = getProductPhotos(product, t, lang);
   const setupRoute: AppRoute = product === 'senear' ? 'senear-setup' : 'junear-setup';
   const senearExtra = product === 'senear' ? SENEAR_EXTRA[lang] : null;
 
@@ -1050,6 +1038,8 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
   const [playKey, setPlayKey] = useState<number>(0);
   const [showAllSpecs, setShowAllSpecs] = useState<boolean>(false);
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [showMobileFloatingCta, setShowMobileFloatingCta] = useState<boolean>(false);
   const videoPlayerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1057,6 +1047,53 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
     setActiveChapterIdx(0);
     setAutoPlay(false);
   }, [lang]);
+
+  // Dynamic page title & OpenGraph meta updates for /senear
+  useEffect(() => {
+    if (product !== 'senear') return;
+    const title =
+      lang === 'hu'
+        ? 'SENEAR – Biztonság az időseknek, nyugalom a családnak (Android 8.0+)'
+        : lang === 'de'
+        ? 'SENEAR – Sicherheit für Senioren, Ruhe für die Familie (Android 8.0+)'
+        : 'SENEAR — Safety for seniors, peace of mind for families (Android 8.0+)';
+    const desc = c.heroText;
+    document.title = title;
+    const setMeta = (selector: string, content: string) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('content', content);
+    };
+    setMeta('meta[name="description"]', desc);
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', desc);
+  }, [product, lang, c.heroText]);
+
+  // Show floating mobile Download bar after scrolling past Hero
+  useEffect(() => {
+    if (product !== 'senear') return;
+    const onScroll = () => {
+      setShowMobileFloatingCta(window.scrollY > 460);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [product]);
+
+  const handleCopyShareLink = async () => {
+    const shareUrl = 'https://gabba.bond/senear';
+    try {
+      if (navigator.share && window.innerWidth < 768) {
+        await navigator.share({ title: 'SENEAR', text: c.heroText, url: shareUrl });
+        return;
+      }
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 3000);
+    } catch {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 3000);
+    }
+  };
 
   const handleChapterClick = (seconds: number, idx: number) => {
     setActiveSeconds(seconds);
@@ -1078,7 +1115,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
   const SecondaryCta =
     product === 'senear' ? (
       <a
-        href="https://play.google.com"
+        href={PLAY_STORE_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-white text-[#2C2C2C] text-sm font-semibold border border-[#C5A880]/60 hover:bg-[#F5F0EB] shadow-xs transition-all"
@@ -1132,7 +1169,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 space-y-7">
+            <div className="lg:col-span-6 space-y-6">
               <div className="flex items-center gap-4">
                 <img src={`/logos/${product}-logo.png`} alt={`${name} logo`} className="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
                 <div>
@@ -1143,7 +1180,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
                 </div>
               </div>
 
-              <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1]">
+              <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.3rem] font-bold tracking-tight leading-[1.1]">
                 {c.heroTitle}
               </h1>
               <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed max-w-xl">{c.heroText}</p>
@@ -1164,11 +1201,11 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
               )}
 
               {senearExtra ? (
-                <div className="space-y-4 pt-1">
+                <div className="space-y-3.5 pt-1">
                   {/* Single Prominent Primary CTA: Google Play Download (Never truncated) */}
-                  <div>
+                  <div className="space-y-2">
                     <a
-                      href="https://play.google.com"
+                      href={PLAY_STORE_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-3 px-6 sm:px-7 py-4 rounded-2xl font-bold text-sm sm:text-base bg-[#1B7A4E] hover:bg-[#145E3B] text-white shadow-lg hover:shadow-xl active:scale-99 transition-all whitespace-nowrap"
@@ -1176,10 +1213,15 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
                       <GooglePlayIcon color="white" className="w-5 h-5 shrink-0 text-white" />
                       <span>{senearExtra.heroPrimaryDownloadBtn}</span>
                     </a>
+
+                    {/* Upfront Android 8.0+ Requirement Line */}
+                    <p className="text-xs sm:text-[13px] font-medium text-[#6E6B65]">
+                      📱 {senearExtra.androidRequirementNote}
+                    </p>
                   </div>
 
                   {/* Clean Secondary Text Anchor Links */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold text-[#5C5A56]">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold text-[#5C5A56] pt-0.5">
                     <a
                       href="#igy-mukodik"
                       onClick={(e) => {
@@ -1209,6 +1251,30 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
                     >
                       {senearExtra.heroSetupLink}
                     </button>
+                  </div>
+
+                  {/* Desktop Visitor Helper: QR Code + Copy Link to Send to Phone */}
+                  <div className="hidden sm:flex items-center gap-4 p-3.5 rounded-2xl bg-white/90 border border-[#E8DFD4] shadow-2xs max-w-xl">
+                    <img
+                      src="/senear-play-qr.png"
+                      alt="Google Play QR code"
+                      className="w-16 h-16 rounded-xl border border-[#E8DFD4] shrink-0 bg-white p-1"
+                    />
+                    <div className="min-w-0 flex-1 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#2C2C2C]">
+                        <QrCode className="w-3.5 h-3.5 text-[#8C7355]" />
+                        <span>{senearExtra.desktopQrTitle}</span>
+                      </div>
+                      <p className="text-xs text-[#5C5A56] leading-snug">{senearExtra.desktopQrDesc}</p>
+                      <button
+                        type="button"
+                        onClick={handleCopyShareLink}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF6F0] hover:bg-[#F0E7DA] border border-[#D8C3A5] text-xs font-bold text-[#2C2C2C] transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-3 h-3 text-[#8C7355]" />
+                        <span>{copiedLink ? senearExtra.copiedLinkBtn : senearExtra.copyLinkBtn}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -1266,125 +1332,94 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
       )}
 
       {/* ================================================================= */}
-      {/* 3. WHY SENEAR? (3 CORE PILLARS + 2 HUMAN MODE CARDS WITH PRICING) */}
+      {/* 3. WHY SENEAR? (2 HUMAN MODE CARDS WITH TRANSPARENT PRICING)      */}
       {/* ================================================================= */}
       <section className={senearExtra ? 'py-16 sm:py-20' : 'py-20 sm:py-24'}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader title={c.benefitsTitle} subtitle={c.benefitsSubtitle} accent={accent.main} />
           {senearExtra ? (
-            <>
-              {/* 3 Concise Core Pillars */}
-              <div className="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-                {senearExtra.corePillars.map((pillar, i) => {
-                  const PillarIcon = PILLAR_ICONS[i] || ShieldCheck;
-                  return (
-                    <div
-                      key={pillar.title}
-                      className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-[#E8DFD4] shadow-2xs"
-                    >
+            <div className="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {senearExtra.modes.map((mode, i) => {
+                const premium = i === 1;
+                const Icon = premium ? HeartHandshake : Smartphone;
+                return (
+                  <div
+                    key={mode.title}
+                    className="relative flex flex-col p-7 sm:p-8 rounded-3xl bg-white border-2 shadow-sm hover:shadow-lg transition-shadow text-left"
+                    style={{ borderColor: premium ? `${accent.main}80` : 'rgba(16,137,95,0.35)' }}
+                  >
+                    <div className="flex items-center gap-4">
                       <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs"
-                        style={{ background: `linear-gradient(135deg, ${accent.main}, #2C2C2C)` }}
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white shadow-md"
+                        style={{
+                          background: premium
+                            ? `linear-gradient(135deg, ${accent.main}, #2C2C2C)`
+                            : 'linear-gradient(135deg, #10895F, #0B6B4A)',
+                        }}
                       >
-                        <PillarIcon className="w-5 h-5" />
+                        <Icon className="w-6 h-6" />
                       </div>
-                      <div>
-                        <h3 className="font-heading text-base font-bold text-[#2C2C2C] leading-snug">
-                          {pillar.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed mt-1">
-                          {pillar.desc}
-                        </p>
-                      </div>
+                      <h3 className="font-heading text-lg sm:text-xl font-bold text-[#2C2C2C] leading-snug">
+                        {mode.title}
+                      </h3>
                     </div>
-                  );
-                })}
-              </div>
+                    <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed mt-4 flex-1">
+                      {mode.body}
+                    </p>
 
-              {/* 2 Large Mode Cards with Transparent Non-Button Pricing Panels */}
-              <div className="max-w-5xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {senearExtra.modes.map((mode, i) => {
-                  const premium = i === 1;
-                  const Icon = premium ? HeartHandshake : Smartphone;
-                  return (
-                    <div
-                      key={mode.title}
-                      className="relative flex flex-col p-7 sm:p-8 rounded-3xl bg-white border-2 shadow-sm hover:shadow-lg transition-shadow text-left"
-                      style={{ borderColor: premium ? `${accent.main}80` : 'rgba(16,137,95,0.35)' }}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white shadow-md"
-                          style={{
-                            background: premium
-                              ? `linear-gradient(135deg, ${accent.main}, #2C2C2C)`
-                              : 'linear-gradient(135deg, #10895F, #0B6B4A)',
-                          }}
-                        >
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <h3 className="font-heading text-lg sm:text-xl font-bold text-[#2C2C2C] leading-snug">
-                          {mode.title}
-                        </h3>
-                      </div>
-                      <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed mt-4 flex-1">
-                        {mode.body}
-                      </p>
-
-                      {/* Clean Non-Clickable Info/Price Panel */}
-                      <div className="mt-6">
-                        {premium ? (
-                          <div className="w-full rounded-2xl bg-[#FAF6F0] border border-[#D8C3A5] px-5 py-4 text-left select-text space-y-3">
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
-                                {mode.priceLabel}
-                              </span>
-                              {mode.trialBadge && (
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#10895F]/12 text-[#0B6B4A] text-xs font-extrabold">
-                                  {mode.trialBadge}
-                                </span>
-                              )}
-                            </div>
-                            {mode.pricingTiers ? (
-                              <ul className="space-y-2 border-t border-[#E6D7C3] pt-2.5">
-                                {mode.pricingTiers.map((tier) => (
-                                  <li key={tier.label} className="text-xs sm:text-sm text-[#2C2C2C] leading-snug">
-                                    <span className="font-bold text-[#2C2C2C]">{tier.label}</span>{' '}
-                                    <span className="font-extrabold text-[#0B6B4A]">{tier.price}</span>
-                                    {tier.note && (
-                                      <span className="italic text-[#5C5A56]"> {tier.note}</span>
-                                    )}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <div className="text-sm sm:text-base font-extrabold text-[#2C2C2C] leading-snug">
-                                {mode.badge}
-                              </div>
-                            )}
-                            {mode.reassurance && (
-                              <p className="text-[11px] sm:text-xs text-[#5C5A56] leading-relaxed border-t border-[#E6D7C3] pt-2.5">
-                                {mode.reassurance}
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="w-full rounded-2xl bg-[#EEF8F3] border border-[#10895F]/35 px-5 py-4 text-left select-text">
-                            <div className="text-[11px] font-bold uppercase tracking-wider text-[#0B6B4A] mb-1">
+                    {/* Clean Non-Clickable Info/Price Panel */}
+                    <div className="mt-6">
+                      {premium ? (
+                        <div className="w-full rounded-2xl bg-[#FAF6F0] border border-[#D8C3A5] px-5 py-4 text-left select-text space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
                               {mode.priceLabel}
-                            </div>
-                            <div className="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0B6B4A] leading-snug">
-                              <Check className="w-4 h-4 shrink-0 stroke-[3]" />
-                              <span>{mode.badge}</span>
-                            </div>
+                            </span>
+                            {mode.trialBadge && (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#10895F]/12 text-[#0B6B4A] text-xs font-extrabold">
+                                {mode.trialBadge}
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
+                          {mode.pricingTiers ? (
+                            <ul className="space-y-2 border-t border-[#E6D7C3] pt-2.5">
+                              {mode.pricingTiers.map((tier) => (
+                                <li key={tier.label} className="text-xs sm:text-sm text-[#2C2C2C] leading-snug">
+                                  <span className="font-bold text-[#2C2C2C]">{tier.label}</span>{' '}
+                                  <span className="font-extrabold text-[#0B6B4A]">{tier.price}</span>
+                                  {tier.note && (
+                                    <span className="italic text-[#5C5A56]"> {tier.note}</span>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="text-sm sm:text-base font-extrabold text-[#2C2C2C] leading-snug">
+                              {mode.badge}
+                            </div>
+                          )}
+                          {mode.reassurance && (
+                            <p className="text-[11px] sm:text-xs text-[#5C5A56] leading-relaxed border-t border-[#E6D7C3] pt-2.5">
+                              {mode.reassurance}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="w-full rounded-2xl bg-[#EEF8F3] border border-[#10895F]/35 px-5 py-4 text-left select-text">
+                          <div className="text-[11px] font-bold uppercase tracking-wider text-[#0B6B4A] mb-1">
+                            {mode.priceLabel}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0B6B4A] leading-snug">
+                            <Check className="w-4 h-4 shrink-0 stroke-[3]" />
+                            <span>{mode.badge}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            </>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
               {benefits.map((b, i) => {
@@ -1505,7 +1540,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
       </section>
 
       {/* ================================================================= */}
-      {/* 5. COMPLETE 12-STEP SETUP & FEATURE WALKTHROUGH VIDEO             */}
+      {/* 5. COMPLETE SETUP & FEATURE WALKTHROUGH VIDEO                     */}
       {/* ================================================================= */}
       <section id="kozelebbrol" className="scroll-mt-20 py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1698,7 +1733,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
       {senearExtra && (
         <section className="py-16 sm:py-20 bg-[#F5F0EB]/60 border-t border-[#C5A880]/20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            {/* Founder's Note Card */}
+            {/* Founder's Note Card with Real Photo */}
             <div className="rounded-3xl bg-white border-2 border-[#D8C3A5] p-7 sm:p-10 shadow-md">
               <div className="flex flex-col gap-5">
                 <div className="flex flex-wrap items-center gap-2">
@@ -1716,13 +1751,12 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
                   {senearExtra.founderNote.quote}
                 </blockquote>
 
-                <div className="flex items-center gap-3 pt-2 border-t border-[#F0EAE1]">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${accent.main}, #2C2C2C)` }}
-                  >
-                    BG
-                  </div>
+                <div className="flex items-center gap-3.5 pt-3 border-t border-[#F0EAE1]">
+                  <img
+                    src="/founder-avatar.png"
+                    alt={senearExtra.founderNote.author}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-[#C5A880] shadow-xs shrink-0"
+                  />
                   <div>
                     <div className="font-heading text-sm sm:text-base font-extrabold text-[#2C2C2C]">
                       {senearExtra.founderNote.author}
@@ -1735,7 +1769,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
               </div>
             </div>
 
-            {/* FAQ (GYIK) Accordion */}
+            {/* FAQ (GYIK) Accordion — #1 Question (Privacy & Consent) Open by Default */}
             <div className="space-y-8">
               <div className="text-center max-w-2xl mx-auto space-y-2">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E8DFD4] text-xs font-bold uppercase tracking-wider text-[#8C7355]">
@@ -1787,7 +1821,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
       {/* ================================================================= */}
       {/* SETUP CTA                                                         */}
       {/* ================================================================= */}
-      <section className="py-16 sm:py-20">
+      <section className="py-16 sm:py-20 pb-28 sm:pb-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white p-10 sm:p-14 text-center shadow-2xl">
             <div
@@ -1801,7 +1835,7 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
               <div className="pt-3 flex flex-wrap justify-center gap-3">
                 {senearExtra && (
                   <a
-                    href="https://play.google.com"
+                    href={PLAY_STORE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2.5 px-7 py-4 rounded-xl bg-[#1B7A4E] hover:bg-[#145E3B] text-white text-base font-bold shadow-lg transition-all whitespace-nowrap"
@@ -1825,11 +1859,26 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
           </div>
         </div>
       </section>
+
+      {/* Floating Mobile Download CTA Bar */}
+      {senearExtra && showMobileFloatingCta && (
+        <div className="sm:hidden fixed bottom-3 inset-x-3 z-40">
+          <a
+            href={PLAY_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-[#1B7A4E] text-white font-bold text-sm shadow-2xl border border-white/20 whitespace-nowrap"
+          >
+            <GooglePlayIcon color="white" className="w-4 h-4 shrink-0 text-white" />
+            <span>{senearExtra.mobileFloatingCta}</span>
+          </a>
+        </div>
+      )}
     </div>
   );
 }
 
-function SectionHeader({ title, subtitle, accent }: { title: string; subtitle: string; accent: string }) {
+function SectionHeader({ title, subtitle, accent }: { title: string; subtitle?: string; accent: string }) {
   return (
     <div className="text-center max-w-2xl mx-auto space-y-3">
       <div className="inline-flex items-center gap-2">

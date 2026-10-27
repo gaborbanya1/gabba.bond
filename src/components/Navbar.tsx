@@ -90,7 +90,7 @@ export function Navbar({
           {/* Desktop Right Side: Direct Download CTA */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="https://play.google.com"
+              href="https://play.google.com/store/apps/details?id=com.nogond.app"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#FAFAFA] bg-[#1B7A4E] hover:bg-[#145E3B] active:scale-98 rounded-xl shadow-xs transition-all border border-[#1B7A4E] cursor-pointer ml-1 whitespace-nowrap"
@@ -129,7 +129,7 @@ export function Navbar({
 
           <div className="pt-2 border-t border-[#C5A880]/20">
             <a
-              href="https://play.google.com"
+              href="https://play.google.com/store/apps/details?id=com.nogond.app"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}

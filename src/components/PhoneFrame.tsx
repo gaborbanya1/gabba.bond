@@ -21,7 +21,7 @@ export function ScreenImage({
       src={sources[Math.min(idx, sources.length - 1)]}
       alt={alt}
       onError={() => setIdx((i) => (i < sources.length - 1 ? i + 1 : i))}
-      className={`w-full h-full object-cover object-top select-none pointer-events-none ${className}`}
+      className={`w-full h-full object-fill select-none pointer-events-none ${className}`}
       style={style}
       loading="eager"
       decoding="async"
