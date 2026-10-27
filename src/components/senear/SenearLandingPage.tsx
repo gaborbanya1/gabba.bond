@@ -435,8 +435,8 @@ function Modes({ c }: { c: SenearContent }) {
                   </ul>
 
                   {free && (
-                    <div className="sn-callout relative mt-6 rounded-2xl border-[1.5px] border-dashed border-[#C5A880] bg-[#FBF5EA] px-4 pt-4 pb-3.5 shadow-[0_8px_20px_-14px_rgba(94,69,33,0.35)]">
-                      <span className="absolute -top-2.5 left-4 rounded-full bg-[#7A5A2E] px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white shadow-xs">
+                    <div className="sn-callout relative mt-7 mb-1 rounded-2xl border-[2.5px] border-dashed border-[#B99768] bg-[#FBF5EA] px-4 pt-4 pb-3.5 shadow-[0_8px_20px_-14px_rgba(94,69,33,0.35)]">
+                      <span className="absolute -top-3 left-4 rounded-full bg-[#7A5A2E] px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white shadow-xs">
                         {c.modes.drawerCallout.badge}
                       </span>
                       <div className="flex items-start gap-3.5">

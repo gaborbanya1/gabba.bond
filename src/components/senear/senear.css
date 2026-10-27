@@ -113,13 +113,16 @@
   }
   .sn-js .sn-reveal .sn-callout {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(8px) rotate(0deg);
     transition: opacity 0.38s ease 0.2s, transform 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
   }
   .sn-js .sn-reveal.is-in .sn-callout {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) rotate(-1.8deg);
   }
+}
+.sn-callout {
+  transform: rotate(-1.8deg);
 }
 @keyframes snStickerPop {
   0% {
@@ -146,7 +149,7 @@
   .sn-demo-ring { animation: none; opacity: 1; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9); }
   .sn-pop, .sn-travel, .sn-press, .sn-float { animation: none; }
   .sn-sticker { animation: none; opacity: 1; transform: rotate(7deg); }
-  .sn-callout { animation: none; opacity: 1; transform: none; transition: none; }
+  .sn-callout { animation: none; opacity: 1; transform: rotate(-1.8deg); transition: none; }
   .sn-travel { display: none; }
   * { scroll-behavior: auto !important; }
 }
