@@ -68,7 +68,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 <span className="w-2 h-2 rounded-full bg-[#C5A880] inline-block mb-1 shadow-2xs" />
               </div>
               <div className="h-4.5 w-px bg-[#C5A880]/30" />
-              <span className="text-xs sm:text-sm font-medium tracking-wide text-[#8C7355]">
+              <span className="text-xs sm:text-sm font-medium tracking-wide text-[#7A5F43]">
                 {t.nav.slogan}
               </span>
             </div>
@@ -85,9 +85,9 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Quick Links */}
           <div className="md:col-span-3 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">
               {t.footer.navHeading}
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs font-medium text-[#5C5A56]">
               <li>
                 <a href="/#projects" className="hover:text-[#2C2C2C] transition-colors">{t.footer.projectsLink}</a>
@@ -110,7 +110,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   href="https://nogond-834ed.web.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#2C2C2C] text-[#8C7355] font-semibold transition-colors inline-flex items-center gap-1"
+                  className="hover:text-[#2C2C2C] text-[#7A5F43] font-semibold transition-colors inline-flex items-center gap-1"
                 >
                   <span>SENEAR Admin Dashboard ↗</span>
                 </a>
@@ -120,9 +120,9 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Specializations */}
           <div className="md:col-span-3 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">
               {t.footer.expertiseHeading}
-            </h4>
+            </h3>
             <ul className="space-y-1.5 text-xs text-[#6E6B65]">
               <li>• {t.footer.exp1}</li>
               <li>• {t.footer.exp2}</li>
@@ -134,7 +134,7 @@ export function Footer({ onNavigate }: FooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8C7355]">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#7A5F43]">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
             <p>© {new Date().getFullYear()} {BRAND_INFO.name}. {t.footer.rights}</p>
             <span>·</span>

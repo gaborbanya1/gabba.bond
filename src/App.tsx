@@ -1,18 +1,28 @@
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense, type ReactNode } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { NogondSimulatorModal } from './components/NogondSimulatorModal';
 import { ProjectDetailModal } from './components/ProjectDetailModal';
-import { SenearInstallGuidePage } from './components/SenearInstallGuidePage';
-import { JunearSetupGuidePage } from './components/JunearSetupGuidePage';
-import { ProductPage } from './components/ProductPage';
-import { PrivacyPage } from './components/PrivacyPage';
+import { SenearLandingPage } from './components/senear/SenearLandingPage';
 import { ProjectItem } from './types';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AppRoute, ProductKey, ROUTE_PATHS, resolveRoute } from './routing';
+
+// Route-level code splitting: these pages/modals are loaded only when needed,
+// which keeps the initial bundle of the landing pages small.
+const NogondSimulatorModal = lazy(() =>
+  import('./components/NogondSimulatorModal').then((m) => ({ default: m.NogondSimulatorModal }))
+);
+const SenearInstallGuidePage = lazy(() =>
+  import('./components/SenearInstallGuidePage').then((m) => ({ default: m.SenearInstallGuidePage }))
+);
+const JunearSetupGuidePage = lazy(() =>
+  import('./components/JunearSetupGuidePage').then((m) => ({ default: m.JunearSetupGuidePage }))
+);
+const ProductPage = lazy(() => import('./components/ProductPage').then((m) => ({ default: m.ProductPage })));
+const PrivacyPage = lazy(() => import('./components/PrivacyPage').then((m) => ({ default: m.PrivacyPage })));
 
 /**
  * Supported URL paths:
@@ -69,6 +79,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // The SENEAR landing page manages its own localized title.
+    if (route === 'senear') return;
     document.title = ROUTE_TITLES[route];
   }, [route]);
 
@@ -110,6 +122,7 @@ export default function App() {
         />
 
         <main className={`flex-1 ${route === 'senear-setup' ? 'lg:min-h-0 lg:overflow-hidden' : ''}`}>
+          <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
           {route === 'home' && (
             <>
               <Hero onViewProjects={scrollToProjects} onGetInTouch={scrollToContact} onOpenProduct={openProduct} />
@@ -118,7 +131,9 @@ export default function App() {
             </>
           )}
 
-          {(route === 'senear' || route === 'junear') && (
+          {route === 'senear' && <SenearLandingPage onNavigate={navigate} />}
+
+          {route === 'junear' && (
             <ProductPage key={route} product={route} onNavigate={navigate} onContactClick={scrollToContact} />
           )}
 
@@ -155,13 +170,18 @@ export default function App() {
               />
             </>
           )}
+          </Suspense>
         </main>
 
         <div className={route === 'senear-setup' ? 'lg:hidden' : ''}>
           <Footer onNavigate={navigate} />
         </div>
 
-        <NogondSimulatorModal isOpen={isNogondDemoOpen} onClose={() => setIsNogondDemoOpen(false)} />
+        {isNogondDemoOpen && (
+          <Suspense fallback={null}>
+            <NogondSimulatorModal isOpen={isNogondDemoOpen} onClose={() => setIsNogondDemoOpen(false)} />
+          </Suspense>
+        )}
 
         <ProjectDetailModal
           project={selectedProject}

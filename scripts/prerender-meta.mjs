@@ -1,66 +1,79 @@
+/**
+ * Post-build prerender for the SENEAR pages.
+ *
+ *   npm run build  =  vite build
+ *                   + vite build --ssr src/entry-server.tsx --outDir dist-ssr
+ *                   + node scripts/prerender-meta.mjs   (this file)
+ *
+ * Output (served by Firebase Hosting with "trailingSlash": false):
+ *   dist/senear/index.html        -> /senear        full SSR HTML + HU meta + OG + JSON-LD
+ *   dist/senear/setup/index.html  -> /senear/setup  HU meta + OG (content rendered client-side)
+ */
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const distDir = path.resolve('dist');
+const ssrDir = path.resolve('dist-ssr');
 const baseHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
 
-function buildPageHtml({ title, description, url, ogImage, rootStaticHtml }) {
-  let html = baseHtml
-    .replace(/<title>.*?<\/title>/s, `<title>${title}</title>`)
-    .replace(
-      /<meta name="description" content=".*?" \/>/,
-      `<meta name="description" content="${description}" />`
-    )
-    .replace(
-      /<meta property="og:title" content=".*?" \/>/,
-      `<meta property="og:title" content="${title}" />`
-    )
-    .replace(
-      /<meta property="og:description" content=".*?" \/>/,
-      `<meta property="og:description" content="${description}" />\n    <meta property="og:url" content="${url}" />\n    <meta property="og:image" content="${ogImage}" />\n    <meta name="twitter:image" content="${ogImage}" />`
-    )
-    .replace('<div id="root"></div>', `<div id="root">${rootStaticHtml}</div>`);
-  return html;
+const esc = (s) =>
+  String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, bodyHtml = '' }) {
+  const head = [
+    `<link rel="canonical" href="${url}" />`,
+    `<meta property="og:url" content="${url}" />`,
+    `<meta property="og:image" content="${image}" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:locale" content="hu_HU" />`,
+    `<meta property="og:site_name" content="gabba · SENEAR" />`,
+    `<meta name="twitter:title" content="${esc(title)}" />`,
+    `<meta name="twitter:description" content="${esc(description)}" />`,
+    `<meta name="twitter:image" content="${image}" />`,
+    preloadImage ? `<link rel="preload" as="image" href="${preloadImage}" type="image/webp" fetchpriority="high" />` : '',
+    ...jsonLd.map((obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`),
+  ]
+    .filter(Boolean)
+    .join('\n    ');
+
+  return baseHtml
+    .replace(/<html lang="[^"]*"/, '<html lang="hu"')
+    .replace(/<title>.*?<\/title>/s, `<title>${esc(title)}</title>`)
+    .replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${esc(description)}" />`)
+    .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${esc(title)}" />`)
+    .replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${esc(description)}" />`)
+    .replace('</head>', `    ${head}\n  </head>`)
+    .replace('<div id="root"></div>', `<div id="root">${bodyHtml}</div>`);
 }
 
-const senearStaticHtml = `
-<main style="max-width:960px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif;color:#2C2C2C">
-  <h1>SENEAR – Biztonság az időseknek. Nyugalom a családnak.</h1>
-  <p>Egyszerű, védett kezdőképernyő az idős szüleidnek, ahol csak a jóváhagyott számok csörögnek ki – te pedig távolról is látod, hogy minden rendben van.</p>
-  <p><strong>Android 8.0+ készülékekre (a családtag telefonja is Android legyen)</strong> • <a href="https://play.google.com/store/apps/details?id=com.nogond.app">Letöltés a Google Playről – Ingyenes</a></p>
-  <h2>Ismerős helyzet?</h2>
-  <ul>
-    <li>„A mamám 78 éves, és mindig felveszi a telefont az ismeretlen csalóknak.” – Megoldás: Csak az általad jóváhagyott számok hívhatják – az ismeretlen és csaló számok nem csörögnek ki.</li>
-    <li>„Apukám véletlenül elállítja a telefont, lehalkítja, vagy elfelejti a gyógyszerét.” – Megoldás: Zárolt, egyszerű kezdőképernyő, automatikus kihangosított hívásfogadás és fényképes gyógyszeremlékeztető.</li>
-    <li>„Másik városban élek, és napközben is látni szeretném, hogy minden rendben van-e vele.” – Megoldás: Élő akkumulátorszint, gyógyszer-visszajelzés, GPS biztonsági zóna és ingyenes Wi-Fi hívás a saját telefonodon.</li>
-  </ul>
-  <h2>Átlátható használat és árazás</h2>
-  <ul>
-    <li><strong>Csak egy egyszerű, védett telefon kell (idős szülő telefonján):</strong> 0 Ft – Örökké ingyenes és reklámmentes.</li>
-    <li><strong>Családi távoli összeköttetés (családtag telefonján):</strong> 14 napig teljesen ingyen kipróbálható, utána 1 490 Ft / hó, 12 900 Ft / év (~28% kedvezmény) vagy 29 900 Ft egyszeri örökös feloldás. Az idős szülő készülékén soha nem jelenik meg fizetési ablak.</li>
-  </ul>
-</main>
-`.trim();
+const ssr = await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).href);
+const seo = ssr.senearSeo();
+const senearBody = ssr.renderSenearPage();
 
-const senearHtml = buildPageHtml({
-  title: 'SENEAR – Biztonság az időseknek. Nyugalom a családnak. (Android 8.0+)',
-  description:
-    'Egyszerű, védett kezdőképernyő az idős szüleidnek, ahol csak a jóváhagyott számok csörögnek ki – te pedig távolról is látod, hogy minden rendben van. Android 8.0+ készülékekre.',
-  url: 'https://gabba.bond/senear',
-  ogImage: 'https://gabba.bond/screenshots/senear/senear-og.png',
-  rootStaticHtml: senearStaticHtml,
-});
-
+// Clean previous outputs (older builds wrote senear.html or index files).
+fs.rmSync(path.join(distDir, 'senear'), { recursive: true, force: true });
+fs.rmSync(path.join(distDir, 'senear.html'), { force: true });
 fs.mkdirSync(path.join(distDir, 'senear', 'setup'), { recursive: true });
-fs.writeFileSync(path.join(distDir, 'senear', 'index.html'), senearHtml, 'utf8');
 
-const setupHtml = buildPageHtml({
-  title: 'SENEAR Beállítási Útmutató – Lépésről lépésre videós segítség',
-  description:
-    'Interaktív, videóval összekötött lépésről lépésre beállítási útmutató a SENEAR idősbarát Android rendszerhez és családi vezérlőpulthoz.',
-  url: 'https://gabba.bond/senear/setup',
-  ogImage: 'https://gabba.bond/screenshots/senear/senear-og.png',
-  rootStaticHtml: senearStaticHtml,
-});
-fs.writeFileSync(path.join(distDir, 'senear', 'setup', 'index.html'), setupHtml, 'utf8');
-console.log('Pre-rendered dist/senear/index.html and dist/senear/setup/index.html');
+fs.writeFileSync(
+  path.join(distDir, 'senear', 'index.html'),
+  buildHtml({ ...seo, preloadImage: seo.heroImage, bodyHtml: senearBody }),
+  'utf8'
+);
+
+fs.writeFileSync(
+  path.join(distDir, 'senear', 'setup', 'index.html'),
+  buildHtml({
+    title: 'SENEAR beállítási útmutató – lépésről lépésre, videóval',
+    description:
+      'Lépésről lépésre, videóval összekötött beállítási útmutató a SENEAR idősbarát Android telefonrendszerhez: az idős szülő és a családtag telefonja.',
+    url: 'https://gabba.bond/senear/setup',
+    image: seo.image,
+  }),
+  'utf8'
+);
+
+fs.rmSync(ssrDir, { recursive: true, force: true });
+console.log(`Prerendered /senear (${Math.round(senearBody.length / 1024)} KB HTML) and /senear/setup`);

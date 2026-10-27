@@ -36,16 +36,23 @@ function detectLanguage(): SupportedLanguage {
   return 'en';
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language] = React.useState<SupportedLanguage>(detectLanguage);
+export function LanguageProvider({
+  children,
+  initialLanguage,
+}: {
+  children: React.ReactNode;
+  /** Forces a language (used by the build-time prerender, where no browser is available). */
+  initialLanguage?: SupportedLanguage;
+}) {
+  const [language] = React.useState<SupportedLanguage>(() => initialLanguage ?? detectLanguage());
   const t = translations[language] ?? translations.en;
 
+  // Document titles are set per route in App.tsx (and by the SENEAR landing page itself).
   useEffect(() => {
     const root = document.documentElement;
     root.lang = language;
     root.dir = RTL_LANGUAGES.includes(language) ? 'rtl' : 'ltr';
-    if (t.pageTitle) document.title = t.pageTitle;
-  }, [language, t]);
+  }, [language]);
 
   return <LanguageContext.Provider value={{ language, t }}>{children}</LanguageContext.Provider>;
 }
