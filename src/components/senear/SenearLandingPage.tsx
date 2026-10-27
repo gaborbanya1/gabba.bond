@@ -95,7 +95,6 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
       <Hero c={c} lang={lang} onNavigate={onNavigate} ctaRef={heroCtaRef} />
       <Scenarios c={c} />
       <Modes c={c} />
-      <Story c={c} />
       <HowItWorks c={c} />
       <VideoSection c={c} />
       <Pricing c={c} />
@@ -465,30 +464,7 @@ function Modes({ c }: { c: SenearContent }) {
 }
 
 /* =====================================================================
-   3B-bis. TWO PHONES, ONE STORY
-   ===================================================================== */
-
-function Story({ c }: { c: SenearContent }) {
-  return (
-    <section className="py-16 sm:py-24 bg-gradient-to-b from-[#F3EBDF] to-[#FAF7F2]" aria-labelledby="story-title">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center space-y-3">
-          <Eyebrow>{c.story.eyebrow}</Eyebrow>
-          <h2 id="story-title" className="font-heading text-[2rem] sm:text-[2.6rem] leading-[1.1] font-extrabold tracking-tight">
-            {c.story.title}
-          </h2>
-          <p className="text-lg leading-relaxed text-[#4A4744] text-pretty">{c.story.lead}</p>
-        </div>
-        <div className="mt-12">
-          <RemoteSetupStory copy={c.story} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =====================================================================
-   4. HOW IT WORKS (steps + specs share the same 3-column grid)
+   4. HOW IT WORKS + TWO PHONES, ONE STORY (unified section)
    ===================================================================== */
 
 const HOW_ICONS = [Smartphone, CloudCog, Users];
@@ -496,20 +472,25 @@ const HOW_ICONS = [Smartphone, CloudCog, Users];
 function HowItWorks({ c }: { c: SenearContent }) {
   const [open, setOpen] = useState(false);
   // Same container + grid for steps and spec columns, so the lists sit exactly under their step.
-  const grid = 'grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8';
+  const grid = 'grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8';
 
   return (
-    <section id="igy-mukodik" className="scroll-mt-24 py-16 sm:py-24 bg-white" aria-labelledby="how-title">
+    <section
+      id="igy-mukodik"
+      className="scroll-mt-24 py-16 sm:py-24 bg-gradient-to-b from-[#F3EBDF] via-[#FAF7F2] to-white"
+      aria-labelledby="how-title"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{c.how.eyebrow}</Eyebrow>
-          <h2 id="how-title" className="font-heading text-[2rem] sm:text-[2.6rem] leading-[1.1] font-extrabold tracking-tight">
+          <h2 id="how-title" className="font-heading text-[2rem] sm:text-[2.6rem] leading-[1.1] font-extrabold tracking-tight text-balance">
             {c.how.title}
           </h2>
-          <p className="text-lg leading-relaxed text-[#4A4744]">{c.how.subtitle}</p>
+          <p className="text-lg leading-relaxed text-[#4A4744] text-pretty">{c.how.subtitle}</p>
         </div>
 
-        <div className="relative mt-14">
+        {/* 3 steps */}
+        <div className="relative mt-12">
           {/* Connector through the column centres: (100% - 2 gaps) / 6 from each side */}
           <div
             aria-hidden="true"
@@ -527,15 +508,20 @@ function HowItWorks({ c }: { c: SenearContent }) {
                       {i + 1}
                     </span>
                   </span>
-                  <h3 className="mt-5 font-heading text-xl sm:text-2xl font-extrabold">{step.title}</h3>
-                  <p className="mt-2 max-w-xs text-base leading-relaxed text-[#4A4744]">{step.desc}</p>
+                  <h3 className="mt-4 font-heading text-xl sm:text-2xl font-extrabold">{step.title}</h3>
+                  <p className="mt-1.5 max-w-xs text-base leading-relaxed text-[#4A4744]">{step.desc}</p>
                 </Reveal>
               );
             })}
           </ol>
         </div>
 
-        <p className="mx-auto mt-12 flex max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-base sm:text-lg text-[#1F2421]">
+        {/* Live two-phone visual with real portraits */}
+        <div className="mt-12 rounded-3xl bg-white/75 p-5 sm:p-8 ring-1 ring-[#E8DFD4] shadow-[0_18px_40px_-28px_rgba(31,36,33,0.35)]">
+          <RemoteSetupStory copy={c.story} />
+        </div>
+
+        <p className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-base sm:text-lg text-[#1F2421]">
           <Clock className="h-5 w-5 text-[#7A5A2E]" aria-hidden="true" />
           <span className="font-semibold">{c.how.setupTime}</span>
           <a
@@ -548,7 +534,7 @@ function HowItWorks({ c }: { c: SenearContent }) {
           </a>
         </p>
 
-        <div className="mt-8 text-center">
+        <div className="mt-6 text-center">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}

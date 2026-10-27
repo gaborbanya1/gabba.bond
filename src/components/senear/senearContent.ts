@@ -79,8 +79,10 @@ export interface SenearContent {
     familyPhoneLabel: string;
     seniorPhoneLabel: string;
     familyHeader: string;
+    familyAvatar: string;
     familyStatus: string[];
     formTitle: string;
+    photoLabel: string;
     nameLabel: string;
     nameValue: string;
     relationLabel: string;
@@ -89,8 +91,10 @@ export interface SenearContent {
     numberValue: string;
     saveBtn: string;
     syncing: string;
-    tiles: { name: string; rel: string }[];
-    newTile: { name: string; rel: string };
+    savedBtn: string;
+    sosLabel: string;
+    tiles: { name: string; rel: string; avatar: string }[];
+    newTile: { name: string; rel: string; avatar: string };
     steps: string[];
     replay: string;
     note: string;
@@ -250,30 +254,34 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       familyPhoneLabel: 'A te telefonod',
       seniorPhoneLabel: 'Anyu telefonja',
       familyHeader: 'Anyu',
+      familyAvatar: '/screenshots/senear/avatar-senior.webp',
       familyStatus: ['82%', 'Otthon', 'Online'],
-      formTitle: 'Új hívógomb',
+      formTitle: 'Új hívógomb · 4. csempe',
+      photoLabel: 'Fotó kiválasztva',
       nameLabel: 'Név',
-      nameValue: 'Éva',
+      nameValue: 'Gyula',
       relationLabel: 'Kapcsolat',
-      relationValue: 'Unokája',
+      relationValue: 'Szomszéd',
       numberLabel: 'Telefonszám',
       numberValue: '+36 20 ··· ····',
       saveBtn: 'Mentés',
       syncing: 'Küldés…',
+      savedBtn: 'Elmentve',
+      sosLabel: 'SOS HÍVÁS',
       tiles: [
-        { name: 'Anna', rel: 'Lánya' },
-        { name: 'Péter', rel: 'Fia' },
-        { name: 'András', rel: 'Orvos' },
+        { name: 'Anna', rel: 'Lánya', avatar: '/screenshots/senear/avatar-anna.webp' },
+        { name: 'Péter', rel: 'Fia', avatar: '/screenshots/senear/avatar-peter.webp' },
+        { name: 'András', rel: 'Orvos', avatar: '/screenshots/senear/avatar-andras.webp' },
       ],
-      newTile: { name: 'Éva', rel: 'Unokája' },
-      steps: ['Megadod a nevet és a számot', 'Elmented a saját telefonodon', 'Megjelenik a szülőd telefonján'],
+      newTile: { name: 'Gyula', rel: 'Szomszéd', avatar: '/screenshots/senear/avatar-gyula.webp' },
+      steps: ['Megadod a nevet, számot és fotót', 'Elmented a saját telefonodon', 'Megjelenik a szülőd telefonján'],
       replay: 'Újra',
       note: 'Szemléltető animáció mintaadatokkal.',
     },
     how: {
-      eyebrow: 'Így működik',
-      title: 'Három lépés, és kész.',
-      subtitle: 'Nem kell új telefon. Elég két Android készülék.',
+      eyebrow: 'Így működik · Két telefon, egy történet',
+      title: 'Három lépés – te beállítod, ő már látja.',
+      subtitle: 'Nem kell új telefon, elég két Android készülék. Új hívógombot adsz hozzá a saját telefonodon, és pár másodperc múlva ott van a szülőd kezdőképernyőjén.',
       steps: [
         {
           title: 'Telepítsd a szülőd telefonjára',
@@ -285,7 +293,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           title: 'Kezeld távolról, nyugodtan',
-          desc: 'A saját telefonodról állítod be a hívógombokat, emlékeztetőket és a biztonsági zónát.',
+          desc: 'A saját telefonodról állítod be a fotós hívógombokat, emlékeztetőket és a biztonsági zónát.',
         },
       ],
       setupTime: 'Az első beállítás kb. 10–15 perc. A videó lépésről lépésre végigvezet.',
@@ -550,30 +558,34 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       familyPhoneLabel: 'Your phone',
       seniorPhoneLabel: 'Mom’s phone',
       familyHeader: 'Mom',
+      familyAvatar: '/screenshots/senear/avatar-senior.webp',
       familyStatus: ['82%', 'Home', 'Online'],
-      formTitle: 'New call button',
+      formTitle: 'New call button · #4',
+      photoLabel: 'Photo selected',
       nameLabel: 'Name',
-      nameValue: 'Lucy',
+      nameValue: 'George',
       relationLabel: 'Relation',
-      relationValue: 'Granddaughter',
+      relationValue: 'Neighbor',
       numberLabel: 'Phone number',
       numberValue: '+44 7··· ······',
       saveBtn: 'Save',
       syncing: 'Sending…',
+      savedBtn: 'Saved',
+      sosLabel: 'SOS CALL',
       tiles: [
-        { name: 'Anna', rel: 'Daughter' },
-        { name: 'Peter', rel: 'Son' },
-        { name: 'Eva', rel: 'Doctor' },
+        { name: 'Anna', rel: 'Daughter', avatar: '/screenshots/senear/avatar-anna.webp' },
+        { name: 'Peter', rel: 'Son', avatar: '/screenshots/senear/avatar-peter.webp' },
+        { name: 'Eva', rel: 'Doctor', avatar: '/screenshots/senear/avatar-eva.webp' },
       ],
-      newTile: { name: 'Lucy', rel: 'Granddaughter' },
-      steps: ['You enter a name and number', 'You save it on your phone', 'It appears on your parent’s phone'],
+      newTile: { name: 'George', rel: 'Neighbor', avatar: '/screenshots/senear/avatar-gyula.webp' },
+      steps: ['You enter name, number and photo', 'You save it on your phone', 'It appears on your parent’s phone'],
       replay: 'Replay',
       note: 'Illustrative animation with sample data.',
     },
     how: {
-      eyebrow: 'How it works',
-      title: 'Three steps, and you’re done.',
-      subtitle: 'No new phone needed. Two Android devices are enough.',
+      eyebrow: 'How it works · Two phones, one story',
+      title: 'Three steps – you set it up, they already see it.',
+      subtitle: 'No new phone needed, two Android devices are enough. Add a new call button on your own phone and a few seconds later it appears on your parent’s home screen.',
       steps: [
         {
           title: 'Install it on your parent’s phone',
@@ -585,7 +597,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           title: 'Manage remotely, calmly',
-          desc: 'Set up call buttons, reminders and the safe zone from your own phone.',
+          desc: 'Set up photo call buttons, reminders and the safe zone from your own phone.',
         },
       ],
       setupTime: 'First setup takes about 10–15 minutes. The video walks you through every step.',
@@ -852,30 +864,34 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       familyPhoneLabel: 'Ihr Handy',
       seniorPhoneLabel: 'Mamas Handy',
       familyHeader: 'Mama',
+      familyAvatar: '/screenshots/senear/avatar-senior.webp',
       familyStatus: ['82%', 'Zuhause', 'Online'],
-      formTitle: 'Neue Anruftaste',
+      formTitle: 'Neue Anruftaste · Nr. 4',
+      photoLabel: 'Foto ausgewählt',
       nameLabel: 'Name',
-      nameValue: 'Lena',
+      nameValue: 'George',
       relationLabel: 'Beziehung',
-      relationValue: 'Enkelin',
+      relationValue: 'Nachbar',
       numberLabel: 'Telefonnummer',
       numberValue: '+49 15··· ······',
       saveBtn: 'Speichern',
       syncing: 'Senden…',
+      savedBtn: 'Gespeichert',
+      sosLabel: 'SOS-ANRUF',
       tiles: [
-        { name: 'Anna', rel: 'Tochter' },
-        { name: 'Peter', rel: 'Sohn' },
-        { name: 'Eva', rel: 'Ärztin' },
+        { name: 'Anna', rel: 'Tochter', avatar: '/screenshots/senear/avatar-anna.webp' },
+        { name: 'Peter', rel: 'Sohn', avatar: '/screenshots/senear/avatar-peter.webp' },
+        { name: 'Eva', rel: 'Ärztin', avatar: '/screenshots/senear/avatar-eva.webp' },
       ],
-      newTile: { name: 'Lena', rel: 'Enkelin' },
-      steps: ['Sie geben Name und Nummer ein', 'Sie speichern auf Ihrem Handy', 'Es erscheint auf dem Handy Ihrer Eltern'],
+      newTile: { name: 'George', rel: 'Nachbar', avatar: '/screenshots/senear/avatar-gyula.webp' },
+      steps: ['Name, Nummer und Foto eingeben', 'Auf Ihrem Handy speichern', 'Erscheint auf dem Handy Ihrer Eltern'],
       replay: 'Nochmal',
       note: 'Veranschaulichende Animation mit Beispieldaten.',
     },
     how: {
-      eyebrow: 'So funktioniert’s',
-      title: 'Drei Schritte, fertig.',
-      subtitle: 'Kein neues Handy nötig. Zwei Android-Geräte genügen.',
+      eyebrow: 'So funktioniert’s · Zwei Telefone, eine Geschichte',
+      title: 'Drei Schritte – Sie richten es ein, sie sehen es sofort.',
+      subtitle: 'Kein neues Handy nötig, zwei Android-Geräte genügen. Fügen Sie auf Ihrem Handy eine neue Anruftaste hinzu, und Sekunden später erscheint sie auf dem Startbildschirm Ihrer Eltern.',
       steps: [
         {
           title: 'Auf dem Handy Ihrer Eltern installieren',
@@ -887,7 +903,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           title: 'Entspannt aus der Ferne verwalten',
-          desc: 'Anruftasten, Erinnerungen und die Sicherheitszone richten Sie auf Ihrem Handy ein.',
+          desc: 'Foto-Anruftasten, Erinnerungen und die Sicherheitszone richten Sie auf Ihrem Handy ein.',
         },
       ],
       setupTime: 'Die Ersteinrichtung dauert ca. 10–15 Minuten. Das Video führt Sie Schritt für Schritt durch.',
