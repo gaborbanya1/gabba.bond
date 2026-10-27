@@ -91,6 +91,22 @@ interface FaqItem {
   a: string;
 }
 
+interface PricingTierItem {
+  label: string;
+  price: string;
+  note?: string;
+}
+
+interface SenearModeCard {
+  title: string;
+  body: string;
+  priceLabel: string;
+  badge: string;
+  trialBadge?: string;
+  pricingTiers?: PricingTierItem[];
+  reassurance?: string;
+}
+
 interface SenearExtra {
   heroPrimaryDownloadBtn: string;
   heroHowLink: string;
@@ -100,7 +116,7 @@ interface SenearExtra {
   scenarios: ScenarioCard[];
   corePillars: CorePillar[];
   /** [0] = standalone (free), [1] = connected caregiver (premium) */
-  modes: { title: string; body: string; priceLabel: string; badge: string }[];
+  modes: SenearModeCard[];
   howSteps: { title: string; desc: string }[];
   setupTimeBanner: string;
   specsToggleBtn: string;
@@ -169,7 +185,27 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
         title: 'Én is látni akarom távolról, hogy jól van',
         body: 'Ha távolról is teljes biztonságban szeretnéd tudni idős szerettedet: kösd össze a készülékét a saját telefonoddal! Gondozóként valós időben látod a telefon állapotát (akkumulátor, térerő, helyadatok), távolról kezelheted a névjegyeket, és azonnali riasztást kapsz SOS vagy lemerülés esetén.',
         priceLabel: 'Árazás • Távgondozói összeköttetés',
-        badge: '14 napig ingyenesen kipróbálható, utána 1 490 Ft / hó (vagy 14 900 Ft / év) • Bármikor lemondható',
+        badge: '🎁 14 napig teljesen ingyen kipróbálható',
+        trialBadge: '🎁 14 napig teljesen ingyen kipróbálható',
+        pricingTiers: [
+          {
+            label: 'Havi előfizetés:',
+            price: '1 490 Ft / hó',
+            note: '(kevesebb mint napi 50 Ft)',
+          },
+          {
+            label: 'Éves előfizetés (~28% kedvezmény):',
+            price: '12 900 Ft / év',
+            note: '(~1 075 Ft / hó)',
+          },
+          {
+            label: 'Egyszeri „Örökös” feloldás:',
+            price: '29 900 Ft',
+            note: '(egyszeri díj, havidíj nélkül – egy bolti nyomógombos senior telefon áráért)',
+          },
+        ],
+        reassurance:
+          'Fizetés biztonságosan a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
       },
     ],
     howSteps: [
@@ -281,6 +317,10 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
         a: 'Az idős hozzátartozó telefonja továbbra is teljes értékű, reklámmentes, védett Kioszk telefonként és csalószűrőként működik tovább, teljesen ingyen! Csak a távoli gondozói szinkronizáció szünetel.',
       },
       {
+        q: 'Hogyan működik a 14 napos próbaidőszak és a fizetés? Megjelenik bármilyen fizetési ablak a szülőm telefonján?',
+        a: 'Soha. A szülő telefonján a SENEAR 100%-ban reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a gondozó a saját telefonján, a Google Playen keresztül választhat a havi (1 490 Ft), a kedvezményes éves (12 900 Ft) vagy a havidíjmentes, egyszeri örökös feloldás (29 900 Ft) között.',
+      },
+      {
         q: 'Vissza lehet térni a hagyományos Android menübe?',
         a: 'Igen, a felső órára 5-ször koppintva, a 4 jegyű gondozói PIN-kód megadásával bármikor kikapcsolható a Kioszk mód.',
       },
@@ -341,7 +381,26 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
         title: 'I also want to see from afar that they’re okay',
         body: 'Want to know your loved one is safe, even from afar? Connect their device to your own phone! As a caregiver you see the phone’s status in real time (battery, signal, location), manage contacts remotely and get an instant alert on an SOS press or low battery.',
         priceLabel: 'Pricing • Remote Caregiver Connection',
-        badge: '14-day free trial, then €3.99 / month (or €39.99 / year) • Cancel anytime',
+        badge: '🎁 14-day free trial included',
+        trialBadge: '🎁 14-day free trial included',
+        pricingTiers: [
+          {
+            label: 'Monthly plan:',
+            price: '€4.99 / month',
+          },
+          {
+            label: 'Annual plan (Save ~33%):',
+            price: '€39.99 / year',
+            note: '(~€3.33 / month)',
+          },
+          {
+            label: 'One-Time Lifetime Unlock:',
+            price: '€79.99',
+            note: '(single payment, no monthly fees — for the price of a basic physical senior phone)',
+          },
+        ],
+        reassurance:
+          'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
       },
     ],
     howSteps: [
@@ -508,6 +567,10 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
         a: 'Your loved one’s phone continues to work as a standalone, scammer-protected Kiosk phone for free forever! Only remote caregiver syncing pauses.',
       },
       {
+        q: 'How does the 14-day trial and billing work? Will my parent ever see a payment screen?',
+        a: 'Never. Your parent’s phone stays 100% free of ads and payment prompts. After the 14-day free trial, the caregiver can choose on their own phone via Google Play between the monthly plan (€4.99), discounted annual plan (€39.99), or one-time lifetime unlock (€79.99, shown in your local Google Play currency).',
+      },
+      {
         q: 'Can we exit Kiosk mode back to the normal Android menu?',
         a: 'Yes, anytime by tapping the top clock 5 times and entering the 4-digit caregiver PIN code.',
       },
@@ -567,7 +630,26 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
         title: 'Ich möchte auch aus der Ferne sehen, dass alles gut ist',
         body: 'Sie möchten Ihren Angehörigen auch aus der Ferne in Sicherheit wissen? Verbinden Sie sein Gerät mit Ihrem Telefon! Als Betreuer sehen Sie den Telefonstatus in Echtzeit (Akku, Empfang, Standort), verwalten Kontakte aus der Ferne und erhalten sofort einen Alarm bei SOS oder schwachem Akku.',
         priceLabel: 'Preise • Fernbetreuer-Verbindung',
-        badge: '14 Tage kostenlos testen, danach 3,99 € / Monat (oder 39,99 € / Jahr) • Jederzeit kündbar',
+        badge: '🎁 14 Tage kostenlos testen',
+        trialBadge: '🎁 14 Tage kostenlos testen',
+        pricingTiers: [
+          {
+            label: 'Monatsabo:',
+            price: '4,99 € / Monat',
+          },
+          {
+            label: 'Jahresabo (~33 % sparen):',
+            price: '39,99 € / Jahr',
+            note: '(~3,33 € / Monat)',
+          },
+          {
+            label: 'Einmalige lebenslange Lizenz:',
+            price: '79,99 €',
+            note: '(Einmalzahlung ohne Monatsgebühr – zum Preis eines einfachen Tasten-Seniorenhandys)',
+          },
+        ],
+        reassurance:
+          'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
       },
     ],
     howSteps: [
@@ -669,6 +751,10 @@ const SENEAR_EXTRA: Record<Lang, SenearExtra> = {
       {
         q: 'Was passiert, wenn ich das Betreuer-Abo kündige?',
         a: 'Das Telefon Ihres Angehörigen funktioniert dauerhaft kostenlos als geschütztes Kiosk-Seniorenhandy weiter! Lediglich die Fernverwaltung pausiert.',
+      },
+      {
+        q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sieht mein Elternteil jemals ein Zahlungsfenster?',
+        a: 'Niemals. Das Handy Ihres Angehörigen bleibt zu 100 % frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt der Betreuer auf seinem eigenen Smartphone über Google Play zwischen Monatsabo (4,99 €), Jahresabo (39,99 €) oder einmaliger lebenslanger Lizenz (79,99 €).',
       },
       {
         q: 'Kann man den Kiosk-Modus wieder verlassen?',
@@ -1248,13 +1334,39 @@ export function ProductPage({ product, onNavigate, onContactClick }: ProductPage
                       {/* Clean Non-Clickable Info/Price Panel */}
                       <div className="mt-6">
                         {premium ? (
-                          <div className="w-full rounded-2xl bg-[#FAF6F0] border border-[#D8C3A5] px-5 py-4 text-left select-text">
-                            <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355] mb-1">
-                              {mode.priceLabel}
+                          <div className="w-full rounded-2xl bg-[#FAF6F0] border border-[#D8C3A5] px-5 py-4 text-left select-text space-y-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C7355]">
+                                {mode.priceLabel}
+                              </span>
+                              {mode.trialBadge && (
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#10895F]/12 text-[#0B6B4A] text-xs font-extrabold">
+                                  {mode.trialBadge}
+                                </span>
+                              )}
                             </div>
-                            <div className="text-sm sm:text-base font-extrabold text-[#2C2C2C] leading-snug">
-                              {mode.badge}
-                            </div>
+                            {mode.pricingTiers ? (
+                              <ul className="space-y-2 border-t border-[#E6D7C3] pt-2.5">
+                                {mode.pricingTiers.map((tier) => (
+                                  <li key={tier.label} className="text-xs sm:text-sm text-[#2C2C2C] leading-snug">
+                                    <span className="font-bold text-[#2C2C2C]">{tier.label}</span>{' '}
+                                    <span className="font-extrabold text-[#0B6B4A]">{tier.price}</span>
+                                    {tier.note && (
+                                      <span className="italic text-[#5C5A56]"> {tier.note}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <div className="text-sm sm:text-base font-extrabold text-[#2C2C2C] leading-snug">
+                                {mode.badge}
+                              </div>
+                            )}
+                            {mode.reassurance && (
+                              <p className="text-[11px] sm:text-xs text-[#5C5A56] leading-relaxed border-t border-[#E6D7C3] pt-2.5">
+                                {mode.reassurance}
+                              </p>
+                            )}
                           </div>
                         ) : (
                           <div className="w-full rounded-2xl bg-[#EEF8F3] border border-[#10895F]/35 px-5 py-4 text-left select-text">
