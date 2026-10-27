@@ -7,11 +7,11 @@ import { FOCUS_RING, useInViewOnce, usePrefersReducedMotion } from './hooks';
 type Phase = 0 | 1 | 2;
 
 const TILE_COLORS = [
-  { bg: '#389E48', fg: '#FFFFFF', icon: '#2E7D32' },
-  { bg: '#2185E5', fg: '#FFFFFF', icon: '#1565C0' },
-  { bg: '#F7BE16', fg: '#111111', icon: '#E0A800' },
+  { bg: '#43A84E', fg: '#FFFFFF', icon: '#43A84E' },
+  { bg: '#1D88E5', fg: '#FFFFFF', icon: '#1D88E5' },
+  { bg: '#F9BD14', fg: '#000000', icon: '#F9BD14' },
 ];
-const NEW_TILE = { bg: '#9B30B6', fg: '#FFFFFF', icon: '#7B1FA2' };
+const NEW_TILE = { bg: '#9930B3', fg: '#FFFFFF', icon: '#9930B3' };
 
 interface RemoteSetupStoryProps {
   copy: SenearContent['story'];
@@ -51,12 +51,12 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
       <div
         role="img"
         aria-label={sceneLabel}
-        className="mx-auto grid max-w-[680px] grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-5"
+        className="mx-auto grid max-w-[700px] grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-5"
       >
         {/* ---------- Family member's phone ---------- */}
         <div className="min-w-0 flex flex-col items-center gap-3" aria-hidden="true">
-          <div className="w-full max-w-[245px] rounded-[1.75rem] sm:rounded-[2.1rem] bg-[#1C1A18] p-[5px] sm:p-[6px] shadow-[0_24px_48px_-20px_rgba(31,36,33,0.48)] ring-1 ring-black/10">
-            <div className="flex aspect-[9/17.5] flex-col overflow-hidden rounded-[1.4rem] sm:rounded-[1.7rem] bg-[#F6F3EE] p-1.5 sm:p-3.5">
+          <div className="w-full max-w-[255px] rounded-[1.85rem] sm:rounded-[2.4rem] bg-[#1C1A18] p-[5px] sm:p-[8px] shadow-[0_28px_54px_-20px_rgba(31,36,33,0.52)] ring-1 ring-black/10">
+            <div className="flex aspect-[9/19.5] flex-col overflow-hidden rounded-[1.5rem] sm:rounded-[1.9rem] bg-[#F6F3EE] p-1.5 sm:p-3.5">
               {/* Senior profile header with real portrait */}
               <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-white/90 p-1 sm:p-2 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <img
@@ -98,7 +98,7 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
                   </div>
 
                   {/* Photo preview row */}
-                  <div className="mt-1 sm:mt-1.5 flex items-center gap-1.5 sm:gap-2 rounded-lg bg-[#F7F1E9] p-1 sm:p-2">
+                  <div className="mt-1 sm:mt-2 flex items-center gap-1.5 sm:gap-2.5 rounded-lg bg-[#F7F1E9] p-1 sm:p-2">
                     <div className="relative shrink-0">
                       <img
                         src={copy.newTile.avatar}
@@ -107,17 +107,17 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
                         height={48}
                         loading="lazy"
                         decoding="async"
-                        className="h-7 w-7 sm:h-11 sm:w-11 rounded-full object-cover ring-2 ring-[#9B30B6]"
+                        className="h-7 w-7 sm:h-12 sm:w-12 rounded-full object-cover ring-2 ring-[#9B30B6]"
                       />
                       <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-[#9B30B6] text-white">
                         <Camera className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
                       </span>
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-[9px] sm:text-[13px] font-extrabold text-[#1F2421]">
+                      <div className="truncate text-[9.5px] sm:text-[14px] font-extrabold text-[#1F2421]">
                         {copy.nameValue}
                       </div>
-                      <div className="truncate text-[7px] sm:text-[10px] font-semibold text-[#1B7A4E]">
+                      <div className="truncate text-[7px] sm:text-[10.5px] font-semibold text-[#1B7A4E]">
                         ✓ {copy.photoLabel}
                       </div>
                     </div>
@@ -129,11 +129,11 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
                     [copy.relationLabel, copy.relationValue, false],
                     [copy.numberLabel, copy.numberValue, true],
                   ].map(([label, value, hideOnMobile]) => (
-                    <div key={String(label)} className={`mt-1 sm:mt-1.5 ${hideOnMobile ? 'hidden sm:block' : ''}`}>
+                    <div key={String(label)} className={`mt-1 sm:mt-2 ${hideOnMobile ? 'hidden sm:block' : ''}`}>
                       <div className="text-[6.5px] sm:text-[9px] font-semibold uppercase tracking-wide text-[#6B675F] leading-none">
                         {label}
                       </div>
-                      <div className="mt-0.5 truncate rounded border border-[#E3DCD1] bg-[#FBF9F6] px-1.5 py-0.5 sm:py-1 text-[8.5px] sm:text-[11px] font-semibold text-[#1F2421] leading-tight">
+                      <div className="mt-0.5 truncate rounded border border-[#E3DCD1] bg-[#FBF9F6] px-1.5 py-0.5 sm:py-1 text-[8.5px] sm:text-[11.5px] font-semibold text-[#1F2421] leading-tight">
                         {value}
                       </div>
                     </div>
@@ -142,11 +142,11 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
 
                 <div
                   key={`btn-${run}-${phase}`}
-                  className={`mt-1.5 sm:mt-2 flex items-center justify-center gap-1 rounded-md sm:rounded-lg py-1 sm:py-1.5 text-[9px] sm:text-[12px] font-bold text-white transition-colors ${
+                  className={`mt-1.5 sm:mt-2 flex items-center justify-center gap-1 rounded-md sm:rounded-lg py-1 sm:py-2 text-[9px] sm:text-[12.5px] font-bold text-white transition-colors ${
                     phase === 2 ? 'bg-[#145E3B]' : 'bg-[#1B7A4E]'
                   } ${phase === 1 ? 'sn-press' : ''}`}
                 >
-                  {phase === 2 && <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} />}
+                  {phase === 2 && <Check className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5" strokeWidth={3} />}
                   {phase === 1 ? copy.syncing : phase === 2 ? copy.savedBtn : copy.saveBtn}
                 </div>
               </div>
@@ -156,7 +156,7 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
         </div>
 
         {/* ---------- Connector ---------- */}
-        <div className="relative h-0.5 w-6 sm:w-16 md:w-24 -mt-8" aria-hidden="true">
+        <div className="relative h-0.5 w-6 sm:w-16 md:w-20 -mt-8" aria-hidden="true">
           <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,#C5A880_0_6px,transparent_6px_11px)]" />
           {phase === 1 && (
             <span
@@ -166,25 +166,25 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
           )}
         </div>
 
-        {/* ---------- Parent's phone (SENEAR locked home screen with real portraits) ---------- */}
+        {/* ---------- Parent's phone (SENEAR locked home screen matching Hero proportions) ---------- */}
         <div className="min-w-0 flex flex-col items-center gap-3" aria-hidden="true">
-          <div className="w-full max-w-[245px] rounded-[1.75rem] sm:rounded-[2.1rem] bg-[#1C1A18] p-[5px] sm:p-[6px] shadow-[0_24px_48px_-20px_rgba(31,36,33,0.48)] ring-1 ring-black/10">
-            <div className="flex aspect-[9/17.5] flex-col overflow-hidden rounded-[1.4rem] sm:rounded-[1.7rem] bg-black p-1.5 sm:p-2.5">
-              {/* Top status bar matching SENEAR Kiosk */}
-              <div className="flex items-center justify-between px-0.5 pt-0.5">
-                <span className="whitespace-nowrap rounded border border-[#F7BE16]/80 px-1 py-0.5 text-[6.5px] sm:text-[9px] font-bold text-white">
+          <div className="w-full max-w-[255px] rounded-[1.85rem] sm:rounded-[2.4rem] bg-[#1C1A18] p-[5px] sm:p-[8px] shadow-[0_28px_54px_-20px_rgba(31,36,33,0.52)] ring-1 ring-black/10">
+            <div className="flex aspect-[9/19.5] flex-col overflow-hidden rounded-[1.5rem] sm:rounded-[1.9rem] bg-black px-1 pt-1 pb-1 sm:px-1.5 sm:pt-1.5 sm:pb-1.5">
+              {/* Top status bar matching SENEAR Hero phone */}
+              <div className="flex items-center justify-between px-0.5">
+                <span className="whitespace-nowrap rounded-[5px] sm:rounded-[6px] border-[1.5px] border-[#D5C3AA] px-1 sm:px-1.5 py-0.5 text-[8px] sm:text-[11.5px] font-bold leading-none text-white">
                   Okt. 22.
                 </span>
-                <span className="text-[13px] sm:text-[21px] font-extrabold leading-none text-white tabular-nums">
+                <span className="text-[18px] sm:text-[30px] font-extrabold leading-none tracking-tight text-white tabular-nums">
                   10:24
                 </span>
-                <span className="whitespace-nowrap rounded bg-[#1B8A5A] px-1 py-0.5 text-[6.5px] sm:text-[9px] font-extrabold text-white">
+                <span className="whitespace-nowrap rounded-[5px] sm:rounded-[6px] bg-[#198754] px-1 sm:px-1.5 py-0.5 text-[8px] sm:text-[11.5px] font-extrabold leading-none text-white">
                   100%
                 </span>
               </div>
 
-              {/* 4 photo call tiles */}
-              <div className="mt-1.5 sm:mt-2 grid flex-1 grid-cols-2 gap-1 sm:gap-1.5">
+              {/* 4 photo call tiles matching Hero screenshot proportions */}
+              <div className="mt-1 sm:mt-1.5 grid flex-1 grid-cols-2 grid-rows-2 gap-1 sm:gap-1.5">
                 {copy.tiles.map((tile, i) => (
                   <Tile key={tile.name} name={tile.name} rel={tile.rel} avatar={tile.avatar} color={TILE_COLORS[i]} />
                 ))}
@@ -198,19 +198,19 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
                     />
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center gap-1 rounded-lg sm:rounded-xl border-2 border-dashed border-white/30 bg-white/5">
-                    <Plus className="h-4 w-4 sm:h-6 sm:w-6 text-white/55" />
+                  <div className="flex flex-col items-center justify-center gap-1 rounded-[11px] sm:rounded-[16px] border-2 border-dashed border-white/30 bg-white/5">
+                    <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-white/55" />
                   </div>
                 )}
               </div>
 
-              {/* Bottom SOS + keypad row matching SENEAR Kiosk */}
-              <div className="mt-1 sm:mt-1.5 flex items-center gap-1 sm:gap-1.5">
-                <div className="flex-1 rounded-md sm:rounded-lg border border-[#F7BE16] bg-[#D32F2F] py-1 sm:py-1.5 text-center text-[8px] sm:text-[11px] font-extrabold tracking-wide text-white">
+              {/* Bottom SOS + keypad row matching SENEAR Hero phone */}
+              <div className="mt-1 sm:mt-1.5 flex items-stretch gap-1 sm:gap-1.5">
+                <div className="flex flex-1 items-center justify-center rounded-[8px] sm:rounded-[12px] border-[1.5px] sm:border-2 border-[#D5C3AA] bg-[#CD2E2E] py-1 sm:py-2 text-center text-[10px] sm:text-[14px] font-extrabold tracking-wide text-white">
                   {copy.sosLabel}
                 </div>
-                <div className="flex h-5 w-6 sm:h-7 sm:w-8 shrink-0 items-center justify-center rounded-md sm:rounded-lg bg-[#8E7F68] text-white">
-                  <Grid3X3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <div className="flex w-[23%] shrink-0 items-center justify-center rounded-[8px] sm:rounded-[12px] bg-[#8E7F68] text-white">
+                  <Grid3X3 className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
                 </div>
               </div>
             </div>
@@ -256,24 +256,28 @@ function Tile({
 }) {
   return (
     <div
-      className="flex h-full flex-col items-center justify-between rounded-lg sm:rounded-xl px-1 py-1 sm:py-2 text-center"
+      className="flex h-full w-full flex-col items-center justify-between rounded-[11px] sm:rounded-[15px] px-0.5 pt-1.5 pb-1.5 sm:pt-2 sm:pb-2 text-center"
       style={{ background: color.bg, color: color.fg }}
     >
       <img
         src={avatar}
         alt=""
-        width={64}
-        height={64}
+        width={120}
+        height={120}
         loading="lazy"
         decoding="async"
-        className="h-8 w-8 sm:h-12 sm:w-12 rounded-full object-cover shadow-[0_2px_6px_rgba(0,0,0,0.22)]"
+        className="w-[76%] aspect-square shrink-0 rounded-full object-cover"
       />
-      <div className="min-w-0 max-w-full leading-tight">
-        <div className="truncate text-[9px] sm:text-[13px] font-extrabold">{name}</div>
-        <div className="truncate text-[7px] sm:text-[9px] font-semibold opacity-90">{rel}</div>
+      <div className="min-w-0 w-full px-0.5 leading-none">
+        <div className="truncate text-[14px] sm:text-[22px] font-extrabold leading-none tracking-tight">
+          {name}
+        </div>
+        <div className="mt-0.5 truncate text-[10px] sm:text-[14.5px] font-normal leading-tight opacity-95">
+          {rel}
+        </div>
       </div>
-      <span className="flex h-4 w-4 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-white shadow-sm">
-        <Phone className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 fill-current" style={{ color: color.icon }} />
+      <span className="flex w-[48%] aspect-square shrink-0 items-center justify-center rounded-full bg-white">
+        <Phone className="h-[52%] w-[52%] fill-current" style={{ color: color.icon }} />
       </span>
     </div>
   );
