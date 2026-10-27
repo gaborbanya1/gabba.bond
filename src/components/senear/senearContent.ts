@@ -147,7 +147,14 @@ export interface SenearContent {
       monthlyNote: string;
       perDay: { monthly: [string, string, string]; yearly: [string, string, string] };
     };
-    lifetime: PricingPlan & { priceOld: string; price: string; priceSuffix: string; note: string };
+    lifetime: PricingPlan & {
+      sticker: [string, string];
+      priceOld: string;
+      price: string;
+      priceSuffix: string;
+      splitStamp: [string, string, string];
+      note: string;
+    };
     trust: string;
   };
   trustBar: { label: string; badges: string[] };
@@ -411,10 +418,12 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       lifetime: {
         name: 'Örökös',
         tagline: 'Családi összekötés, havidíj nélkül',
+        sticker: ['2', 'SZEMÉLYNEK'] as [string, string],
         priceOld: '89 900 Ft',
         price: '59 900 Ft',
         priceSuffix: '/ egyszeri díj',
-        note: '👨‍👩‍👧‍👦 2 gondozónak (pl. az idős fia és lánya is megkapja) – a család összedobhatja, elfelezve fejenként csak 29 950 Ft!',
+        splitStamp: ['fejenként csak', '29 950 Ft', 'elfelezve'] as [string, string, string],
+        note: '2 gondozónak (pl. fia és lánya is megkapja) – a család összedobhatja!',
         features: ['Két gondozó örökös összekapcsolása', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
         cta: 'Letöltés',
       },
@@ -721,10 +730,12 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       lifetime: {
         name: 'Lifetime',
         tagline: 'Family link, no monthly or annual fees',
+        sticker: ['FOR 2', 'PEOPLE'] as [string, string],
         priceOld: '€199.00',
         price: '€149.00',
         priceSuffix: '/ once',
-        note: '👨‍👩‍👧‍👦 For 2 caregivers (e.g. both son and daughter) – split the one-time cost, just €74.50 each!',
+        splitStamp: ['just', '€74.50', 'each'] as [string, string, string],
+        note: 'For 2 caregivers (e.g. both son and daughter) – split the one-time cost!',
         features: ['Lifetime access for 2 caregivers', 'No monthly or annual fees', 'Pay once securely via Google Play'],
         cta: 'Download',
       },
@@ -1031,10 +1042,12 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       lifetime: {
         name: 'Lebenslang',
         tagline: 'Familien-Kopplung, ohne Monats- oder Jahresgebühren',
+        sticker: ['FÜR 2', 'PERSONEN'] as [string, string],
         priceOld: '199,00 €',
         price: '149,00 €',
         priceSuffix: '/ Einmalzahlung',
-        note: '👨‍👩‍👧‍👦 Für 2 Betreuer inklusive (z. B. Sohn und Tochter) – geteilt durch zwei Geschwister nur 74,50 € pro Person!',
+        splitStamp: ['nur', '74,50 €', 'pro Person'] as [string, string, string],
+        note: 'Für 2 Betreuer inklusive (z. B. Sohn und Tochter) – durch zwei Geschwister teilbar!',
         features: ['Lebenslanger Zugriff für 2 Betreuer', 'Keine Monats- oder Jahresgebühren', 'Einmalige Zahlung über Google Play'],
         cta: 'Herunterladen',
       },

@@ -835,7 +835,17 @@ function Pricing({ c }: { c: SenearContent }) {
           </Reveal>
 
           {/* --- Lifetime --- */}
-          <Reveal as="article" delay={180} className={`${planCard} ring-1 ring-[#E3DCD1]`}>
+          <Reveal as="article" delay={180} className={`${planCard} relative ring-1 ring-[#E3DCD1]`}>
+            {/* Corner 2-person sticker – half-protruding top-right gold seal */}
+            <div className="sn-sticker absolute -top-[18px] -right-[6px] sm:-top-[20px] sm:-right-[14px] z-20 flex h-[68px] w-[68px] sm:h-[74px] sm:w-[74px] flex-col items-center justify-center rounded-full border-[2.5px] border-white bg-gradient-to-br from-[#F2D28B] via-[#E5BC63] to-[#D4A449] text-center text-[#231606] shadow-[0_10px_22px_-6px_rgba(94,69,33,0.48)]">
+              <span className="block font-heading text-[15px] sm:text-[17px] font-black uppercase leading-[1.0] tracking-tight">
+                {p.lifetime.sticker[0]}
+              </span>{' '}
+              <span className="mt-0.5 block text-[8.5px] sm:text-[9.5px] font-extrabold uppercase leading-[1.05] tracking-[0.02em]">
+                {p.lifetime.sticker[1]}
+              </span>
+            </div>
+
             <h3 className="font-heading text-2xl font-extrabold">{p.lifetime.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
             <div className="mt-6">
@@ -843,15 +853,25 @@ function Pricing({ c }: { c: SenearContent }) {
                 <span className="line-through opacity-60 text-gray-400 mr-2 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
                   {p.lifetime.priceOld}
                 </span>
-                <span className="whitespace-nowrap font-heading text-3xl font-extrabold tracking-tight text-gray-900 tabular-nums">
+                <span className="whitespace-nowrap font-heading text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 tabular-nums">
                   {p.lifetime.price}
                 </span>
               </div>
               <span className="mt-1 text-sm text-gray-500 font-medium block">{p.lifetime.priceSuffix}</span>
             </div>
-            <div className="mt-3 p-2.5 rounded-lg bg-amber-50/60 border border-amber-200/50 text-xs text-amber-850 text-amber-950 font-medium leading-relaxed">
-              {p.lifetime.note}
+
+            <div className="mt-4 flex items-center gap-3.5">
+              {/* "Fejenként csak 29 950 Ft elfelezve" typographic stamp */}
+              <div className="-rotate-3 shrink-0 rounded-2xl border-2 border-dashed border-[#C5A880] bg-[#FBF5EA] px-3 py-2 text-center leading-none">
+                <span className="block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{p.lifetime.splitStamp[0]}</span>
+                <span className="mt-1 block whitespace-nowrap font-heading text-[1.45rem] sm:text-[1.55rem] font-black text-[#1F2421] tabular-nums">{p.lifetime.splitStamp[1]}</span>
+                <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{p.lifetime.splitStamp[2]}</span>
+              </div>
+              <p className="text-[14px] sm:text-[15px] font-semibold leading-snug text-[#1B7A4E]">
+                {p.lifetime.note}
+              </p>
             </div>
+
             <PlanFeatures items={p.lifetime.features} />
             <PlanLink label={p.lifetime.cta} variant="outline" />
           </Reveal>
