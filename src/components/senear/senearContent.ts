@@ -23,6 +23,7 @@ export interface PricingPlan {
   name: string;
   tagline: string;
   features: string[];
+  moreFeatures: string[];
   cta: string;
 }
 
@@ -133,6 +134,8 @@ export interface SenearContent {
     monthly: string;
     yearly: string;
     recommended: string;
+    moreDetailsOpen: string;
+    moreDetailsClose: string;
     free: PricingPlan & { price: string; priceSuffix: string };
     family: PricingPlan & {
       trialBadge: string;
@@ -377,6 +380,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       monthly: 'Havi',
       yearly: 'Éves',
       recommended: 'Ajánlott',
+      moreDetailsOpen: 'További részletek',
+      moreDetailsClose: 'Részletek bezárása',
       free: {
         name: 'Ingyenes',
         tagline: 'Az idős szülő telefonja önállóan',
@@ -388,6 +393,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Csak a jóváhagyott számok hívhatják',
           'SOS gomb GPS-es SMS-sel',
           'Reklámmentes',
+        ],
+        moreFeatures: [
+          '4 vagy 6 nagy, fotós hívógomb névvel és „Keresett!” jelzéssel',
+          'Állítható szöveg-, fotó- és ikonméret',
+          'Automatikus kihangosítás, képernyőn állítható hangerővel',
+          'Előre megírt gyors SMS-ek, nagybetűs bejövő üzenetek',
+          'Ébresztő és napi emlékeztetők',
+          'Fotós gyógyszeremlékeztető „Bevettem” gombbal',
+          'GDPR-konform adatkezelés, egygombos végleges adattörlés',
         ],
         cta: 'Ingyenes letöltés',
       },
@@ -409,9 +423,21 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Minden, ami az Ingyenesben',
           'Élő akkumulátor, térerő és hely',
           'Értesítés SOS-ről és lemerülésről',
-          'Gyógyszeremlékeztető visszajelzéssel',
-          'Hívógombok és hívásszűrés távolról',
+          'Gyógyszer- és egyéb emlékeztetők',
+          'Távoli beállítások',
           'Wi-Fi hang- és videóhívás',
+        ],
+        moreFeatures: [
+          'Összekapcsolás 6 jegyű kóddal, a szülőd jóváhagyásával',
+          'Értesítés ki- és bekapcsoláskor, alacsony töltöttségnél',
+          'Távolról bekapcsolható automatikus, kihangosított hívásfogadás',
+          'A csengetés hangerejének visszaállítása távolról',
+          'Hívógombok neve, száma és fotója távolról',
+          'Hívásszűrés: a jóváhagyott számok listája távolról',
+          'Ébresztők és gyógyszeremlékeztetők visszajelzéssel',
+          'Otthoni biztonsági zóna és élő mini-térkép',
+          'Gyártóspecifikus akkumulátor-beállítások (Samsung, Xiaomi, Huawei stb.)',
+          'Valós idejű szinkron EU-s szervereken, titkosított adatátvitel (TLS)',
         ],
         cta: 'Kipróbálom 14 napig ingyen',
       },
@@ -425,6 +451,17 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         splitStamp: ['fejenként csak', '29 950 Ft', 'elfelezve'] as [string, string, string],
         note: '2 gondozónak (pl. fia és lánya is megkapja) – a család összedobhatja!',
         features: ['Két gondozó örökös összekapcsolása', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
+        moreFeatures: [
+          'Minden, ami az Ingyenes és a Családi összekötés csomagban',
+          '2 családtag (pl. fia és lánya) saját telefonjáról egyszerre kezelhető',
+          'Élő akkumulátor, térerő, mini-térkép és otthoni biztonsági zóna',
+          'Értesítés SOS-ről, ki- és bekapcsolásról, alacsony töltöttségről',
+          'Hang- és videóhívás a szülőd telefonjára Wi-Fi-n is',
+          'Távolról bekapcsolható automatikus, kihangosított hívásfogadás',
+          'A csengetés hangerejének visszaállítása távolról',
+          'Hívógombok, fotók, hívásszűrés és gyógyszeremlékeztetők távolról',
+          'Valós idejű szinkron EU-s szervereken, GDPR-konform adatkezelés',
+        ],
         cta: 'Letöltés',
       },
       trust:
@@ -689,6 +726,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       monthly: 'Monthly',
       yearly: 'Yearly',
       recommended: 'Recommended',
+      moreDetailsOpen: 'More details',
+      moreDetailsClose: 'Hide details',
       free: {
         name: 'Free',
         tagline: 'Your parent’s phone on its own',
@@ -700,6 +739,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Only approved numbers can call',
           'SOS button with GPS text message',
           'Ad-free',
+        ],
+        moreFeatures: [
+          '4 or 6 large photo call buttons with names and a “Missed call!” badge',
+          'Adjustable text, photo and icon size',
+          'Automatic speakerphone with on-screen volume control',
+          'Pre-written quick texts, large-print incoming messages',
+          'Alarm and daily reminders',
+          'Photo medication reminder with a “Taken” button',
+          'GDPR-compliant, one-tap permanent data deletion',
         ],
         cta: 'Free download',
       },
@@ -721,9 +769,21 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Everything in Free',
           'Live battery, signal and location',
           'Notifications for SOS and low battery',
-          'Medication reminders with confirmation',
-          'Call buttons and call filtering remotely',
+          'Medication & daily reminders',
+          'Remote settings',
           'Wi-Fi voice and video calls',
+        ],
+        moreFeatures: [
+          'Linking with a 6-digit code, approved by your parent',
+          'Notifications on power off/on and low battery',
+          'Remotely enabled automatic, hands-free call answering',
+          'Restore ringer volume remotely',
+          'Call button names, numbers and photos remotely',
+          'Call filtering: manage the approved numbers remotely',
+          'Alarms and medication reminders with confirmation',
+          'Home safe zone and live mini-map',
+          'Manufacturer-specific battery settings (Samsung, Xiaomi, Huawei, etc.)',
+          'Real-time sync on EU servers, encrypted data transfer (TLS)',
         ],
         cta: 'Try it free for 14 days',
       },
@@ -737,6 +797,17 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         splitStamp: ['just', '€74.50', 'each'] as [string, string, string],
         note: 'For 2 caregivers (e.g. both son and daughter) – split the one-time cost!',
         features: ['Lifetime access for 2 caregivers', 'No monthly or annual fees', 'Pay once securely via Google Play'],
+        moreFeatures: [
+          'Everything in Free and Family connection',
+          'Manageable from 2 family members’ phones at the same time',
+          'Live battery, signal, mini-map and home safe zone',
+          'Notifications for SOS, power off/on and low battery',
+          'Voice and video calls to your parent’s phone over Wi-Fi',
+          'Remotely enabled automatic, hands-free call answering',
+          'Restore ringer volume remotely',
+          'Call buttons, photos, call filtering and medication reminders remotely',
+          'Real-time sync on EU servers, GDPR-compliant',
+        ],
         cta: 'Download',
       },
       trust:
@@ -1001,6 +1072,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       monthly: 'Monatlich',
       yearly: 'Jährlich',
       recommended: 'Empfohlen',
+      moreDetailsOpen: 'Weitere Details',
+      moreDetailsClose: 'Details schließen',
       free: {
         name: 'Kostenlos',
         tagline: 'Das Handy Ihrer Eltern allein',
@@ -1012,6 +1085,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Nur freigegebene Nummern können anrufen',
           'SOS-Taste mit GPS-SMS',
           'Werbefrei',
+        ],
+        moreFeatures: [
+          '4 oder 6 große Foto-Anruftasten mit Namen und „Hat angerufen!“-Hinweis',
+          'Einstellbare Text-, Foto- und Symbolgröße',
+          'Automatisches Freisprechen mit Lautstärkeregler auf dem Bildschirm',
+          'Vorgefertigte Schnell-SMS, eingehende Nachrichten in Großschrift',
+          'Wecker und tägliche Erinnerungen',
+          'Foto-Medikamentenerinnerung mit „Eingenommen“-Taste',
+          'DSGVO-konform, endgültige Datenlöschung mit einem Klick',
         ],
         cta: 'Kostenlos laden',
       },
@@ -1033,9 +1115,21 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Alles aus Kostenlos',
           'Live-Akku, Empfang und Standort',
           'Nachricht bei SOS und schwachem Akku',
-          'Medikamentenerinnerung mit Bestätigung',
-          'Anruftasten und Anruffilter aus der Ferne',
+          'Medikamenten- & Tageserinnerungen',
+          'Ferneinstellungen',
           'WLAN-Sprach- und Videoanrufe',
+        ],
+        moreFeatures: [
+          'Verbindung per 6-stelligem Code, von Ihren Eltern bestätigt',
+          'Nachricht beim Aus-/Einschalten und bei schwachem Akku',
+          'Aus der Ferne aktivierbare automatische Rufannahme mit Lautsprecher',
+          'Klingellautstärke aus der Ferne wiederherstellen',
+          'Namen, Nummern und Fotos der Anruftasten aus der Ferne',
+          'Anruffilter: freigegebene Nummern aus der Ferne verwalten',
+          'Wecker und Medikamentenerinnerungen mit Bestätigung',
+          'Sicherheitszone zu Hause und Live-Minikarte',
+          'Herstellerspezifische Akku-Einstellungen (Samsung, Xiaomi, Huawei usw.)',
+          'Echtzeit-Synchronisierung auf EU-Servern, verschlüsselte Datenübertragung (TLS)',
         ],
         cta: '14 Tage kostenlos testen',
       },
@@ -1049,6 +1143,17 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         splitStamp: ['nur', '74,50 €', 'pro Person'] as [string, string, string],
         note: 'Für 2 Betreuer inklusive (z. B. Sohn und Tochter) – durch zwei Geschwister teilbar!',
         features: ['Lebenslanger Zugriff für 2 Betreuer', 'Keine Monats- oder Jahresgebühren', 'Einmalige Zahlung über Google Play'],
+        moreFeatures: [
+          'Alles aus Kostenlos und Familien-Verbindung',
+          'Gleichzeitig von 2 Familienmitgliedern über das eigene Handy verwaltbar',
+          'Live-Akku, Empfang, Minikarte und Sicherheitszone zu Hause',
+          'Nachricht bei SOS, Aus-/Einschalten und schwachem Akku',
+          'Sprach- und Videoanrufe zum Handy Ihrer Eltern über WLAN',
+          'Aus der Ferne aktivierbare automatische Rufannahme mit Lautsprecher',
+          'Klingellautstärke aus der Ferne wiederherstellen',
+          'Anruftasten, Fotos, Anruffilter und Medikamentenerinnerungen aus der Ferne',
+          'Echtzeit-Synchronisierung auf EU-Servern, DSGVO-konform',
+        ],
         cta: 'Herunterladen',
       },
       trust:

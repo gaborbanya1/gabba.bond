@@ -736,8 +736,8 @@ function Pricing({ c }: { c: SenearContent }) {
   const [yearly, setYearly] = useState(false);
   const perDay = yearly ? p.family.perDay.yearly : p.family.perDay.monthly;
 
-  const planCard = 'flex h-full flex-col rounded-3xl bg-white p-6 sm:p-8';
-  const priceRow = 'mt-6 flex flex-wrap items-end gap-x-2';
+  const planCard = 'flex flex-col rounded-3xl bg-white p-6 sm:p-7';
+  const priceRow = 'mt-4 flex flex-wrap items-end gap-x-2';
 
   return (
     <section id="arak" className="scroll-mt-24 py-16 sm:py-24 bg-gradient-to-b from-[#FAF7F2] to-[#F3EBDF]" aria-labelledby="pricing-title">
@@ -750,16 +750,21 @@ function Pricing({ c }: { c: SenearContent }) {
           <p className="text-lg leading-relaxed text-[#4A4744]">{p.subtitle}</p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3 lg:gap-6">
+        <div className="mt-12 grid grid-cols-1 items-start gap-8 lg:grid-cols-3 lg:gap-6">
           {/* --- Free --- */}
           <Reveal as="article" className={`${planCard} ring-1 ring-[#E3DCD1]`}>
             <h3 className="font-heading text-2xl font-extrabold">{p.free.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.free.tagline}</p>
             <div className={priceRow}>
-              <span className="whitespace-nowrap font-heading text-5xl font-black tracking-tight">{p.free.price}</span>
-              <span className="pb-1.5 text-lg font-bold text-[#1B7A4E]">{p.free.priceSuffix}</span>
+              <span className="whitespace-nowrap font-heading text-4xl sm:text-5xl font-black tracking-tight">{p.free.price}</span>
+              <span className="pb-1 text-lg font-bold text-[#1B7A4E]">{p.free.priceSuffix}</span>
             </div>
-            <PlanFeatures items={p.free.features} />
+            <PlanFeatures
+              items={p.free.features}
+              moreItems={p.free.moreFeatures}
+              openLabel={p.moreDetailsOpen}
+              closeLabel={p.moreDetailsClose}
+            />
             <PlanLink label={p.free.cta} variant="outline" />
           </Reveal>
 
@@ -784,11 +789,11 @@ function Pricing({ c }: { c: SenearContent }) {
               <p className="mt-1 text-base text-[#5C5A56]">{p.family.tagline}</p>
             </div>
 
-            {/* Monthly / yearly switch */}
-            <div className="mt-6 relative grid grid-cols-2 rounded-full bg-[#F3EBDF] p-1" role="group" aria-label={`${p.monthly} / ${p.yearly}`}>
+            {/* Slim Monthly / yearly switch */}
+            <div className="mt-3.5 relative grid grid-cols-2 rounded-full bg-[#F3EBDF] p-0.5" role="group" aria-label={`${p.monthly} / ${p.yearly}`}>
               <span
                 aria-hidden="true"
-                className={`absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
+                className={`absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
                   yearly ? 'translate-x-full' : 'translate-x-0'
                 }`}
               />
@@ -798,7 +803,7 @@ function Pricing({ c }: { c: SenearContent }) {
                   type="button"
                   aria-pressed={yearly === isYearly}
                   onClick={() => setYearly(isYearly)}
-                  className={`relative z-10 min-h-11 rounded-full text-base font-bold transition-colors cursor-pointer ${
+                  className={`relative z-10 h-8 rounded-full text-sm font-bold transition-colors cursor-pointer ${
                     yearly === isYearly ? 'text-[#1F2421]' : 'text-[#5C5A56]'
                   } ${FOCUS_RING}`}
                 >
@@ -807,30 +812,35 @@ function Pricing({ c }: { c: SenearContent }) {
               ))}
             </div>
 
-            <div className="mt-5" aria-live="polite">
+            <div className="mt-3.5" aria-live="polite">
               <div className="flex flex-wrap items-baseline gap-x-1.5">
-                <span className="line-through text-gray-400 opacity-70 mr-1 whitespace-nowrap font-heading text-xl sm:text-2xl font-bold tabular-nums">
+                <span className="line-through text-gray-400 opacity-70 mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
                   {yearly ? p.family.priceYearlyOld : p.family.priceMonthlyOld}
                 </span>
-                <span key={String(yearly)} className="sn-pop whitespace-nowrap font-heading text-4xl sm:text-[2.75rem] leading-none font-black tracking-tight text-[#1B7A4E] tabular-nums">
+                <span key={String(yearly)} className="sn-pop whitespace-nowrap font-heading text-3xl sm:text-4xl leading-none font-black tracking-tight text-[#1B7A4E] tabular-nums">
                   {yearly ? p.family.priceYearly : p.family.priceMonthly}
                 </span>
-                <span className="pb-1 text-base sm:text-lg font-bold text-[#5C5A56] whitespace-nowrap">{yearly ? p.family.suffixYearly : p.family.suffixMonthly}</span>
+                <span className="text-sm sm:text-base font-bold text-[#5C5A56] whitespace-nowrap">{yearly ? p.family.suffixYearly : p.family.suffixMonthly}</span>
               </div>
-              <div className="mt-4 flex items-center gap-4">
+              <div className="mt-3 flex items-center gap-3.5">
                 {/* "Less than 85 Ft a day" typographic stamp */}
-                <div className="-rotate-3 shrink-0 rounded-2xl border-2 border-dashed border-[#C5A880] bg-[#FBF5EA] px-3.5 py-2 text-center leading-none">
-                  <span className="block text-xs font-bold uppercase tracking-wide text-[#5E4521]">{perDay[0]}</span>
-                  <span className="mt-1 block whitespace-nowrap font-heading text-[1.7rem] font-black text-[#1F2421]">{perDay[1]}</span>
-                  <span className="mt-0.5 block text-xs font-bold uppercase tracking-wide text-[#5E4521]">{perDay[2]}</span>
+                <div className="-rotate-3 shrink-0 rounded-2xl border-2 border-dashed border-[#C5A880] bg-[#FBF5EA] px-3 py-1.5 text-center leading-none">
+                  <span className="block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{perDay[0]}</span>
+                  <span className="mt-1 block whitespace-nowrap font-heading text-[1.45rem] sm:text-[1.55rem] font-black text-[#1F2421]">{perDay[1]}</span>
+                  <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{perDay[2]}</span>
                 </div>
-                <p className="text-[15px] font-semibold leading-snug text-[#1B7A4E]">
+                <p className="text-[14px] sm:text-[15px] font-semibold leading-snug text-[#1B7A4E]">
                   {yearly ? p.family.yearlyNote : p.family.monthlyNote}
                 </p>
               </div>
             </div>
 
-            <PlanFeatures items={p.family.features} />
+            <PlanFeatures
+              items={p.family.features}
+              moreItems={p.family.moreFeatures}
+              openLabel={p.moreDetailsOpen}
+              closeLabel={p.moreDetailsClose}
+            />
             <PlanLink label={p.family.cta} variant="filled" />
           </Reveal>
 
@@ -848,21 +858,21 @@ function Pricing({ c }: { c: SenearContent }) {
 
             <h3 className="font-heading text-2xl font-extrabold">{p.lifetime.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
-            <div className="mt-6">
-              <div className="flex flex-wrap items-baseline">
-                <span className="line-through opacity-60 text-gray-400 mr-2 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
+            <div className="mt-4">
+              <div className="flex flex-wrap items-baseline gap-x-1.5">
+                <span className="line-through opacity-60 text-gray-400 mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
                   {p.lifetime.priceOld}
                 </span>
-                <span className="whitespace-nowrap font-heading text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 tabular-nums">
+                <span className="whitespace-nowrap font-heading text-3xl sm:text-4xl leading-none font-extrabold tracking-tight text-gray-900 tabular-nums">
                   {p.lifetime.price}
                 </span>
+                <span className="text-sm text-gray-500 font-semibold whitespace-nowrap">{p.lifetime.priceSuffix}</span>
               </div>
-              <span className="mt-1 text-sm text-gray-500 font-medium block">{p.lifetime.priceSuffix}</span>
             </div>
 
-            <div className="mt-4 flex items-center gap-3.5">
+            <div className="mt-3 flex items-center gap-3.5">
               {/* "Fejenként csak 29 950 Ft elfelezve" typographic stamp */}
-              <div className="-rotate-3 shrink-0 rounded-2xl border-2 border-dashed border-[#C5A880] bg-[#FBF5EA] px-3 py-2 text-center leading-none">
+              <div className="-rotate-3 shrink-0 rounded-2xl border-2 border-dashed border-[#C5A880] bg-[#FBF5EA] px-3 py-1.5 text-center leading-none">
                 <span className="block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{p.lifetime.splitStamp[0]}</span>
                 <span className="mt-1 block whitespace-nowrap font-heading text-[1.45rem] sm:text-[1.55rem] font-black text-[#1F2421] tabular-nums">{p.lifetime.splitStamp[1]}</span>
                 <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wide text-[#5E4521]">{p.lifetime.splitStamp[2]}</span>
@@ -872,7 +882,12 @@ function Pricing({ c }: { c: SenearContent }) {
               </p>
             </div>
 
-            <PlanFeatures items={p.lifetime.features} />
+            <PlanFeatures
+              items={p.lifetime.features}
+              moreItems={p.lifetime.moreFeatures}
+              openLabel={p.moreDetailsOpen}
+              closeLabel={p.moreDetailsClose}
+            />
             <PlanLink label={p.lifetime.cta} variant="outline" />
           </Reveal>
         </div>
@@ -886,22 +901,59 @@ function Pricing({ c }: { c: SenearContent }) {
   );
 }
 
-function PlanFeatures({ items }: { items: string[] }) {
+function PlanFeatures({
+  items,
+  moreItems,
+  openLabel,
+  closeLabel,
+}: {
+  items: string[];
+  moreItems: string[];
+  openLabel: string;
+  closeLabel: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <ul className="mt-6 space-y-3 border-t border-[#EDE4D8] pt-6">
-      {items.map((f) => (
-        <li key={f} className="flex items-start gap-3 text-base leading-snug text-[#1F2421]">
-          <DrawCheck className="mt-0.5 h-5 w-5" />
-          <span>{f}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="mt-4 border-t border-[#EDE4D8] pt-4">
+      <ul className="space-y-2.5">
+        {items.map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-[15px] leading-snug text-[#1F2421]">
+            <DrawCheck className="mt-0.5 h-4 w-4" />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className={`step-accordion-collapse ${expanded ? 'is-expanded' : ''}`}>
+        <div className="overflow-hidden">
+          <ul className="mt-2.5 space-y-2 border-t border-dashed border-[#E8DFD4] pt-2.5">
+            {moreItems.map((f) => (
+              <li key={f} className="flex items-start gap-2.5 text-[14px] leading-snug text-[#3F3C38]">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1B7A4E]" strokeWidth={2.75} aria-hidden="true" />
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setExpanded((e) => !e)}
+        aria-expanded={expanded}
+        className={`mt-3 inline-flex items-center gap-1.5 rounded-lg py-1 text-sm font-bold text-[#7A5A2E] hover:text-[#1F2421] transition-colors cursor-pointer ${FOCUS_RING}`}
+      >
+        <span>{expanded ? closeLabel : openLabel}</span>
+        <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+    </div>
   );
 }
 
 function PlanLink({ label, variant }: { label: string; variant: 'filled' | 'outline' }) {
   return (
-    <div className="mt-auto pt-8">
+    <div className="pt-4">
       <a
         href={PLAY_STORE_URL}
         target="_blank"
