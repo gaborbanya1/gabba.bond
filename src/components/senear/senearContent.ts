@@ -70,17 +70,6 @@ export interface SenearContent {
     title: string;
     subtitle: string;
     pricesLink: string;
-    pricingBox: {
-      trialHeader: string;
-      tiers: {
-        label: string;
-        oldPrice: string;
-        insteadOf?: string;
-        newPrice: string;
-        note?: string;
-      }[];
-      reassurance: string;
-    };
     items: { title: string; body: string; bullets: string[]; band: string }[];
   };
   story: {
@@ -158,6 +147,7 @@ export interface SenearContent {
       monthlyNote: string;
       perDay: { monthly: [string, string, string]; yearly: [string, string, string] };
     };
+    lifetime: PricingPlan & { price: string; priceSuffix: string; note: string };
     trust: string;
   };
   trustBar: { label: string; badges: string[] };
@@ -235,27 +225,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Két mód, ahogy használhatod',
       subtitle: 'Kezdheted egyedül a szülőd telefonjával, és később bármikor összekötheted a sajátoddal.',
       pricesLink: 'Árak megtekintése',
-      pricingBox: {
-        trialHeader: '🎁 14 napig teljesen ingyen kipróbálható',
-        tiers: [
-          {
-            label: 'Havi előfizetés (Bevezető ár):',
-            oldPrice: '3 490 Ft',
-            insteadOf: 'helyett',
-            newPrice: '2 490 Ft / hó',
-            note: '(kevesebb mint napi 85 Ft)',
-          },
-          {
-            label: 'Éves csomag (4 hónap ajándék):',
-            oldPrice: '29 900 Ft',
-            insteadOf: 'helyett',
-            newPrice: '19 900 Ft / év',
-            note: '(csak ~1 658 Ft / hó)',
-          },
-        ],
-        reassurance:
-          'Biztonságos fizetés a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
-      },
       items: [
         {
           title: 'Csak az idős szülő telefonja',
@@ -439,6 +408,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         ],
         cta: 'Kipróbálom 14 napig ingyen',
       },
+      lifetime: {
+        name: 'Örökös',
+        tagline: 'Családi összekötés, havidíj nélkül',
+        price: '29 900 Ft',
+        priceSuffix: 'egyszeri díj',
+        note: 'Nagyjából egy egyszerű nyomógombos senior telefon áráért.',
+        features: ['Minden, ami a Családi összekötésben', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
+        cta: 'Letöltés',
+      },
       trust:
         'Biztonságos fizetés a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
     },
@@ -554,24 +532,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Two ways to use it',
       subtitle: 'Start with just your parent’s phone, and connect your own whenever you like.',
       pricesLink: 'See pricing',
-      pricingBox: {
-        trialHeader: '🎁 14-day free trial included',
-        tiers: [
-          {
-            label: 'Monthly plan (Introductory price):',
-            oldPrice: '€9.99',
-            newPrice: '€7.99 / month',
-          },
-          {
-            label: 'Annual plan (4 months free):',
-            oldPrice: '€79.99',
-            newPrice: '€59.99 / year',
-            note: '(only ~€4.99 / month)',
-          },
-        ],
-        reassurance:
-          'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
-      },
       items: [
         {
           title: 'Just your parent’s phone',
@@ -757,6 +717,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         ],
         cta: 'Try it free for 14 days',
       },
+      lifetime: {
+        name: 'Lifetime',
+        tagline: 'Family connection, no subscription',
+        price: '€79.99',
+        priceSuffix: 'one-time',
+        note: 'About the price of a basic button senior phone.',
+        features: ['Everything in Family connection', 'No monthly or yearly fee', 'Pay once via Google Play'],
+        cta: 'Download',
+      },
       trust:
         'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
     },
@@ -872,24 +841,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Zwei Arten, es zu nutzen',
       subtitle: 'Beginnen Sie nur mit dem Handy Ihrer Eltern und verbinden Sie Ihr eigenes, wann immer Sie möchten.',
       pricesLink: 'Preise ansehen',
-      pricingBox: {
-        trialHeader: '🎁 14 Tage kostenlos testen',
-        tiers: [
-          {
-            label: 'Monatsabo (Einführungspreis):',
-            oldPrice: '9,99 €',
-            newPrice: '7,99 € / Monat',
-          },
-          {
-            label: 'Jahresabo (4 Monate gratis):',
-            oldPrice: '79,99 €',
-            newPrice: '59,99 € / Jahr',
-            note: '(nur ~4,99 € / Monat)',
-          },
-        ],
-        reassurance:
-          'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
-      },
       items: [
         {
           title: 'Nur das Handy Ihrer Eltern',
@@ -1074,6 +1025,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'WLAN-Sprach- und Videoanrufe',
         ],
         cta: '14 Tage kostenlos testen',
+      },
+      lifetime: {
+        name: 'Lebenslang',
+        tagline: 'Familien-Verbindung ohne Abo',
+        price: '79,99 €',
+        priceSuffix: 'einmalig',
+        note: 'Etwa zum Preis eines einfachen Tasten-Seniorenhandys.',
+        features: ['Alles aus Familien-Verbindung', 'Keine monatliche oder jährliche Gebühr', 'Einmal zahlen, über Google Play'],
+        cta: 'Herunterladen',
       },
       trust:
         'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',

@@ -433,32 +433,6 @@ function Modes({ c }: { c: SenearContent }) {
                       </li>
                     ))}
                   </ul>
-
-                  {!free && (
-                    <div className="mt-6 rounded-2xl border border-[#E5D8C5] bg-[#FBF7F0] p-4 sm:p-5">
-                      <div className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF5EE] px-3 py-1 text-sm font-extrabold text-[#14593A]">
-                        {c.modes.pricingBox.trialHeader}
-                      </div>
-                      <ul className="mt-3.5 space-y-2.5 text-[15px] leading-snug text-[#1F2421]">
-                        {c.modes.pricingBox.tiers.map((tier) => (
-                          <li key={tier.label} className="leading-snug">
-                            <span className="block font-bold text-[#1F2421]">{tier.label}</span>
-                            <span className="mt-0.5 block">
-                              <span className="line-through text-gray-400 opacity-70 mr-1.5 whitespace-nowrap">{tier.oldPrice}</span>
-                              {tier.insteadOf && <span className="text-[#5C5A56] mr-1.5">{tier.insteadOf}</span>}
-                              <strong className="whitespace-nowrap font-extrabold text-[#1B7A4E]">{tier.newPrice}</strong>
-                              {tier.note && (
-                                <em className="ml-1.5 whitespace-nowrap text-sm font-medium text-[#5C5A56]">{tier.note}</em>
-                              )}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="mt-3 border-t border-[#E8DFD4] pt-2.5 text-xs sm:text-[13px] leading-relaxed text-[#5C5A56]">
-                        {c.modes.pricingBox.reassurance}
-                      </p>
-                    </div>
-                  )}
                 </div>
                 <div
                   className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 sm:px-8 py-4 font-extrabold ${
@@ -776,7 +750,7 @@ function Pricing({ c }: { c: SenearContent }) {
           <p className="text-lg leading-relaxed text-[#4A4744]">{p.subtitle}</p>
         </div>
 
-        <div className="mx-auto mt-12 grid max-w-4xl items-stretch gap-8 lg:grid-cols-2 lg:gap-6">
+        <div className="mt-12 grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3 lg:gap-6">
           {/* --- Free --- */}
           <Reveal as="article" className={`${planCard} ring-1 ring-[#E3DCD1]`}>
             <h3 className="font-heading text-2xl font-extrabold">{p.free.name}</h3>
@@ -834,14 +808,14 @@ function Pricing({ c }: { c: SenearContent }) {
             </div>
 
             <div className="mt-5" aria-live="polite">
-              <div className="flex flex-wrap items-baseline gap-x-2">
-                <span className="line-through text-gray-400 opacity-70 mr-1.5 font-heading text-2xl sm:text-3xl font-bold tabular-nums">
+              <div className="flex flex-wrap items-baseline gap-x-1.5">
+                <span className="line-through text-gray-400 opacity-70 mr-1 whitespace-nowrap font-heading text-xl sm:text-2xl font-bold tabular-nums">
                   {yearly ? p.family.priceYearlyOld : p.family.priceMonthlyOld}
                 </span>
-                <span key={String(yearly)} className="sn-pop whitespace-nowrap font-heading text-5xl font-black tracking-tight text-[#1B7A4E] tabular-nums">
+                <span key={String(yearly)} className="sn-pop whitespace-nowrap font-heading text-4xl sm:text-[2.75rem] leading-none font-black tracking-tight text-[#1B7A4E] tabular-nums">
                   {yearly ? p.family.priceYearly : p.family.priceMonthly}
                 </span>
-                <span className="pb-1.5 text-lg font-bold text-[#5C5A56]">{yearly ? p.family.suffixYearly : p.family.suffixMonthly}</span>
+                <span className="pb-1 text-base sm:text-lg font-bold text-[#5C5A56] whitespace-nowrap">{yearly ? p.family.suffixYearly : p.family.suffixMonthly}</span>
               </div>
               <div className="mt-4 flex items-center gap-4">
                 {/* "Less than 85 Ft a day" typographic stamp */}
@@ -858,6 +832,19 @@ function Pricing({ c }: { c: SenearContent }) {
 
             <PlanFeatures items={p.family.features} />
             <PlanLink label={p.family.cta} variant="filled" />
+          </Reveal>
+
+          {/* --- Lifetime --- */}
+          <Reveal as="article" delay={180} className={`${planCard} ring-1 ring-[#E3DCD1]`}>
+            <h3 className="font-heading text-2xl font-extrabold">{p.lifetime.name}</h3>
+            <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
+            <div className={priceRow}>
+              <span className="whitespace-nowrap font-heading text-5xl font-black tracking-tight tabular-nums">{p.lifetime.price}</span>
+              <span className="pb-1.5 text-lg font-bold text-[#5C5A56]">{p.lifetime.priceSuffix}</span>
+            </div>
+            <p className="mt-2 text-[15px] text-[#4A4744]">{p.lifetime.note}</p>
+            <PlanFeatures items={p.lifetime.features} />
+            <PlanLink label={p.lifetime.cta} variant="outline" />
           </Reveal>
         </div>
 
