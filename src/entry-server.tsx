@@ -51,9 +51,8 @@ export function senearSeo() {
     publisher: { '@type': 'Organization', name: 'gabba', url: 'https://gabba.bond' },
     offers: [
       { '@type': 'Offer', name: c.pricing.free.name, price: '0', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.monthly}`, price: '1490', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.yearly}`, price: '12900', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: c.pricing.lifetime.name, price: '29900', priceCurrency: 'HUF' },
+      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.monthly}`, price: '2490', priceCurrency: 'HUF' },
+      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.yearly}`, price: '19900', priceCurrency: 'HUF' },
     ],
   };
   const faqPage = {

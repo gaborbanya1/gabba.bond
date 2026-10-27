@@ -70,6 +70,17 @@ export interface SenearContent {
     title: string;
     subtitle: string;
     pricesLink: string;
+    pricingBox: {
+      trialHeader: string;
+      tiers: {
+        label: string;
+        oldPrice: string;
+        insteadOf?: string;
+        newPrice: string;
+        note?: string;
+      }[];
+      reassurance: string;
+    };
     items: { title: string; body: string; bullets: string[]; band: string }[];
   };
   story: {
@@ -137,15 +148,16 @@ export interface SenearContent {
     family: PricingPlan & {
       trialBadge: string;
       trialSticker: [string, string];
+      priceMonthlyOld: string;
       priceMonthly: string;
       suffixMonthly: string;
+      priceYearlyOld: string;
       priceYearly: string;
       suffixYearly: string;
       yearlyNote: string;
       monthlyNote: string;
       perDay: { monthly: [string, string, string]; yearly: [string, string, string] };
     };
-    lifetime: PricingPlan & { price: string; priceSuffix: string; note: string };
     trust: string;
   };
   trustBar: { label: string; badges: string[] };
@@ -223,6 +235,27 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Két mód, ahogy használhatod',
       subtitle: 'Kezdheted egyedül a szülőd telefonjával, és később bármikor összekötheted a sajátoddal.',
       pricesLink: 'Árak megtekintése',
+      pricingBox: {
+        trialHeader: '🎁 14 napig teljesen ingyen kipróbálható',
+        tiers: [
+          {
+            label: 'Havi előfizetés (Bevezető ár):',
+            oldPrice: '3 490 Ft',
+            insteadOf: 'helyett',
+            newPrice: '2 490 Ft / hó',
+            note: '(kevesebb mint napi 85 Ft)',
+          },
+          {
+            label: 'Éves csomag (4 hónap ajándék):',
+            oldPrice: '29 900 Ft',
+            insteadOf: 'helyett',
+            newPrice: '19 900 Ft / év',
+            note: '(csak ~1 658 Ft / hó)',
+          },
+        ],
+        reassurance:
+          'Biztonságos fizetés a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
+      },
       items: [
         {
           title: 'Csak az idős szülő telefonja',
@@ -387,13 +420,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         tagline: 'A szülőd telefonja + a te telefonod',
         trialBadge: '14 nap ingyen',
         trialSticker: ['14 NAP', 'INGYEN'] as [string, string],
-        priceMonthly: '1 490 Ft',
+        priceMonthlyOld: '3 490 Ft',
+        priceMonthly: '2 490 Ft',
         suffixMonthly: '/ hó',
-        priceYearly: '12 900 Ft',
+        priceYearlyOld: '29 900 Ft',
+        priceYearly: '19 900 Ft',
         suffixYearly: '/ év',
-        yearlyNote: '~1 075 Ft / hó · ~28% kedvezmény',
-        monthlyNote: 'Bármikor lemondható',
-        perDay: { monthly: ['kevesebb, mint', '50 Ft', 'naponta'], yearly: ['kb.', '35 Ft', 'naponta'] },
+        yearlyNote: '4 hónap ajándék · csak ~1 658 Ft / hó',
+        monthlyNote: 'Bevezető ár · Bármikor lemondható',
+        perDay: { monthly: ['kevesebb, mint', '85 Ft', 'naponta'], yearly: ['kb.', '55 Ft', 'naponta'] },
         features: [
           'Minden, ami az Ingyenesben',
           'Élő akkumulátor, térerő és hely',
@@ -404,17 +439,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         ],
         cta: 'Kipróbálom 14 napig ingyen',
       },
-      lifetime: {
-        name: 'Örökös',
-        tagline: 'Családi összekötés, havidíj nélkül',
-        price: '29 900 Ft',
-        priceSuffix: 'egyszeri díj',
-        note: 'Nagyjából egy egyszerű nyomógombos senior telefon áráért.',
-        features: ['Minden, ami a Családi összekötésben', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
-        cta: 'Letöltés',
-      },
       trust:
-        'A Google Playen keresztül fizetsz, kizárólag a családtag telefonján. Az idős szülő készülékén soha nem jelenik meg fizetési ablak. Az előfizetés bármikor lemondható.',
+        'Biztonságos fizetés a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
     },
     trustBar: { label: 'Amire számíthatsz', badges: ['Európai fejlesztés', 'Reklámmentes', 'GDPR-konform'] },
     faq: {
@@ -430,8 +456,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'Mindkét telefonnak Android 8.0 vagy újabb rendszerűnek kell lennie (pl. Samsung, Xiaomi, Motorola, Honor, Pixel). iPhone-on nem működik, mert az iOS nem engedi a kezdőképernyő ilyen zárolását és a hívások automatikus kihangosítását.',
         },
         {
-          q: 'Hogyan működik a 14 napos próba és a fizetés? Megjelenik fizetési ablak a szülőm telefonján?',
-          a: 'Nem, soha. Az idős szülő telefonján nincs reklám és nincs fizetési ablak. A 14 napos próba után a családtag a saját telefonján, a Google Playen keresztül választhat: havi 1 490 Ft, éves 12 900 Ft, vagy egyszeri 29 900 Ft-os örökös feloldás.',
+          q: 'Hogyan működik a 14 napos próbaidőszak és a fizetés? Megjelenik bármilyen fizetési ablak a szülőm telefonján?',
+          a: 'Soha. A szülő telefonján a SENEAR 100%-ban reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a gondozó a saját telefonján, a Google Playen keresztül választhat a bevezető árú havi (3 490 Ft helyett 2 490 Ft / hó) vagy a kedvezményes éves előfizetés (29 900 Ft helyett 19 900 Ft / év, azaz ~1 658 Ft / hó) között.',
         },
         {
           q: 'Mi történik, ha lemondom az előfizetést?',
@@ -528,6 +554,24 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Two ways to use it',
       subtitle: 'Start with just your parent’s phone, and connect your own whenever you like.',
       pricesLink: 'See pricing',
+      pricingBox: {
+        trialHeader: '🎁 14-day free trial included',
+        tiers: [
+          {
+            label: 'Monthly plan (Introductory price):',
+            oldPrice: '€9.99',
+            newPrice: '€7.99 / month',
+          },
+          {
+            label: 'Annual plan (4 months free):',
+            oldPrice: '€79.99',
+            newPrice: '€59.99 / year',
+            note: '(only ~€4.99 / month)',
+          },
+        ],
+        reassurance:
+          'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
+      },
       items: [
         {
           title: 'Just your parent’s phone',
@@ -694,13 +738,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         tagline: 'Your parent’s phone + your phone',
         trialBadge: '14 days free',
         trialSticker: ['14 DAYS', 'FREE'] as [string, string],
-        priceMonthly: '€4.99',
+        priceMonthlyOld: '€9.99',
+        priceMonthly: '€7.99',
         suffixMonthly: '/ month',
-        priceYearly: '€39.99',
+        priceYearlyOld: '€79.99',
+        priceYearly: '€59.99',
         suffixYearly: '/ year',
-        yearlyNote: '~€3.33 / month · save ~33%',
-        monthlyNote: 'Cancel anytime',
-        perDay: { monthly: ['less than', '17¢', 'a day'], yearly: ['about', '11¢', 'a day'] },
+        yearlyNote: '4 months free · only ~€4.99 / month',
+        monthlyNote: 'Introductory price · Cancel anytime',
+        perDay: { monthly: ['less than', '27¢', 'a day'], yearly: ['about', '16¢', 'a day'] },
         features: [
           'Everything in Free',
           'Live battery, signal and location',
@@ -711,17 +757,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         ],
         cta: 'Try it free for 14 days',
       },
-      lifetime: {
-        name: 'Lifetime',
-        tagline: 'Family connection, no subscription',
-        price: '€79.99',
-        priceSuffix: 'one-time',
-        note: 'Roughly the price of a basic button senior phone.',
-        features: ['Everything in Family connection', 'No monthly or yearly fee', 'Pay once, via Google Play'],
-        cta: 'Download',
-      },
       trust:
-        'You pay via Google Play in your local currency, only on the family member’s phone. Your parent’s device never shows a payment screen. You can cancel the subscription anytime.',
+        'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
     },
     trustBar: { label: 'What you can count on', badges: ['Built in Europe', 'Ad-free', 'GDPR-compliant'] },
     faq: {
@@ -737,8 +774,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'Both phones need Android 8.0 or newer (e.g. Samsung, Xiaomi, Motorola, Honor, Pixel). It doesn’t work on iPhone, because iOS doesn’t allow this kind of home screen lock or automatic speakerphone.',
         },
         {
-          q: 'How do the 14-day trial and billing work? Will my parent see a payment screen?',
-          a: 'No, never. Your parent’s phone shows no ads and no payment screens. After the 14-day trial, the family member chooses on their own phone via Google Play: €4.99 monthly, €39.99 yearly, or a one-time €79.99 lifetime unlock (shown in your local currency).',
+          q: 'How does the 14-day trial and billing work? Will my parent ever see a payment screen?',
+          a: 'Never. Your parent’s phone stays 100% free of ads and payment prompts. After the 14-day free trial, the caregiver can choose on their own phone via Google Play between the introductory monthly plan (€7.99/mo instead of €9.99) or the discounted annual plan (€59.99/yr instead of €79.99 — just ~€4.99/mo, shown in your local Google Play currency).',
         },
         {
           q: 'What happens if I cancel?',
@@ -835,6 +872,24 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Zwei Arten, es zu nutzen',
       subtitle: 'Beginnen Sie nur mit dem Handy Ihrer Eltern und verbinden Sie Ihr eigenes, wann immer Sie möchten.',
       pricesLink: 'Preise ansehen',
+      pricingBox: {
+        trialHeader: '🎁 14 Tage kostenlos testen',
+        tiers: [
+          {
+            label: 'Monatsabo (Einführungspreis):',
+            oldPrice: '9,99 €',
+            newPrice: '7,99 € / Monat',
+          },
+          {
+            label: 'Jahresabo (4 Monate gratis):',
+            oldPrice: '79,99 €',
+            newPrice: '59,99 € / Jahr',
+            note: '(nur ~4,99 € / Monat)',
+          },
+        ],
+        reassurance:
+          'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
+      },
       items: [
         {
           title: 'Nur das Handy Ihrer Eltern',
@@ -1001,13 +1056,15 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         tagline: 'Handy Ihrer Eltern + Ihr Handy',
         trialBadge: '14 Tage gratis',
         trialSticker: ['14 TAGE', 'GRATIS'] as [string, string],
-        priceMonthly: '4,99 €',
+        priceMonthlyOld: '9,99 €',
+        priceMonthly: '7,99 €',
         suffixMonthly: '/ Monat',
-        priceYearly: '39,99 €',
+        priceYearlyOld: '79,99 €',
+        priceYearly: '59,99 €',
         suffixYearly: '/ Jahr',
-        yearlyNote: '~3,33 € / Monat · ~33 % sparen',
-        monthlyNote: 'Jederzeit kündbar',
-        perDay: { monthly: ['weniger als', '17 Cent', 'am Tag'], yearly: ['ca.', '11 Cent', 'am Tag'] },
+        yearlyNote: '4 Monate gratis · nur ~4,99 € / Monat',
+        monthlyNote: 'Einführungspreis · Jederzeit kündbar',
+        perDay: { monthly: ['weniger als', '27 Cent', 'am Tag'], yearly: ['ca.', '16 Cent', 'am Tag'] },
         features: [
           'Alles aus Kostenlos',
           'Live-Akku, Empfang und Standort',
@@ -1018,17 +1075,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         ],
         cta: '14 Tage kostenlos testen',
       },
-      lifetime: {
-        name: 'Lebenslang',
-        tagline: 'Familien-Verbindung ohne Abo',
-        price: '79,99 €',
-        priceSuffix: 'einmalig',
-        note: 'Etwa zum Preis eines einfachen Tasten-Seniorenhandys.',
-        features: ['Alles aus Familien-Verbindung', 'Keine monatliche oder jährliche Gebühr', 'Einmal zahlen, über Google Play'],
-        cta: 'Herunterladen',
-      },
       trust:
-        'Sie zahlen über Google Play, ausschließlich auf dem Handy des Familienmitglieds. Auf dem Gerät Ihrer Eltern erscheint nie ein Zahlungsfenster. Das Abo ist jederzeit kündbar.',
+        'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
     },
     trustBar: { label: 'Darauf können Sie sich verlassen', badges: ['Entwickelt in Europa', 'Werbefrei', 'DSGVO-konform'] },
     faq: {
@@ -1044,8 +1092,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'Beide Handys brauchen Android 8.0 oder neuer (z. B. Samsung, Xiaomi, Motorola, Honor, Pixel). Auf dem iPhone läuft es nicht, weil iOS eine solche Startbildschirm-Sperre und automatisches Freisprechen nicht erlaubt.',
         },
         {
-          q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sehen meine Eltern ein Zahlungsfenster?',
-          a: 'Nein, nie. Auf dem Handy Ihrer Eltern gibt es keine Werbung und keine Zahlungsfenster. Nach der Testphase wählt das Familienmitglied auf dem eigenen Handy über Google Play: 4,99 € monatlich, 39,99 € jährlich oder einmalig 79,99 € lebenslang.',
+          q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sieht mein Elternteil jemals ein Zahlungsfenster?',
+          a: 'Niemals. Das Handy Ihres Angehörigen bleibt zu 100 % frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt der Betreuer auf seinem eigenen Smartphone über Google Play zwischen dem Monatsabo zum Einführungspreis (7,99 € statt 9,99 €) oder dem vergünstigten Jahresabo (59,99 € statt 79,99 € – nur ~4,99 € / Monat).',
         },
         {
           q: 'Was passiert, wenn ich kündige?',
