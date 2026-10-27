@@ -71,6 +71,11 @@ export interface SenearContent {
     title: string;
     subtitle: string;
     pricesLink: string;
+    drawerCallout: {
+      badge: string;
+      title: string;
+      desc: string;
+    };
     items: { title: string; body: string; bullets: string[]; band: string }[];
   };
   story: {
@@ -235,6 +240,11 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Két mód, ahogy használhatod',
       subtitle: 'Kezdheted egyedül a szülőd telefonjával, és később bármikor összekötheted a sajátoddal.',
       pricesLink: 'Árak megtekintése',
+      drawerCallout: {
+        badge: 'TIPP',
+        title: 'Elég a fiókban heverő régi telefon.',
+        desc: 'Nem kell új készüléket venni, bármilyen Android 8.0 vagy újabb telefon megfelel.',
+      },
       items: [
         {
           title: 'Csak az idős szülő telefonja',
@@ -579,6 +589,11 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Two ways to use it',
       subtitle: 'Start with just your parent’s phone, and connect your own whenever you like.',
       pricesLink: 'See pricing',
+      drawerCallout: {
+        badge: 'TIP',
+        title: 'An old phone from the drawer is enough.',
+        desc: 'No need to buy a new device — any phone with Android 8.0 or newer works.',
+      },
       items: [
         {
           title: 'Just your parent’s phone',
@@ -925,6 +940,11 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       title: 'Zwei Arten, es zu nutzen',
       subtitle: 'Beginnen Sie nur mit dem Handy Ihrer Eltern und verbinden Sie Ihr eigenes, wann immer Sie möchten.',
       pricesLink: 'Preise ansehen',
+      drawerCallout: {
+        badge: 'TIPP',
+        title: 'Ein altes Handy aus der Schublade genügt.',
+        desc: 'Kein neues Gerät nötig – jedes Smartphone ab Android 8.0 funktioniert.',
+      },
       items: [
         {
           title: 'Nur das Handy Ihrer Eltern',

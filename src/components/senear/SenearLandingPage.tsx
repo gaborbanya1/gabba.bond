@@ -405,13 +405,13 @@ function Modes({ c }: { c: SenearContent }) {
           <p className="text-lg leading-relaxed text-[#4A4744]">{c.modes.subtitle}</p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid items-stretch gap-6 md:grid-cols-2">
           {c.modes.items.map((mode, i) => {
             const free = i === 0;
             const Icon = free ? Smartphone : HeartHandshake;
             return (
-              <Reveal as="article" key={mode.title} delay={i * 110} className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_18px_40px_-28px_rgba(31,36,33,0.4)] ring-1 ring-[#EDE4D8]">
-                <div className="flex-1 p-6 sm:p-8">
+              <Reveal as="article" key={mode.title} delay={i * 110} className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-[0_18px_40px_-28px_rgba(31,36,33,0.4)] ring-1 ring-[#EDE4D8]">
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
                   <div className="flex items-center gap-4">
                     <span
                       className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white ${
@@ -433,9 +433,44 @@ function Modes({ c }: { c: SenearContent }) {
                       </li>
                     ))}
                   </ul>
+
+                  {free && (
+                    <div className="sn-callout relative mt-6 rounded-2xl border-[1.5px] border-dashed border-[#C5A880] bg-[#FBF5EA] px-4 pt-4 pb-3.5 shadow-[0_8px_20px_-14px_rgba(94,69,33,0.35)]">
+                      <span className="absolute -top-2.5 left-4 rounded-full bg-[#7A5A2E] px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white shadow-xs">
+                        {c.modes.drawerCallout.badge}
+                      </span>
+                      <div className="flex items-start gap-3.5">
+                        <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#7A5A2E] ring-1 ring-[#E3D3BA]">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-5 w-5"
+                            aria-hidden="true"
+                          >
+                            <rect x="6" y="2" width="12" height="16" rx="2" />
+                            <line x1="11" y1="15" x2="13" y2="15" />
+                            <path d="M3 16h3m12 0h3l1 5H2l1-5Z" />
+                            <line x1="10" y1="19" x2="14" y2="19" />
+                          </svg>
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-base font-extrabold leading-snug text-[#1F2421]">
+                            {c.modes.drawerCallout.title}
+                          </p>
+                          <p className="mt-0.5 text-sm leading-snug text-[#4A4744]">
+                            {c.modes.drawerCallout.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div
-                  className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 sm:px-8 py-4 font-extrabold ${
+                  className={`mt-auto flex min-h-[60px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 sm:px-8 py-4 font-extrabold ${
                     free ? 'bg-[#1B7A4E] text-white text-lg' : 'bg-[#F7EFE2] text-[#5E4521] text-base'
                   }`}
                 >
