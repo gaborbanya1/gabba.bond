@@ -97,7 +97,11 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
+      <div
+        className={`min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans selection:bg-[#C5A880]/30 selection:text-[#1F2421] ${
+          route === 'senear-setup' ? 'lg:h-screen lg:overflow-hidden' : ''
+        }`}
+      >
         <Navbar
           onContactClick={scrollToContact}
           onExploreProjects={scrollToProjects}
@@ -105,7 +109,7 @@ export default function App() {
           currentRoute={route}
         />
 
-        <main className="flex-1">
+        <main className={`flex-1 ${route === 'senear-setup' ? 'lg:min-h-0 lg:overflow-hidden' : ''}`}>
           {route === 'home' && (
             <>
               <Hero onViewProjects={scrollToProjects} onGetInTouch={scrollToContact} onOpenProduct={openProduct} />
@@ -153,7 +157,9 @@ export default function App() {
           )}
         </main>
 
-        <Footer onNavigate={navigate} />
+        <div className={route === 'senear-setup' ? 'lg:hidden' : ''}>
+          <Footer onNavigate={navigate} />
+        </div>
 
         <NogondSimulatorModal isOpen={isNogondDemoOpen} onClose={() => setIsNogondDemoOpen(false)} />
 

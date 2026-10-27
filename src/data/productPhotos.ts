@@ -33,12 +33,13 @@ export function getProductPhotos(product: ProductKey, t: TranslationData): Phone
 /** Ordered list of candidate image URLs (language specific first, then fallbacks). */
 export function getScreenshotSources(product: ProductKey, baseName: string, language: string): string[] {
   const folder = `/screenshots/${product}/`;
+  const lang = ['hu', 'en', 'de'].includes(language) ? language : 'en';
   return Array.from(
     new Set([
-      `${folder}${baseName}_${language}.png`,
+      `${folder}${baseName}_${lang}.png`,
+      `${folder}${baseName}_en.png`,
       `${folder}${baseName}_hu.png`,
       `${folder}${baseName}.png`,
-      `${folder}${baseName}_en.png`,
       `${folder}${baseName}_de.png`,
     ])
   );

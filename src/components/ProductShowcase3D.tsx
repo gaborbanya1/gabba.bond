@@ -14,6 +14,7 @@ import {
   Baby,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { translations } from '../i18n/translations';
 import { PhonePhotoItem } from './PhoneScreenshotCard';
 import { PhoneScreenshotModal } from './PhoneScreenshotModal';
 import { PhoneFrame, ScreenImage } from './PhoneFrame';
@@ -90,16 +91,16 @@ interface ProductShowcase3DProps {
  * its native scale (translateZ(0)), so the images stay perfectly crisp.
  */
 export function ProductShowcase3D({ product, footer, className = '' }: ProductShowcase3DProps) {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const lang = (['hu', 'en', 'de'].includes(language) ? language : 'en') as Lang;
+  const localizedT = translations[lang] ?? translations.en;
   const accent = PRODUCT_ACCENT[product];
 
-  const photos = useMemo(() => getProductPhotos(product, t), [product, t]);
+  const photos = useMemo(() => getProductPhotos(product, localizedT), [product, localizedT]);
   const callouts = useMemo(() => getCallouts(product, lang), [product, lang]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [isPaused, setIsPaused] = useState(false);
   const [zoomPhoto, setZoomPhoto] = useState<PhonePhotoItem | null>(null);
   const pointerStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
@@ -121,8 +122,6 @@ export function ProductShowcase3D({ product, footer, className = '' }: ProductSh
   return (
     <div
       className={`relative w-full flex flex-col items-center select-none ${className}`}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
     >
       {/* STAGE */}
       <div
@@ -307,19 +306,7 @@ export function ProductShowcase3D({ product, footer, className = '' }: ProductSh
               onClick={() => goTo(i, i > activeIndex ? 1 : -1)}
               className="relative flex-1 h-1.5 rounded-full bg-[#C5A880]/30 hover:bg-[#C5A880]/50 overflow-hidden cursor-pointer"
             >
-              {i < activeIndex && <span className="absolute inset-0 rounded-full" style={{ background: accent.main }} />}
-              {i === activeIndex && (
-                <span
-                  key={`progress-${activeIndex}`}
-                  className="ps3d-bar absolute inset-y-0 left-0 rounded-full"
-                  style={{
-                    background: accent.main,
-                    animationDuration: `${SLIDE_DURATION_MS}ms`,
-                    animationPlayState: isPaused || zoomPhoto ? 'paused' : 'running',
-                  }}
-                  onAnimationEnd={goNext}
-                />
-              )}
+              {i <= activeIndex && <span className="absolute inset-0 rounded-full" style={{ background: accent.main }} />}
             </button>
           ))}
         </div>

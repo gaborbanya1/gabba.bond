@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { AppRoute, productOfRoute } from '../routing';
 
@@ -11,14 +11,20 @@ interface NavbarProps {
 }
 
 export function Navbar({
-  onContactClick,
   onExploreProjects,
   onNavigate,
   currentRoute,
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const activeProduct = productOfRoute(currentRoute);
+
+  const downloadLabel =
+    language === 'hu'
+      ? 'Letöltés'
+      : language === 'de'
+      ? 'Herunterladen'
+      : 'Download';
 
   const navLinks: { label: string; isCurrent: boolean; onClick: () => void }[] = [
     { label: t.nav.projects, isCurrent: currentRoute === 'home', onClick: onExploreProjects },
@@ -81,15 +87,17 @@ export function Navbar({
             ))}
           </nav>
 
-          {/* Desktop Right Side: Contact CTA */}
+          {/* Desktop Right Side: Direct Download CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={onContactClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#FAFAFA] bg-[#2C2C2C] hover:bg-[#1A1A1A] active:scale-98 rounded-xl shadow-xs transition-all border border-[#2C2C2C] cursor-pointer ml-1"
+            <a
+              href="https://play.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#FAFAFA] bg-[#1B7A4E] hover:bg-[#145E3B] active:scale-98 rounded-xl shadow-xs transition-all border border-[#1B7A4E] cursor-pointer ml-1 whitespace-nowrap"
             >
-              <span>{t.nav.getInTouch}</span>
-              <ArrowUpRight className="w-4 h-4 text-[#C5A880]" />
-            </button>
+              <Download className="w-4 h-4 text-white shrink-0" />
+              <span>{downloadLabel}</span>
+            </a>
           </div>
 
           {/* Mobile Right Controls: Menu button */}
@@ -120,16 +128,16 @@ export function Navbar({
           ))}
 
           <div className="pt-2 border-t border-[#C5A880]/20">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onContactClick();
-              }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#FAFAFA] bg-[#2C2C2C] rounded-xl shadow-xs"
+            <a
+              href="https://play.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#FAFAFA] bg-[#1B7A4E] hover:bg-[#145E3B] rounded-xl shadow-xs whitespace-nowrap"
             >
-              <span>{t.nav.getInTouch}</span>
-              <ArrowUpRight className="w-4 h-4 text-[#C5A880]" />
-            </button>
+              <Download className="w-4 h-4 text-white shrink-0" />
+              <span>{downloadLabel}</span>
+            </a>
           </div>
         </div>
       )}

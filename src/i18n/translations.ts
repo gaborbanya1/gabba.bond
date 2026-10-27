@@ -397,7 +397,7 @@ export const translations: Partial<Record<SupportedLanguage, TranslationData>> &
         title1: 'Letisztult képernyő',
         sub1: '4 nagy kontrasztos, eltéveszthetetlen csempe',
         badge1: 'Főképernyő',
-        title2: 'Személyreszabható beállítások',
+        title2: 'Személyre szabható beállítások',
         sub2: 'Valós idejű koordináta & azonnali hívás',
         badge2: 'Vészjelző',
         title3: 'Távgondozói Portál',

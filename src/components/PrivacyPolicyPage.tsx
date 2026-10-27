@@ -18,6 +18,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { detectLangFromUrl } from '../routing';
 
 export interface PrivacyPolicyPageProps {
   onBackToHome?: () => void;
@@ -318,8 +319,8 @@ const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
           'Under the GDPR (Articles 15–22), both Seniors and Caregivers have enforceable rights to access, rectification, restriction, portability, objection, and immediate erasure free of charge:',
         bullets: [
           {
-            label: 'Bilateral Consent & One-Tap Permanent Deletion ("Delete All Data / Unpair"):',
-            text: 'At any time, either the Senior Admin (5 taps on the Kiosk clock + PIN → General Settings → "Permanently Delete Cloud Profile & Data (GDPR)") or the Caregiver (Caregiver Dashboard → "Permanently Delete Account & All Data (GDPR)" / Unpair) can trigger one-tap deletion inside the app. This immediately and permanently wipes all synced contacts, Base64 photos, daily routines, routine acknowledgments, Home Safe Zone coordinates, device/battery telemetry, alert logs, pairing codes, and WebRTC signaling nodes from our EU cloud servers (Firestore & Realtime Database in europe-west1) as well as local device storage.',
+            label: 'Bilateral Consent & One-Tap Permanent Deletion:',
+            text: 'At any time, either in Caregiver Mode (Open the SENEAR app → My Profile → tap "Permanently delete account and all data (GDPR)", then confirm with "Yes, delete everything") or in Senior Mode (Open the SENEAR app → General Settings → tap "Permanently delete cloud profile and data (GDPR)", then confirm with "Yes, delete everything"), users can trigger immediate one-tap deletion inside the app. This immediately and permanently wipes all synced contacts, Base64 photos, daily routines, routine acknowledgments, Home Safe Zone coordinates, device/battery telemetry, alert logs, pairing codes, and WebRTC signaling nodes from our EU cloud servers (Firestore & Realtime Database in europe-west1) as well as local device storage.',
           },
           {
             label: 'Comprehensive GDPR Rights (Art. 15–22 & Art. 7(3)):',
@@ -608,8 +609,8 @@ const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
           'A felhasználóknak (mind a Gondozónak, mind a Gondozottnak) a GDPR 15–22. cikkei alapján bármikor díjmentesen jogukban áll:',
         bullets: [
           {
-            label: 'Kétoldalú Hozzájárulás és Egynyomásos Végleges Adattörlés („Minden adat törlése / Párosítás bontása”):',
-            text: 'Bármikor, akár a Gondozott Adminisztrátor (Kioszk óra 5x érintése + PIN → Általános beállítások → „Felhőprofil és adatok végleges törlése (GDPR)”), akár a Gondozó (Gondozói vezérlőpult → „Fiók és minden adat végleges törlése (GDPR)” / Párosítás bontása) egyetlen gombnyomással elindíthatja az adatok törlését az alkalmazáson belül. Ez azonnal és véglegesen törli az összes szinkronizált névjegyet, Base64 fotót, napi rutint és nyugtázást, Otthoni Biztonsági Zóna koordinátát, eszköz- és akkumulátor-telemetriát, riasztási naplót, párosító kódot és WebRTC hívásjelzési csomópontot az EU-s felhőszervereinkről (Firestore és Realtime Database – europe-west1), valamint a készülékek helyi tárhelyéről.',
+            label: 'Kétoldalú Hozzájárulás és Egynyomásos Végleges Adattörlés:',
+            text: 'Bármikor, akár Gondozó (Caregiver) módban (Nyisd meg a SENEAR alkalmazást → Saját adataim → nyomd meg a „Fiók és minden adat végleges törlése” gombot, majd erősítsd meg az „Igen, mindent törlök” gombbal), akár Gondozott (Senior) módban (Nyisd meg a SENEAR alkalmazást → Általános beállítások → nyomd meg a „Felhőprofil és adatok végleges törlése (GDPR)” gombot, majd erősítsd meg az „Igen, mindent törlök” gombbal) egyetlen gombnyomással elindítható az adatok törlése az alkalmazáson belül. Ez azonnal és véglegesen törli az összes szinkronizált névjegyet, Base64 fotót, napi rutint és nyugtázást, Otthoni Biztonsági Zóna koordinátát, eszköz- és akkumulátor-telemetriát, riasztási naplót, párosító kódot és WebRTC hívásjelzési csomópontot az EU-s felhőszervereinkről (Firestore és Realtime Database – europe-west1), valamint a készülékek helyi tárhelyéről.',
           },
           {
             label: 'Teljes körű GDPR érintetti jogok (15–22. cikk):',
@@ -898,8 +899,8 @@ const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
           'Nutzer (sowohl Senioren als auch Betreuungspersonen) haben jederzeit folgende unentgeltliche Rechte nach Art. 15–22 DSGVO:',
         bullets: [
           {
-            label: 'Beidseitige Einwilligung & Sofortige Ein-Klick-Löschung („Alle Daten löschen / Entkoppeln“):',
-            text: 'Jederzeit kann entweder der Senior-Administrator (5× Tippen auf die Kiosk-Uhr + PIN → Allgemeine Einstellungen → „Cloud-Profil und Daten endgültig löschen (DSGVO)“) oder die Betreuungsperson (Betreuer-Dashboard → „Konto und alle Daten endgültig löschen (DSGVO)“ / Entkoppeln) die vollständige Datenlöschung in der App auslösen. Dadurch werden sofort und unwiderruflich alle synchronisierten Kontakte, Base64-Fotos, Tagesroutinen, Bestätigungen, Koordinaten der sicheren Heimzone, Geräte-/Akku-Telemetriedaten, Alarmprotokolle, Kopplungscodes und WebRTC-Signalisierungsknoten von unseren EU-Cloud-Servern (europe-west1) sowie aus dem lokalen Gerätespeicher gelöscht.',
+            label: 'Beidseitige Einwilligung & Sofortige Ein-Klick-Löschung:',
+            text: 'Jederzeit kann entweder im Betreuer-Modus (SENEAR-App öffnen → Mein Profil → auf „Konto und alle Daten endgültig löschen (DSGVO)“ tippen und mit „Ja, alles löschen“ bestätigen) oder im Senior-Modus (SENEAR-App öffnen → Allgemeine Einstellungen → auf „Cloud-Profil und Daten endgültig löschen (DSGVO)“ tippen und mit „Ja, alles löschen“ bestätigen) die vollständige Datenlöschung in der App ausgelöst werden. Dadurch werden sofort und unwiderruflich alle synchronisierten Kontakte, Base64-Fotos, Tagesroutinen, Bestätigungen, Koordinaten der sicheren Heimzone, Geräte-/Akku-Telemetriedaten, Alarmprotokolle, Kopplungscodes und WebRTC-Signalisierungsknoten von unseren EU-Cloud-Servern (europe-west1) sowie aus dem lokalen Gerätespeicher gelöscht.',
           },
           {
             label: 'Umfassende Betroffenenrechte (Art. 15–22 & Art. 7 Abs. 3 DSGVO):',
@@ -962,10 +963,114 @@ const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
 };
 
 function resolvePolicyLang(browserLang: string): PolicyLang {
+  const urlLang = detectLangFromUrl();
+  if (urlLang) return urlLang;
   if (browserLang === 'hu') return 'hu';
   if (browserLang === 'de') return 'de';
   return 'en';
 }
+
+const DELETION_HERO_I18N: Record<
+  PolicyLang,
+  {
+    badge: string;
+    title: string;
+    subtitle: string;
+    method1Title: string;
+    method1Desc: string;
+    method1Steps: string[];
+    method2Title: string;
+    method2Desc: string;
+    method2Btn: string;
+    whatDeletedTitle: string;
+    whatDeletedItems: string[];
+    irreversibleBadge: string;
+    irreversibleDesc: string;
+    closeBtn: string;
+  }
+> = {
+  en: {
+    badge: 'GDPR Art. 17 · Google Play Data Deletion Policy',
+    title: 'SENEAR Account & Personal Data Deletion',
+    subtitle:
+      'You can permanently and irreversibly delete your SENEAR account and all associated Senior and Caregiver data at any time—either instantly inside the app with one tap, or by email request without the app installed.',
+    method1Title: 'Option 1: Instant One-Tap In-App Deletion (Recommended)',
+    method1Desc:
+      'Inside the SENEAR Android app (package ID: bond.gabba.senear), use the built-in erasure button:',
+    method1Steps: [
+      'In Caregiver Mode: Open the SENEAR app → My Profile → tap "Permanently delete account and all data (GDPR)", then confirm with the "Yes, delete everything" button.',
+      'In Senior Mode: Open the SENEAR app → General Settings → tap "Permanently delete cloud profile and data (GDPR)", then confirm with the "Yes, delete everything" button.',
+    ],
+    method2Title: 'Option 2: Deletion Request via Email (Without the App Installed)',
+    method2Desc:
+      'If you have already uninstalled the app, send a deletion request to our Data Controller at gabba@gabba.bond stating your Caregiver email address, registered phone number, or Senior Pairing ID. Requests are processed within 72 hours.',
+    method2Btn: 'Request Data Deletion via Email (gabba@gabba.bond)',
+    whatDeletedTitle: 'What Data Is Permanently Deleted:',
+    whatDeletedItems: [
+      'Caregiver profile (caregivers/{caregiverId}): Name, email address, phone number, Firebase Auth UID, FCM tokens, and notification preferences.',
+      'Senior profile (seniors/{seniorId}): Display name, 6-digit pairing code, speed-dial contacts, Base64 photos, daily routines/reminders, Home Safe Zone GPS coordinates, and device/battery telemetry.',
+      'All cloud subcollections & real-time nodes: alerts, caregivers, logs, voip_stream, webrtc_signaling, RTDB /presence & /voip_stream, and local device SharedPreferences.',
+    ],
+    irreversibleBadge: 'Immediate & Irreversible (0-Day Retention)',
+    irreversibleDesc:
+      'Deletion is executed immediately (0 seconds retention) on our EU servers (europe-west1 – Belgium) and is 100% irreversible. Zero personal data is retained after deletion.',
+    closeBtn: '← Back to Home (/)',
+  },
+  hu: {
+    badge: 'GDPR 17. cikk · Google Play Adattörlési Irányelv',
+    title: 'SENEAR Fiók- és Személyes Adatok Végleges Törlése',
+    subtitle:
+      'A SENEAR alkalmazásban tárolt gondozói és gondozotti (Senior) adataidat bármikor, azonnal és véglegesen törölheted egyetlen gombnyomással az alkalmazáson belül, vagy e-mailben az alkalmazás nélkül is.',
+    method1Title: '1. lehetőség: Azonnali, egynyomásos törlés az alkalmazáson belül (Ajánlott)',
+    method1Desc:
+      'A SENEAR Android alkalmazásban (csomagazonosító: bond.gabba.senear) használd a beépített végleges adattörlés gombot:',
+    method1Steps: [
+      'Gondozó (Caregiver) módban: Nyisd meg a SENEAR alkalmazást → Saját adataim → nyomd meg a „Fiók és minden adat végleges törlése” gombot, majd erősítsd meg az „Igen, mindent törlök” gombbal.',
+      'Gondozott (Senior) módban: Nyisd meg a SENEAR alkalmazást → Általános beállítások → nyomd meg a „Felhőprofil és adatok végleges törlése (GDPR)” gombot, majd erősítsd meg az „Igen, mindent törlök” gombbal.',
+    ],
+    method2Title: '2. lehetőség: Adattörlés kérése e-mailben (ha már törölted az alkalmazást)',
+    method2Desc:
+      'Ha már eltávolítottad az alkalmazást a készülékről, küldj egy rövid e-mailt a gabba@gabba.bond címre a regisztrált gondozói e-mail-címeddel, telefonszámoddal vagy a 6-jegyű Senior párosító kóddal. A kérést 72 órán belül végrehajtjuk.',
+    method2Btn: 'Adattörlés kérése e-mailben (gabba@gabba.bond)',
+    whatDeletedTitle: 'Milyen adatok törlődnek véglegesen:',
+    whatDeletedItems: [
+      'Gondozói profil (caregivers/{caregiverId}): Név, e-mail-cím, telefonszám, Firebase Auth UID, FCM push tokenek és értesítési beállítások.',
+      'Gondozotti profil (seniors/{seniorId}): Név, 6-jegyű párosító kód, gyorstárcsázó névjegyek, Base64 fotók, napi rutinok/emlékeztetők, Otthoni Zóna GPS-koordináták és akkumulátor/állapot telemetria.',
+      'Minden felhőbeli alkollekció és valós idejű csomópont: alerts, caregivers, logs, voip_stream, webrtc_signaling, RTDB /presence és /voip_stream, valamint a készülék helyi SharedPreferences tárolója.',
+    ],
+    irreversibleBadge: 'Azonnali és Visszafordíthatatlan (0 napos megőrzés)',
+    irreversibleDesc:
+      'A törlés az EU-s szervereken (europe-west1 – Belgium) azonnal (0 másodperces megőrzési idővel) végbemegy és 100%-ban visszafordíthatatlan. A törlés után semmilyen személyes adat nem marad vissza.',
+    closeBtn: '← Vissza a főoldalra (/)',
+  },
+  de: {
+    badge: 'Art. 17 DSGVO · Google Play Richtlinie zur Datenlöschung',
+    title: 'SENEAR Konto- und Datenlöschung',
+    subtitle:
+      'Sie können Ihr SENEAR-Konto sowie alle zugehörigen Senior- und Betreuerdaten jederzeit dauerhaft und unwiderruflich löschen – entweder sofort per Fingertipp direkt in der App oder per E-Mail-Anfrage.',
+    method1Title: 'Option 1: Sofortige In-App-Löschung per Fingertipp (Empfohlen)',
+    method1Desc:
+      'Nutzen Sie in der SENEAR Android-App (Paket-ID: bond.gabba.senear) die integrierte Löschfunktion:',
+    method1Steps: [
+      'Im Betreuer-Modus (Caregiver): Öffnen Sie die SENEAR-App → Mein Profil → tippen Sie auf „Konto und alle Daten endgültig löschen (DSGVO)“ und bestätigen Sie mit „Ja, alles löschen“.',
+      'Im Senior-Modus: Öffnen Sie die SENEAR-App → Allgemeine Einstellungen → tippen Sie auf „Cloud-Profil und Daten endgültig löschen (DSGVO)“ und bestätigen Sie mit „Ja, alles löschen“.',
+    ],
+    method2Title: 'Option 2: Löschungsanfrage per E-Mail (ohne installierte App)',
+    method2Desc:
+      'Falls Sie die App bereits deinstalliert haben, senden Sie eine E-Mail an gabba@gabba.bond mit Ihrer registrierten E-Mail-Adresse, Telefonnummer oder dem 6-stelligen Kopplungscode. Anfragen werden innerhalb von 72 Stunden ausgeführt.',
+    method2Btn: 'Datenlöschung per E-Mail anfordern (gabba@gabba.bond)',
+    whatDeletedTitle: 'Welche Daten werden endgültig gelöscht:',
+    whatDeletedItems: [
+      'Betreuerprofil (caregivers/{caregiverId}): Name, E-Mail-Adresse, Telefonnummer, Firebase Auth UID, FCM-Token und Benachrichtigungseinstellungen.',
+      'Seniorprofil (seniors/{seniorId}): Anzeigename, 6-stelliger Kopplungscode, Kurzwahlkontakte, Base64-Fotos, tägliche Routinen/Erinnerungen, Home-Safe-Zone-GPS-Koordinaten sowie Akku-/Gerätetelemetrie.',
+      'Alle Cloud-Subkollektionen & Echtzeit-Knoten: alerts, caregivers, logs, voip_stream, webrtc_signaling, RTDB /presence & /voip_stream sowie lokale SharedPreferences.',
+    ],
+    irreversibleBadge: 'Sofortig & Unwiderruflich (0 Tage Speicherung)',
+    irreversibleDesc:
+      'Die Löschung erfolgt auf unseren EU-Servern (europe-west1 – Belgien) sofort (0 Sekunden Aufbewahrung) und ist zu 100 % unwiderruflich. Es verbleiben keinerlei personenbezogene Daten.',
+    closeBtn: '← Zurück zur Startseite (/)',
+  },
+};
 
 export function PrivacyPolicyPage({
   onBackToHome = () => {
@@ -986,14 +1091,12 @@ export function PrivacyPolicyPage({
 
   useEffect(() => {
     if (focusDeletion) {
-      setTimeout(() => {
-        const el = document.getElementById('account-deletion');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [focusDeletion]);
 
   const content = PRIVACY_CONTENT[activeLang] ?? PRIVACY_CONTENT.en;
+  const deletionHero = DELETION_HERO_I18N[activeLang] ?? DELETION_HERO_I18N.en;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
@@ -1020,36 +1123,140 @@ export function PrivacyPolicyPage({
             <span className="text-[#2C2C2C] font-semibold">{content.breadcrumbCurrent}</span>
           </nav>
 
-          {/* Language Switcher (Auto-detected to user's language, default EN, switchable between EN / HU / DE) */}
-          <div className="flex items-center gap-2">
-            <Globe className="w-3.5 h-3.5 text-[#8C7355]" />
-            <span className="text-xs font-medium text-[#6E6B65]">{content.langSwitchLabel}</span>
-            <div className="inline-flex rounded-xl bg-[#F0EAE1] p-0.5 border border-[#C5A880]/30">
-              {(['en', 'hu', 'de'] as const).map((code) => {
-                const isActive = activeLang === code;
-                const labels: Record<PolicyLang, string> = {
-                  en: 'EN (English)',
-                  hu: 'HU (Magyar)',
-                  de: 'DE (Deutsch)',
-                };
-                return (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => setActiveLang(code)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-[#2C2C2C] text-white shadow-2xs'
-                        : 'text-[#5C5A56] hover:text-[#2C2C2C]'
-                    }`}
-                  >
-                    {labels[code]}
-                  </button>
-                );
-              })}
+          {/* Language Switcher + Close / Back to Home Button */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5 text-[#8C7355]" />
+              <span className="text-xs font-medium text-[#6E6B65]">{content.langSwitchLabel}</span>
+              <div className="inline-flex rounded-xl bg-[#F0EAE1] p-0.5 border border-[#C5A880]/30">
+                {(['en', 'hu', 'de'] as const).map((code) => {
+                  const isActive = activeLang === code;
+                  const labels: Record<PolicyLang, string> = {
+                    en: 'EN (English)',
+                    hu: 'HU (Magyar)',
+                    de: 'DE (Deutsch)',
+                  };
+                  return (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => setActiveLang(code)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#2C2C2C] text-white shadow-2xs'
+                          : 'text-[#5C5A56] hover:text-[#2C2C2C]'
+                      }`}
+                    >
+                      {labels[code]}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={onBackToHome}
+              className="px-3 py-1.5 rounded-xl bg-white text-[#2C2C2C] border border-[#C5A880]/50 text-xs font-bold hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+            >
+              {deletionHero.closeBtn}
+            </button>
           </div>
         </div>
+
+        {/* Dedicated Top-of-Page Account & Data Deletion View when visiting /delete-account */}
+        {focusDeletion && (
+          <section
+            id="delete-account-instructions"
+            className="bg-gradient-to-br from-[#FFFDF9] to-[#F5F0EB] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] shadow-md space-y-6"
+          >
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white">
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{deletionHero.badge}</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-800" />
+                  <span>{deletionHero.irreversibleBadge}</span>
+                </span>
+              </div>
+              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#2C2C2C] tracking-tight">
+                {deletionHero.title}
+              </h1>
+              <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed">
+                {deletionHero.subtitle}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Option 1: In-App Deletion */}
+              <div className="rounded-2xl bg-white p-5 border border-[#E8DFD4] space-y-3">
+                <h2 className="font-heading text-base sm:text-lg font-bold text-[#2C2C2C] flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-emerald-700 shrink-0" />
+                  <span>{deletionHero.method1Title}</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed">
+                  {deletionHero.method1Desc}
+                </p>
+                <ul className="space-y-2 pt-1">
+                  {deletionHero.method1Steps.map((step, idx) => (
+                    <li
+                      key={idx}
+                      className="text-xs sm:text-sm text-[#2C2C2C] leading-relaxed flex items-start gap-2.5 bg-[#FAF8F5] p-3 rounded-xl border border-[#E8DFD4]"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Option 2: Email Deletion */}
+              <div className="rounded-2xl bg-white p-5 border border-[#E8DFD4] flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  <h2 className="font-heading text-base sm:text-lg font-bold text-[#2C2C2C] flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-[#8C7355] shrink-0" />
+                    <span>{deletionHero.method2Title}</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed">
+                    {deletionHero.method2Desc}
+                  </p>
+                </div>
+                <div>
+                  <a
+                    href="mailto:gabba@gabba.bond?subject=SENEAR%20Account%20and%20Data%20Deletion%20Request"
+                    className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-[#2C2C2C] text-white text-xs sm:text-sm font-bold hover:bg-[#1F2421] transition-colors shadow-xs"
+                  >
+                    <Mail className="w-4 h-4 text-[#C5A880]" />
+                    <span>{deletionHero.method2Btn}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* What Data Is Deleted & Irreversibility */}
+            <div className="rounded-2xl bg-white p-5 border border-[#E8DFD4] space-y-3">
+              <h2 className="font-heading text-base sm:text-lg font-bold text-[#2C2C2C] flex items-center gap-2">
+                <Database className="w-5 h-5 text-[#8C7355] shrink-0" />
+                <span>{deletionHero.whatDeletedTitle}</span>
+              </h2>
+              <ul className="space-y-2">
+                {deletionHero.whatDeletedItems.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="text-xs sm:text-sm text-[#5C5A56] leading-relaxed flex items-start gap-2"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0 mt-2" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="pt-2 border-t border-[#F0EAE1] text-xs sm:text-sm font-semibold text-[#2C2C2C]">
+                {deletionHero.irreversibleDesc}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Hero Header */}
         <header className="space-y-5">
@@ -1346,6 +1553,13 @@ export function PrivacyPolicyPage({
               className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white text-[#2C2C2C] border border-[#C5A880]/50 text-xs sm:text-sm font-semibold hover:bg-[#FAF8F5] transition-colors cursor-pointer"
             >
               <span>{content.backToSenearBtn}</span>
+            </button>
+            <button
+              type="button"
+              onClick={onBackToHome}
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white text-[#2C2C2C] border border-[#C5A880]/50 text-xs sm:text-sm font-semibold hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+            >
+              <span>{content.backToHomeBtn}</span>
             </button>
           </div>
         </section>
