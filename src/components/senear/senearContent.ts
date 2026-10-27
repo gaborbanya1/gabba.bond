@@ -147,7 +147,7 @@ export interface SenearContent {
       monthlyNote: string;
       perDay: { monthly: [string, string, string]; yearly: [string, string, string] };
     };
-    lifetime: PricingPlan & { price: string; priceSuffix: string; note: string };
+    lifetime: PricingPlan & { priceOld: string; price: string; priceSuffix: string; note: string };
     trust: string;
   };
   trustBar: { label: string; badges: string[] };
@@ -411,10 +411,11 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       lifetime: {
         name: 'Örökös',
         tagline: 'Családi összekötés, havidíj nélkül',
-        price: '29 900 Ft',
-        priceSuffix: 'egyszeri díj',
-        note: 'Nagyjából egy egyszerű nyomógombos senior telefon áráért.',
-        features: ['Minden, ami a Családi összekötésben', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
+        priceOld: '89 900 Ft',
+        price: '59 900 Ft',
+        priceSuffix: '/ egyszeri díj',
+        note: '👨‍👩‍👧‍👦 2 gondozónak (pl. az idős fia és lánya is megkapja) – a család összedobhatja, elfelezve fejenként csak 29 950 Ft!',
+        features: ['Két gondozó örökös összekapcsolása', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
         cta: 'Letöltés',
       },
       trust:
@@ -719,11 +720,12 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       },
       lifetime: {
         name: 'Lifetime',
-        tagline: 'Family connection, no subscription',
-        price: '€79.99',
-        priceSuffix: 'one-time',
-        note: 'About the price of a basic button senior phone.',
-        features: ['Everything in Family connection', 'No monthly or yearly fee', 'Pay once via Google Play'],
+        tagline: 'Family link, no monthly or annual fees',
+        priceOld: '€199.00',
+        price: '€149.00',
+        priceSuffix: '/ once',
+        note: '👨‍👩‍👧‍👦 For 2 caregivers (e.g. both son and daughter) – split the one-time cost, just €74.50 each!',
+        features: ['Lifetime access for 2 caregivers', 'No monthly or annual fees', 'Pay once securely via Google Play'],
         cta: 'Download',
       },
       trust:
@@ -1028,11 +1030,12 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
       },
       lifetime: {
         name: 'Lebenslang',
-        tagline: 'Familien-Verbindung ohne Abo',
-        price: '79,99 €',
-        priceSuffix: 'einmalig',
-        note: 'Etwa zum Preis eines einfachen Tasten-Seniorenhandys.',
-        features: ['Alles aus Familien-Verbindung', 'Keine monatliche oder jährliche Gebühr', 'Einmal zahlen, über Google Play'],
+        tagline: 'Familien-Kopplung, ohne Monats- oder Jahresgebühren',
+        priceOld: '199,00 €',
+        price: '149,00 €',
+        priceSuffix: '/ Einmalzahlung',
+        note: '👨‍👩‍👧‍👦 Für 2 Betreuer inklusive (z. B. Sohn und Tochter) – geteilt durch zwei Geschwister nur 74,50 € pro Person!',
+        features: ['Lebenslanger Zugriff für 2 Betreuer', 'Keine Monats- oder Jahresgebühren', 'Einmalige Zahlung über Google Play'],
         cta: 'Herunterladen',
       },
       trust:

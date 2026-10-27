@@ -838,11 +838,20 @@ function Pricing({ c }: { c: SenearContent }) {
           <Reveal as="article" delay={180} className={`${planCard} ring-1 ring-[#E3DCD1]`}>
             <h3 className="font-heading text-2xl font-extrabold">{p.lifetime.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
-            <div className={priceRow}>
-              <span className="whitespace-nowrap font-heading text-5xl font-black tracking-tight tabular-nums">{p.lifetime.price}</span>
-              <span className="pb-1.5 text-lg font-bold text-[#5C5A56]">{p.lifetime.priceSuffix}</span>
+            <div className="mt-6">
+              <div className="flex flex-wrap items-baseline">
+                <span className="line-through opacity-60 text-gray-400 mr-2 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
+                  {p.lifetime.priceOld}
+                </span>
+                <span className="whitespace-nowrap font-heading text-3xl font-extrabold tracking-tight text-gray-900 tabular-nums">
+                  {p.lifetime.price}
+                </span>
+              </div>
+              <span className="mt-1 text-sm text-gray-500 font-medium block">{p.lifetime.priceSuffix}</span>
             </div>
-            <p className="mt-2 text-[15px] text-[#4A4744]">{p.lifetime.note}</p>
+            <div className="mt-3 p-2.5 rounded-lg bg-amber-50/60 border border-amber-200/50 text-xs text-amber-850 text-amber-950 font-medium leading-relaxed">
+              {p.lifetime.note}
+            </div>
             <PlanFeatures items={p.lifetime.features} />
             <PlanLink label={p.lifetime.cta} variant="outline" />
           </Reveal>
