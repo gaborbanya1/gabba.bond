@@ -736,7 +736,7 @@ function Pricing({ c }: { c: SenearContent }) {
   const [yearly, setYearly] = useState(false);
   const perDay = yearly ? p.family.perDay.yearly : p.family.perDay.monthly;
 
-  const planCard = 'flex flex-col rounded-3xl bg-white p-6 sm:p-8';
+  const planCard = 'flex h-full flex-col rounded-3xl bg-white p-6 sm:p-8';
   const priceRow = 'mt-6 flex flex-wrap items-end gap-x-2';
 
   return (
@@ -750,9 +750,9 @@ function Pricing({ c }: { c: SenearContent }) {
           <p className="text-lg leading-relaxed text-[#4A4744]">{p.subtitle}</p>
         </div>
 
-        <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-3 lg:gap-5">
+        <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-3 lg:gap-5">
           {/* --- Free --- */}
-          <Reveal as="article" className={`${planCard} ring-1 ring-[#E3DCD1] lg:my-6`}>
+          <Reveal as="article" className={`${planCard} ring-1 ring-[#E3DCD1]`}>
             <h3 className="font-heading text-2xl font-extrabold">{p.free.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.free.tagline}</p>
             <div className={priceRow}>
@@ -768,12 +768,20 @@ function Pricing({ c }: { c: SenearContent }) {
             <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#1B7A4E] px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-white shadow-md">
               {p.recommended}
             </span>
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <h3 className="font-heading text-2xl font-extrabold">{p.family.name}</h3>
-                <p className="mt-1 text-base text-[#5C5A56]">{p.family.tagline}</p>
-              </div>
-              <span className="rounded-full bg-[#F7EFE2] px-3 py-1 text-sm font-extrabold text-[#5E4521]">{p.family.trialBadge}</span>
+
+            {/* Corner trial sticker – half-protruding top-right gold seal */}
+            <div className="sn-sticker absolute -top-[18px] -right-[6px] sm:-top-[20px] sm:-right-[14px] z-20 flex h-[68px] w-[68px] sm:h-[74px] sm:w-[74px] flex-col items-center justify-center rounded-full border-[2.5px] border-white bg-gradient-to-br from-[#F2D28B] via-[#E5BC63] to-[#D4A449] text-center text-[#231606] shadow-[0_10px_22px_-6px_rgba(94,69,33,0.48)]">
+              <span className="block font-heading text-[14px] sm:text-[15px] font-black uppercase leading-[1.05] tracking-tight">
+                {p.family.trialSticker[0]}
+              </span>{' '}
+              <span className="mt-0.5 block text-[10.5px] sm:text-[11.5px] font-extrabold uppercase leading-[1.05] tracking-[0.06em]">
+                {p.family.trialSticker[1]}
+              </span>
+            </div>
+
+            <div>
+              <h3 className="font-heading text-2xl font-extrabold">{p.family.name}</h3>
+              <p className="mt-1 text-base text-[#5C5A56]">{p.family.tagline}</p>
             </div>
 
             {/* Monthly / yearly switch */}
@@ -824,7 +832,7 @@ function Pricing({ c }: { c: SenearContent }) {
           </Reveal>
 
           {/* --- Lifetime --- */}
-          <Reveal as="article" delay={180} className={`${planCard} ring-1 ring-[#E3DCD1] lg:my-6`}>
+          <Reveal as="article" delay={180} className={`${planCard} ring-1 ring-[#E3DCD1]`}>
             <h3 className="font-heading text-2xl font-extrabold">{p.lifetime.name}</h3>
             <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
             <div className={priceRow}>
@@ -848,7 +856,7 @@ function Pricing({ c }: { c: SenearContent }) {
 
 function PlanFeatures({ items }: { items: string[] }) {
   return (
-    <ul className="mt-6 flex-1 space-y-3 border-t border-[#EDE4D8] pt-6">
+    <ul className="mt-6 space-y-3 border-t border-[#EDE4D8] pt-6">
       {items.map((f) => (
         <li key={f} className="flex items-start gap-3 text-base leading-snug text-[#1F2421]">
           <DrawCheck className="mt-0.5 h-5 w-5" />
@@ -861,19 +869,21 @@ function PlanFeatures({ items }: { items: string[] }) {
 
 function PlanLink({ label, variant }: { label: string; variant: 'filled' | 'outline' }) {
   return (
-    <a
-      href={PLAY_STORE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-bold transition-colors ${
-        variant === 'filled'
-          ? 'bg-[#1B7A4E] text-white hover:bg-[#145E3B]'
-          : 'border-2 border-[#1B7A4E]/30 text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#F1F8F3]'
-      } ${FOCUS_RING}`}
-    >
-      <GooglePlayIcon color="white" className={`h-4 w-4 ${variant === 'filled' ? 'text-white' : 'text-[#1B7A4E]'}`} />
-      {label}
-    </a>
+    <div className="mt-auto pt-8">
+      <a
+        href={PLAY_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-bold transition-colors ${
+          variant === 'filled'
+            ? 'bg-[#1B7A4E] text-white hover:bg-[#145E3B]'
+            : 'border-2 border-[#1B7A4E]/30 text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#F1F8F3]'
+        } ${FOCUS_RING}`}
+      >
+        <GooglePlayIcon color="white" className={`h-4 w-4 ${variant === 'filled' ? 'text-white' : 'text-[#1B7A4E]'}`} />
+        {label}
+      </a>
+    </div>
   );
 }
 

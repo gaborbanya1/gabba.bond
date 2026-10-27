@@ -99,6 +99,34 @@
   50% { transform: translateY(-8px); }
 }
 
+/* ---------- Pricing corner sticker ("14 NAP INGYEN") ---------- */
+.sn-sticker {
+  transform: rotate(7deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sn-js .sn-reveal .sn-sticker {
+    opacity: 0;
+    transform: scale(0.55) rotate(-8deg);
+  }
+  .sn-js .sn-reveal.is-in .sn-sticker {
+    animation: snStickerPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.18s both;
+  }
+}
+@keyframes snStickerPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.55) rotate(-8deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06) rotate(9deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(7deg);
+  }
+}
+
 /* ---------- Reduced motion: final static state ---------- */
 @media (prefers-reduced-motion: reduce) {
   .sn-js .sn-reveal { opacity: 1; transform: none; transition: none; }
@@ -108,6 +136,7 @@
   .sn-demo-strike { animation: none; transform: scaleX(1); }
   .sn-demo-ring { animation: none; opacity: 1; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9); }
   .sn-pop, .sn-travel, .sn-press, .sn-float { animation: none; }
+  .sn-sticker { animation: none; opacity: 1; transform: rotate(7deg); }
   .sn-travel { display: none; }
   * { scroll-behavior: auto !important; }
 }

@@ -136,6 +136,7 @@ export interface SenearContent {
     free: PricingPlan & { price: string; priceSuffix: string };
     family: PricingPlan & {
       trialBadge: string;
+      trialSticker: [string, string];
       priceMonthly: string;
       suffixMonthly: string;
       priceYearly: string;
@@ -385,6 +386,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         name: 'Családi összekötés',
         tagline: 'A szülőd telefonja + a te telefonod',
         trialBadge: '14 nap ingyen',
+        trialSticker: ['14 NAP', 'INGYEN'] as [string, string],
         priceMonthly: '1 490 Ft',
         suffixMonthly: '/ hó',
         priceYearly: '12 900 Ft',
@@ -398,7 +400,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Értesítés SOS-ről és lemerülésről',
           'Gyógyszeremlékeztető visszajelzéssel',
           'Hívógombok és hívásszűrés távolról',
-          'Wi-Fi hang- és videóhívás a két telefon között',
+          'Wi-Fi hang- és videóhívás',
         ],
         cta: 'Kipróbálom 14 napig ingyen',
       },
@@ -691,6 +693,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         name: 'Family connection',
         tagline: 'Your parent’s phone + your phone',
         trialBadge: '14 days free',
+        trialSticker: ['14 DAYS', 'FREE'] as [string, string],
         priceMonthly: '€4.99',
         suffixMonthly: '/ month',
         priceYearly: '€39.99',
@@ -704,7 +707,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Notifications for SOS and low battery',
           'Medication reminders with confirmation',
           'Call buttons and call filtering remotely',
-          'Wi-Fi voice and video calls between the two phones',
+          'Wi-Fi voice and video calls',
         ],
         cta: 'Try it free for 14 days',
       },
@@ -997,6 +1000,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         name: 'Familien-Verbindung',
         tagline: 'Handy Ihrer Eltern + Ihr Handy',
         trialBadge: '14 Tage gratis',
+        trialSticker: ['14 TAGE', 'GRATIS'] as [string, string],
         priceMonthly: '4,99 €',
         suffixMonthly: '/ Monat',
         priceYearly: '39,99 €',
@@ -1010,7 +1014,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           'Nachricht bei SOS und schwachem Akku',
           'Medikamentenerinnerung mit Bestätigung',
           'Anruftasten und Anruffilter aus der Ferne',
-          'WLAN-Sprach- und Videoanrufe zwischen beiden Handys',
+          'WLAN-Sprach- und Videoanrufe',
         ],
         cta: '14 Tage kostenlos testen',
       },
