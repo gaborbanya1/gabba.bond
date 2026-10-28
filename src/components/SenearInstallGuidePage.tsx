@@ -16,6 +16,7 @@ interface SetupStepData {
   end: number;
   timeStamp: string;
   title: string;
+  subtitle?: string;
   tasks: string[];
 }
 
@@ -295,7 +296,7 @@ const GUIDE_COPY: Record<Lang, GuideCopy> = {
   },
 
   de: {
-    videoId: '7UUD1rOxeOo',
+    videoId: 'fCfdBxkxdt0',
     backToSenearBtn: 'Zurück zur SENEAR-Hauptseite',
     pageTitle: 'SENEAR Einrichtungsanleitung',
     pageSubtitle:
@@ -305,122 +306,158 @@ const GUIDE_COPY: Record<Lang, GuideCopy> = {
     steps: [
       {
         id: 1,
-        start: 0,
-        end: 24,
-        timeStamp: '00:00',
+        start: 7,
+        end: 35,
+        timeStamp: '00:07',
         title: '1. Installation, Rollenauswahl & Berechtigungen',
+        subtitle:
+          'Standard-Berechtigungen bestätigen und die Rolle „Betreuer“ (links) bzw. „Senior“ (rechts) auswählen.',
         tasks: [
-          'Starten Sie die SENEAR-App auf beiden Telefonen, bestätigen Sie die wichtigen Berechtigungen (Kamera, Standort, Mikrofon, Benachrichtigungen, Anrufe und SMS) und wählen Sie links den **Betreuer**-Modus und rechts den **Senioren**-Modus.',
+          '**Betreuer-Telefon (Links):** Nach dem ersten Start die Standard-Berechtigungen (Kamera, Standort, Mikrofon, Benachrichtigungen, Telefon und SMS) bestätigen und die Rolle „Ich bin Betreuer“ wählen.',
+          '**Seniorentelefon (Rechts):** Die Berechtigungen für Anrufe, SMS und Standort zulassen und anschließend den Modus „Ich bin Senior“ auswählen.',
         ],
       },
       {
         id: 2,
-        start: 24,
-        end: 105,
-        timeStamp: '00:24',
-        title: '2. Profildaten & Geschützte Kiosk-Systemberechtigungen',
+        start: 35,
+        end: 111,
+        timeStamp: '00:35',
+        title: '2. Dateneingabe & Systemberechtigungen einrichten',
+        subtitle:
+          'Profildaten eingeben und die 4 einmaligen Android-Schutzfunktionen für den Kiosk-Modus aktivieren.',
         tasks: [
-          'Geben Sie die Betreuerdaten (Mary Smith) und anschließend die Seniorendaten (John Smith) ein und aktivieren Sie Schritt für Schritt die Kiosk-Berechtigungen: *Appear on top*, *Modify system settings*, *Default Home app* sowie *SENEAR Kiosk Guard* in den Bedienungshilfen.',
+          '**Betreuer-Telefon (Links):** Name und Telefonnummer des Betreuers (z. B. Maria Müller) eingeben und direkt das Betreuer-Dashboard öffnen.',
+          '**Seniorentelefon (Rechts):** Grunddaten des Seniors (Hans Müller) eingeben und die 4 Systemberechtigungen aktivieren: 1. „Am Anfang anzeigen“ (Überlagerung), 2. „Systemeinstellungen ändern“, 3. „SENEAR als Standard-Start-App“ festlegen und 4. in den Eingabehilfen unter „Installierte Apps“ den „SENEAR Kiosk-Wächter“ einschalten.',
         ],
       },
       {
         id: 3,
-        start: 105,
-        end: 172,
-        timeStamp: '01:45',
-        title: '3. Zwei Telefone, Ein System – Sofortige Kopplung',
+        start: 111,
+        end: 177,
+        timeStamp: '01:51',
+        title: '3. Zwei Telefone, ein System – Kopplung in Sekunden',
+        subtitle:
+          'Nach DSGVO-Zustimmung beide Smartphones per 6-stelligem Code verbinden und Hintergrundbetrieb sichern.',
         tasks: [
-          'Öffnen Sie *My Seniors & Pairing* am Betreuer-Telefon und *General Settings* am Senioren-Telefon. Bestätigen Sie die Kopplung für den 6-stelligen Code (TD6F4T), verbinden Sie beide Geräte und aktivieren Sie SMS-Zugriff sowie Akku-Schutz unter *SMS & Battery Management*.',
+          '**Betreuer-Telefon (Links):** „Meine Senioren & Kopplung“ öffnen, den 6-stelligen Code vom Seniorentelefon eingeben und auf „Gerät koppeln“ tippen – im Dashboard erscheinen sofort Online-Status und Akkustand.',
+          '**Seniorentelefon (Rechts):** In den „Allgemeinen Einstellungen“ der DSGVO-konformen Kopplung zustimmen (der 6-stellige Code wird angezeigt) und unter „SMS- & Akkuverwaltung“ den Benachrichtigungszugriff aktivieren sowie die Akku-Optimierung deaktivieren.',
         ],
       },
       {
         id: 4,
-        start: 172,
-        end: 331,
-        timeStamp: '02:52',
-        title: '4. Fotos, Kontakte & Kachel-Einrichtung (4 oder 6 Kacheln)',
+        start: 177,
+        end: 339,
+        timeStamp: '02:57',
+        title: '4. Fernverwaltung für Fotos, Kontakte & Kacheln (4 oder 6 Kacheln)',
+        subtitle:
+          'Porträtfotos für bis zu 6 Kurzwahlkacheln aus der Ferne hochladen, zuschneiden und Text-/Bildgröße live anpassen.',
         tasks: [
-          'Starten Sie den geschützten Kiosk-Modus am Senioren-Telefon. Laden Sie Fotos für Kacheln 1–4 hoch, wechseln Sie zur **6-Kachel-Ansicht** (04:01) und passen Sie Symbol-, Text- und Fotogrößen in Echtzeit unter *Show Profile Photos* an (04:46).',
+          '**Betreuer-Telefon (Links):** Unter „Kontakte verwalten“ Porträtfotos für die Kurzwahlplätze 1 bis 4 auswählen, Gesichter passend zuschneiden, per Schalter die 5. und 6. Kachel aktivieren und unter „Profilbilder anzeigen“ Symbol-, Schrift- und Bildgröße per Schieberegler einstellen.',
+          '**Seniorentelefon (Rechts):** Auf dem geschützten Kiosk-Bildschirm erscheinen in Echtzeit die 4 bzw. 6 großen Farbkacheln samt Porträtfotos, Namen, Rollen und der roten SOS-Notruftaste.',
         ],
       },
       {
         id: 5,
-        start: 331,
-        end: 379,
-        timeStamp: '05:31',
-        title: '5. Anrufberechtigungen (Whitelist) & Betrugsschutz',
+        start: 339,
+        end: 400,
+        timeStamp: '05:39',
+        title: '5. Automatische Rufannahme (100 % Lautsprecher) & WLAN-Anruf',
+        subtitle:
+          'Freihändige Rufannahme mit 100 % Lautsprecher aktivieren und kostenlose WLAN-Anrufe starten.',
         tasks: [
-          'Fügen Sie unter *Call Permissions* vertrauenswürdige Kontakte (z. B. Kate und Andrew) hinzu, die zusätzlich zu den 6 Hauptkacheln anrufen dürfen, während unbekannte Nummern und Telefonbetrüger automatisch blockiert werden.',
+          '**Betreuer-Telefon (Links):** In den „Erweiterten Anrufeinstellungen“ die automatische Rufannahme (nach 5 Sekunden) sowie den automatischen Lautsprecher einschalten und einen kostenlosen WLAN-Anruf starten.',
+          '**Seniorentelefon (Rechts):** Nimmt den eingehenden WLAN-Anruf nach dem Countdown automatisch und ohne Tastendruck mit 100 % Freisprechlautstärke an. Ist die Automatik aus, zeigt ein rotes Badge „Verpasster Anruf!“ den Anruf auf der Kachel an.',
         ],
       },
       {
         id: 6,
-        start: 379,
-        end: 451,
-        timeStamp: '06:19',
-        title: '6. Kostenloser WLAN-Anruf, 100 % Freisprechen & Rückruf',
+        start: 400,
+        end: 411,
+        timeStamp: '06:40',
+        title: '6. Klassischer SIM-Anruf oder kostenloser WLAN-Anruf (Rückruf)',
+        subtitle:
+          'Sicherer Rückruf vom Kiosk-Bildschirm nach Ja/Nein-Bestätigung.',
         tasks: [
-          'Aktivieren Sie *Auto-answer* und *Auto-speaker* unter *Advanced Call Settings* für berührungslose Annahme bei 100 % Lautsprecher-Lautstärke. Verpasste Anrufe zeigen ein rotes *Missed call!*-Abzeichen für den Ein-Klick-Rückruf mit *YES / NO*-Bestätigung.',
+          '**Betreuer-Telefon (Links):** Nimmt den Rückruf des Seniors entgegen – wahlweise über das Mobilfunknetz (SIM) oder kostenlos über WLAN (VoIP).',
+          '**Seniorentelefon (Rechts):** Ein Tipp auf die Kachel mit „Verpasster Anruf!“ öffnet die Ja/Nein-Sicherheitsabfrage. Mit „JA“ startet sofort der Rückruf mit 100 % Freisprechlautstärke.',
         ],
       },
       {
         id: 7,
-        start: 451,
-        end: 454,
-        timeStamp: '07:31',
-        title: '7. Seniorengerechtes Großschrift-SMS-Popup',
+        start: 411,
+        end: 415,
+        timeStamp: '06:51',
+        title: '7. Seniorenfreundliches SMS-Popup in großer Schrift',
+        subtitle:
+          'Eingehende SMS-Nachrichten erscheinen automatisch als große, leicht lesbare Karte.',
         tasks: [
-          'Klassische SMS-Nachrichten erscheinen automatisch als kontrastreiche Großschrift-Karte auf dem Kiosk-Bildschirm und lassen sich mit einem Tippen schließen.',
+          '**Betreuer-Telefon (Links):** Eine normale Textnachricht (SMS) an das Smartphone des Seniors senden.',
+          '**Seniorentelefon (Rechts):** Die Nachricht wird sofort als kontrastreiches, großgeschriebenes Popup direkt auf dem Kiosk-Bildschirm angezeigt.',
         ],
       },
       {
         id: 8,
-        start: 454,
-        end: 591,
-        timeStamp: '07:34',
-        title: '8. Wecker, Foto-Medikamentenerinnerung & Strom-Alarme',
+        start: 415,
+        end: 546,
+        timeStamp: '06:55',
+        title: '8. Wecker & Foto-Erinnerung (Vitamintropfen) mit Live-Bestätigung',
+        subtitle:
+          'Tägliche Wecker und Medikamenten-/Vitamin-Erinnerungen samt Foto aus der Ferne planen.',
         tasks: [
-          'Planen Sie aus der Ferne einen 8:00-Uhr-Wecker und eine Foto-Medikamentenerinnerung. Zur geplanten Zeit (08:40) tippt der Senior auf *DONE / TAKEN*. Zeigt außerdem *Notification Settings*, Aus-/Einschalt-Alarme und *Alert History* (09:01).',
+          '**Betreuer-Telefon (Links):** Unter „Tägliche Routinen & Erinnerungen“ einen täglichen Wecker (07:15 Uhr) sowie eine Erinnerung für die Morgenmedikamente („1 Glas Wasser mit Vitamine“) samt Foto der Vitamintropfen aus der Galerie planen.',
+          '**Seniorentelefon (Rechts):** Zur eingestellten Uhrzeit ertönt das Signal. Über „Details anzeigen“ sieht der Senior das Foto der Vitamintropfen mit der genauen Dosierung und bestätigt die Einnahme per Tipp auf „Erledigt / Eingenommen“.',
         ],
       },
       {
         id: 9,
-        start: 591,
-        end: 643,
-        timeStamp: '09:51',
+        start: 546,
+        end: 612,
+        timeStamp: '09:06',
         title: '9. Live-Minikarte, Sicherheitszone & SOS-Notruf',
+        subtitle:
+          'Standort auf der integrierten Minikarte prüfen, direkt navigieren, Weglauf-Alarm einrichten und SOS-Schutz testen.',
         tasks: [
-          'Prüfen Sie den Live-Standort auf der Google-Maps-Minikarte, starten Sie die Navigation und richten Sie die Sicherheitszone (100–1000 m) ein. Am Kiosk-Bildschirm zeigt der rote *SOS CALL*-Button eine *YES / NO*-Bestätigung (10:31).',
+          '**Betreuer-Telefon (Links):** Unter „GPS-Koordinaten & Navigation“ den Live-Standort prüfen, per Google Maps zum Senior navigieren, den aktuellen Ort als „Zuhause“ speichern und den Weglauf-Alarm (Sicherheitsradius von 100 m bis 1000 m) aktivieren.',
+          '**Seniorentelefon (Rechts):** Sowohl die rote „SOS-NOTRUF“-Taste als auch alle Kontaktkacheln sind durch eine klare Ja/Nein-Sicherheitsabfrage vor versehentlichem Auslösen geschützt.',
         ],
       },
       {
         id: 10,
-        start: 643,
-        end: 683,
-        timeStamp: '10:43',
-        title: '10. Großtasten-Wählfeld & Schnell-SMS',
+        start: 612,
+        end: 667,
+        timeStamp: '10:12',
+        title: '10. Großes Tastenfeld (Freie Rufnummern) & Schnell-SMS',
+        subtitle:
+          'Freie Telefonnummern auf großen Tasten wählen oder vorbereitete Schnell-SMS mit einem Tipp versenden.',
         tasks: [
-          'Tippen Sie unten rechts auf das Tastenfeld zum freien Wählen (10:52) oder wechseln Sie zum Reiter *SMS* (11:10), um vorgefertigte Schnellnachrichten (*Please call me!*) ohne Tippen zu senden.',
+          '**Betreuer-Telefon (Links):** Empfängt die vom Senior gesendeten Schnell-SMS und Anrufe.',
+          '**Seniorentelefon (Rechts):** Über das Tastenfeld-Symbol unten rechts freie Rufnummern mit 100 % Freisprecher wählen oder im Reiter „SMS“ einen Kontakt (z. B. Eva) antippen und eine fertige Schnellnachricht („Bitte ruf mich an!“) senden.',
         ],
       },
       {
         id: 11,
-        start: 683,
-        end: 757,
-        timeStamp: '11:23',
-        title: '11. Vom Kiosk-Modus in die lokalen Betreuer-Einstellungen',
+        start: 667,
+        end: 854,
+        timeStamp: '11:07',
+        title: '11. Lokale Betreuer-Einstellungen (PIN 1234), Anrufberechtigungen (Whitelist) & SOS',
+        subtitle:
+          '5-mal auf die Uhr tippen (PIN 1234): Lokale Einstellungen, Betrugsschutz-Whitelist und SOS-Notfall-SMS.',
         tasks: [
-          'Tippen Sie 5-mal schnell auf die obere Uhr und geben Sie den Standard-PIN 1234 ein. Greifen Sie lokal auf alle Einstellungen zu: *Quick Messages Setup*, *Sound & Screen Settings* (11:58), *Edit Contacts*, *Daily Routines* und *SOS Configuration* (12:21).',
+          '**Betreuer-Telefon (Links):** Erhält sofort eine Push-Warnung beim Verlassen des Kiosk-Modus. Unter „Anrufberechtigungen“ hinzugefügte Nummern (z. B. Klaus Weiser) synchronisieren sich sofort live mit dem Seniorentelefon.',
+          '**Seniorentelefon (Rechts):** 5-mal auf die obere Uhr tippen und PIN 1234 eingeben: Zugriff auf Passwort & DSGVO-Löschung, Tag-/Nacht-Helligkeit & Lautstärke, Anrufberechtigungen (Whitelist gegen Telefonbetrüger), Kontakte, Routinen sowie die SOS-Konfiguration (Notrufnummer & automatische GPS-Notfall-SMS an ausgewählte Kontakte).',
         ],
       },
       {
         id: 12,
-        start: 757,
-        end: 778,
-        timeStamp: '12:37',
-        title: '12. Betreuer-Einstellungen zum Android-Menü verlassen',
+        start: 854,
+        end: 933,
+        timeStamp: '14:14',
+        title: '12. Android-Menü, Push-Alarme (Aus-/Einschalten) & Alarmverlauf',
+        subtitle:
+          'Wechsel ins normale Android-Menü, Push-Benachrichtigungen verwalten und Echtzeit-Alarm beim Aus-/Einschalten.',
         tasks: [
-          'Tippen Sie unten auf den roten Button *Back to Phone Menu* und wählen Sie die Standard-Start-App (*One UI Home*), um den Kiosk-Modus zu beenden und zum normalen Android-Menü zurückzukehren.',
+          '**Betreuer-Telefon (Links):** Unter „Benachrichtigungseinstellungen“ alle Push-Alarme steuern. Wird das Seniorentelefon ausgeschaltet oder neu gestartet, erscheint sofort die Warnung „Gerät ausgeschaltet!“ (und nach dem Hochfahren „Gerät eingeschaltet!“). Alle Ereignisse werden im „Alarmverlauf“ protokolliert.',
+          '**Seniorentelefon (Rechts):** Über „Zurück zum Telefonmenü“ jederzeit ins normale Android-Menü wechseln. Nach einem Neustart oder Einschalten startet das Gerät automatisch wieder im geschützten SENEAR Kiosk-Modus.',
         ],
       },
     ],
@@ -584,6 +621,12 @@ export function SenearInstallGuidePage({
                       {step.timeStamp}
                     </span>
                   </div>
+
+                  {step.subtitle && (
+                    <p className="text-xs sm:text-sm font-medium text-[#3F3C38] leading-snug">
+                      {step.subtitle}
+                    </p>
+                  )}
 
                   {/* 2. Short, Concise Bullet Points */}
                   <ul className="space-y-1.5 text-xs sm:text-sm text-[#5C5A56] leading-relaxed list-disc pl-4">
