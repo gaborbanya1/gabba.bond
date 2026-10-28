@@ -352,15 +352,16 @@ function ScenarioIllustration({
   type: 'scam' | 'muted' | 'distance';
   lang: SenearLang;
 }) {
+  const Icon = SCENARIO_ICONS[type];
   const unknownLabel = lang === 'de' ? 'Unbekannt' : lang === 'en' ? 'Unknown' : 'Ismeretlen szám';
   const blockedLabel = lang === 'de' ? 'Blockiert' : lang === 'en' ? 'Blocked' : 'Blokkolva';
 
   return (
     <div
       aria-hidden="true"
-      className="relative flex h-40 sm:h-44 w-full items-center justify-center overflow-hidden rounded-2xl bg-[#F3EBDF]/70 ring-1 ring-[#E8DFD4]/90"
+      className="relative flex w-full flex-col items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-[#F3EBDF]/70 px-4 pt-3 pb-4 ring-1 ring-[#E8DFD4]/90"
     >
-      <svg viewBox="0 0 280 156" className="h-full w-full max-w-[280px]" aria-hidden="true">
+      <svg viewBox="0 0 280 156" className="h-36 sm:h-40 w-full max-w-[270px]" aria-hidden="true">
         {/* Soft warm background halo */}
         <circle cx="140" cy="78" r="64" fill="#FAF7F2" />
 
@@ -663,69 +664,10 @@ function ScenarioIllustration({
           </>
         )}
       </svg>
-    </div>
-  );
-}
 
-function ScenarioCard({
-  item,
-  index,
-  solutionLabel,
-  lang,
-}: {
-  item: SenearContent['scenarios']['items'][number];
-  index: number;
-  solutionLabel: string;
-  lang: SenearLang;
-}) {
-  const Icon = SCENARIO_ICONS[item.icon];
-  const [ref, inView] = useInViewOnce<HTMLLIElement>(0.4);
-  const [replaying, setReplaying] = useState(false);
-  const readyForReplayRef = useRef(false);
-  const replayTimerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!inView) return;
-    const t = window.setTimeout(() => {
-      readyForReplayRef.current = true;
-    }, 1800 + index * 250);
-    return () => window.clearTimeout(t);
-  }, [inView, index]);
-
-  useEffect(() => {
-    return () => {
-      if (replayTimerRef.current) window.clearTimeout(replayTimerRef.current);
-    };
-  }, []);
-
-  const triggerReplay = () => {
-    if (!readyForReplayRef.current || replaying) return;
-    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    setReplaying(true);
-    if (replayTimerRef.current) window.clearTimeout(replayTimerRef.current);
-    replayTimerRef.current = window.setTimeout(() => {
-      setReplaying(false);
-    }, 950);
-  };
-
-  return (
-    <li
-      ref={ref}
-      tabIndex={0}
-      onMouseEnter={triggerReplay}
-      onFocus={triggerReplay}
-      style={{ '--sn-idx': index } as React.CSSProperties}
-      className={`sn-scenario-card ${inView ? 'is-in' : ''} ${
-        replaying ? 'is-replay' : ''
-      } grid gap-6 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 lg:p-7 xl:p-8 ring-1 ring-[#EFE8DD] shadow-[0_14px_34px_-22px_rgba(31,36,33,0.2)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(31,36,33,0.28)] lg:row-span-4 lg:grid-rows-subgrid ${FOCUS_RING}`}
-    >
-      {/* 1. Unified SVG phone illustration */}
-      <ScenarioIllustration type={item.icon} lang={lang} />
-
-      {/* 2. Animated transformation strip: Red Icon -> SVG Arrow -> Red Icon morphing into Green Check */}
-      <div aria-hidden="true" className="flex items-center gap-3">
-        <span className="sn-sc-red-start flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
+      {/* Centered transformation strip directly under the phone graphic: Red Icon -> SVG Arrow -> Green Check */}
+      <div className="flex items-center justify-center gap-3">
+        <span className="sn-sc-red-start flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB] shadow-xs">
           <Icon className="h-5 w-5" />
         </span>
 
@@ -747,11 +689,11 @@ function ScenarioCard({
           />
         </svg>
 
-        <span className="relative flex h-11 w-11 shrink-0 items-center justify-center">
-          <span className="sn-sc-red-end absolute inset-0 flex items-center justify-center rounded-2xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+          <span className="sn-sc-red-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
             <Icon className="h-5 w-5" />
           </span>
-          <span className="sn-sc-green-end absolute inset-0 flex items-center justify-center rounded-2xl bg-[#1B7A4E] text-white shadow-[0_8px_18px_-8px_rgba(27,122,78,0.65)]">
+          <span className="sn-sc-green-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#1B7A4E] text-white shadow-[0_8px_18px_-8px_rgba(27,122,78,0.65)]">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
               <path
                 d="M6.5 12.5l3.8 3.8L17.8 8.8"
@@ -765,13 +707,41 @@ function ScenarioCard({
           </span>
         </span>
       </div>
+    </div>
+  );
+}
 
-      {/* 3. First-person quote (max 3 lines) */}
+function ScenarioCard({
+  item,
+  index,
+  solutionLabel,
+  lang,
+}: {
+  item: SenearContent['scenarios']['items'][number];
+  index: number;
+  solutionLabel: string;
+  lang: SenearLang;
+}) {
+  const [ref, inView] = useInViewOnce<HTMLLIElement>(0.4);
+
+  return (
+    <li
+      ref={ref}
+      tabIndex={0}
+      style={{ '--sn-idx': index } as React.CSSProperties}
+      className={`sn-scenario-card ${
+        inView ? 'is-in' : ''
+      } grid gap-6 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 lg:p-7 xl:p-8 ring-1 ring-[#EFE8DD] shadow-[0_14px_34px_-22px_rgba(31,36,33,0.2)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(31,36,33,0.28)] lg:row-span-3 lg:grid-rows-subgrid ${FOCUS_RING}`}
+    >
+      {/* 1. Unified SVG phone illustration + centered arrow transformation strip */}
+      <ScenarioIllustration type={item.icon} lang={lang} />
+
+      {/* 2. First-person quote (max 3 lines) */}
       <blockquote className="font-heading text-[1.2rem] sm:text-[1.3rem] font-bold leading-snug text-[#1F2421] text-pretty">
         {item.quote}
       </blockquote>
 
-      {/* 4. Solution text with subtle divider and small green MEGOLDÁS label (no nested box) */}
+      {/* 3. Solution text with subtle divider and small green MEGOLDÁS label (no nested box) */}
       <div className="sn-sc-solution border-t border-[#E6DDD0] pt-5">
         <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.14em] text-[#14593A]">
           <Check className="h-3.5 w-3.5 text-[#1B7A4E]" strokeWidth={3} aria-hidden="true" />
@@ -797,8 +767,8 @@ function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
           )}
         </div>
 
-        {/* Subgrid: illustration / transformation / quote / solution rows line up across the three cards */}
-        <ul className="mt-14 sm:mt-16 grid grid-cols-1 gap-7 lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr_auto] lg:gap-8">
+        {/* Subgrid: illustration+arrow / quote / solution rows line up across the three cards */}
+        <ul className="mt-14 sm:mt-16 grid grid-cols-1 gap-7 lg:grid-cols-3 lg:grid-rows-[auto_1fr_auto] lg:gap-8">
           {c.scenarios.items.map((item, i) => (
             <ScenarioCard
               key={item.icon}

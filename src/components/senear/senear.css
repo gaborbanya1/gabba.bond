@@ -226,106 +226,81 @@
     transform: translateY(6px) scale(0.96);
   }
 
-  /* 4-step sequence once 40% in view (~1.7s total per card) */
+  /* Continuous 5-second loop once 40% in view (graphics + arrow transformation) */
   .sn-js .sn-scenario-card.is-in .sn-sc-red-start {
-    animation: snScRedPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) var(--sn-delay) both;
+    animation: snScRedPulseLoop 5s ease-in-out var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-arrow-shaft {
-    animation: snScShaftDraw 0.45s cubic-bezier(0.4, 0, 0.2, 1) calc(var(--sn-delay) + 0.4s) both;
+    animation: snScShaftLoop 5s cubic-bezier(0.4, 0, 0.2, 1) var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-arrow-head {
-    animation: snScHeadDraw 0.2s ease-out calc(var(--sn-delay) + 0.8s) both;
+    animation: snScHeadLoop 5s ease-out var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-red-end {
-    animation: snScRedMorphOut 0.42s ease calc(var(--sn-delay) + 0.82s) both;
+    animation: snScRedEndLoop 5s ease var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-green-end {
-    animation: snScGreenPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--sn-delay) + 0.96s) both;
+    animation: snScGreenLoop 5s cubic-bezier(0.34, 1.56, 0.64, 1) var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-check-path {
-    animation: snScCheckDraw 0.4s ease-out calc(var(--sn-delay) + 0.98s) both;
+    animation: snScCheckLoop 5s ease-out var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-illus-before {
-    animation: snIllusBeforeOut 0.4s ease calc(var(--sn-delay) + 0.95s) both;
+    animation: snIllusBeforeLoop 5s ease var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-illus-after {
-    animation: snIllusAfterIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--sn-delay) + 0.98s) both;
+    animation: snIllusAfterLoop 5s cubic-bezier(0.22, 1, 0.36, 1) var(--sn-delay) infinite both;
   }
   .sn-js .sn-scenario-card.is-in .sn-sc-solution {
     animation: snScSolutionIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--sn-delay) + 1.3s) both;
   }
-
-  /* Subtle one-shot replay of arrow + check on desktop hover/focus */
-  .sn-js .sn-scenario-card.is-in.is-replay .sn-sc-arrow-shaft {
-    animation: snScShaftReplay 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
-  }
-  .sn-js .sn-scenario-card.is-in.is-replay .sn-sc-arrow-head {
-    animation: snScHeadReplay 0.2s ease-out 0.35s both;
-  }
-  .sn-js .sn-scenario-card.is-in.is-replay .sn-sc-green-end {
-    animation: snScGreenReplay 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.48s both;
-  }
-  .sn-js .sn-scenario-card.is-in.is-replay .sn-sc-check-path {
-    animation: snScCheckReplay 0.38s ease-out 0.5s both;
-  }
 }
 
-@keyframes snScRedPulse {
-  0% { opacity: 0; transform: scale(0.82); }
-  55% { opacity: 1; transform: scale(1.1); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes snScRedPulseLoop {
+  0% { opacity: 1; transform: scale(0.88); }
+  4% { opacity: 1; transform: scale(1.12); }
+  8%, 92% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(0.88); }
 }
-@keyframes snScShaftDraw {
-  from { stroke-dashoffset: 64; }
-  to { stroke-dashoffset: 0; }
+@keyframes snScShaftLoop {
+  0%, 8% { stroke-dashoffset: 64; opacity: 1; }
+  17%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  95%, 100% { stroke-dashoffset: 64; opacity: 0; }
 }
-@keyframes snScHeadDraw {
-  from { stroke-dashoffset: 20; }
-  to { stroke-dashoffset: 0; }
+@keyframes snScHeadLoop {
+  0%, 16% { stroke-dashoffset: 20; opacity: 1; }
+  20%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  95%, 100% { stroke-dashoffset: 20; opacity: 0; }
 }
-@keyframes snScRedMorphOut {
-  0% { opacity: 0; transform: scale(0.8); }
-  35% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.75); }
+@keyframes snScRedEndLoop {
+  0%, 15% { opacity: 0; transform: scale(0.8); }
+  18% { opacity: 1; transform: scale(1); }
+  24%, 100% { opacity: 0; transform: scale(0.75); }
 }
-@keyframes snScGreenPop {
-  0% { opacity: 0; transform: scale(0.72); }
-  65% { opacity: 1; transform: scale(1.08); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes snScGreenLoop {
+  0%, 19% { opacity: 0; transform: scale(0.72); }
+  24% { opacity: 1; transform: scale(1.08); }
+  27%, 88% { opacity: 1; transform: scale(1); }
+  95%, 100% { opacity: 0; transform: scale(0.78); }
 }
-@keyframes snScCheckDraw {
-  from { stroke-dashoffset: 24; }
-  to { stroke-dashoffset: 0; }
+@keyframes snScCheckLoop {
+  0%, 20% { stroke-dashoffset: 24; }
+  27%, 88% { stroke-dashoffset: 0; }
+  95%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes snIllusBeforeOut {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
+@keyframes snIllusBeforeLoop {
+  0%, 19% { opacity: 1; transform: scale(1); }
+  26%, 88% { opacity: 0; transform: scale(0.95); }
+  95%, 100% { opacity: 1; transform: scale(1); }
 }
-@keyframes snIllusAfterIn {
-  from { opacity: 0; transform: translateY(6px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes snIllusAfterLoop {
+  0%, 19% { opacity: 0; transform: translateY(6px) scale(0.96); }
+  27%, 88% { opacity: 1; transform: translateY(0) scale(1); }
+  95%, 100% { opacity: 0; transform: translateY(6px) scale(0.96); }
 }
 @keyframes snScSolutionIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes snScShaftReplay {
-  from { stroke-dashoffset: 64; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes snScHeadReplay {
-  from { stroke-dashoffset: 20; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes snScGreenReplay {
-  0% { transform: scale(0.86); }
-  60% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-@keyframes snScCheckReplay {
-  from { stroke-dashoffset: 24; }
-  to { stroke-dashoffset: 0; }
 }
 
 /* ---------- Reduced motion: final static state ---------- */
