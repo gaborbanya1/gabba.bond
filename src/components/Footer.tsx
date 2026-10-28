@@ -105,16 +105,6 @@ export function Footer({ onNavigate }: FooterProps) {
               <li>
                 <a href="/#contact" className="hover:text-[#2C2C2C] transition-colors">{t.footer.contactLink}</a>
               </li>
-              <li>
-                <a
-                  href="https://nogond-834ed.web.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#2C2C2C] text-[#7A5F43] font-semibold transition-colors inline-flex items-center gap-1"
-                >
-                  <span>SENEAR Admin Dashboard ↗</span>
-                </a>
-              </li>
             </ul>
           </div>
 

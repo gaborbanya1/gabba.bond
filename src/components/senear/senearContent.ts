@@ -463,8 +463,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         price: '59 900 Ft',
         priceSuffix: '/ egyszeri díj',
         splitStamp: ['fejenként csak', '29 950 Ft', 'elfelezve'] as [string, string, string],
-        note: '2 gondozónak (pl. fia és lánya is megkapja) – a család összedobhatja!',
-        features: ['Két gondozó örökös összekapcsolása', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
+        note: '2 családtagnak (pl. fia és lánya is megkapja) – a család összedobhatja!',
+        features: ['Két családtag örökös összekapcsolása', 'Nincs havi vagy éves díj', 'Egyszer fizetsz, a Google Playen keresztül'],
         moreFeatures: [
           'Minden, ami az Ingyenes és a Családi összekötés csomagban',
           '2 családtag (pl. fia és lánya) saját telefonjáról egyszerre kezelhető',
@@ -479,7 +479,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         cta: 'Letöltés',
       },
       trust:
-        'Biztonságos fizetés a Google Playen keresztül, kizárólag a gondozó telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
+        'Biztonságos fizetés a Google Playen keresztül, kizárólag a családtag telefonján (az idős szülő készülékén soha nem jelenik meg fizetési ablak). Bármikor egy kattintással lemondható.',
     },
     trustBar: { label: 'Amire számíthatsz', badges: ['Európai fejlesztés', 'Reklámmentes', 'GDPR-konform'] },
     faq: {
@@ -496,7 +496,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'Hogyan működik a 14 napos próbaidőszak és a fizetés? Megjelenik bármilyen fizetési ablak a szülőm telefonján?',
-          a: 'Soha. A szülő telefonján a SENEAR 100%-ban reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a gondozó a saját telefonján, a Google Playen keresztül választhat a bevezető árú havi (3 490 Ft helyett 2 490 Ft / hó) vagy a kedvezményes éves előfizetés (29 900 Ft helyett 19 900 Ft / év, azaz ~1 658 Ft / hó) között.',
+          a: 'Soha. A szülő telefonján a SENEAR 100%-ban reklám- és fizetésmentes felületként működik. A 14 napos ingyenes próbaidőszakot követően a családtag a saját telefonján, a Google Playen keresztül választhat a bevezető árú havi (3 490 Ft helyett 2 490 Ft / hó) vagy a kedvezményes éves előfizetés (29 900 Ft helyett 19 900 Ft / év, azaz ~1 658 Ft / hó) között.',
         },
         {
           q: 'Mi történik, ha lemondom az előfizetést?',
@@ -815,8 +815,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         price: '€149.00',
         priceSuffix: '/ once',
         splitStamp: ['just', '€74.50', 'each'] as [string, string, string],
-        note: 'For 2 caregivers (e.g. both son and daughter) – split the one-time cost!',
-        features: ['Lifetime access for 2 caregivers', 'No monthly or annual fees', 'Pay once securely via Google Play'],
+        note: 'For 2 family members (e.g. both son and daughter) – split the one-time cost!',
+        features: ['Lifetime access for 2 family members', 'No monthly or annual fees', 'Pay once securely via Google Play'],
         moreFeatures: [
           'Everything in Free and Family connection',
           'Manageable from 2 family members’ phones at the same time',
@@ -831,7 +831,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         cta: 'Download',
       },
       trust:
-        'Billed securely via Google Play in your local currency on the caregiver’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
+        'Billed securely via Google Play in your local currency on the family member’s phone only (your parent’s screen never shows payment prompts). Cancel anytime with one tap.',
     },
     trustBar: { label: 'What you can count on', badges: ['Built in Europe', 'Ad-free', 'GDPR-compliant'] },
     faq: {
@@ -848,7 +848,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'How does the 14-day trial and billing work? Will my parent ever see a payment screen?',
-          a: 'Never. Your parent’s phone stays 100% free of ads and payment prompts. After the 14-day free trial, the caregiver can choose on their own phone via Google Play between the introductory monthly plan (€7.99/mo instead of €9.99) or the discounted annual plan (€59.99/yr instead of €79.99 — just ~€4.99/mo, shown in your local Google Play currency).',
+          a: 'Never. Your parent’s phone stays 100% free of ads and payment prompts. After the 14-day free trial, the family member can choose on their own phone via Google Play between the introductory monthly plan (€7.99/mo instead of €9.99) or the discounted annual plan (€59.99/yr instead of €79.99 — just ~€4.99/mo, shown in your local Google Play currency).',
         },
         {
           q: 'What happens if I cancel?',
@@ -1167,8 +1167,8 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         price: '149,00 €',
         priceSuffix: '/ Einmalzahlung',
         splitStamp: ['nur', '74,50 €', 'pro Person'] as [string, string, string],
-        note: 'Für 2 Betreuer inklusive (z. B. Sohn und Tochter) – durch zwei Geschwister teilbar!',
-        features: ['Lebenslanger Zugriff für 2 Betreuer', 'Keine Monats- oder Jahresgebühren', 'Einmalige Zahlung über Google Play'],
+        note: 'Für 2 Familienmitglieder inklusive (z. B. Sohn und Tochter) – durch zwei Geschwister teilbar!',
+        features: ['Lebenslanger Zugriff für 2 Familienmitglieder', 'Keine Monats- oder Jahresgebühren', 'Einmalige Zahlung über Google Play'],
         moreFeatures: [
           'Alles aus Kostenlos und Familien-Verbindung',
           'Gleichzeitig von 2 Familienmitgliedern über das eigene Handy verwaltbar',
@@ -1183,7 +1183,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         cta: 'Herunterladen',
       },
       trust:
-        'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Betreuers (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
+        'Sichere Abrechnung über Google Play ausschließlich auf dem Smartphone des Familienmitglieds (auf dem Gerät Ihrer Eltern erscheinen niemals Zahlungshinweise). Jederzeit mit einem Klick kündbar.',
     },
     trustBar: { label: 'Darauf können Sie sich verlassen', badges: ['Entwickelt in Europa', 'Werbefrei', 'DSGVO-konform'] },
     faq: {
@@ -1200,7 +1200,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sieht mein Elternteil jemals ein Zahlungsfenster?',
-          a: 'Niemals. Das Handy Ihres Angehörigen bleibt zu 100 % frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt der Betreuer auf seinem eigenen Smartphone über Google Play zwischen dem Monatsabo zum Einführungspreis (7,99 € statt 9,99 €) oder dem vergünstigten Jahresabo (59,99 € statt 79,99 € – nur ~4,99 € / Monat).',
+          a: 'Niemals. Das Handy Ihres Angehörigen bleibt zu 100 % frei von Werbung und Zahlungshinweisen. Nach der 14-tägigen Testphase wählt das Familienmitglied auf seinem eigenen Smartphone über Google Play zwischen dem Monatsabo zum Einführungspreis (7,99 € statt 9,99 €) oder dem vergünstigten Jahresabo (59,99 € statt 79,99 € – nur ~4,99 € / Monat).',
         },
         {
           q: 'Was passiert, wenn ich kündige?',
