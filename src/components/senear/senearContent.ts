@@ -178,14 +178,14 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
   // ===================================================================
   hu: {
     meta: {
-      title: 'SENEAR – Egyszerű telefon az idős szüleidnek, nyugalom neked | Android',
+      title: 'SENEAR – Tedd egyszerűvé a szüleid telefonját | Ingyenes Android-app',
       description:
-        'Zárolt, egyszerű kezdőképernyő nagy fotós hívógombokkal az idős szüleidnek. Csak az általad jóváhagyott számok hívhatják, te pedig távolról látod, hogy jól van. Ingyenes, Android 8.0+.',
+        'Ingyenes Android-alkalmazás: zárolt, egyszerű kezdőképernyő nagy fotós hívógombokkal a szüleidnek. Csak a jóváhagyott számok hívhatják, és távolról látod, hogy jól van.',
     },
     breadcrumbHome: 'Főoldal',
-    kicker: 'Idősbarát telefonrendszer Androidra',
+    kicker: 'INGYENES ANDROID-ALKALMAZÁS',
     hero: {
-      title1: 'Egyszerű telefon az idős szüleidnek.',
+      title1: 'Tedd egyszerűvé a szüleid telefonját.',
       title2: 'Nyugalom neked.',
       lead: 'Nagy fotós hívógombok, zárolt kezdőképernyő, és csak az általad jóváhagyott számok hívhatják. Te pedig a saját telefonodról látod, hogy minden rendben van.',
       primaryCta: 'Letöltés a Google Playről – Ingyenes',
@@ -530,14 +530,14 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
   // ===================================================================
   en: {
     meta: {
-      title: 'SENEAR – A simple phone for your parents, peace of mind for you | Android',
+      title: 'SENEAR – Make your parents’ phone simple | Free Android app',
       description:
-        'A locked, simple home screen with large photo call buttons for your aging parents. Only numbers you approve can call them, and you see from afar that they are okay. Free, Android 8.0+.',
+        'Free Android app: a locked, simple home screen with large photo call buttons for your parents. Only approved numbers can call, and you see from afar that they’re okay.',
     },
     breadcrumbHome: 'Home',
-    kicker: 'Senior-friendly phone system for Android',
+    kicker: 'FREE ANDROID APP',
     hero: {
-      title1: 'A simple phone for your parents.',
+      title1: 'Make your parents’ phone simple.',
       title2: 'Peace of mind for you.',
       lead: 'Large photo call buttons, a locked home screen, and only numbers you approve can call. And you see from your own phone that everything is okay.',
       primaryCta: 'Download on Google Play – Free',
@@ -882,14 +882,14 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
   // ===================================================================
   de: {
     meta: {
-      title: 'SENEAR – Ein einfaches Telefon für Ihre Eltern, Ruhe für Sie | Android',
+      title: 'SENEAR – Machen Sie das Handy Ihrer Eltern einfach | Kostenlose Android-App',
       description:
-        'Ein gesperrter, einfacher Startbildschirm mit großen Foto-Anruftasten für Ihre älteren Eltern. Nur von Ihnen freigegebene Nummern können anrufen, und Sie sehen aus der Ferne, dass alles in Ordnung ist. Kostenlos, Android 8.0+.',
+        'Kostenlose Android-App: gesperrter Startbildschirm mit großen Foto-Anruftasten für Ihre Eltern. Nur freigegebene Nummern rufen an, und Sie sehen, dass alles gut ist.',
     },
     breadcrumbHome: 'Startseite',
-    kicker: 'Seniorenfreundliches Telefonsystem für Android',
+    kicker: 'KOSTENLOSE ANDROID-APP',
     hero: {
-      title1: 'Ein einfaches Telefon für Ihre Eltern.',
+      title1: 'Machen Sie das Handy Ihrer Eltern einfach.',
       title2: 'Ruhe für Sie.',
       lead: 'Große Foto-Anruftasten, ein gesperrter Startbildschirm, und nur von Ihnen freigegebene Nummern können anrufen. Und Sie sehen auf Ihrem eigenen Handy, dass alles in Ordnung ist.',
       primaryCta: 'Bei Google Play laden – Kostenlos',

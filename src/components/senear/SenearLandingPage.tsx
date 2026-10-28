@@ -60,18 +60,67 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
     rootRef.current?.classList.add('sn-js');
   }, []);
 
-  // Page title + meta description for this route (restored on leave).
+  // Page title + meta description + OG / Twitter / Schema.org SoftwareApplication for this route (restored on leave).
   useEffect(() => {
     const prevTitle = document.title;
-    const desc = document.querySelector('meta[name="description"]');
-    const prevDesc = desc?.getAttribute('content') ?? '';
     document.title = c.meta.title;
-    desc?.setAttribute('content', c.meta.description);
+
+    const setMeta = (attr: 'name' | 'property', key: string, value: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      const created = !el;
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      const prev = el.getAttribute('content');
+      el.setAttribute('content', value);
+      return () => {
+        if (created) {
+          el?.remove();
+        } else if (prev !== null) {
+          el?.setAttribute('content', prev);
+        }
+      };
+    };
+
+    const restoreDesc = setMeta('name', 'description', c.meta.description);
+    const restoreOgTitle = setMeta('property', 'og:title', c.meta.title);
+    const restoreOgDesc = setMeta('property', 'og:description', c.meta.description);
+    const restoreTwTitle = setMeta('name', 'twitter:title', c.meta.title);
+    const restoreTwDesc = setMeta('name', 'twitter:description', c.meta.description);
+
+    // Keep schema.org SoftwareApplication description in sync with the active language
+    const ldScripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+    const ldRestores: (() => void)[] = [];
+    for (const script of ldScripts) {
+      const prevJson = script.textContent;
+      if (!prevJson || !prevJson.includes('"SoftwareApplication"')) continue;
+      try {
+        const parsed = JSON.parse(prevJson);
+        if (parsed && parsed['@type'] === 'SoftwareApplication') {
+          parsed.description = c.meta.description;
+          parsed.inLanguage = lang;
+          script.textContent = JSON.stringify(parsed);
+          ldRestores.push(() => {
+            script.textContent = prevJson;
+          });
+        }
+      } catch {
+        /* ignore malformed JSON-LD */
+      }
+    }
+
     return () => {
       document.title = prevTitle;
-      desc?.setAttribute('content', prevDesc);
+      restoreDesc();
+      restoreOgTitle();
+      restoreOgDesc();
+      restoreTwTitle();
+      restoreTwDesc();
+      ldRestores.forEach((fn) => fn());
     };
-  }, [c.meta.title, c.meta.description]);
+  }, [c.meta.title, c.meta.description, lang]);
 
   // Mobile sticky download bar: visible after the hero button, hidden again at the final CTA.
   useEffect(() => {
@@ -286,19 +335,23 @@ function Hero({
         </nav>
 
         <div className="grid grid-cols-1 items-center gap-x-8 gap-y-10 lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-y-8">
-          <div className="lg:col-span-7 lg:row-start-1 space-y-6">
+          <div className="lg:col-span-7 lg:row-start-1 space-y-5 sm:space-y-6">
             <div className="flex items-center gap-3">
               <img src="/logos/senear-logo.png" alt="" width={48} height={48} className="h-12 w-12 object-contain" />
-              <div>
-                <div className="font-heading text-2xl font-extrabold leading-none tracking-tight">SENEAR</div>
-                <div className="mt-1 text-[15px] font-semibold text-[#7A5A2E]">{c.kicker}</div>
-              </div>
+              <div className="font-heading text-2xl font-extrabold leading-none tracking-tight">SENEAR</div>
             </div>
 
-            <h1 className="font-heading text-[2.35rem] leading-[1.05] sm:text-5xl lg:text-[3.6rem] font-extrabold tracking-tight text-balance">
-              {c.hero.title1}{' '}
-              <span className="text-[#1B7A4E]">{c.hero.title2}</span>
-            </h1>
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#1B7A4E]/25 bg-[#EAF5EE] px-3.5 py-1.5 text-[0.8125rem] sm:text-[0.875rem] font-bold uppercase leading-none tracking-[0.07em] text-[#0F5334] whitespace-nowrap">
+                <Smartphone className="h-4 w-4 shrink-0 text-[#1B7A4E]" aria-hidden="true" />
+                <span>{c.kicker}</span>
+              </div>
+
+              <h1 className="font-heading text-[2.35rem] leading-[1.05] sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-balance">
+                {c.hero.title1}{' '}
+                <span className="text-[#1B7A4E]">{c.hero.title2}</span>
+              </h1>
+            </div>
 
             <p className="max-w-xl text-lg sm:text-xl leading-relaxed text-[#3F3C38] text-pretty">{c.hero.lead}</p>
 
