@@ -63,6 +63,7 @@ export interface SenearContent {
   scenarios: {
     eyebrow: string;
     title: string;
+    subtitle: string;
     solutionLabel: string;
     items: { icon: 'scam' | 'muted' | 'distance'; quote: string; solution: string }[];
   };
@@ -177,14 +178,14 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
   // ===================================================================
   hu: {
     meta: {
-      title: 'SENEAR – Egyszerű telefon a szüleidnek, nyugalom neked | Android',
+      title: 'SENEAR – Egyszerű telefon az idős szüleidnek, nyugalom neked | Android',
       description:
         'Zárolt, egyszerű kezdőképernyő nagy fotós hívógombokkal az idős szüleidnek. Csak az általad jóváhagyott számok hívhatják, te pedig távolról látod, hogy jól van. Ingyenes, Android 8.0+.',
     },
     breadcrumbHome: 'Főoldal',
     kicker: 'Idősbarát telefonrendszer Androidra',
     hero: {
-      title1: 'Egyszerű telefon a szüleidnek.',
+      title1: 'Egyszerű telefon az idős szüleidnek.',
       title2: 'Nyugalom neked.',
       lead: 'Nagy fotós hívógombok, zárolt kezdőképernyő, és csak az általad jóváhagyott számok hívhatják. Te pedig a saját telefonodról látod, hogy minden rendben van.',
       primaryCta: 'Letöltés a Google Playről – Ingyenes',
@@ -216,22 +217,23 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'Ha te is aggódsz értük…',
       title: 'Ismerős helyzet?',
+      subtitle: 'Így kezdődik a legtöbb család.',
       solutionLabel: 'Megoldás',
       items: [
         {
           icon: 'scam',
           quote: '„Anyu mindig felveszi az ismeretlen számokat. Félek, hogy egyszer egy csaló hívja.”',
-          solution: 'Csak az általad jóváhagyott számok hívhatják. Az ismeretlen hívó meg sem csörren.',
+          solution: 'Csak a jóváhagyott számok hívhatják. Az ismeretlen hívó meg sem csörren.',
         },
         {
           icon: 'muted',
           quote: '„Apu véletlenül lenémítja a telefont, aztán napokig nem érem el.”',
-          solution: 'Zárolt, egyszerű kezdőképernyő, amit nem lehet véletlenül elállítani. A hangerőt távolról is visszaállíthatod.',
+          solution: 'Zárolt kezdőképernyő, nem állítható el. A hangerőt távolról visszaállítod.',
         },
         {
           icon: 'distance',
           quote: '„Másik városban élek. Csak tudni szeretném, hogy jól van.”',
-          solution: 'A saját telefonodon látod az akkumulátort, a helyzetét és a gyógyszer-visszajelzést, és értesítést kapsz, ha SOS-t nyom.',
+          solution: 'Látod az akkumulátort és a helyzetét, SOS-nél azonnal értesítést kapsz.',
         },
       ],
     },
@@ -565,22 +567,23 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'If you worry about them too…',
       title: 'Sound familiar?',
+      subtitle: 'This is how it starts for most families.',
       solutionLabel: 'Solution',
       items: [
         {
           icon: 'scam',
           quote: '“Mom always picks up unknown numbers. I’m afraid one day it’ll be a scammer.”',
-          solution: 'Only numbers you approve can call her. Unknown callers never ring through.',
+          solution: 'Only numbers you approve can call your parent. Unknown callers never ring through.',
         },
         {
           icon: 'muted',
           quote: '“Dad accidentally mutes his phone, and then I can’t reach him for days.”',
-          solution: 'A locked, simple home screen that can’t be changed by accident. You can restore the ringer volume remotely.',
+          solution: 'Locked home screen that can’t be changed by accident. Restore volume remotely.',
         },
         {
           icon: 'distance',
           quote: '“I live in another city. I just want to know they’re okay.”',
-          solution: 'See battery, location and medication confirmations on your own phone, and get notified if they press SOS.',
+          solution: 'See battery and location on your own phone, and get notified right away on SOS.',
         },
       ],
     },
@@ -916,22 +919,23 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'Wenn Sie sich auch Sorgen machen…',
       title: 'Kommt Ihnen das bekannt vor?',
+      subtitle: 'So beginnt es bei den meisten Familien.',
       solutionLabel: 'Lösung',
       items: [
         {
           icon: 'scam',
           quote: '„Mama geht bei jeder unbekannten Nummer ran. Ich habe Angst, dass es irgendwann ein Betrüger ist.“',
-          solution: 'Nur von Ihnen freigegebene Nummern können sie anrufen. Unbekannte Anrufer klingeln gar nicht erst durch.',
+          solution: 'Nur freigegebene Nummern können Ihre Eltern anrufen. Unbekannte klingeln gar nicht durch.',
         },
         {
           icon: 'muted',
           quote: '„Papa schaltet sein Handy versehentlich stumm, und dann erreiche ich ihn tagelang nicht.“',
-          solution: 'Ein gesperrter, einfacher Startbildschirm, der sich nicht versehentlich verstellen lässt. Die Klingellautstärke stellen Sie aus der Ferne wieder her.',
+          solution: 'Gesperrter Startbildschirm ohne Verstellen. Die Lautstärke stellen Sie aus der Ferne ein.',
         },
         {
           icon: 'distance',
           quote: '„Ich wohne in einer anderen Stadt. Ich möchte einfach wissen, dass es ihnen gut geht.“',
-          solution: 'Akku, Standort und Medikamentenbestätigung auf Ihrem eigenen Handy, und eine Nachricht, wenn SOS gedrückt wird.',
+          solution: 'Sie sehen Akku und Standort auf Ihrem Handy und erhalten bei SOS sofort Bescheid.',
         },
       ],
     },

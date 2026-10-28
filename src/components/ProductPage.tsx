@@ -60,7 +60,7 @@ const COPY: Record<ProductKey, Record<Lang, ProductCopy>> = {
   senear: {
     hu: {
       kicker: 'Idősbarát telefonrendszer Androidra',
-      heroTitle: 'Egyszerű telefon a szüleidnek. Nyugalom neked.',
+      heroTitle: 'Egyszerű telefon az idős szüleidnek. Nyugalom neked.',
       heroText:
         'Nagy fotós hívógombok, zárolt kezdőképernyő, és csak az általad jóváhagyott számok hívhatják. Te pedig a saját telefonodról látod, hogy minden rendben van.',
       chips: [],

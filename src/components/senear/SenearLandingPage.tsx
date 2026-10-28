@@ -93,7 +93,7 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
   return (
     <div ref={rootRef} className="bg-[#FAF7F2] text-[#1F2421] overflow-x-clip">
       <Hero c={c} lang={lang} onNavigate={onNavigate} ctaRef={heroCtaRef} />
-      <Scenarios c={c} />
+      <Scenarios c={c} lang={lang} />
       <Modes c={c} />
       <HowItWorks c={c} />
       <VideoSection c={c} />
@@ -340,49 +340,474 @@ function Hero({
 }
 
 /* =====================================================================
-   2. SOUND FAMILIAR?
+   2. SOUND FAMILIAR? ("Ismerős helyzet?")
    ===================================================================== */
 
 const SCENARIO_ICONS = { scam: PhoneOff, muted: VolumeX, distance: MapPinned } as const;
 
-function Scenarios({ c }: { c: SenearContent }) {
+function ScenarioIllustration({
+  type,
+  lang,
+}: {
+  type: 'scam' | 'muted' | 'distance';
+  lang: SenearLang;
+}) {
+  const unknownLabel = lang === 'de' ? 'Unbekannt' : lang === 'en' ? 'Unknown' : 'Ismeretlen szám';
+  const blockedLabel = lang === 'de' ? 'Blockiert' : lang === 'en' ? 'Blocked' : 'Blokkolva';
+
   return (
-    <section className="py-16 sm:py-24 bg-white" aria-labelledby="scenarios-title">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="relative flex h-40 sm:h-44 w-full items-center justify-center overflow-hidden rounded-2xl bg-[#F3EBDF]/70 ring-1 ring-[#E8DFD4]/90"
+    >
+      <svg viewBox="0 0 280 156" className="h-full w-full max-w-[280px]" aria-hidden="true">
+        {/* Soft warm background halo */}
+        <circle cx="140" cy="78" r="64" fill="#FAF7F2" />
+
+        {/* Generic rounded-rectangle phone frame (no brand / no notch) */}
+        <rect x="61.5" y="36" width="2.5" height="13" rx="1.2" fill="#C5A880" />
+        <rect x="61.5" y="53" width="2.5" height="13" rx="1.2" fill="#C5A880" />
+        <rect x="64" y="10" width="152" height="136" rx="18" fill="#FFFDF9" stroke="#C5A880" strokeWidth="2.2" />
+        <rect x="124" y="15" width="32" height="2.6" rx="1.3" fill="#B08A55" />
+        <rect x="71" y="21" width="138" height="117" rx="12" fill="#FAF7F2" stroke="#EDE4D8" strokeWidth="1" />
+        <rect x="122" y="141" width="36" height="2.2" rx="1.1" fill="#D5C0A0" />
+
+        {type === 'scam' && (
+          <>
+            {/* BEFORE: Incoming call "Ismeretlen szám" with red prohibition icon */}
+            <g className="sn-illus-before">
+              <rect x="78" y="30" width="124" height="56" rx="9" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.5" />
+              <circle cx="95" cy="58" r="11" fill="#FDECEC" />
+              <circle cx="95" cy="58" r="7" fill="none" stroke="#B83227" strokeWidth="1.9" />
+              <line x1="90" y1="63" x2="100" y2="53" stroke="#B83227" strokeWidth="1.9" strokeLinecap="round" />
+              <text x="111" y="54" fontSize="8.8" fontWeight="800" fill="#1F2421" fontFamily="system-ui, sans-serif">
+                {unknownLabel}
+              </text>
+              <text x="111" y="67" fontSize="8" fontWeight="600" fill="#B83227" fontFamily="system-ui, sans-serif">
+                +36 30 ··· ····
+              </text>
+              {/* Dimmed tiles below */}
+              <rect x="78" y="94" width="58" height="36" rx="7" fill="#EFE8DD" />
+              <rect x="144" y="94" width="58" height="36" rx="7" fill="#EFE8DD" />
+            </g>
+
+            {/* AFTER: Call "Blokkolva" with green check + glowing "Anna" tile beside it */}
+            <g className="sn-illus-after">
+              <rect x="78" y="28" width="124" height="30" rx="8" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.4" />
+              <circle cx="92" cy="43" r="7.5" fill="#1B7A4E" />
+              <path
+                d="M88.8 43.2l2.1 2.1 4.3-4.3"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <text
+                x="104"
+                y="40"
+                fontSize="7.2"
+                fontWeight="600"
+                fill="#5C5A56"
+                textDecoration="line-through"
+                fontFamily="system-ui, sans-serif"
+              >
+                {unknownLabel}
+              </text>
+              <text x="104" y="50.5" fontSize="8.8" fontWeight="800" fill="#0F4D31" fontFamily="system-ui, sans-serif">
+                {blockedLabel}
+              </text>
+
+              {/* Glowing "Anna" contact tile */}
+              <rect
+                x="76"
+                y="63"
+                width="78"
+                height="69"
+                rx="11"
+                fill="none"
+                stroke="#1B7A4E"
+                strokeWidth="2.5"
+                opacity="0.2"
+              />
+              <rect x="78" y="65" width="74" height="65" rx="9" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.8" />
+              <circle cx="115" cy="84" r="11" fill="#FFFDF9" stroke="#1B7A4E" strokeWidth="1.5" />
+              <circle cx="115" cy="81" r="3.4" fill="#1B7A4E" />
+              <path
+                d="M108.5 90.5c1.4-2.8 3.6-4 6.5-4s5.1 1.2 6.5 4"
+                fill="none"
+                stroke="#1B7A4E"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+              />
+              <circle cx="124" cy="75" r="3.2" fill="#1B7A4E" stroke="#FFFDF9" strokeWidth="1.2" />
+              <text
+                x="115"
+                y="108"
+                textAnchor="middle"
+                fontSize="9.5"
+                fontWeight="800"
+                fill="#0F4D31"
+                fontFamily="system-ui, sans-serif"
+              >
+                Anna
+              </text>
+              <rect x="97" y="114" width="36" height="9" rx="4.5" fill="#1B7A4E" />
+              <path
+                d="M111.5 118.5l2.2 2.2 4.5-4.5"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Secondary calm tile */}
+              <rect x="158" y="65" width="44" height="65" rx="9" fill="#FFFDF9" stroke="#E5DEC9" strokeWidth="1.2" />
+              <circle cx="180" cy="84" r="9.5" fill="#F3EBDF" />
+              <circle cx="180" cy="81.5" r="3" fill="#7A5A2E" />
+              <path
+                d="M174.5 89.5c1.2-2.3 3-3.3 5.5-3.3s4.3 1 5.5 3.3"
+                fill="none"
+                stroke="#7A5A2E"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <text
+                x="180"
+                y="108"
+                textAnchor="middle"
+                fontSize="8"
+                fontWeight="700"
+                fill="#5E4521"
+                fontFamily="system-ui, sans-serif"
+              >
+                Péter
+              </text>
+            </g>
+          </>
+        )}
+
+        {type === 'muted' && (
+          <>
+            {/* BEFORE: Crossed-out speaker icon on the phone + 0% muted bar */}
+            <g className="sn-illus-before">
+              <circle cx="140" cy="65" r="25" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.5" />
+              <path
+                d="M126 60h5.5l8-6.8v23.6l-8-6.8H126a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"
+                fill="#FDECEC"
+                stroke="#B83227"
+                strokeWidth="1.9"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M145 60l9 10M154 60l-9 10"
+                stroke="#B83227"
+                strokeWidth="2.1"
+                strokeLinecap="round"
+              />
+              <line x1="121" y1="83" x2="159" y2="47" stroke="#B83227" strokeWidth="2.1" strokeLinecap="round" />
+
+              {/* Muted volume bar */}
+              <rect x="85" y="102" width="110" height="20" rx="10" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.3" />
+              <rect x="95" y="110" width="60" height="4" rx="2" fill="#E8DFD4" />
+              <circle cx="95" cy="112" r="4" fill="#B83227" />
+              <text
+                x="176"
+                y="115"
+                textAnchor="middle"
+                fontSize="8.5"
+                fontWeight="800"
+                fill="#B83227"
+                fontFamily="system-ui, sans-serif"
+              >
+                0%
+              </text>
+            </g>
+
+            {/* AFTER: Speaker with sound waves + green check indicator + restored volume bar */}
+            <g className="sn-illus-after">
+              <circle cx="140" cy="65" r="25" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.8" />
+              <path
+                d="M123 60h5.5l8-6.8v23.6l-8-6.8H123a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"
+                fill="#CBE5D4"
+                stroke="#1B7A4E"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M141.5 58.5a8.5 8.5 0 0 1 0 13"
+                fill="none"
+                stroke="#1B7A4E"
+                strokeWidth="2.1"
+                strokeLinecap="round"
+              />
+              <path
+                d="M147 53.5a15 15 0 0 1 0 23"
+                fill="none"
+                stroke="#1B7A4E"
+                strokeWidth="2.1"
+                strokeLinecap="round"
+              />
+              {/* Green checkmark badge */}
+              <circle cx="160" cy="46" r="8.5" fill="#1B7A4E" stroke="#FFFDF9" strokeWidth="1.6" />
+              <path
+                d="M156.5 46.2l2.2 2.2 4.6-4.6"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Restored green volume bar */}
+              <rect x="85" y="102" width="110" height="20" rx="10" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.4" />
+              <rect x="95" y="110" width="60" height="4" rx="2" fill="#1B7A4E" />
+              <circle cx="155" cy="112" r="4.2" fill="#1B7A4E" />
+              <text
+                x="176"
+                y="115"
+                textAnchor="middle"
+                fontSize="8.2"
+                fontWeight="800"
+                fill="#0F4D31"
+                fontFamily="system-ui, sans-serif"
+              >
+                100%
+              </text>
+            </g>
+          </>
+        )}
+
+        {type === 'distance' && (
+          <>
+            {/* BEFORE: Map with dashed safe-zone circle, red pin, and uncertain battery */}
+            <g className="sn-illus-before">
+              <rect x="77" y="27" width="126" height="105" rx="9" fill="#F5EFE6" />
+              <path d="M77 62h126M77 98h126M115 27v105M167 27v105" stroke="#E5DEC9" strokeWidth="2" />
+              <circle
+                cx="140"
+                cy="82"
+                r="25"
+                fill="#FFF5F3"
+                fillOpacity="0.78"
+                stroke="#B83227"
+                strokeWidth="1.6"
+                strokeDasharray="4 3"
+              />
+              <path
+                d="M140 60c-6.4 0-11.5 5-11.5 11.2 0 7.9 11.5 18.8 11.5 18.8s11.5-10.9 11.5-18.8c0-6.2-5.1-11.2-11.5-11.2Z"
+                fill="#B83227"
+              />
+              <circle cx="140" cy="71" r="3.8" fill="#FFF5F3" />
+
+              {/* Uncertain battery pill */}
+              <rect x="148" y="32" width="49" height="19" rx="6" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.3" />
+              <rect x="153" y="37.5" width="14" height="8" rx="1.5" fill="none" stroke="#B83227" strokeWidth="1.3" />
+              <rect x="167.5" y="39.5" width="1.5" height="4" rx="0.5" fill="#B83227" />
+              <rect x="155" y="39.5" width="3.5" height="4" rx="0.5" fill="#B83227" />
+              <text
+                x="182"
+                y="44.5"
+                textAnchor="middle"
+                fontSize="9"
+                fontWeight="800"
+                fill="#B83227"
+                fontFamily="system-ui, sans-serif"
+              >
+                ?
+              </text>
+            </g>
+
+            {/* AFTER: Green pin inside safe zone, beside it "100%" battery + green checkmark */}
+            <g className="sn-illus-after">
+              <rect x="77" y="27" width="126" height="105" rx="9" fill="#F5EFE6" />
+              <path d="M77 62h126M77 98h126M115 27v105M167 27v105" stroke="#E5DEC9" strokeWidth="2" />
+              <circle
+                cx="114"
+                cy="80"
+                r="25"
+                fill="#EAF5EE"
+                stroke="#1B7A4E"
+                strokeWidth="1.8"
+                strokeDasharray="4 3"
+              />
+              <circle cx="114" cy="80" r="15" fill="#1B7A4E" fillOpacity="0.14" />
+              <path
+                d="M114 58c-6.4 0-11.5 5-11.5 11.2 0 7.9 11.5 18.8 11.5 18.8s11.5-10.9 11.5-18.8c0-6.2-5.1-11.2-11.5-11.2Z"
+                fill="#1B7A4E"
+              />
+              <circle cx="114" cy="69" r="3.8" fill="#FFFDF9" />
+
+              {/* Status badge beside the pin: "100%" battery + checkmark */}
+              <rect x="142" y="54" width="56" height="48" rx="9" fill="#FFFDF9" stroke="#1B7A4E" strokeWidth="1.6" />
+              <rect x="147" y="62" width="13.5" height="8" rx="1.5" fill="none" stroke="#1B7A4E" strokeWidth="1.4" />
+              <rect x="161" y="64" width="1.5" height="4" rx="0.5" fill="#1B7A4E" />
+              <rect x="149" y="64" width="9.5" height="4" rx="0.5" fill="#1B7A4E" />
+              <text x="165" y="69" fontSize="8.3" fontWeight="800" fill="#0F4D31" fontFamily="system-ui, sans-serif">
+                100%
+              </text>
+              <circle cx="155" cy="86" r="7" fill="#1B7A4E" />
+              <path
+                d="M151.8 86.2l2.1 2.1 4.2-4.2"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <text x="166" y="89" fontSize="8.2" fontWeight="800" fill="#1B7A4E" fontFamily="system-ui, sans-serif">
+                OK
+              </text>
+            </g>
+          </>
+        )}
+      </svg>
+    </div>
+  );
+}
+
+function ScenarioCard({
+  item,
+  index,
+  solutionLabel,
+  lang,
+}: {
+  item: SenearContent['scenarios']['items'][number];
+  index: number;
+  solutionLabel: string;
+  lang: SenearLang;
+}) {
+  const Icon = SCENARIO_ICONS[item.icon];
+  const [ref, inView] = useInViewOnce<HTMLLIElement>(0.4);
+  const [replaying, setReplaying] = useState(false);
+  const readyForReplayRef = useRef(false);
+  const replayTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!inView) return;
+    const t = window.setTimeout(() => {
+      readyForReplayRef.current = true;
+    }, 1800 + index * 250);
+    return () => window.clearTimeout(t);
+  }, [inView, index]);
+
+  useEffect(() => {
+    return () => {
+      if (replayTimerRef.current) window.clearTimeout(replayTimerRef.current);
+    };
+  }, []);
+
+  const triggerReplay = () => {
+    if (!readyForReplayRef.current || replaying) return;
+    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setReplaying(true);
+    if (replayTimerRef.current) window.clearTimeout(replayTimerRef.current);
+    replayTimerRef.current = window.setTimeout(() => {
+      setReplaying(false);
+    }, 950);
+  };
+
+  return (
+    <li
+      ref={ref}
+      tabIndex={0}
+      onMouseEnter={triggerReplay}
+      onFocus={triggerReplay}
+      style={{ '--sn-idx': index } as React.CSSProperties}
+      className={`sn-scenario-card ${inView ? 'is-in' : ''} ${
+        replaying ? 'is-replay' : ''
+      } grid gap-6 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 lg:p-7 xl:p-8 ring-1 ring-[#EFE8DD] shadow-[0_14px_34px_-22px_rgba(31,36,33,0.2)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(31,36,33,0.28)] lg:row-span-4 lg:grid-rows-subgrid ${FOCUS_RING}`}
+    >
+      {/* 1. Unified SVG phone illustration */}
+      <ScenarioIllustration type={item.icon} lang={lang} />
+
+      {/* 2. Animated transformation strip: Red Icon -> SVG Arrow -> Red Icon morphing into Green Check */}
+      <div aria-hidden="true" className="flex items-center gap-3">
+        <span className="sn-sc-red-start flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
+          <Icon className="h-5 w-5" />
+        </span>
+
+        <svg viewBox="0 0 72 20" className="h-5 w-16 sm:w-20 shrink-0 overflow-visible" fill="none">
+          <path
+            d="M2 10H64"
+            stroke="#B08A55"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            className="sn-sc-arrow-shaft"
+          />
+          <path
+            d="M57 4L65 10L57 16"
+            stroke="#1B7A4E"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="sn-sc-arrow-head"
+          />
+        </svg>
+
+        <span className="relative flex h-11 w-11 shrink-0 items-center justify-center">
+          <span className="sn-sc-red-end absolute inset-0 flex items-center justify-center rounded-2xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
+            <Icon className="h-5 w-5" />
+          </span>
+          <span className="sn-sc-green-end absolute inset-0 flex items-center justify-center rounded-2xl bg-[#1B7A4E] text-white shadow-[0_8px_18px_-8px_rgba(27,122,78,0.65)]">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
+              <path
+                d="M6.5 12.5l3.8 3.8L17.8 8.8"
+                stroke="#fff"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="sn-sc-check-path"
+              />
+            </svg>
+          </span>
+        </span>
+      </div>
+
+      {/* 3. First-person quote (max 3 lines) */}
+      <blockquote className="font-heading text-[1.2rem] sm:text-[1.3rem] font-bold leading-snug text-[#1F2421] text-pretty">
+        {item.quote}
+      </blockquote>
+
+      {/* 4. Solution text with subtle divider and small green MEGOLDÁS label (no nested box) */}
+      <div className="sn-sc-solution border-t border-[#E6DDD0] pt-5">
+        <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.14em] text-[#14593A]">
+          <Check className="h-3.5 w-3.5 text-[#1B7A4E]" strokeWidth={3} aria-hidden="true" />
+          {solutionLabel}
+        </p>
+        <p className="mt-2 text-base leading-relaxed text-[#2C302E]">{item.solution}</p>
+      </div>
+    </li>
+  );
+}
+
+function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
+  return (
+    <section className="py-20 sm:py-28 lg:py-32 bg-white" aria-labelledby="scenarios-title">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{c.scenarios.eyebrow}</Eyebrow>
           <h2 id="scenarios-title" className="font-heading text-[2rem] sm:text-[2.6rem] leading-[1.1] font-extrabold tracking-tight">
             {c.scenarios.title}
           </h2>
+          {c.scenarios.subtitle && (
+            <p className="text-lg leading-relaxed text-[#4A4744]">{c.scenarios.subtitle}</p>
+          )}
         </div>
 
-        {/* Subgrid: icon / quote / solution rows line up across the three cards */}
-        <ul className="mt-12 grid gap-6 md:grid-cols-3 md:grid-rows-[auto_1fr_auto]">
-          {c.scenarios.items.map((item, i) => {
-            const Icon = SCENARIO_ICONS[item.icon];
-            return (
-              <Reveal
-                as="li"
-                key={item.icon}
-                delay={i * 90}
-                className="grid gap-5 rounded-3xl bg-[#FAF7F2] p-6 sm:p-7 md:row-span-3 md:grid-rows-subgrid"
-              >
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF7F5] text-[#B83227] ring-1 ring-[#F2D0CB] shadow-[0_6px_16px_-8px_rgba(184,50,39,0.4)]">
-                  <Icon className="h-7 w-7" aria-hidden="true" />
-                </span>
-                <blockquote className="font-heading text-xl sm:text-[1.45rem] font-bold leading-snug text-[#1F2421] text-pretty">
-                  {item.quote}
-                </blockquote>
-                <div className="rounded-2xl border-l-4 border-[#1B7A4E] bg-[#EAF5EE] p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-extrabold uppercase tracking-wide text-[#0F4D31]">
-                    <Check className="h-4 w-4" strokeWidth={3} aria-hidden="true" />
-                    {c.scenarios.solutionLabel}
-                  </p>
-                  <p className="mt-1.5 text-base leading-relaxed text-[#1F2421]">{item.solution}</p>
-                </div>
-              </Reveal>
-            );
-          })}
+        {/* Subgrid: illustration / transformation / quote / solution rows line up across the three cards */}
+        <ul className="mt-14 sm:mt-16 grid grid-cols-1 gap-7 lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr_auto] lg:gap-8">
+          {c.scenarios.items.map((item, i) => (
+            <ScenarioCard
+              key={item.icon}
+              item={item}
+              index={i}
+              solutionLabel={c.scenarios.solutionLabel}
+              lang={lang}
+            />
+          ))}
         </ul>
       </div>
     </section>
