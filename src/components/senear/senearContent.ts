@@ -11,6 +11,14 @@ export const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${S
 export const SENEAR_PAGE_URL = 'https://gabba.bond/senear';
 export const SENEAR_OG_IMAGE = 'https://gabba.bond/screenshots/senear/senear-og-hu.jpg';
 
+/**
+ * Configurable destination for the Hero subline-2 iPhone web-version link.
+ * Currently jumps to the "iPhone too?" FAQ item (#gyik-iphone) and expands its answer.
+ * Replace this single constant once the final web-version / waitlist URL is ready.
+ */
+export const IPHONE_WEB_APP_URL = '#gyik-iphone';
+export const IPHONE_FAQ_INDEX = 1;
+
 export interface VideoChapter {
   time: string;
   seconds: number;
@@ -36,6 +44,10 @@ export interface SenearContent {
     title2: string;
     lead: string;
     primaryCta: string;
+    subline1: string;
+    subline2Prefix: string;
+    subline2Link: string;
+    subline3Toggle: string;
     androidNote: string;
     howBtn: string;
     videoBtn: string;
@@ -185,13 +197,17 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     breadcrumbHome: 'Főoldal',
     kicker: 'INGYENES ANDROID-ALKALMAZÁS',
     hero: {
-      title1: 'Tedd egyszerűvé a szüleid telefonját.',
+      title1: 'Tedd egyszerűvé a szüleid régi telefonját.',
       title2: 'Nyugalom neked.',
-      lead: 'Nagy fotós hívógombok, zárolt kezdőképernyő, és csak az általad jóváhagyott számok hívhatják. Te pedig a saját telefonodról látod, hogy minden rendben van.',
+      lead: 'Nagy fotós hívógombok és SOS gomb a szülődnek. Csak a jóváhagyott számok hívhatják, te pedig látod, hogy minden rendben van. Elég hozzá egy régi Android.',
       primaryCta: 'Letöltés a Google Playről – Ingyenes',
+      subline1: 'Az idős telefon örökké ingyenes · a családi funkciók 14 napig ingyen',
+      subline2Prefix: 'Az idős telefon Android 8.0+ legyen.',
+      subline2Link: 'iPhone-os családtagoknak készül a webes változat',
+      subline3Toggle: 'Számítógépen nézed? Küldd át a telefonodra',
       androidNote: 'Android 8.0+ készülékekre (a családtag telefonja is Android legyen)',
       howBtn: 'Hogyan működik?',
-      videoBtn: 'Beállítási videó (14 perc)',
+      videoBtn: 'Beállítási videó (13 perc)',
       guideBtn: 'Lépésről lépésre útmutató',
       phoneAlt:
         'A SENEAR zárolt, egyszerű kezdőképernyője: négy nagy, fotós hívógomb (Anna, Péter, András, Gyula – mintaadatok) és alul egy piros SOS gomb.',
@@ -492,7 +508,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'Milyen telefonokon működik? iPhone-on is?',
-          a: 'Mindkét telefonnak Android 8.0 vagy újabb rendszerűnek kell lennie (pl. Samsung, Xiaomi, Motorola, Honor, Pixel). iPhone-on nem működik, mert az iOS nem engedi a kezdőképernyő ilyen zárolását és a hívások automatikus kihangosítását.',
+          a: 'Mindkét telefonnak Android 8.0 vagy újabb rendszerűnek kell lennie (pl. Samsung, Xiaomi, Motorola, Honor, Pixel). iPhone-on nem működik, mert az iOS nem engedi a kezdőképernyő ilyen zárolását és a hívások automatikus kihangosítását. Az iPhone-os családtagoknak szánt webes változat fejlesztés alatt áll.',
         },
         {
           q: 'Hogyan működik a 14 napos próbaidőszak és a fizetés? Megjelenik bármilyen fizetési ablak a szülőm telefonján?',
@@ -537,10 +553,14 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     breadcrumbHome: 'Home',
     kicker: 'FREE ANDROID APP',
     hero: {
-      title1: 'Make your parents’ phone simple.',
+      title1: 'Make your parents’ old phone simple.',
       title2: 'Peace of mind for you.',
-      lead: 'Large photo call buttons, a locked home screen, and only numbers you approve can call. And you see from your own phone that everything is okay.',
+      lead: 'Big photo call buttons and an SOS button for your parent. Only approved numbers can call, and you can see that everything is okay. An old Android phone is all it takes.',
       primaryCta: 'Download on Google Play – Free',
+      subline1: 'The senior’s phone is free forever · family features free for 14 days',
+      subline2Prefix: 'The senior’s phone needs Android 8.0+.',
+      subline2Link: 'A web version for family members with iPhones is in the works',
+      subline3Toggle: 'On a computer? Send it to your phone',
       androidNote: 'For Android 8.0+ devices (the family member’s phone also needs Android)',
       howBtn: 'How it works',
       videoBtn: 'Setup video (13 min)',
@@ -844,7 +864,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'Which phones does it work on? iPhone too?',
-          a: 'Both phones need Android 8.0 or newer (e.g. Samsung, Xiaomi, Motorola, Honor, Pixel). It doesn’t work on iPhone, because iOS doesn’t allow this kind of home screen lock or automatic speakerphone.',
+          a: 'Both phones need Android 8.0 or newer (e.g. Samsung, Xiaomi, Motorola, Honor, Pixel). It doesn’t work on iPhone, because iOS doesn’t allow this kind of home screen lock or automatic speakerphone. A web version for family members with iPhones is currently in development.',
         },
         {
           q: 'How does the 14-day trial and billing work? Will my parent ever see a payment screen?',
@@ -889,13 +909,17 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     breadcrumbHome: 'Startseite',
     kicker: 'KOSTENLOSE ANDROID-APP',
     hero: {
-      title1: 'Machen Sie das Handy Ihrer Eltern einfach.',
+      title1: 'Machen Sie das alte Handy Ihrer Eltern einfach.',
       title2: 'Ruhe für Sie.',
-      lead: 'Große Foto-Anruftasten, ein gesperrter Startbildschirm, und nur von Ihnen freigegebene Nummern können anrufen. Und Sie sehen auf Ihrem eigenen Handy, dass alles in Ordnung ist.',
+      lead: 'Große Foto-Anruftasten und eine SOS-Taste für Ihre Eltern. Nur freigegebene Nummern können anrufen, und Sie sehen, dass alles in Ordnung ist. Ein altes Android-Handy genügt.',
       primaryCta: 'Bei Google Play laden – Kostenlos',
+      subline1: 'Das Handy der Eltern ist dauerhaft kostenlos · Familienfunktionen 14 Tage gratis',
+      subline2Prefix: 'Das Handy der Eltern braucht Android 8.0+.',
+      subline2Link: 'Eine Web-Version für Familienmitglieder mit iPhone ist in Arbeit',
+      subline3Toggle: 'Am Computer? Schicken Sie es sich selbst aufs Handy',
       androidNote: 'Für Android 8.0+ Geräte (auch das Handy des Familienmitglieds braucht Android)',
       howBtn: 'So funktioniert’s',
-      videoBtn: 'Einrichtungsvideo (15 Min.)',
+      videoBtn: 'Einrichtungsvideo (13 Min.)',
       guideBtn: 'Schritt-für-Schritt-Anleitung',
       phoneAlt:
         'Der gesperrte, einfache Startbildschirm von SENEAR: vier große Foto-Anruftasten (Anna, Peter, Eva, George – Beispieldaten) und unten eine rote SOS-Taste.',
@@ -1196,7 +1220,7 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
         },
         {
           q: 'Auf welchen Handys läuft es? Auch auf dem iPhone?',
-          a: 'Beide Handys brauchen Android 8.0 oder neuer (z. B. Samsung, Xiaomi, Motorola, Honor, Pixel). Auf dem iPhone läuft es nicht, weil iOS eine solche Startbildschirm-Sperre und automatisches Freisprechen nicht erlaubt.',
+          a: 'Beide Handys brauchen Android 8.0 oder neuer (z. B. Samsung, Xiaomi, Motorola, Honor, Pixel). Auf dem iPhone läuft es nicht, weil iOS eine solche Startbildschirm-Sperre und automatisches Freisprechen nicht erlaubt. Eine Web-Version für Familienmitglieder mit iPhone ist derzeit in Entwicklung.',
         },
         {
           q: 'Wie funktionieren die 14-tägige Testphase und die Abrechnung? Sieht mein Elternteil jemals ein Zahlungsfenster?',

@@ -30,7 +30,14 @@ import type { AppRoute } from '../../routing';
 import { CallFilterPhone } from './CallFilterPhone';
 import { RemoteSetupStory } from './RemoteSetupStory';
 import { FOCUS_RING, scrollToSection, useInViewOnce } from './hooks';
-import { PLAY_STORE_URL, SENEAR_CONTENT, type SenearContent, type SenearLang } from './senearContent';
+import {
+  IPHONE_FAQ_INDEX,
+  IPHONE_WEB_APP_URL,
+  PLAY_STORE_URL,
+  SENEAR_CONTENT,
+  type SenearContent,
+  type SenearLang,
+} from './senearContent';
 import './senear.css';
 
 interface SenearLandingPageProps {
@@ -238,11 +245,23 @@ function DrawCheck({ className = 'h-5 w-5' }: { className?: string }) {
   );
 }
 
-/** "On a computer? Send it to yourself" – disclosure with QR code + copy link (desktop only). */
-function SendToSelf({ c, tone = 'light' }: { c: SenearContent; tone?: 'light' | 'dark' }) {
+/** "On a computer? Send it to yourself" – disclosure with QR code + copy link. */
+function SendToSelf({
+  c,
+  tone = 'light',
+  toggleLabel,
+  showOnMobile = false,
+  compact = false,
+}: {
+  c: SenearContent;
+  tone?: 'light' | 'dark';
+  toggleLabel?: string;
+  showOnMobile?: boolean;
+  compact?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const panelId = `send-self-${tone}`;
+  const panelId = `send-self-${tone}${compact ? '-hero' : ''}`;
 
   const copy = async () => {
     try {
@@ -256,20 +275,36 @@ function SendToSelf({ c, tone = 'light' }: { c: SenearContent; tone?: 'light' | 
 
   const dark = tone === 'dark';
   return (
-    <div className="hidden md:block">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold underline decoration-2 underline-offset-4 cursor-pointer ${
-          dark ? 'text-[#E8D5B0] decoration-[#E8D5B0]/40 hover:decoration-[#E8D5B0]' : 'text-[#14593A] decoration-[#1B7A4E]/30 hover:decoration-[#1B7A4E]'
-        } ${FOCUS_RING}`}
-      >
-        <MonitorSmartphone className="h-4 w-4" aria-hidden="true" />
-        {c.sendSelf.toggle}
-        <ArrowRight className={`h-4 w-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden="true" />
-      </button>
+    <div className={showOnMobile ? 'block' : 'hidden md:block'}>
+      {compact ? (
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className={`inline-flex min-h-11 items-center rounded-md py-1 text-left text-[14.5px] sm:text-[15px] leading-snug font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] cursor-pointer ${FOCUS_RING}`}
+        >
+          <span>
+            {toggleLabel ?? c.sendSelf.toggle}
+            {'\u00A0'}
+            {open ? '↓' : '→'}
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold underline decoration-2 underline-offset-4 cursor-pointer ${
+            dark ? 'text-[#E8D5B0] decoration-[#E8D5B0]/40 hover:decoration-[#E8D5B0]' : 'text-[#14593A] decoration-[#1B7A4E]/30 hover:decoration-[#1B7A4E]'
+          } ${FOCUS_RING}`}
+        >
+          <MonitorSmartphone className="h-4 w-4" aria-hidden="true" />
+          {toggleLabel ?? c.sendSelf.toggle}
+          <ArrowRight className={`h-4 w-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden="true" />
+        </button>
+      )}
       <div id={panelId} className={`step-accordion-collapse ${open ? 'is-expanded' : ''}`}>
         <div className="overflow-hidden">
           <div
@@ -323,6 +358,20 @@ function Hero({
 }) {
   const outline = `inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-[#1B7A4E]/25 bg-white px-4 text-[15px] font-semibold text-[#1F2421] transition-all hover:border-[#1B7A4E] hover:bg-[#F1F8F3] hover:-translate-y-0.5 cursor-pointer ${FOCUS_RING}`;
 
+  const handleIphoneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!IPHONE_WEB_APP_URL.startsWith('#')) return;
+    e.preventDefault();
+    const targetId = IPHONE_WEB_APP_URL.slice(1);
+    if (window.history?.replaceState) {
+      window.history.replaceState(null, '', IPHONE_WEB_APP_URL);
+    }
+    window.dispatchEvent(new CustomEvent('senear:open-iphone-faq'));
+    window.requestAnimationFrame(() => {
+      scrollToSection(targetId);
+      document.getElementById(`faq-btn-${IPHONE_FAQ_INDEX}`)?.focus({ preventScroll: true });
+    });
+  };
+
   return (
     <section className="relative border-b border-[#E8DFD4] bg-gradient-to-b from-[#FBF9F5] via-[#F7F1E9] to-[#F3EBDF]">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-14 lg:pt-8 lg:pb-20">
@@ -357,11 +406,23 @@ function Hero({
 
             <div className="space-y-3 pt-1">
               <PlayButton label={c.hero.primaryCta} anchorRef={ctaRef} className="w-full sm:w-auto" />
-              <p className="flex items-start gap-2 text-[15px] font-medium text-[#3F3C38]">
-                <Smartphone className="mt-0.5 h-4 w-4 shrink-0 text-[#1B7A4E]" aria-hidden="true" />
-                <span>{c.hero.androidNote}</span>
-              </p>
-              <SendToSelf c={c} />
+              <div className="max-w-xl pt-1 text-[14.5px] sm:text-[15px] leading-relaxed text-[#3F3C38]">
+                <p className="font-medium text-[#3F3C38]">{c.hero.subline1}</p>
+                <p className="mt-2 text-[#3F3C38]">
+                  <span>{c.hero.subline2Prefix} </span>
+                  <a
+                    href={IPHONE_WEB_APP_URL}
+                    onClick={handleIphoneLinkClick}
+                    className="inline rounded-sm py-1.5 font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B7A4E]"
+                  >
+                    {c.hero.subline2Link}
+                    {'\u00A0'}→
+                  </a>
+                </p>
+                <div className="mt-1.5">
+                  <SendToSelf c={c} toggleLabel={c.hero.subline3Toggle} showOnMobile compact />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1504,6 +1565,23 @@ function Testimonials({ items }: { items: Testimonial[] }) {
 
 function Faq({ c }: { c: SenearContent }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+
+  useEffect(() => {
+    const openIfHashMatches = () => {
+      if (IPHONE_WEB_APP_URL.startsWith('#') && window.location.hash === IPHONE_WEB_APP_URL) {
+        setOpenIdx(IPHONE_FAQ_INDEX);
+      }
+    };
+    const onOpenIphoneFaq = () => setOpenIdx(IPHONE_FAQ_INDEX);
+    openIfHashMatches();
+    window.addEventListener('hashchange', openIfHashMatches);
+    window.addEventListener('senear:open-iphone-faq', onOpenIphoneFaq);
+    return () => {
+      window.removeEventListener('hashchange', openIfHashMatches);
+      window.removeEventListener('senear:open-iphone-faq', onOpenIphoneFaq);
+    };
+  }, []);
+
   return (
     <section id="gyik" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="faq-title">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -1513,8 +1591,13 @@ function Faq({ c }: { c: SenearContent }) {
             const open = openIdx === idx;
             const btnId = `faq-btn-${idx}`;
             const panelId = `faq-panel-${idx}`;
+            const isIphoneItem = idx === IPHONE_FAQ_INDEX;
             return (
-              <div key={item.q}>
+              <div
+                key={item.q}
+                id={isIphoneItem ? 'gyik-iphone' : undefined}
+                className={isIphoneItem ? 'scroll-mt-28' : undefined}
+              >
                 <h3>
                   <button
                     id={btnId}
