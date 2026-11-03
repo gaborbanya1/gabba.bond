@@ -4,6 +4,7 @@
  * the real content without running JavaScript. The browser bundle replaces it on load.
  */
 import { renderToString } from 'react-dom/server';
+import { SkipToMainLink } from './App';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -22,8 +23,9 @@ export function renderSenearPage(): string {
   return renderToString(
     <LanguageProvider initialLanguage="hu">
       <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans">
+        <SkipToMainLink />
         <Navbar onContactClick={noop} onExploreProjects={noop} onNavigate={noop} currentRoute="senear" />
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
           <SenearLandingPage onNavigate={noop} />
         </main>
         <Footer onNavigate={noop} />

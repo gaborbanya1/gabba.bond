@@ -18,6 +18,8 @@ export function GooglePlayIcon({ className = "w-5 h-5", size, color = 'white' }:
         style={size ? { width: size, height: size } : undefined}
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
+        aria-hidden="true"
+        focusable="false"
       >
         <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 59.9.0.2z" fill="currentColor" />
         <path d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0z" fill="currentColor" />
@@ -34,6 +36,8 @@ export function GooglePlayIcon({ className = "w-5 h-5", size, color = 'white' }:
       style={size ? { width: size, height: size } : undefined}
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
     >
       <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 59.9.0.2z" fill="#EA4335" />
       <path d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0z" fill="#4285F4" />

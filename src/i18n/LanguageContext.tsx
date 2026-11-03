@@ -1,19 +1,20 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect } from 'react';
 import { RTL_LANGUAGES, SUPPORTED_LANGUAGES, SupportedLanguage, TranslationData } from './types';
 import { translations } from './translations';
 
 interface LanguageContextType {
   language: SupportedLanguage;
+  setLanguage: (next: SupportedLanguage) => void;
   t: TranslationData;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-/** Normalizes a BCP-47 tag to a supported 2-letter key (de-AT -> de, zh-CN -> zh, id -> in). */
+/** Normalizes a BCP-47 tag to a supported 2-letter key (de-AT -> de, zh-CN -> zh, in -> id). */
 function toSupported(tag: string | null | undefined): SupportedLanguage | null {
   if (!tag) return null;
   let code = tag.toLowerCase().split(/[-_]/)[0];
-  if (code === 'id') code = 'in';
+  if (code === 'in') code = 'id';
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(code) ? (code as SupportedLanguage) : null;
 }
 
@@ -44,17 +45,37 @@ export function LanguageProvider({
   /** Forces a language (used by the build-time prerender, where no browser is available). */
   initialLanguage?: SupportedLanguage;
 }) {
-  const [language] = React.useState<SupportedLanguage>(() => initialLanguage ?? detectLanguage());
-  const t = translations[language] ?? translations.en;
+  const [language, setLanguageState] = React.useState<SupportedLanguage>(() => initialLanguage ?? detectLanguage());
+  const effectiveLang: SupportedLanguage = translations[language] ? language : 'en';
+  const t = translations[effectiveLang] ?? translations.en;
+
+  const setLanguage = useCallback((next: SupportedLanguage) => {
+    setLanguageState(next);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', next);
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  }, []);
+
+  // Sync language when browser back/forward navigates across ?lang= URLs.
+  useEffect(() => {
+    const onPopState = () => {
+      const fromUrl = toSupported(new URLSearchParams(window.location.search).get('lang'));
+      if (fromUrl) setLanguageState(fromUrl);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   // Document titles are set per route in App.tsx (and by the SENEAR landing page itself).
   useEffect(() => {
     const root = document.documentElement;
-    root.lang = language;
-    root.dir = RTL_LANGUAGES.includes(language) ? 'rtl' : 'ltr';
-  }, [language]);
+    root.lang = effectiveLang;
+    root.dir = RTL_LANGUAGES.includes(effectiveLang) ? 'rtl' : 'ltr';
+  }, [effectiveLang]);
 
-  return <LanguageContext.Provider value={{ language, t }}>{children}</LanguageContext.Provider>;
+  return <LanguageContext.Provider value={{ language: effectiveLang, setLanguage, t }}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage() {

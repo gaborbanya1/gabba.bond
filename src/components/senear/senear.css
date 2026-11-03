@@ -303,6 +303,28 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- User-toggled animation pause (WCAG 2.2.2) ---------- */
+.sn-anim-paused .sn-float,
+.sn-anim-paused .sn-demo-a,
+.sn-anim-paused .sn-demo-strike,
+.sn-anim-paused .sn-demo-blocked,
+.sn-anim-paused .sn-demo-b,
+.sn-anim-paused .sn-demo-allowed,
+.sn-anim-paused .sn-demo-ring,
+.sn-anim-paused .sn-pop,
+.sn-anim-paused .sn-travel,
+.sn-anim-paused .sn-press,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-red-start,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-arrow-shaft,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-arrow-head,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-red-end,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-green-end,
+.sn-anim-paused .sn-scenario-card.is-in .sn-sc-check-path,
+.sn-anim-paused .sn-scenario-card.is-in .sn-illus-before,
+.sn-anim-paused .sn-scenario-card.is-in .sn-illus-after {
+  animation-play-state: paused !important;
+}
+
 /* ---------- Reduced motion: final static state ---------- */
 @media (prefers-reduced-motion: reduce) {
   .sn-js .sn-reveal { opacity: 1; transform: none; transition: none; }

@@ -7,7 +7,7 @@ import { Footer } from './components/Footer';
 import { ProjectDetailModal } from './components/ProjectDetailModal';
 import { SenearLandingPage } from './components/senear/SenearLandingPage';
 import { ProjectItem } from './types';
-import { LanguageProvider } from './i18n/LanguageContext';
+import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 import { AppRoute, ProductKey, ROUTE_PATHS, resolveRoute } from './routing';
 
 // Route-level code splitting: these pages/modals are loaded only when needed,
@@ -45,7 +45,36 @@ const ROUTE_TITLES: Record<AppRoute, string> = {
 
 function scrollToId(id: string) {
   const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
+  if (!el) return;
+  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+}
+
+export function SkipToMainLink() {
+  const { language } = useLanguage();
+  const label =
+    language === 'hu'
+      ? 'Ugrás a fő tartalomra'
+      : language === 'de'
+      ? 'Zum Hauptinhalt springen'
+      : 'Skip to main content';
+
+  return (
+    <a
+      href="#main-content"
+      onClick={(e) => {
+        const main = document.getElementById('main-content');
+        if (!main) return;
+        e.preventDefault();
+        main.focus({ preventScroll: true });
+        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        main.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      }}
+      className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-[#1B7A4E] focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white focus:outline-2 focus:outline-offset-2 focus:outline-[#1F2421]"
+    >
+      {label}
+    </a>
+  );
 }
 
 export default function App() {
@@ -114,6 +143,8 @@ export default function App() {
           route === 'senear-setup' ? 'lg:h-screen lg:overflow-hidden' : ''
         }`}
       >
+        <SkipToMainLink />
+
         <Navbar
           onContactClick={scrollToContact}
           onExploreProjects={scrollToProjects}
@@ -121,7 +152,11 @@ export default function App() {
           currentRoute={route}
         />
 
-        <main className={`flex-1 ${route === 'senear-setup' ? 'lg:min-h-0 lg:overflow-hidden' : ''}`}>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className={`flex-1 focus:outline-none ${route === 'senear-setup' ? 'lg:min-h-0 lg:overflow-hidden' : ''}`}
+        >
           <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
           {route === 'home' && (
             <>

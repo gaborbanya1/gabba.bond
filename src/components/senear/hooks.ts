@@ -50,6 +50,10 @@ export function scrollToSection(id: string) {
   el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 }
 
-/** Shared visible focus style (WCAG 2.4.7). */
+/** Shared visible focus style for light backgrounds (WCAG 2.4.7 & 1.4.11 >= 4.5:1). */
 export const FOCUS_RING =
-  'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1B7A4E]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B7A4E]';
+
+/** Shared visible focus style for dark backgrounds (WCAG 2.4.7 & 1.4.11 >= 5.36:1). */
+export const FOCUS_RING_DARK =
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E8D5B0]';

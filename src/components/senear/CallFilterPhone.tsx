@@ -1,4 +1,5 @@
-import { Check, PhoneIncoming, PhoneOff } from 'lucide-react';
+import { Check, Pause, PhoneIncoming, PhoneOff, Play } from 'lucide-react';
+import { FOCUS_RING } from './hooks';
 import type { SenearContent, SenearLang } from './senearContent';
 
 /** Screenshot metadata per language (intrinsic size + position of the first "Anna" tile in %). */
@@ -11,6 +12,10 @@ const HERO_SCREENS: Record<SenearLang, { src: string; w: number; h: number; tile
 interface CallFilterPhoneProps {
   lang: SenearLang;
   copy: SenearContent['hero'];
+  animPaused?: boolean;
+  onTogglePause?: () => void;
+  pauseLabel?: string;
+  showPauseControl?: boolean;
 }
 
 /**
@@ -19,7 +24,14 @@ interface CallFilterPhoneProps {
  * (it never rings), then Anna's approved call comes through.
  * With prefers-reduced-motion the final state is shown statically (see senear.css).
  */
-export function CallFilterPhone({ lang, copy }: CallFilterPhoneProps) {
+export function CallFilterPhone({
+  lang,
+  copy,
+  animPaused = false,
+  onTogglePause,
+  pauseLabel,
+  showPauseControl = false,
+}: CallFilterPhoneProps) {
   const screen = HERO_SCREENS[lang];
   const [l, t, w, h] = screen.tile;
 
@@ -64,7 +76,7 @@ export function CallFilterPhone({ lang, copy }: CallFilterPhoneProps) {
       >
         <div className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FDECEC] text-[#B42318]">
-            <PhoneOff className="h-4.5 w-4.5" />
+            <PhoneOff className="h-4.5 w-4.5" aria-hidden="true" focusable="false" />
           </span>
           <div className="min-w-0">
             <div className="text-[13px] font-bold text-[#1F2421] leading-tight">{copy.demo.unknownTitle}</div>
@@ -89,7 +101,7 @@ export function CallFilterPhone({ lang, copy }: CallFilterPhoneProps) {
       >
         <div className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EAF5EE] text-[#1B7A4E]">
-            <PhoneIncoming className="h-4.5 w-4.5" />
+            <PhoneIncoming className="h-4.5 w-4.5" aria-hidden="true" focusable="false" />
           </span>
           <div className="min-w-0">
             <div className="text-[13px] font-bold text-[#1F2421] leading-tight">{copy.demo.annaTitle}</div>
@@ -97,7 +109,7 @@ export function CallFilterPhone({ lang, copy }: CallFilterPhoneProps) {
           </div>
         </div>
         <span className="sn-demo-allowed mt-2 inline-flex items-center gap-1 rounded-md bg-[#1B7A4E] px-2 py-0.5 text-[12px] font-extrabold uppercase tracking-wide text-white">
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+          <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden="true" focusable="false" />
           {copy.demo.allowed}
         </span>
       </div>
@@ -105,6 +117,24 @@ export function CallFilterPhone({ lang, copy }: CallFilterPhoneProps) {
       <figcaption className="relative mt-5 text-center text-[15px] font-semibold text-[#3F3C38]">
         {copy.demoCaption}
       </figcaption>
+
+      {showPauseControl && onTogglePause && pauseLabel && (
+        <div className="relative mt-2.5 flex justify-center">
+          <button
+            type="button"
+            onClick={onTogglePause}
+            aria-pressed={animPaused}
+            className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[#529172] bg-white px-3.5 text-[13.5px] font-semibold text-[#1F2421] transition-colors hover:border-[#1B7A4E] hover:bg-[#F1F8F3] cursor-pointer ${FOCUS_RING}`}
+          >
+            {animPaused ? (
+              <Play className="h-3.5 w-3.5 fill-current text-[#1B7A4E]" aria-hidden="true" focusable="false" />
+            ) : (
+              <Pause className="h-3.5 w-3.5 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
+            )}
+            <span>{pauseLabel}</span>
+          </button>
+        </div>
+      )}
     </figure>
   );
 }

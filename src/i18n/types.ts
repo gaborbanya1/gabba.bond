@@ -1,7 +1,7 @@
 /** All 20 auto-detected language codes. `in` is the canonical key for Indonesian. */
 export const SUPPORTED_LANGUAGES = [
   'en', 'hu', 'de', 'it', 'sk', 'sl', 'ro', 'es', 'fr', 'pt',
-  'ru', 'ja', 'zh', 'ko', 'tr', 'in', 'hi', 'ar', 'ur', 'bn',
+  'ru', 'ja', 'zh', 'ko', 'tr', 'id', 'hi', 'ar', 'ur', 'bn',
 ] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];

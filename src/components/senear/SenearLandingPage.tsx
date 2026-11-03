@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import {
   ArrowDown,
   ArrowRight,
@@ -13,6 +13,7 @@ import {
   Lock,
   MapPinned,
   MonitorSmartphone,
+  Pause,
   Play,
   PhoneOff,
   PlayCircle,
@@ -29,7 +30,7 @@ import { GooglePlayIcon } from '../GooglePlayIcon';
 import type { AppRoute } from '../../routing';
 import { CallFilterPhone } from './CallFilterPhone';
 import { RemoteSetupStory } from './RemoteSetupStory';
-import { FOCUS_RING, scrollToSection, useInViewOnce } from './hooks';
+import { FOCUS_RING, FOCUS_RING_DARK, scrollToSection, useInViewOnce, usePrefersReducedMotion } from './hooks';
 import {
   IPHONE_FAQ_INDEX,
   IPHONE_WEB_APP_URL,
@@ -61,6 +62,21 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
   const heroCtaRef = useRef<HTMLAnchorElement>(null);
   const finalCtaRef = useRef<HTMLElement>(null);
   const [showSticky, setShowSticky] = useState(false);
+  const [animPaused, setAnimPaused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
+
+  const pauseAnimLabel = animPaused
+    ? lang === 'hu'
+      ? 'Animáció lejátszása'
+      : lang === 'de'
+        ? 'Animation abspielen'
+        : 'Play animation'
+    : lang === 'hu'
+      ? 'Animáció szüneteltetése'
+      : lang === 'de'
+        ? 'Animation pausieren'
+        : 'Pause animation';
+  const toggleAnimPause = () => setAnimPaused((p) => !p);
 
   // Enable scroll-reveal styles only on the client (SSR / no-JS HTML stays fully visible).
   useEffect(() => {
@@ -70,7 +86,9 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
   // Page title + meta description + OG / Twitter / Schema.org SoftwareApplication for this route (restored on leave).
   useEffect(() => {
     const prevTitle = document.title;
+    const prevHtmlLang = document.documentElement.lang;
     document.title = c.meta.title;
+    document.documentElement.lang = lang;
 
     const setMeta = (attr: 'name' | 'property', key: string, value: string) => {
       let el = document.querySelector(`meta[${attr}="${key}"]`);
@@ -120,6 +138,7 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
 
     return () => {
       document.title = prevTitle;
+      if (prevHtmlLang) document.documentElement.lang = prevHtmlLang;
       restoreDesc();
       restoreOgTitle();
       restoreOgDesc();
@@ -147,9 +166,29 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
   }, []);
 
   return (
-    <div ref={rootRef} className="bg-[#FAF7F2] text-[#1F2421] overflow-x-clip">
-      <Hero c={c} lang={lang} onNavigate={onNavigate} ctaRef={heroCtaRef} />
-      <Scenarios c={c} lang={lang} />
+    <div
+      ref={rootRef}
+      lang={lang}
+      className={`bg-[#FAF7F2] text-[#1F2421] overflow-x-clip ${animPaused ? 'sn-anim-paused' : ''}`}
+    >
+      <Hero
+        c={c}
+        lang={lang}
+        onNavigate={onNavigate}
+        ctaRef={heroCtaRef}
+        animPaused={animPaused}
+        onTogglePause={toggleAnimPause}
+        pauseLabel={pauseAnimLabel}
+        showPauseControl={!reducedMotion}
+      />
+      <Scenarios
+        c={c}
+        lang={lang}
+        animPaused={animPaused}
+        onTogglePause={toggleAnimPause}
+        pauseLabel={pauseAnimLabel}
+        showPauseControl={!reducedMotion}
+      />
       <Modes c={c} />
       <HowItWorks c={c} />
       <VideoSection c={c} />
@@ -180,12 +219,14 @@ function PlayButton({
   label,
   className = '',
   size = 'lg',
+  tone = 'light',
   tabIndex,
   anchorRef,
 }: {
   label: string;
   className?: string;
   size?: 'lg' | 'md';
+  tone?: 'light' | 'dark';
   tabIndex?: number;
   anchorRef?: React.Ref<HTMLAnchorElement>;
 }) {
@@ -198,7 +239,7 @@ function PlayButton({
       tabIndex={tabIndex}
       className={`group inline-flex items-center justify-center gap-3 rounded-2xl bg-[#1B7A4E] font-bold text-white shadow-[0_12px_24px_-10px_rgba(27,122,78,0.6)] transition-all hover:bg-[#145E3B] hover:shadow-[0_16px_30px_-10px_rgba(27,122,78,0.7)] active:scale-[0.98] ${
         size === 'lg' ? 'min-h-14 px-6 text-base sm:text-[17px]' : 'min-h-12 px-5 text-base'
-      } ${FOCUS_RING} ${className}`}
+      } ${tone === 'dark' ? FOCUS_RING_DARK : FOCUS_RING} ${className}`}
     >
       <GooglePlayIcon color="white" className="h-5 w-5 shrink-0 transition-transform group-hover:scale-110" />
       <span>{label}</span>
@@ -238,7 +279,7 @@ function Reveal({ children, className = '', as: Tag = 'div', delay = 0 }: { chil
 
 function DrawCheck({ className = 'h-5 w-5' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={`sn-check shrink-0 ${className}`} aria-hidden="true">
+    <svg viewBox="0 0 24 24" className={`sn-check shrink-0 ${className}`} aria-hidden="true" focusable="false">
       <circle cx="12" cy="12" r="12" fill="#1B7A4E" />
       <path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -274,6 +315,7 @@ function SendToSelf({
   };
 
   const dark = tone === 'dark';
+  const focusRing = dark ? FOCUS_RING_DARK : FOCUS_RING;
   return (
     <div className={showOnMobile ? 'block' : 'hidden md:block'}>
       {compact ? (
@@ -282,7 +324,7 @@ function SendToSelf({
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls={panelId}
-          className={`inline-flex min-h-11 items-center rounded-md py-1 text-left text-[14.5px] sm:text-[15px] leading-snug font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] cursor-pointer ${FOCUS_RING}`}
+          className={`inline-flex min-h-11 items-center rounded-md py-1 text-left text-[14.5px] sm:text-[15px] leading-snug font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] cursor-pointer ${focusRing}`}
         >
           <span>
             {toggleLabel ?? c.sendSelf.toggle}
@@ -298,11 +340,11 @@ function SendToSelf({
           aria-controls={panelId}
           className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold underline decoration-2 underline-offset-4 cursor-pointer ${
             dark ? 'text-[#E8D5B0] decoration-[#E8D5B0]/40 hover:decoration-[#E8D5B0]' : 'text-[#14593A] decoration-[#1B7A4E]/30 hover:decoration-[#1B7A4E]'
-          } ${FOCUS_RING}`}
+          } ${focusRing}`}
         >
-          <MonitorSmartphone className="h-4 w-4" aria-hidden="true" />
+          <MonitorSmartphone className="h-4 w-4" aria-hidden="true" focusable="false" />
           {toggleLabel ?? c.sendSelf.toggle}
-          <ArrowRight className={`h-4 w-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden="true" />
+          <ArrowRight className={`h-4 w-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden="true" focusable="false" />
         </button>
       )}
       <div id={panelId} className={`step-accordion-collapse ${open ? 'is-expanded' : ''}`}>
@@ -328,9 +370,13 @@ function SendToSelf({
                 onClick={copy}
                 className={`inline-flex min-h-11 items-center gap-2 rounded-xl px-3.5 text-[15px] font-bold cursor-pointer transition-colors ${
                   dark ? 'bg-white text-[#1F2421] hover:bg-[#F5F0EB]' : 'bg-[#EAF5EE] text-[#0F4D31] hover:bg-[#D9EEDF]'
-                } ${FOCUS_RING}`}
+                } ${focusRing}`}
               >
-                {copied ? <Check className="h-4 w-4" strokeWidth={3} /> : <Copy className="h-4 w-4" />}
+                {copied ? (
+                  <Check className="h-4 w-4" strokeWidth={3} aria-hidden="true" focusable="false" />
+                ) : (
+                  <Copy className="h-4 w-4" aria-hidden="true" focusable="false" />
+                )}
                 <span aria-live="polite">{copied ? c.sendSelf.copied : c.sendSelf.copy}</span>
               </button>
             </div>
@@ -350,13 +396,23 @@ function Hero({
   lang,
   onNavigate,
   ctaRef,
+  animPaused,
+  onTogglePause,
+  pauseLabel,
+  showPauseControl,
 }: {
   c: SenearContent;
   lang: SenearLang;
   onNavigate: (route: AppRoute) => void;
   ctaRef: React.Ref<HTMLAnchorElement>;
+  animPaused: boolean;
+  onTogglePause: () => void;
+  pauseLabel: string;
+  showPauseControl: boolean;
 }) {
-  const outline = `inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-[#1B7A4E]/25 bg-white px-4 text-[15px] font-semibold text-[#1F2421] transition-all hover:border-[#1B7A4E] hover:bg-[#F1F8F3] hover:-translate-y-0.5 cursor-pointer ${FOCUS_RING}`;
+  const outline = `inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-[#529172] bg-white px-4 text-[15px] font-semibold text-[#1F2421] transition-all hover:border-[#1B7A4E] hover:bg-[#F1F8F3] hover:-translate-y-0.5 cursor-pointer ${FOCUS_RING}`;
+  const breadcrumbAria =
+    lang === 'hu' ? 'Morzsamenü' : lang === 'de' ? 'Brotkrümelnavigation' : 'Breadcrumb';
 
   const handleIphoneLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!IPHONE_WEB_APP_URL.startsWith('#')) return;
@@ -375,11 +431,18 @@ function Hero({
   return (
     <section className="relative border-b border-[#E8DFD4] bg-gradient-to-b from-[#FBF9F5] via-[#F7F1E9] to-[#F3EBDF]">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-14 lg:pt-8 lg:pb-20">
-        <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-sm text-[#5C5A56]">
-          <button type="button" onClick={() => onNavigate('home')} className={`rounded hover:text-[#1F2421] cursor-pointer ${FOCUS_RING}`}>
+        <nav aria-label={breadcrumbAria} className="mb-6 flex items-center gap-1.5 text-sm text-[#5C5A56]">
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate('home');
+            }}
+            className={`inline-flex min-h-11 items-center rounded px-1 hover:text-[#1F2421] cursor-pointer ${FOCUS_RING}`}
+          >
             {c.breadcrumbHome}
-          </button>
-          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" focusable="false" />
           <span className="font-semibold text-[#1F2421]" aria-current="page">SENEAR</span>
         </nav>
 
@@ -392,7 +455,7 @@ function Hero({
 
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#1B7A4E]/25 bg-[#EAF5EE] px-3.5 py-1.5 text-[0.8125rem] sm:text-[0.875rem] font-bold uppercase leading-none tracking-[0.07em] text-[#0F5334] whitespace-nowrap">
-                <Smartphone className="h-4 w-4 shrink-0 text-[#1B7A4E]" aria-hidden="true" />
+                <Smartphone className="h-4 w-4 shrink-0 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 <span>{c.kicker}</span>
               </div>
 
@@ -413,7 +476,7 @@ function Hero({
                   <a
                     href={IPHONE_WEB_APP_URL}
                     onClick={handleIphoneLinkClick}
-                    className="inline rounded-sm py-1.5 font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B7A4E]"
+                    className={`inline-flex min-h-9 items-center rounded-sm py-1.5 font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] ${FOCUS_RING}`}
                   >
                     {c.hero.subline2Link}
                     {'\u00A0'}→
@@ -428,21 +491,28 @@ function Hero({
 
           {/* On mobile the phone comes right after the main CTA; on desktop it spans both rows on the right. */}
           <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2">
-            <CallFilterPhone lang={lang} copy={c.hero} />
+            <CallFilterPhone
+              lang={lang}
+              copy={c.hero}
+              animPaused={animPaused}
+              onTogglePause={onTogglePause}
+              pauseLabel={pauseLabel}
+              showPauseControl={showPauseControl}
+            />
           </div>
 
           <div className="lg:col-span-7 lg:row-start-2 self-start">
             <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
               <a href="#igy-mukodik" onClick={(e) => { e.preventDefault(); scrollToSection('igy-mukodik'); }} className={outline}>
-                <ArrowDown className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" />
+                <ArrowDown className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.howBtn}
               </a>
               <a href="#kozelebbrol" onClick={(e) => { e.preventDefault(); scrollToSection('kozelebbrol'); }} className={outline}>
-                <PlayCircle className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" />
+                <PlayCircle className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.videoBtn}
               </a>
               <a href="/senear/setup" onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }} className={outline}>
-                <BookOpen className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" />
+                <BookOpen className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.guideBtn}
               </a>
             </div>
@@ -782,10 +852,10 @@ function ScenarioIllustration({
       {/* Centered transformation strip directly under the phone graphic: Red Icon -> SVG Arrow -> Green Check */}
       <div className="flex items-center justify-center gap-3">
         <span className="sn-sc-red-start flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB] shadow-xs">
-          <Icon className="h-5 w-5" />
+          <Icon className="h-5 w-5" aria-hidden="true" focusable="false" />
         </span>
 
-        <svg viewBox="0 0 72 20" className="h-5 w-16 sm:w-20 shrink-0 overflow-visible" fill="none">
+        <svg viewBox="0 0 72 20" className="h-5 w-16 sm:w-20 shrink-0 overflow-visible" fill="none" aria-hidden="true" focusable="false">
           <path
             d="M2 10H64"
             stroke="#B08A55"
@@ -805,10 +875,10 @@ function ScenarioIllustration({
 
         <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
           <span className="sn-sc-red-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
-            <Icon className="h-5 w-5" />
+            <Icon className="h-5 w-5" aria-hidden="true" focusable="false" />
           </span>
           <span className="sn-sc-green-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#1B7A4E] text-white shadow-[0_8px_18px_-8px_rgba(27,122,78,0.65)]">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true" focusable="false">
               <path
                 d="M6.5 12.5l3.8 3.8L17.8 8.8"
                 stroke="#fff"
@@ -841,11 +911,10 @@ function ScenarioCard({
   return (
     <li
       ref={ref}
-      tabIndex={0}
       style={{ '--sn-idx': index } as React.CSSProperties}
       className={`sn-scenario-card ${
         inView ? 'is-in' : ''
-      } grid gap-6 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 lg:p-7 xl:p-8 ring-1 ring-[#EFE8DD] shadow-[0_14px_34px_-22px_rgba(31,36,33,0.2)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(31,36,33,0.28)] lg:row-span-3 lg:grid-rows-subgrid ${FOCUS_RING}`}
+      } grid gap-6 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 lg:p-7 xl:p-8 ring-1 ring-[#EFE8DD] shadow-[0_14px_34px_-22px_rgba(31,36,33,0.2)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(31,36,33,0.28)] lg:row-span-3 lg:grid-rows-subgrid`}
     >
       {/* 1. Unified SVG phone illustration + centered arrow transformation strip */}
       <ScenarioIllustration type={item.icon} lang={lang} />
@@ -858,7 +927,7 @@ function ScenarioCard({
       {/* 3. Solution text with subtle divider and small green MEGOLDÁS label (no nested box) */}
       <div className="sn-sc-solution border-t border-[#E6DDD0] pt-5">
         <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.14em] text-[#14593A]">
-          <Check className="h-3.5 w-3.5 text-[#1B7A4E]" strokeWidth={3} aria-hidden="true" />
+          <Check className="h-3.5 w-3.5 text-[#1B7A4E]" strokeWidth={3} aria-hidden="true" focusable="false" />
           {solutionLabel}
         </p>
         <p className="mt-2 text-base leading-relaxed text-[#2C302E]">{item.solution}</p>
@@ -867,7 +936,21 @@ function ScenarioCard({
   );
 }
 
-function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
+function Scenarios({
+  c,
+  lang,
+  animPaused,
+  onTogglePause,
+  pauseLabel,
+  showPauseControl,
+}: {
+  c: SenearContent;
+  lang: SenearLang;
+  animPaused: boolean;
+  onTogglePause: () => void;
+  pauseLabel: string;
+  showPauseControl: boolean;
+}) {
   return (
     <section className="py-20 sm:py-28 lg:py-32 bg-white" aria-labelledby="scenarios-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -878,6 +961,23 @@ function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
           </h2>
           {c.scenarios.subtitle && (
             <p className="text-lg leading-relaxed text-[#4A4744]">{c.scenarios.subtitle}</p>
+          )}
+          {showPauseControl && (
+            <div className="pt-1 flex justify-center">
+              <button
+                type="button"
+                onClick={onTogglePause}
+                aria-pressed={animPaused}
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[#529172] bg-white px-3.5 text-[13.5px] font-semibold text-[#1F2421] transition-colors hover:border-[#1B7A4E] hover:bg-[#F1F8F3] cursor-pointer ${FOCUS_RING}`}
+              >
+                {animPaused ? (
+                  <Play className="h-3.5 w-3.5 fill-current text-[#1B7A4E]" aria-hidden="true" focusable="false" />
+                ) : (
+                  <Pause className="h-3.5 w-3.5 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
+                )}
+                <span>{pauseLabel}</span>
+              </button>
+            </div>
           )}
         </div>
 
@@ -1143,7 +1243,8 @@ function VideoSection({ c }: { c: SenearContent }) {
     setPlaying(true);
     setPlayKey((k) => k + 1);
     if (window.innerWidth < 1024) {
-      playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      playerRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
     }
   };
 
@@ -1347,7 +1448,7 @@ function Pricing({ c }: { c: SenearContent }) {
                   type="button"
                   aria-pressed={yearly === isYearly}
                   onClick={() => setYearly(isYearly)}
-                  className={`relative z-10 h-8 rounded-full text-sm font-bold transition-colors cursor-pointer ${
+                  className={`relative z-10 min-h-11 rounded-full text-sm font-bold transition-colors cursor-pointer ${
                     yearly === isYearly ? 'text-[#1F2421]' : 'text-[#5C5A56]'
                   } ${FOCUS_RING}`}
                 >
@@ -1358,7 +1459,7 @@ function Pricing({ c }: { c: SenearContent }) {
 
             <div className="mt-3.5" aria-live="polite">
               <div className="flex flex-wrap items-baseline gap-x-1.5">
-                <span className="line-through text-gray-400 opacity-70 mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
+                <span className="line-through text-[#6E6B65] mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
                   {yearly ? p.family.priceYearlyOld : p.family.priceMonthlyOld}
                 </span>
                 <span key={String(yearly)} className="sn-pop whitespace-nowrap font-heading text-3xl sm:text-4xl leading-none font-black tracking-tight text-[#1B7A4E] tabular-nums">
@@ -1404,7 +1505,7 @@ function Pricing({ c }: { c: SenearContent }) {
             <p className="mt-1 text-base text-[#5C5A56]">{p.lifetime.tagline}</p>
             <div className="mt-4">
               <div className="flex flex-wrap items-baseline gap-x-1.5">
-                <span className="line-through opacity-60 text-gray-400 mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
+                <span className="line-through text-[#6E6B65] mr-1 whitespace-nowrap font-heading text-xl font-bold tabular-nums">
                   {p.lifetime.priceOld}
                 </span>
                 <span className="whitespace-nowrap font-heading text-3xl sm:text-4xl leading-none font-extrabold tracking-tight text-gray-900 tabular-nums">
@@ -1457,6 +1558,7 @@ function PlanFeatures({
   closeLabel: string;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const panelId = useId();
 
   return (
     <div className="mt-4 border-t border-[#EDE4D8] pt-4">
@@ -1469,28 +1571,29 @@ function PlanFeatures({
         ))}
       </ul>
 
-      <div className={`step-accordion-collapse ${expanded ? 'is-expanded' : ''}`}>
+      <button
+        type="button"
+        onClick={() => setExpanded((e) => !e)}
+        aria-expanded={expanded}
+        aria-controls={panelId}
+        className={`mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-1 py-1 text-sm font-bold text-[#7A5A2E] hover:text-[#1F2421] transition-colors cursor-pointer ${FOCUS_RING}`}
+      >
+        <span>{expanded ? closeLabel : openLabel}</span>
+        <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} aria-hidden="true" focusable="false" />
+      </button>
+
+      <div id={panelId} className={`step-accordion-collapse ${expanded ? 'is-expanded' : ''}`}>
         <div className="overflow-hidden">
           <ul className="mt-2.5 space-y-2 border-t border-dashed border-[#E8DFD4] pt-2.5">
             {moreItems.map((f) => (
               <li key={f} className="flex items-start gap-2.5 text-[14px] leading-snug text-[#3F3C38]">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1B7A4E]" strokeWidth={2.75} aria-hidden="true" />
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1B7A4E]" strokeWidth={2.75} aria-hidden="true" focusable="false" />
                 <span>{f}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={() => setExpanded((e) => !e)}
-        aria-expanded={expanded}
-        className={`mt-3 inline-flex items-center gap-1.5 rounded-lg py-1 text-sm font-bold text-[#7A5A2E] hover:text-[#1F2421] transition-colors cursor-pointer ${FOCUS_RING}`}
-      >
-        <span>{expanded ? closeLabel : openLabel}</span>
-        <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} aria-hidden="true" />
-      </button>
     </div>
   );
 }
@@ -1505,7 +1608,7 @@ function PlanLink({ label, variant }: { label: string; variant: 'filled' | 'outl
         className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-bold transition-colors ${
           variant === 'filled'
             ? 'bg-[#1B7A4E] text-white hover:bg-[#145E3B]'
-            : 'border-2 border-[#1B7A4E]/30 text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#F1F8F3]'
+            : 'border-2 border-[#529172] text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#F1F8F3]'
         } ${FOCUS_RING}`}
       >
         <GooglePlayIcon color="white" className={`h-4 w-4 ${variant === 'filled' ? 'text-white' : 'text-[#1B7A4E]'}`} />
@@ -1613,11 +1716,11 @@ function Faq({ c }: { c: SenearContent }) {
                         open ? 'bg-[#1B7A4E] text-white' : 'bg-[#F3EBDF] text-[#5E4521]'
                       }`}
                     >
-                      <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+                      <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} aria-hidden="true" focusable="false" />
                     </span>
                   </button>
                 </h3>
-                <div id={panelId} role="region" aria-labelledby={btnId} className={`step-accordion-collapse ${open ? 'is-expanded' : ''}`}>
+                <div id={panelId} className={`step-accordion-collapse ${open ? 'is-expanded' : ''}`}>
                   <div className="overflow-hidden">
                     <p className="pb-6 pr-12 text-base sm:text-lg leading-relaxed text-[#3F3C38]">{item.a}</p>
                   </div>
@@ -1661,9 +1764,9 @@ function FinalCta({
           </h2>
           <p className="text-lg sm:text-xl leading-relaxed text-stone-200">{c.finalCta.text}</p>
           <div className="flex flex-col items-center gap-3 pt-2">
-            <PlayButton label={c.hero.primaryCta} className="w-full sm:w-auto" />
+            <PlayButton label={c.hero.primaryCta} tone="dark" className="w-full sm:w-auto" />
             <p className="inline-flex items-center gap-2 text-base font-semibold text-[#E8D5B0]">
-              <Sparkles className="h-4 w-4" aria-hidden="true" />
+              <Sparkles className="h-4 w-4" aria-hidden="true" focusable="false" />
               {c.finalCta.trialNote}
             </p>
             <p className="text-[15px] text-stone-300">{c.hero.androidNote}</p>
@@ -1673,9 +1776,9 @@ function FinalCta({
             <a
               href="/senear/setup"
               onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING}`}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
             >
-              <BookOpen className="h-4 w-4" aria-hidden="true" />
+              <BookOpen className="h-4 w-4" aria-hidden="true" focusable="false" />
               {c.finalCta.guideLink}
             </a>
           </div>
