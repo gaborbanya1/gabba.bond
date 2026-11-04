@@ -13,7 +13,6 @@ import {
   Lock,
   MapPinned,
   MonitorSmartphone,
-  Pause,
   Play,
   PhoneOff,
   PlayCircle,
@@ -181,14 +180,7 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
         pauseLabel={pauseAnimLabel}
         showPauseControl={!reducedMotion}
       />
-      <Scenarios
-        c={c}
-        lang={lang}
-        animPaused={animPaused}
-        onTogglePause={toggleAnimPause}
-        pauseLabel={pauseAnimLabel}
-        showPauseControl={!reducedMotion}
-      />
+      <Scenarios c={c} lang={lang} />
       <Modes c={c} />
       <HowItWorks c={c} />
       <VideoSection c={c} />
@@ -537,137 +529,90 @@ function ScenarioIllustration({
   lang: SenearLang;
 }) {
   const Icon = SCENARIO_ICONS[type];
-  const unknownLabel = lang === 'de' ? 'Unbekannt' : lang === 'en' ? 'Unknown' : 'Ismeretlen szám';
-  const blockedLabel = lang === 'de' ? 'Blockiert' : lang === 'en' ? 'Blocked' : 'Blokkolva';
+  const labels = {
+    scam: {
+      before: lang === 'de' ? 'Unbekannt' : lang === 'en' ? 'Unknown' : 'Ismeretlen',
+      after: lang === 'de' ? '✓ Blockiert' : lang === 'en' ? '✓ Blocked' : '✓ Blokkolva',
+    },
+    muted: {
+      before: lang === 'de' ? 'Stumm · 0%' : lang === 'en' ? 'Muted · 0%' : 'Néma · 0%',
+      after: lang === 'de' ? '✓ Laut · 100%' : lang === 'en' ? '✓ Loud · 100%' : '✓ Hangos · 100%',
+    },
+    distance: {
+      before: lang === 'de' ? 'Alles okay?' : lang === 'en' ? 'All okay?' : 'Jól van?',
+      after: lang === 'de' ? '✓ Zuhause · 86%' : lang === 'en' ? '✓ Home · 86%' : '✓ Otthon · 86%',
+    },
+  }[type];
 
   return (
     <div
       aria-hidden="true"
       className="relative flex w-full flex-col items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-[#F3EBDF]/70 px-4 pt-3 pb-4 ring-1 ring-[#E8DFD4]/90"
     >
-      <svg viewBox="0 0 280 156" className="h-36 sm:h-40 w-full max-w-[270px]" aria-hidden="true">
-        {/* Soft warm background halo */}
+      <svg viewBox="0 0 280 156" className="h-36 sm:h-40 w-full max-w-[270px]" aria-hidden="true" focusable="false">
+        {/* Soft warm background halo + clean minimal screen card */}
         <circle cx="140" cy="78" r="64" fill="#FAF7F2" />
-
-        {/* Generic rounded-rectangle phone frame (no brand / no notch) */}
-        <rect x="61.5" y="36" width="2.5" height="13" rx="1.2" fill="#C5A880" />
-        <rect x="61.5" y="53" width="2.5" height="13" rx="1.2" fill="#C5A880" />
-        <rect x="64" y="10" width="152" height="136" rx="18" fill="#FFFDF9" stroke="#C5A880" strokeWidth="2.2" />
-        <rect x="124" y="15" width="32" height="2.6" rx="1.3" fill="#B08A55" />
-        <rect x="71" y="21" width="138" height="117" rx="12" fill="#FAF7F2" stroke="#EDE4D8" strokeWidth="1" />
-        <rect x="122" y="141" width="36" height="2.2" rx="1.1" fill="#D5C0A0" />
+        <rect x="68" y="12" width="144" height="132" rx="24" fill="#FFFDF9" stroke="#D5C0A0" strokeWidth="1.8" />
 
         {type === 'scam' && (
           <>
-            {/* BEFORE: Incoming call "Ismeretlen szám" with red prohibition icon */}
+            {/* BEFORE: Unknown call */}
             <g className="sn-illus-before">
-              <rect x="78" y="30" width="124" height="56" rx="9" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.5" />
-              <circle cx="95" cy="58" r="11" fill="#FDECEC" />
-              <circle cx="95" cy="58" r="7" fill="none" stroke="#B83227" strokeWidth="1.9" />
-              <line x1="90" y1="63" x2="100" y2="53" stroke="#B83227" strokeWidth="1.9" strokeLinecap="round" />
-              <text x="111" y="54" fontSize="8.8" fontWeight="800" fill="#1F2421" fontFamily="system-ui, sans-serif">
-                {unknownLabel}
+              <circle cx="140" cy="57" r="26" fill="#FDECEC" stroke="#F2D0CB" strokeWidth="1.5" />
+              <path
+                d="M133.5 48.5c1.2-1.2 3-1.2 4.2 0l2.1 2.1c1 1 1 2.6 0 3.6l-1.4 1.4a11.5 11.5 0 0 0 5 5l1.4-1.4c1-1 2.6-1 3.6 0l2.1 2.1c1.2 1.2 1.2 3 0 4.2l-1.3 1.3c-1.8 1.8-4.6 2.3-6.9 1.2a21 21 0 0 1-10.1-10.1c-1.1-2.3-.6-5.1 1.2-6.9l.1-.5Z"
+                fill="none"
+                stroke="#B83227"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <line x1="130" y1="67" x2="150" y2="47" stroke="#B83227" strokeWidth="2.3" strokeLinecap="round" />
+
+              <rect x="86" y="96" width="108" height="28" rx="14" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.4" />
+              <text
+                x="140"
+                y="114"
+                textAnchor="middle"
+                fontSize="11.5"
+                fontWeight="800"
+                fill="#B83227"
+                fontFamily="system-ui, sans-serif"
+              >
+                {labels.before}
               </text>
-              <text x="111" y="67" fontSize="8" fontWeight="600" fill="#B83227" fontFamily="system-ui, sans-serif">
-                +36 30 ··· ····
-              </text>
-              {/* Dimmed tiles below */}
-              <rect x="78" y="94" width="58" height="36" rx="7" fill="#EFE8DD" />
-              <rect x="144" y="94" width="58" height="36" rx="7" fill="#EFE8DD" />
             </g>
 
-            {/* AFTER: Call "Blokkolva" with green check + glowing "Anna" tile beside it */}
+            {/* AFTER: Shield + Blocked */}
             <g className="sn-illus-after">
-              <rect x="78" y="28" width="124" height="30" rx="8" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.4" />
-              <circle cx="92" cy="43" r="7.5" fill="#1B7A4E" />
+              <circle cx="140" cy="57" r="26" fill="#EAF5EE" stroke="#CBE5D4" strokeWidth="1.6" />
               <path
-                d="M88.8 43.2l2.1 2.1 4.3-4.3"
+                d="M140 42.5l11.5 4.7v7.5c0 7.1-4.8 13.1-11.5 15.3-6.7-2.2-11.5-8.2-11.5-15.3v-7.5L140 42.5Z"
+                fill="#CBE5D4"
+                stroke="#1B7A4E"
+                strokeWidth="2.1"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M135 56.5l3.3 3.3 6.8-6.8"
                 fill="none"
-                stroke="#fff"
-                strokeWidth="1.8"
+                stroke="#1B7A4E"
+                strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <text
-                x="104"
-                y="40"
-                fontSize="7.2"
-                fontWeight="600"
-                fill="#5C5A56"
-                textDecoration="line-through"
-                fontFamily="system-ui, sans-serif"
-              >
-                {unknownLabel}
-              </text>
-              <text x="104" y="50.5" fontSize="8.8" fontWeight="800" fill="#0F4D31" fontFamily="system-ui, sans-serif">
-                {blockedLabel}
-              </text>
 
-              {/* Glowing "Anna" contact tile */}
-              <rect
-                x="76"
-                y="63"
-                width="78"
-                height="69"
-                rx="11"
-                fill="none"
-                stroke="#1B7A4E"
-                strokeWidth="2.5"
-                opacity="0.2"
-              />
-              <rect x="78" y="65" width="74" height="65" rx="9" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.8" />
-              <circle cx="115" cy="84" r="11" fill="#FFFDF9" stroke="#1B7A4E" strokeWidth="1.5" />
-              <circle cx="115" cy="81" r="3.4" fill="#1B7A4E" />
-              <path
-                d="M108.5 90.5c1.4-2.8 3.6-4 6.5-4s5.1 1.2 6.5 4"
-                fill="none"
-                stroke="#1B7A4E"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-              />
-              <circle cx="124" cy="75" r="3.2" fill="#1B7A4E" stroke="#FFFDF9" strokeWidth="1.2" />
+              <rect x="86" y="96" width="108" height="28" rx="14" fill="#1B7A4E" />
               <text
-                x="115"
-                y="108"
+                x="140"
+                y="114"
                 textAnchor="middle"
-                fontSize="9.5"
+                fontSize="11.5"
                 fontWeight="800"
-                fill="#0F4D31"
+                fill="#FFFFFF"
                 fontFamily="system-ui, sans-serif"
               >
-                Anna
-              </text>
-              <rect x="97" y="114" width="36" height="9" rx="4.5" fill="#1B7A4E" />
-              <path
-                d="M111.5 118.5l2.2 2.2 4.5-4.5"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Secondary calm tile */}
-              <rect x="158" y="65" width="44" height="65" rx="9" fill="#FFFDF9" stroke="#E5DEC9" strokeWidth="1.2" />
-              <circle cx="180" cy="84" r="9.5" fill="#F3EBDF" />
-              <circle cx="180" cy="81.5" r="3" fill="#7A5A2E" />
-              <path
-                d="M174.5 89.5c1.2-2.3 3-3.3 5.5-3.3s4.3 1 5.5 3.3"
-                fill="none"
-                stroke="#7A5A2E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <text
-                x="180"
-                y="108"
-                textAnchor="middle"
-                fontSize="8"
-                fontWeight="700"
-                fill="#5E4521"
-                fontFamily="system-ui, sans-serif"
-              >
-                Péter
+                {labels.after}
               </text>
             </g>
           </>
@@ -675,90 +620,73 @@ function ScenarioIllustration({
 
         {type === 'muted' && (
           <>
-            {/* BEFORE: Crossed-out speaker icon on the phone + 0% muted bar */}
+            {/* BEFORE: Muted speaker */}
             <g className="sn-illus-before">
-              <circle cx="140" cy="65" r="25" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.5" />
+              <circle cx="140" cy="57" r="26" fill="#FDECEC" stroke="#F2D0CB" strokeWidth="1.5" />
               <path
-                d="M126 60h5.5l8-6.8v23.6l-8-6.8H126a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"
-                fill="#FDECEC"
+                d="M128 53h4.8l7.2-6v20l-7.2-6H128a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z"
+                fill="none"
                 stroke="#B83227"
-                strokeWidth="1.9"
+                strokeWidth="2.1"
                 strokeLinejoin="round"
               />
               <path
-                d="M145 60l9 10M154 60l-9 10"
+                d="M145 53l8 8M153 53l-8 8"
                 stroke="#B83227"
-                strokeWidth="2.1"
+                strokeWidth="2.2"
                 strokeLinecap="round"
               />
-              <line x1="121" y1="83" x2="159" y2="47" stroke="#B83227" strokeWidth="2.1" strokeLinecap="round" />
 
-              {/* Muted volume bar */}
-              <rect x="85" y="102" width="110" height="20" rx="10" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.3" />
-              <rect x="95" y="110" width="60" height="4" rx="2" fill="#E8DFD4" />
-              <circle cx="95" cy="112" r="4" fill="#B83227" />
+              <rect x="86" y="96" width="108" height="28" rx="14" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.4" />
               <text
-                x="176"
-                y="115"
+                x="140"
+                y="114"
                 textAnchor="middle"
-                fontSize="8.5"
+                fontSize="11.5"
                 fontWeight="800"
                 fill="#B83227"
                 fontFamily="system-ui, sans-serif"
               >
-                0%
+                {labels.before}
               </text>
             </g>
 
-            {/* AFTER: Speaker with sound waves + green check indicator + restored volume bar */}
+            {/* AFTER: Loud speaker */}
             <g className="sn-illus-after">
-              <circle cx="140" cy="65" r="25" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.8" />
+              <circle cx="140" cy="57" r="26" fill="#EAF5EE" stroke="#CBE5D4" strokeWidth="1.6" />
               <path
-                d="M123 60h5.5l8-6.8v23.6l-8-6.8H123a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"
+                d="M127 53h4.8l7.2-6v20l-7.2-6H127a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z"
                 fill="#CBE5D4"
                 stroke="#1B7A4E"
-                strokeWidth="2"
+                strokeWidth="2.1"
                 strokeLinejoin="round"
               />
               <path
-                d="M141.5 58.5a8.5 8.5 0 0 1 0 13"
+                d="M144 51.5a7.8 7.8 0 0 1 0 11"
                 fill="none"
                 stroke="#1B7A4E"
-                strokeWidth="2.1"
+                strokeWidth="2.2"
                 strokeLinecap="round"
               />
               <path
-                d="M147 53.5a15 15 0 0 1 0 23"
+                d="M149 47.5a13.5 13.5 0 0 1 0 19"
                 fill="none"
                 stroke="#1B7A4E"
-                strokeWidth="2.1"
+                strokeWidth="2.2"
                 strokeLinecap="round"
-              />
-              {/* Green checkmark badge */}
-              <circle cx="160" cy="46" r="8.5" fill="#1B7A4E" stroke="#FFFDF9" strokeWidth="1.6" />
-              <path
-                d="M156.5 46.2l2.2 2.2 4.6-4.6"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
               />
 
-              {/* Restored green volume bar */}
-              <rect x="85" y="102" width="110" height="20" rx="10" fill="#EAF5EE" stroke="#1B7A4E" strokeWidth="1.4" />
-              <rect x="95" y="110" width="60" height="4" rx="2" fill="#1B7A4E" />
-              <circle cx="155" cy="112" r="4.2" fill="#1B7A4E" />
+              <rect x="82" y="96" width="116" height="28" rx="14" fill="#1B7A4E" />
               <text
-                x="176"
-                y="115"
+                x="140"
+                y="114"
                 textAnchor="middle"
-                fontSize="8.2"
+                fontSize="11.2"
                 fontWeight="800"
-                fill="#0F4D31"
+                fill="#FFFFFF"
                 fontFamily="system-ui, sans-serif"
               >
-                100%
+                {labels.after}
               </text>
             </g>
           </>
@@ -766,83 +694,62 @@ function ScenarioIllustration({
 
         {type === 'distance' && (
           <>
-            {/* BEFORE: Map with dashed safe-zone circle, red pin, and uncertain battery */}
+            {/* BEFORE: Uncertain pin */}
             <g className="sn-illus-before">
-              <rect x="77" y="27" width="126" height="105" rx="9" fill="#F5EFE6" />
-              <path d="M77 62h126M77 98h126M115 27v105M167 27v105" stroke="#E5DEC9" strokeWidth="2" />
-              <circle
-                cx="140"
-                cy="82"
-                r="25"
-                fill="#FFF5F3"
-                fillOpacity="0.78"
-                stroke="#B83227"
-                strokeWidth="1.6"
-                strokeDasharray="4 3"
-              />
+              <circle cx="140" cy="57" r="26" fill="#FDECEC" stroke="#F2D0CB" strokeWidth="1.5" />
               <path
-                d="M140 60c-6.4 0-11.5 5-11.5 11.2 0 7.9 11.5 18.8 11.5 18.8s11.5-10.9 11.5-18.8c0-6.2-5.1-11.2-11.5-11.2Z"
-                fill="#B83227"
+                d="M140 42c-6.1 0-11 4.8-11 10.7 0 7.5 11 17.8 11 17.8s11-10.3 11-17.8c0-5.9-4.9-10.7-11-10.7Z"
+                fill="none"
+                stroke="#B83227"
+                strokeWidth="2.1"
+                strokeLinejoin="round"
               />
-              <circle cx="140" cy="71" r="3.8" fill="#FFF5F3" />
-
-              {/* Uncertain battery pill */}
-              <rect x="148" y="32" width="49" height="19" rx="6" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.3" />
-              <rect x="153" y="37.5" width="14" height="8" rx="1.5" fill="none" stroke="#B83227" strokeWidth="1.3" />
-              <rect x="167.5" y="39.5" width="1.5" height="4" rx="0.5" fill="#B83227" />
-              <rect x="155" y="39.5" width="3.5" height="4" rx="0.5" fill="#B83227" />
               <text
-                x="182"
-                y="44.5"
+                x="140"
+                y="56.5"
                 textAnchor="middle"
-                fontSize="9"
+                fontSize="11.5"
                 fontWeight="800"
                 fill="#B83227"
                 fontFamily="system-ui, sans-serif"
               >
                 ?
               </text>
+
+              <rect x="86" y="96" width="108" height="28" rx="14" fill="#FFF5F3" stroke="#F2D0CB" strokeWidth="1.4" />
+              <text
+                x="140"
+                y="114"
+                textAnchor="middle"
+                fontSize="11.5"
+                fontWeight="800"
+                fill="#B83227"
+                fontFamily="system-ui, sans-serif"
+              >
+                {labels.before}
+              </text>
             </g>
 
-            {/* AFTER: Green pin inside safe zone, beside it "100%" battery + green checkmark */}
+            {/* AFTER: Safe location + battery */}
             <g className="sn-illus-after">
-              <rect x="77" y="27" width="126" height="105" rx="9" fill="#F5EFE6" />
-              <path d="M77 62h126M77 98h126M115 27v105M167 27v105" stroke="#E5DEC9" strokeWidth="2" />
-              <circle
-                cx="114"
-                cy="80"
-                r="25"
-                fill="#EAF5EE"
-                stroke="#1B7A4E"
-                strokeWidth="1.8"
-                strokeDasharray="4 3"
-              />
-              <circle cx="114" cy="80" r="15" fill="#1B7A4E" fillOpacity="0.14" />
+              <circle cx="140" cy="57" r="26" fill="#EAF5EE" stroke="#CBE5D4" strokeWidth="1.6" />
               <path
-                d="M114 58c-6.4 0-11.5 5-11.5 11.2 0 7.9 11.5 18.8 11.5 18.8s11.5-10.9 11.5-18.8c0-6.2-5.1-11.2-11.5-11.2Z"
+                d="M140 42c-6.1 0-11 4.8-11 10.7 0 7.5 11 17.8 11 17.8s11-10.3 11-17.8c0-5.9-4.9-10.7-11-10.7Z"
                 fill="#1B7A4E"
               />
-              <circle cx="114" cy="69" r="3.8" fill="#FFFDF9" />
+              <circle cx="140" cy="52.5" r="3.8" fill="#FFFDF9" />
 
-              {/* Status badge beside the pin: "100%" battery + checkmark */}
-              <rect x="142" y="54" width="56" height="48" rx="9" fill="#FFFDF9" stroke="#1B7A4E" strokeWidth="1.6" />
-              <rect x="147" y="62" width="13.5" height="8" rx="1.5" fill="none" stroke="#1B7A4E" strokeWidth="1.4" />
-              <rect x="161" y="64" width="1.5" height="4" rx="0.5" fill="#1B7A4E" />
-              <rect x="149" y="64" width="9.5" height="4" rx="0.5" fill="#1B7A4E" />
-              <text x="165" y="69" fontSize="8.3" fontWeight="800" fill="#0F4D31" fontFamily="system-ui, sans-serif">
-                100%
-              </text>
-              <circle cx="155" cy="86" r="7" fill="#1B7A4E" />
-              <path
-                d="M151.8 86.2l2.1 2.1 4.2-4.2"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <text x="166" y="89" fontSize="8.2" fontWeight="800" fill="#1B7A4E" fontFamily="system-ui, sans-serif">
-                OK
+              <rect x="80" y="96" width="120" height="28" rx="14" fill="#1B7A4E" />
+              <text
+                x="140"
+                y="114"
+                textAnchor="middle"
+                fontSize="11.2"
+                fontWeight="800"
+                fill="#FFFFFF"
+                fontFamily="system-ui, sans-serif"
+              >
+                {labels.after}
               </text>
             </g>
           </>
@@ -856,6 +763,14 @@ function ScenarioIllustration({
         </span>
 
         <svg viewBox="0 0 72 20" className="h-5 w-16 sm:w-20 shrink-0 overflow-visible" fill="none" aria-hidden="true" focusable="false">
+          {/* Subtle static guide line so Before state never looks disconnected */}
+          <path
+            d="M4 10H62"
+            stroke="#DFD4C3"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="3 4"
+          />
           <path
             d="M2 10H64"
             stroke="#B08A55"
@@ -873,10 +788,16 @@ function ScenarioIllustration({
           />
         </svg>
 
-        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
-          <span className="sn-sc-red-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#FFF5F3] text-[#B83227] ring-1 ring-[#F2D0CB]">
-            <Icon className="h-5 w-5" aria-hidden="true" focusable="false" />
-          </span>
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E9E4DC] text-[#A89F92]">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true" focusable="false">
+            <path
+              d="M6.5 12.5l3.8 3.8L17.8 8.8"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           <span className="sn-sc-green-end absolute inset-0 flex items-center justify-center rounded-xl bg-[#1B7A4E] text-white shadow-[0_8px_18px_-8px_rgba(27,122,78,0.65)]">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true" focusable="false">
               <path
@@ -936,21 +857,7 @@ function ScenarioCard({
   );
 }
 
-function Scenarios({
-  c,
-  lang,
-  animPaused,
-  onTogglePause,
-  pauseLabel,
-  showPauseControl,
-}: {
-  c: SenearContent;
-  lang: SenearLang;
-  animPaused: boolean;
-  onTogglePause: () => void;
-  pauseLabel: string;
-  showPauseControl: boolean;
-}) {
+function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   return (
     <section className="py-20 sm:py-28 lg:py-32 bg-white" aria-labelledby="scenarios-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -959,26 +866,6 @@ function Scenarios({
           <h2 id="scenarios-title" className="font-heading text-[2rem] sm:text-[2.6rem] leading-[1.1] font-extrabold tracking-tight">
             {c.scenarios.title}
           </h2>
-          {c.scenarios.subtitle && (
-            <p className="text-lg leading-relaxed text-[#4A4744]">{c.scenarios.subtitle}</p>
-          )}
-          {showPauseControl && (
-            <div className="pt-1 flex justify-center">
-              <button
-                type="button"
-                onClick={onTogglePause}
-                aria-pressed={animPaused}
-                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[#529172] bg-white px-3.5 text-[13.5px] font-semibold text-[#1F2421] transition-colors hover:border-[#1B7A4E] hover:bg-[#F1F8F3] cursor-pointer ${FOCUS_RING}`}
-              >
-                {animPaused ? (
-                  <Play className="h-3.5 w-3.5 fill-current text-[#1B7A4E]" aria-hidden="true" focusable="false" />
-                ) : (
-                  <Pause className="h-3.5 w-3.5 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
-                )}
-                <span>{pauseLabel}</span>
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Subgrid: illustration+arrow / quote / solution rows line up across the three cards */}

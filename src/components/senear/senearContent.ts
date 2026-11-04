@@ -75,7 +75,6 @@ export interface SenearContent {
   scenarios: {
     eyebrow: string;
     title: string;
-    subtitle: string;
     solutionLabel: string;
     items: { icon: 'scam' | 'muted' | 'distance'; quote: string; solution: string }[];
   };
@@ -233,7 +232,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'Ha te is aggódsz értük…',
       title: 'Ismerős helyzet?',
-      subtitle: 'Így kezdődik a legtöbb család.',
       solutionLabel: 'Megoldás',
       items: [
         {
@@ -589,7 +587,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'If you worry about them too…',
       title: 'Sound familiar?',
-      subtitle: 'This is how it starts for most families.',
       solutionLabel: 'Solution',
       items: [
         {
@@ -945,7 +942,6 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
     scenarios: {
       eyebrow: 'Wenn Sie sich auch Sorgen machen…',
       title: 'Kommt Ihnen das bekannt vor?',
-      subtitle: 'So beginnt es bei den meisten Familien.',
       solutionLabel: 'Lösung',
       items: [
         {
