@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { BatteryMedium, Camera, Check, Grid3X3, MapPin, Phone, Plus, RotateCcw } from 'lucide-react';
-import type { SenearContent } from './senearContent';
+import { Grid3X3, Phone, RotateCcw, User } from 'lucide-react';
+import type { SenearContent, SenearLang } from './senearContent';
 import { FOCUS_RING, useInViewOnce, usePrefersReducedMotion } from './hooks';
 
-/** 0 = form filled, 1 = saving / travelling, 2 = arrived on the parent's phone */
+/** 0 = admin 4-tile view, 1 = syncing across phones, 2 = photo & name arrived on purple tile */
 type Phase = 0 | 1 | 2;
 
 const TILE_COLORS = [
@@ -13,16 +13,24 @@ const TILE_COLORS = [
 ];
 const NEW_TILE = { bg: '#9930B3', fg: '#FFFFFF', icon: '#9930B3' };
 
+/** Real Caregiver Admin "Manage Contacts" screenshots extracted from the HU/EN/DE setup videos, plus 4th purple tile rect (%). */
+const SETUP_SCREENS: Record<SenearLang, { src: string; w: number; h: number; tile: [number, number, number, number] }> = {
+  hu: { src: '/screenshots/senear/setup-admin-hu.webp', w: 303, h: 662, tile: [51.8, 68.1, 38.9, 18.0] },
+  en: { src: '/screenshots/senear/setup-admin-en.webp', w: 301, h: 657, tile: [51.8, 65.2, 38.9, 18.0] },
+  de: { src: '/screenshots/senear/setup-admin-de.webp', w: 302, h: 657, tile: [52.0, 67.9, 38.7, 18.0] },
+};
+
 interface RemoteSetupStoryProps {
   copy: SenearContent['story'];
+  lang: SenearLang;
 }
 
 /**
- * "You set it up – they already see it": a scroll-triggered two-phone scene in which a
- * photo call button saved on the family member's phone pops up on the parent's
- * locked SENEAR home screen using real contact portraits.
+ * "You set it up – they already see it": a scroll-triggered two-phone scene showing the real
+ * SENEAR Caregiver Admin "Manage Contacts" 4-tile screen on the left, while the photo and name
+ * sync onto the already-present 4th purple tile on the parent's locked SENEAR home screen.
  */
-export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
+export function RemoteSetupStory({ copy, lang }: RemoteSetupStoryProps) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>(0.4);
   const reduced = usePrefersReducedMotion();
   const [phase, setPhase] = useState<Phase>(0);
@@ -38,13 +46,16 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
     }
     setPhase(0);
     timers.current = [
-      window.setTimeout(() => setPhase(1), 950),
-      window.setTimeout(() => setPhase(2), 2150),
+      window.setTimeout(() => setPhase(1), 1400),
+      window.setTimeout(() => setPhase(2), 2700),
     ];
     return () => timers.current.forEach(clearTimeout);
   }, [inView, reduced, run]);
 
-  const sceneLabel = `${copy.familyPhoneLabel}: ${copy.formTitle} – ${copy.newTile.name} (${copy.newTile.rel}). ${copy.seniorPhoneLabel}: ${copy.steps[2]}.`;
+  const screen = SETUP_SCREENS[lang];
+  const [tl, tt, tw, th] = screen.tile;
+  const dateBadge = lang === 'de' ? '22. Okt.' : lang === 'en' ? 'Oct 22' : 'Okt. 22.';
+  const sceneLabel = `${copy.familyPhoneLabel}: ${copy.newTile.name} (${copy.newTile.rel}). ${copy.seniorPhoneLabel}: ${copy.steps[2]}.`;
 
   return (
     <div ref={ref}>
@@ -53,103 +64,29 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
         aria-label={sceneLabel}
         className="mx-auto grid max-w-[700px] grid-cols-1 min-[380px]:grid-cols-[1fr_auto_1fr] items-center gap-3 min-[380px]:gap-2 sm:gap-5"
       >
-        {/* ---------- Family member's phone ---------- */}
+        {/* ---------- Family member's phone (real Caregiver Admin 4-tile screen from video) ---------- */}
         <div className="min-w-0 flex flex-col items-center gap-2.5 min-[380px]:gap-3" aria-hidden="true">
           <div className="w-full max-w-[240px] min-[380px]:max-w-[255px] rounded-[2rem] min-[380px]:rounded-[1.85rem] sm:rounded-[2.4rem] bg-[#1C1A18] p-[6px] min-[380px]:p-[5px] sm:p-[8px] shadow-[0_28px_54px_-20px_rgba(31,36,33,0.52)] ring-1 ring-black/10">
-            <div className="flex aspect-[9/19.5] flex-col overflow-hidden rounded-[1.6rem] min-[380px]:rounded-[1.5rem] sm:rounded-[1.9rem] bg-[#F6F3EE] p-2.5 min-[380px]:p-1.5 sm:p-3.5">
-              {/* Senior profile header with real portrait */}
-              <div className="flex items-center gap-2 min-[380px]:gap-1.5 sm:gap-2 rounded-xl bg-white/90 p-1.5 min-[380px]:p-1 sm:p-2 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                <img
-                  src={copy.familyAvatar}
-                  alt=""
-                  width={40}
-                  height={40}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-7 w-7 min-[380px]:h-6 min-[380px]:w-6 sm:h-9 sm:w-9 shrink-0 rounded-full object-cover ring-2 ring-[#1B7A4E]/35"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-[11px] min-[380px]:text-[10px] sm:text-[14px] font-extrabold leading-tight text-[#1F2421]">
-                    {copy.familyHeader}
-                  </div>
-                  <div className="flex items-center gap-1 whitespace-nowrap">
-                    <span className="inline-flex items-center gap-0.5 text-[9px] min-[380px]:text-[7px] sm:text-[10px] font-semibold text-[#1B7A4E]">
-                      <BatteryMedium className="h-2.5 w-2.5 sm:h-3 sm:w-3" aria-hidden="true" focusable="false" />
-                      {copy.familyStatus[0]}
-                    </span>
-                    <span className="text-[9px] min-[380px]:text-[7px] sm:text-[10px] text-[#8C857B]">·</span>
-                    <span className="inline-flex items-center gap-0.5 text-[9px] min-[380px]:text-[7px] sm:text-[10px] font-semibold text-[#4A4744]">
-                      <MapPin className="h-2.5 w-2.5 min-[380px]:h-2 min-[380px]:w-2 sm:h-3 sm:w-3 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
-                      {copy.familyStatus[1]}
-                    </span>
-                  </div>
-                </div>
-                <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-[#EAF5EE] px-1.5 py-0.5 text-[9px] font-bold text-[#0F4D31]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#1B7A4E]" />
-                  {copy.familyStatus[2]}
-                </span>
-              </div>
-
-              {/* Contact editor card with real contact photo */}
-              <div className="mt-2 min-[380px]:mt-1.5 sm:mt-2 flex flex-1 flex-col justify-between rounded-xl bg-white p-2.5 min-[380px]:p-1.5 sm:p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-                <div>
-                  <div className="truncate text-[9px] min-[380px]:text-[8px] sm:text-[11px] font-extrabold uppercase tracking-wide text-[#7A5A2E]">
-                    {copy.formTitle}
-                  </div>
-
-                  {/* Photo preview row */}
-                  <div className="mt-1.5 min-[380px]:mt-1 sm:mt-2 flex items-center gap-2 min-[380px]:gap-1.5 sm:gap-2.5 rounded-lg bg-[#F7F1E9] p-1.5 min-[380px]:p-1 sm:p-2">
-                    <div className="relative shrink-0">
-                      <img
-                        src={copy.newTile.avatar}
-                        alt=""
-                        width={48}
-                        height={48}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-9 w-9 min-[380px]:h-7 min-[380px]:w-7 sm:h-12 sm:w-12 rounded-full object-cover ring-2 ring-[#9B30B6]"
-                      />
-                      <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 min-[380px]:h-3 min-[380px]:w-3 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-[#9B30B6] text-white">
-                        <Camera className="h-2 w-2 min-[380px]:h-1.5 min-[380px]:w-1.5 sm:h-2.5 sm:w-2.5" aria-hidden="true" focusable="false" />
-                      </span>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-[11px] min-[380px]:text-[9.5px] sm:text-[14px] font-extrabold text-[#1F2421]">
-                        {copy.nameValue}
-                      </div>
-                      <div className="truncate text-[9px] min-[380px]:text-[7px] sm:text-[10.5px] font-semibold text-[#1B7A4E]">
-                        ✓ {copy.photoLabel}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Form fields */}
-                  {[
-                    [copy.nameLabel, copy.nameValue, false],
-                    [copy.relationLabel, copy.relationValue, false],
-                    [copy.numberLabel, copy.numberValue, true],
-                  ].map(([label, value, hideOnMobile]) => (
-                    <div key={String(label)} className={`mt-1.5 min-[380px]:mt-1 sm:mt-2 ${hideOnMobile ? 'hidden sm:block' : ''}`}>
-                      <div className="text-[8px] min-[380px]:text-[6.5px] sm:text-[9px] font-semibold uppercase tracking-wide text-[#6B675F] leading-none">
-                        {label}
-                      </div>
-                      <div className="mt-0.5 truncate rounded border border-[#E3DCD1] bg-[#FBF9F6] px-2 min-[380px]:px-1.5 py-0.5 sm:py-1 text-[10px] min-[380px]:text-[8.5px] sm:text-[11.5px] font-semibold text-[#1F2421] leading-tight">
-                        {value}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  key={`btn-${run}-${phase}`}
-                  className={`mt-2 min-[380px]:mt-1.5 sm:mt-2 flex items-center justify-center gap-1 rounded-md sm:rounded-lg py-1.5 min-[380px]:py-1 sm:py-2 text-[10.5px] min-[380px]:text-[9px] sm:text-[12.5px] font-bold text-white transition-colors ${
-                    phase === 2 ? 'bg-[#145E3B]' : 'bg-[#1B7A4E]'
-                  } ${phase === 1 ? 'sn-press' : ''}`}
-                >
-                  {phase === 2 && <Check className="h-3 w-3 min-[380px]:h-2.5 min-[380px]:w-2.5 sm:h-3.5 sm:w-3.5" strokeWidth={3} aria-hidden="true" focusable="false" />}
-                  {phase === 1 ? copy.syncing : phase === 2 ? copy.savedBtn : copy.saveBtn}
-                </div>
-              </div>
+            <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.6rem] min-[380px]:rounded-[1.5rem] sm:rounded-[1.9rem] bg-[#FAFAFA] pt-1.5 px-0.5">
+              <img
+                src={screen.src}
+                alt=""
+                width={screen.w}
+                height={screen.h}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                className="h-full w-full object-cover object-top select-none"
+              />
+              {/* Subtle highlight ring on the 4th purple tile while selecting / syncing */}
+              <span
+                className={`pointer-events-none absolute rounded-[11px] sm:rounded-[13px] border-[2.5px] border-white transition-all duration-500 ${
+                  phase < 2
+                    ? 'opacity-100 shadow-[0_0_0_3px_rgba(153,48,179,0.65),0_8px_18px_-4px_rgba(153,48,179,0.45)]'
+                    : 'opacity-0 shadow-none'
+                }`}
+                style={{ left: `${tl}%`, top: `${tt}%`, width: `${tw}%`, height: `${th}%` }}
+              />
             </div>
           </div>
           <span className="text-[13px] sm:text-[15px] font-bold text-[#1F2421]">{copy.familyPhoneLabel}</span>
@@ -169,14 +106,14 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
           )}
         </div>
 
-        {/* ---------- Parent's phone (SENEAR locked home screen matching Hero proportions) ---------- */}
+        {/* ---------- Parent's phone (SENEAR locked home screen; purple 4th tile already present) ---------- */}
         <div className="min-w-0 flex flex-col items-center gap-2.5 min-[380px]:gap-3" aria-hidden="true">
           <div className="w-full max-w-[240px] min-[380px]:max-w-[255px] rounded-[2rem] min-[380px]:rounded-[1.85rem] sm:rounded-[2.4rem] bg-[#1C1A18] p-[6px] min-[380px]:p-[5px] sm:p-[8px] shadow-[0_28px_54px_-20px_rgba(31,36,33,0.52)] ring-1 ring-black/10">
             <div className="flex aspect-[9/19.5] flex-col overflow-hidden rounded-[1.6rem] min-[380px]:rounded-[1.5rem] sm:rounded-[1.9rem] bg-black px-1.5 pt-1.5 pb-1.5 min-[380px]:px-1 min-[380px]:pt-1 min-[380px]:pb-1 sm:px-1.5 sm:pt-1.5 sm:pb-1.5">
               {/* Top status bar matching SENEAR Hero phone */}
               <div className="flex items-center justify-between px-0.5">
                 <span className="whitespace-nowrap rounded-[5px] sm:rounded-[6px] border-[1.5px] border-[#D5C3AA] px-1.5 min-[380px]:px-1 sm:px-1.5 py-0.5 text-[9.5px] min-[380px]:text-[8px] sm:text-[11.5px] font-bold leading-none text-white">
-                  Okt. 22.
+                  {dateBadge}
                 </span>
                 <span className="text-[22px] min-[380px]:text-[18px] sm:text-[30px] font-extrabold leading-none tracking-tight text-white tabular-nums">
                   10:24
@@ -186,25 +123,19 @@ export function RemoteSetupStory({ copy }: RemoteSetupStoryProps) {
                 </span>
               </div>
 
-              {/* 4 photo call tiles matching Hero screenshot proportions */}
+              {/* 4 photo call tiles: purple 4th tile is always present; photo + name pop in at phase === 2 */}
               <div className="mt-1.5 min-[380px]:mt-1 sm:mt-1.5 grid flex-1 grid-cols-2 grid-rows-2 gap-1.5 min-[380px]:gap-1 sm:gap-1.5">
                 {copy.tiles.map((tile, i) => (
-                  <Tile key={tile.name} name={tile.name} rel={tile.rel} avatar={tile.avatar} color={TILE_COLORS[i]} />
+                  <Tile key={tile.name} name={tile.name} rel={tile.rel} avatar={tile.avatar} color={TILE_COLORS[i]} populated />
                 ))}
-                {phase === 2 ? (
-                  <div key={`new-${run}`} className="sn-pop h-full">
-                    <Tile
-                      name={copy.newTile.name}
-                      rel={copy.newTile.rel}
-                      avatar={copy.newTile.avatar}
-                      color={NEW_TILE}
-                    />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-1 rounded-[12px] min-[380px]:rounded-[11px] sm:rounded-[16px] border-2 border-dashed border-white/30 bg-white/5">
-                    <Plus className="h-7 w-7 min-[380px]:h-6 min-[380px]:w-6 sm:h-8 sm:w-8 text-white/55" aria-hidden="true" focusable="false" />
-                  </div>
-                )}
+                <Tile
+                  name={copy.newTile.name}
+                  rel={copy.newTile.rel}
+                  avatar={copy.newTile.avatar}
+                  color={NEW_TILE}
+                  populated={phase === 2}
+                  popKey={`pop-${run}`}
+                />
               </div>
 
               {/* Bottom SOS + keypad row matching SENEAR Hero phone */}
@@ -251,34 +182,60 @@ function Tile({
   rel,
   avatar,
   color,
+  populated = true,
+  popKey,
 }: {
   name: string;
   rel: string;
   avatar: string;
   color: { bg: string; fg: string; icon: string };
+  populated?: boolean;
+  popKey?: string;
 }) {
   return (
     <div
       className="flex h-full w-full flex-col items-center justify-between rounded-[12px] min-[380px]:rounded-[11px] sm:rounded-[15px] px-0.5 pt-1.5 pb-1.5 sm:pt-2 sm:pb-2 text-center"
       style={{ background: color.bg, color: color.fg }}
     >
-      <img
-        src={avatar}
-        alt=""
-        width={120}
-        height={120}
-        loading="lazy"
-        decoding="async"
-        className="w-[74%] min-[380px]:w-[76%] aspect-square shrink-0 rounded-full object-cover"
-      />
-      <div className="min-w-0 w-full px-0.5 leading-none">
-        <div className="truncate text-[16px] min-[380px]:text-[14px] sm:text-[22px] font-extrabold leading-none tracking-tight">
-          {name}
-        </div>
-        <div className="mt-0.5 truncate text-[11px] min-[380px]:text-[10px] sm:text-[14.5px] font-normal leading-tight opacity-95">
-          {rel}
-        </div>
+      {/* Avatar slot: empty silhouette circle before sync, real portrait pops in when populated */}
+      <div className="relative flex w-[74%] min-[380px]:w-[76%] aspect-square shrink-0 items-center justify-center rounded-full bg-white/22">
+        {populated ? (
+          <img
+            key={popKey ? `${popKey}-img` : undefined}
+            src={avatar}
+            alt=""
+            width={120}
+            height={120}
+            loading="lazy"
+            decoding="async"
+            className={`h-full w-full rounded-full object-cover ${popKey ? 'sn-pop' : ''}`}
+          />
+        ) : (
+          <User className="h-[52%] w-[52%] text-white/85" strokeWidth={2.2} aria-hidden="true" focusable="false" />
+        )}
       </div>
+
+      {/* Name + relation slot: empty placeholder before sync, pops in when populated */}
+      <div className="min-w-0 w-full px-0.5 leading-none">
+        {populated ? (
+          <div key={popKey ? `${popKey}-txt` : undefined} className={popKey ? 'sn-pop' : ''}>
+            <div className="truncate text-[16px] min-[380px]:text-[14px] sm:text-[22px] font-extrabold leading-none tracking-tight">
+              {name}
+            </div>
+            <div className="mt-0.5 truncate text-[11px] min-[380px]:text-[10px] sm:text-[14.5px] font-normal leading-tight opacity-95">
+              {rel}
+            </div>
+          </div>
+        ) : (
+          <div className="select-none opacity-45">
+            <div className="mx-auto h-[16px] min-[380px]:h-[14px] sm:h-[22px] flex items-center justify-center text-[14px] sm:text-[18px] font-bold leading-none">
+              —
+            </div>
+            <div className="mt-0.5 h-[13px] min-[380px]:h-[12px] sm:h-[18px]" />
+          </div>
+        )}
+      </div>
+
       <span className="flex w-[46%] min-[380px]:w-[48%] aspect-square shrink-0 items-center justify-center rounded-full bg-white">
         <Phone className="h-[52%] w-[52%] fill-current" style={{ color: color.icon }} aria-hidden="true" focusable="false" />
       </span>

@@ -182,7 +182,7 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
       />
       <Scenarios c={c} lang={lang} />
       <Modes c={c} />
-      <HowItWorks c={c} />
+      <HowItWorks c={c} lang={lang} />
       <VideoSection c={c} />
       <Pricing c={c} />
       <TrustBar c={c} />
@@ -1000,7 +1000,7 @@ function Modes({ c }: { c: SenearContent }) {
 
 const HOW_ICONS = [Smartphone, CloudCog, Users];
 
-function HowItWorks({ c }: { c: SenearContent }) {
+function HowItWorks({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   const [open, setOpen] = useState(false);
   // Same container + grid for steps and spec columns, so the lists sit exactly under their step.
   const grid = 'grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8';
@@ -1049,7 +1049,7 @@ function HowItWorks({ c }: { c: SenearContent }) {
 
         {/* Live two-phone visual with real portraits */}
         <div className="mt-12 rounded-3xl bg-white/75 p-5 sm:p-8 ring-1 ring-[#E8DFD4] shadow-[0_18px_40px_-28px_rgba(31,36,33,0.35)]">
-          <RemoteSetupStory copy={c.story} />
+          <RemoteSetupStory copy={c.story} lang={lang} />
         </div>
 
         <p className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-base sm:text-lg text-[#1F2421]">
