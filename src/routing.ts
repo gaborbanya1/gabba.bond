@@ -11,7 +11,15 @@
  *
  * Legacy URLs (/install, /install-guide, #install-guide, ...) are mapped to /senear/setup.
  */
-export type AppRoute = 'home' | 'senear' | 'junear' | 'senear-setup' | 'junear-setup' | 'privacy' | 'delete-account';
+export type AppRoute =
+  | 'home'
+  | 'senear'
+  | 'junear'
+  | 'senear-setup'
+  | 'junear-setup'
+  | 'privacy'
+  | 'delete-account'
+  | 'legal-brief';
 export type ProductKey = 'senear' | 'junear';
 
 export const ROUTE_PATHS: Record<AppRoute, string> = {
@@ -22,6 +30,7 @@ export const ROUTE_PATHS: Record<AppRoute, string> = {
   'junear-setup': '/junear/setup',
   privacy: '/privacy',
   'delete-account': '/delete-account',
+  'legal-brief': '/ugyved',
 };
 
 export function detectLangFromUrl(): 'en' | 'hu' | 'de' | null {
@@ -72,6 +81,10 @@ export function resolveRoute(): AppRoute {
     path.endsWith('/datenschutz')
   ) {
     return 'privacy';
+  }
+
+  if (path === '/ugyved' || path === '/legal-brief' || path === '/jog') {
+    return 'legal-brief';
   }
 
   if (path === '/senear/setup' || path === '/senear/install') return 'senear-setup';

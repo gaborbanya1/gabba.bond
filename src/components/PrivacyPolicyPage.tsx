@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   ShieldCheck,
   Lock,
@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Mail,
   Phone,
-  Globe,
   CheckCircle2,
   Scale,
   Smartphone,
@@ -18,7 +17,6 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { detectLangFromUrl } from '../routing';
 
 export interface PrivacyPolicyPageProps {
   onBackToHome?: () => void;
@@ -963,8 +961,6 @@ const PRIVACY_CONTENT: Record<PolicyLang, PolicyTranslation> = {
 };
 
 function resolvePolicyLang(browserLang: string): PolicyLang {
-  const urlLang = detectLangFromUrl();
-  if (urlLang) return urlLang;
   if (browserLang === 'hu') return 'hu';
   if (browserLang === 'de') return 'de';
   return 'en';
@@ -1082,12 +1078,7 @@ export function PrivacyPolicyPage({
   focusDeletion = false,
 }: PrivacyPolicyPageProps = {}) {
   const { language } = useLanguage();
-  const [activeLang, setActiveLang] = useState<PolicyLang>(() => resolvePolicyLang(language));
-
-  // Sync automatically if the global detected language changes
-  useEffect(() => {
-    setActiveLang(resolvePolicyLang(language));
-  }, [language]);
+  const activeLang: PolicyLang = resolvePolicyLang(language);
 
   useEffect(() => {
     if (focusDeletion) {
@@ -1101,7 +1092,7 @@ export function PrivacyPolicyPage({
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] selection:bg-[#C5A880]/30 selection:text-[#1F2421]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10 sm:space-y-12">
-        {/* Breadcrumb + Language Switcher Bar */}
+        {/* Breadcrumb + Back to Home Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E8DFD4] pb-5">
           <nav className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-[#8C7355]">
             <button
@@ -1123,36 +1114,8 @@ export function PrivacyPolicyPage({
             <span className="text-[#2C2C2C] font-semibold">{content.breadcrumbCurrent}</span>
           </nav>
 
-          {/* Language Switcher + Close / Back to Home Button */}
+          {/* Close / Back to Home Button */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Globe className="w-3.5 h-3.5 text-[#8C7355]" />
-              <span className="text-xs font-medium text-[#6E6B65]">{content.langSwitchLabel}</span>
-              <div className="inline-flex rounded-xl bg-[#F0EAE1] p-0.5 border border-[#C5A880]/30">
-                {(['en', 'hu', 'de'] as const).map((code) => {
-                  const isActive = activeLang === code;
-                  const labels: Record<PolicyLang, string> = {
-                    en: 'EN (English)',
-                    hu: 'HU (Magyar)',
-                    de: 'DE (Deutsch)',
-                  };
-                  return (
-                    <button
-                      key={code}
-                      type="button"
-                      onClick={() => setActiveLang(code)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-[#2C2C2C] text-white shadow-2xs'
-                          : 'text-[#5C5A56] hover:text-[#2C2C2C]'
-                      }`}
-                    >
-                      {labels[code]}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
             <button
               type="button"
               onClick={onBackToHome}
@@ -1172,11 +1135,11 @@ export function PrivacyPolicyPage({
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white">
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5 shrink-0" />
                   <span>{deletionHero.badge}</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-800" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-800 shrink-0" />
                   <span>{deletionHero.irreversibleBadge}</span>
                 </span>
               </div>
@@ -1262,15 +1225,15 @@ export function PrivacyPolicyPage({
         <header className="space-y-5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span>{content.badgeEuGdpr}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/40">
-              <Server className="w-3.5 h-3.5 text-[#8C7355]" />
+              <Server className="w-3.5 h-3.5 text-[#8C7355] shrink-0" />
               <span>{content.badgeRegion}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFFFFF] text-[#5C5A56] border border-[#C5A880]/40">
-              <FileCheck2 className="w-3.5 h-3.5 text-[#8C7355]" />
+              <FileCheck2 className="w-3.5 h-3.5 text-[#8C7355] shrink-0" />
               <span>{content.badgePlaySafety}</span>
             </span>
           </div>
@@ -1524,11 +1487,11 @@ export function PrivacyPolicyPage({
         {/* Bottom Action / Right to Erasure Card (Also serves /delete-account Google Play Data Deletion URL) */}
         <section
           id="account-deletion"
-          className="bg-gradient-to-br from-[#F5F0EB] to-[#EFE7DC] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+          className="bg-gradient-to-br from-[#F5F0EB] to-[#EFE7DC] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] space-y-5"
         >
-          <div className="space-y-2 max-w-2xl">
+          <div className="space-y-2.5 max-w-3xl">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white">
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-3.5 h-3.5 shrink-0" />
               <span>{content.ctaDeleteInAppBadge}</span>
             </span>
             <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#2C2C2C]">
@@ -1539,12 +1502,12 @@ export function PrivacyPolicyPage({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-3 pt-1">
             <a
               href="mailto:gabba@gabba.bond?subject=SENEAR%20GDPR%20Request"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2C2C2C] text-white text-xs sm:text-sm font-bold hover:bg-[#1F2421] transition-colors shadow-xs"
             >
-              <Mail className="w-4 h-4 text-[#C5A880]" />
+              <Mail className="w-4 h-4 text-[#C5A880] shrink-0" />
               <span>{content.ctaDeleteEmailBtn}</span>
             </a>
             <button

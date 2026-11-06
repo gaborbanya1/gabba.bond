@@ -12,12 +12,6 @@ interface NavbarProps {
   currentRoute: AppRoute;
 }
 
-const SWITCHER_LANGS = [
-  { code: 'hu' as const, name: 'Magyar' },
-  { code: 'en' as const, name: 'English' },
-  { code: 'de' as const, name: 'Deutsch' },
-];
-
 export function Navbar({
   onExploreProjects,
   onNavigate,
@@ -25,11 +19,8 @@ export function Navbar({
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const activeProduct = productOfRoute(currentRoute);
-
-  const activeSwitcherLang: 'hu' | 'en' | 'de' =
-    language === 'hu' || language === 'de' ? language : 'en';
 
   const downloadLabel =
     language === 'hu'
@@ -44,13 +35,6 @@ export function Navbar({
       : language === 'de'
       ? 'Hauptnavigation'
       : 'Main navigation';
-
-  const langGroupLabel =
-    language === 'hu'
-      ? 'Nyelv kiválasztása'
-      : language === 'de'
-      ? 'Sprache wählen'
-      : 'Select language';
 
   const menuToggleLabel = mobileMenuOpen
     ? language === 'hu'
@@ -91,7 +75,7 @@ export function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FAFAFA]/90 backdrop-blur-md border-b border-[#C5A880]/20 transition-all">
+    <header className="sticky top-0 z-40 w-full bg-[#FAFAFA]/90 backdrop-blur-md border-b border-[#C5A880]/20 transition-all print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Wordmark & Slogan */}
@@ -143,35 +127,8 @@ export function Navbar({
             ))}
           </nav>
 
-          {/* Desktop Right Side: Language Switcher + Direct Download CTA */}
+          {/* Desktop Right Side: Direct Download CTA */}
           <div className="hidden md:flex items-center gap-2.5">
-            <div
-              role="group"
-              aria-label={langGroupLabel}
-              className="inline-flex items-center rounded-xl border border-[#9A7B4F]/45 bg-[#F5F0EB] p-0.5"
-            >
-              {SWITCHER_LANGS.map(({ code, name }) => {
-                const active = activeSwitcherLang === code;
-                return (
-                  <button
-                    key={code}
-                    type="button"
-                    lang={code}
-                    aria-current={active ? 'true' : undefined}
-                    onClick={() => setLanguage(code)}
-                    className={`inline-flex min-h-11 min-w-10 items-center justify-center rounded-lg px-2 text-xs font-bold uppercase transition-colors cursor-pointer ${
-                      active
-                        ? 'bg-white text-[#1F2421] shadow-2xs ring-1 ring-[#9A7B4F]/50'
-                        : 'text-[#5C5A56] hover:text-[#1F2421]'
-                    } ${FOCUS_RING}`}
-                  >
-                    <span>{code.toUpperCase()}</span>
-                    <span className="sr-only"> – {name}</span>
-                  </button>
-                );
-              })}
-            </div>
-
             <a
               href={PLAY_STORE_URL}
               target="_blank"
@@ -227,36 +184,6 @@ export function Navbar({
               </a>
             ))}
           </nav>
-
-          <div
-            role="group"
-            aria-label={langGroupLabel}
-            className="grid grid-cols-3 gap-1.5 rounded-xl border border-[#9A7B4F]/45 bg-[#F5F0EB] p-1"
-          >
-            {SWITCHER_LANGS.map(({ code, name }) => {
-              const active = activeSwitcherLang === code;
-              return (
-                <button
-                  key={code}
-                  type="button"
-                  lang={code}
-                  aria-current={active ? 'true' : undefined}
-                  onClick={() => {
-                    setLanguage(code);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-xs font-bold uppercase transition-colors cursor-pointer ${
-                    active
-                      ? 'bg-white text-[#1F2421] shadow-2xs ring-1 ring-[#9A7B4F]/50'
-                      : 'text-[#5C5A56] hover:text-[#1F2421]'
-                  } ${FOCUS_RING}`}
-                >
-                  <span>{code.toUpperCase()}</span>
-                  <span className="sr-only"> – {name}</span>
-                </button>
-              );
-            })}
-          </div>
 
           <div className="pt-2 border-t border-[#C5A880]/20">
             <a

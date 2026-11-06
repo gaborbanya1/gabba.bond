@@ -23,6 +23,7 @@ const JunearSetupGuidePage = lazy(() =>
 );
 const ProductPage = lazy(() => import('./components/ProductPage').then((m) => ({ default: m.ProductPage })));
 const PrivacyPage = lazy(() => import('./components/PrivacyPage').then((m) => ({ default: m.PrivacyPage })));
+const LegalBriefPage = lazy(() => import('./components/LegalBriefPage').then((m) => ({ default: m.LegalBriefPage })));
 
 /**
  * Supported URL paths:
@@ -41,6 +42,7 @@ const ROUTE_TITLES: Record<AppRoute, string> = {
   'junear-setup': 'JUNEAR Setup — gabba',
   privacy: 'Privacy Policy (GDPR) — SENEAR · gabba',
   'delete-account': 'Account & Data Deletion (GDPR) — SENEAR · gabba',
+  'legal-brief': 'Ügyvédi Egyeztetési Kivonat — gabba.bond',
 };
 
 function scrollToId(id: string) {
@@ -82,13 +84,16 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [isNogondDemoOpen, setIsNogondDemoOpen] = useState(false);
 
-  // Normalize legacy URLs (/install, #install-guide, ...) to the canonical path once.
+  // Normalize legacy URLs (/install, #install-guide, ?lang=...) to the canonical path once.
   useEffect(() => {
     const canonical = ROUTE_PATHS[route];
-    const search = window.location.search || '';
+    const params = new URLSearchParams(window.location.search);
+    params.delete('lang');
+    const qs = params.toString();
+    const search = qs ? `?${qs}` : '';
     const hash = window.location.hash;
     const keepHash = route === 'home' && (hash === '#projects' || hash === '#contact');
-    if (window.location.pathname !== canonical || (hash && !keepHash)) {
+    if (window.location.pathname !== canonical || window.location.search !== search || (hash && !keepHash)) {
       window.history.replaceState(null, '', canonical + search + (keepHash ? hash : ''));
     }
     if (keepHash) {
@@ -205,10 +210,12 @@ export default function App() {
               />
             </>
           )}
+
+          {route === 'legal-brief' && <LegalBriefPage />}
           </Suspense>
         </main>
 
-        <div className={route === 'senear-setup' ? 'lg:hidden' : ''}>
+        <div className={route === 'senear-setup' ? 'lg:hidden' : route === 'legal-brief' ? 'print:hidden' : ''}>
           <Footer onNavigate={navigate} />
         </div>
 
