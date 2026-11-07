@@ -178,7 +178,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Létfontosságú érdekek védelme (GDPR 6. cikk (1) d) és 9. cikk (2) c)):',
-            text: 'Az SOS segélyhívások, a fizikai zuhanásérzékelési riasztások és az Otthoni Biztonsági Zóna elhagyási értesítések továbbítása a Gondozott életének és testi épségének közvetlen védelmét szolgálja.',
+            text: 'Az SOS segélyhívások és az Otthoni Biztonsági Zóna elhagyási értesítések továbbítása a Gondozott életének és testi épségének közvetlen védelmét szolgálja.',
           },
           {
             label: 'Jogos érdek és IT-biztonság (GDPR 6. cikk (1) f)):',
@@ -241,8 +241,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'Kizárólag az egyérintéses gyorstárcsázáshoz, a dedikált SOS segélyhíváshoz és vészhelyzeti SMS-hez, a helyi Anti-Scam Whitelist hívásszűrőhöz (NogondCallScreeningService – ismeretlen csaló számok némítása), a nagybetűs Kioszk SMS-megjelenítéshez és az engedélyezett gondozói kihangosított hívásfogadáshoz használatos. Hívás- és SMS-adatokat soha nem adunk át harmadik félnek.',
           },
           {
-            label: 'Helyadatok, Kamera/Mikrofon és Mozgásérzékelő:',
-            text: 'A GPS-hozzáférés kizárólag párosított módban az Otthoni Zóna és SOS funkciót szolgálja; a kamera és mikrofon csak aktív WebRTC hívás közben működik. A gyorsulásmérő zuhanásérzékelése 100%-ban helyben, a készülék memóriájában fut (30 másodperces hangjelzéses visszaszámlálással).',
+            label: 'Helyadatok, Kamera és Mikrofon:',
+            text: 'A GPS-hozzáférés kizárólag párosított módban az Otthoni Biztonsági Zóna és az SOS funkciót szolgálja; a kamera és a mikrofon kizárólag aktív WebRTC hang- vagy videóhívás közben működik.',
           },
         ],
       },
@@ -411,7 +411,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Schutz lebenswichtiger Interessen (Art. 6 Abs. 1 lit. d & Art. 9 Abs. 2 lit. c DSGVO):',
-            text: 'Übermittlung von SOS-Notrufen, Sturzerkennungsalarmen und Sicherheitszonen-Warnungen zum unmittelbaren Schutz von Leben und körperlicher Unversehrtheit.',
+            text: 'Übermittlung von SOS-Notrufen und Sicherheitszonen-Warnungen zum unmittelbaren Schutz von Leben und körperlicher Unversehrtheit.',
           },
           {
             label: 'Berechtigte Interessen & IT-Sicherheit (Art. 6 Abs. 1 lit. f DSGVO):',
@@ -474,8 +474,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'Ausschließlich genutzt für Ein-Klick-Kurzwahl, dedizierte SOS-Notruftaste/Notfall-SMS, lokalen Anti-Scam-Anruffilter (Whitelist), großformatige Kiosk-SMS-Anzeige und optionale Freisprech-Annahme für autorisierte Betreuer. Keinerlei Weitergabe an Dritte.',
           },
           {
-            label: 'Standort, Kamera/Mikrofon & Bewegungssensoren:',
-            text: 'Standort nur im gekoppelten Modus für Heimzone und SOS; Kamera/Mikrofon nur während aktiver WebRTC-Anrufe. Die Sturzerkennung über Beschleunigungssensoren erfolgt zu 100 % lokal im Arbeitsspeicher (mit 30-Sekunden-Abbruch-Countdown).',
+            label: 'Standort, Kamera & Mikrofon:',
+            text: 'Standortzugriff erfolgt ausschließlich im gekoppelten Modus für die Sichere Heimzone und SOS-Notrufe; Kamera und Mikrofon sind nur während aktiver WebRTC-Gespräche aktiv.',
           },
         ],
       },
@@ -644,7 +644,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Protection of Vital Interests (GDPR Art. 6(1)(d) & Art. 9(2)(c)):',
-            text: 'Dispatches of emergency SOS alerts, physical fall-detection alarms, and Safe Zone entry/exit notifications to protect the life and physical safety of the Senior.',
+            text: 'Dispatches of emergency SOS alerts and Safe Zone entry/exit notifications to protect the life and physical safety of the Senior.',
           },
           {
             label: 'Legitimate Interests & IT Security (GDPR Art. 6(1)(f)):',
@@ -707,8 +707,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'Used exclusively for one-tap speed-dial calls, the SOS emergency button/SMS, local Anti-Scam Whitelist call screening (NogondCallScreeningService), large-print Kiosk SMS display, and optional speakerphone auto-answer for paired Caregivers. Call/SMS data is never sold or shared.',
           },
           {
-            label: 'Location, Camera/Microphone & Motion Sensors:',
-            text: 'Location is used strictly in Paired Mode for Home Safe Zone and SOS; Camera/Microphone operate only during active WebRTC calls. Accelerometer fall detection runs 100% locally in memory with a 30-second audible cancellation countdown.',
+            label: 'Location, Camera & Microphone:',
+            text: 'Location is used strictly in Paired Mode for Home Safe Zone and SOS alerts; Camera and Microphone operate strictly during active WebRTC calls.',
           },
         ],
       },

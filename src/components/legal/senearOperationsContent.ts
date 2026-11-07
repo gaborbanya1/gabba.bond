@@ -19,7 +19,7 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'MŰKÖDÉSI ÉS ADATKEZELÉSI SZABÁLYZAT – SENEAR',
     subtitle:
-      'Jelen Működési és Adatkezelési Szabályzat (Operational & Transparency Policy) átláthatóan, műszaki és folyamatbeli szinten rögzíti, hogyan működik a SENEAR kétkészülékes ökoszisztémája, a kétoldalú hozzájárulási kapu, a csalóhívás-szűrő, az SOS és zuhanásérzékelő protokoll, valamint az azonnali adattörlési és incidenskezelési mechanizmus.',
+      'Jelen Működési és Adatkezelési Szabályzat (Operational & Transparency Policy) átláthatóan, műszaki és folyamatbeli szinten rögzíti, hogyan működik a SENEAR kétkészülékes ökoszisztémája, a kétoldalú hozzájárulási kapu, a csalóhívás-szűrő, az SOS és Otthoni Biztonsági Zóna protokoll, valamint az azonnali adattörlési és incidenskezelési mechanizmus.',
     effectiveDateValue: '2026. november 7.',
     quickSummaryTitle: 'A SENEAR Működési Alapelvei 4 Pontban',
     quickSummaryItems: [
@@ -32,8 +32,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         desc: 'Az Android CallScreeningService közvetlenül a telefonon szűri ki az ismeretlen számokat — híváslisták felhőbe töltése nélkül.',
       },
       {
-        title: '30 mp-es Téves Riasztás Védelem',
-        desc: 'Zuhanás gyanújakor 30 másodperces hangos visszaszámlálás indul helyben, mielőtt bármilyen riasztás elhagyná a készüléket.',
+        title: 'Megerősített SOS & Otthoni Zóna',
+        desc: 'Véletlen érintés ellen védett SOS riasztási lánc és felülírásos (útvonalnapló-mentes) Otthoni Biztonsági Zóna.',
       },
       {
         title: 'Delta-Sync & 0 mp Törlés',
@@ -109,20 +109,16 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         ],
       },
       {
-        id: 'sos-fall-geofence-ops',
+        id: 'sos-geofence-ops',
         number: '5',
         icon: 'activity',
-        title: 'SOS riasztási lánc, helyi zuhanásérzékelés és Otthoni Biztonsági Zóna',
+        title: 'SOS riasztási lánc és Otthoni Biztonsági Zóna (Geofencing)',
         intro:
           'A vészhelyzeti funkciók a gyors családi értesítést és a szigorú adattakarékosságot ötvözik:',
         bullets: [
           {
             label: 'Többcsatornás SOS riasztás:',
             text: 'A piros SOS gomb megnyomásakor a készülék párhuzamosan magas prioritású felhő-riasztást (FCM push + aktuális GPS-koordináta), opcionális vészhelyzeti SMS-t és közvetlen telefonhívást indít a kijelölt gondozó(k) felé.',
-          },
-          {
-            label: '100%-ban készüléken belüli zuhanásérzékelés (30 mp-es visszaszámlálással):',
-            text: 'A gyorsulásmérő szenzoradatok kiértékelése kizárólag a telefon memóriájában történik (nyers szenzoradat soha nem hagyja el a telefont). Hirtelen becsapódás/esés mintázat esetén a telefon 30 másodpercig jól hallható hangjelzést és teljes képernyős „Jól vagyok – Mégse” gombot jelenít meg; riasztás csak akkor megy ki, ha a visszaszámlálás megszakítás nélkül lejár.',
           },
           {
             label: 'Felülírásos (Overwrite-in-Place) Otthoni Biztonsági Zóna:',
@@ -202,7 +198,7 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'BETRIEBS- & TRANSPARENZRICHTLINIE – SENEAR',
     subtitle:
-      'Diese Betriebs- und Transparenzrichtlinie beschreibt transparent die technische Funktionsweise des SENEAR-Zweigeräte-Ökosystems, das beidseitige Kopplungsverfahren, den lokalen Anti-Scam-Anruffilter, die SOS- und Sturzerkennungsabläufe sowie das Lösch- und Sicherheitsvorfall-Protokoll.',
+      'Diese Betriebs- und Transparenzrichtlinie beschreibt transparent die technische Funktionsweise des SENEAR-Zweigeräte-Ökosystems, das beidseitige Kopplungsverfahren, den lokalen Anti-Scam-Anruffilter, die SOS- und Heimzonen-Abläufe sowie das Lösch- und Sicherheitsvorfall-Protokoll.',
     effectiveDateValue: '7. November 2026',
     quickSummaryTitle: 'Die 4 technischen Grundprinzipien von SENEAR',
     quickSummaryItems: [
@@ -215,8 +211,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         desc: 'Der Android CallScreeningService blockiert unbekannte Anrufer direkt auf dem Telefon – ohne Cloud-Upload von Anruflisten.',
       },
       {
-        title: '30-Sek.-Fehlalarmschutz',
-        desc: 'Bei erkanntem Sturz startet lokal ein 30-sekündiger akustischer Countdown mit Abbruchtaste, bevor ein Alarm gesendet wird.',
+        title: 'Geschützter SOS & Heimzone',
+        desc: 'Gegen versehentliches Auslösen geschützte SOS-Alarmkette und überschreibendes Geofencing ohne Bewegungsprofil.',
       },
       {
         title: 'Delta-Sync & 0-Sek.-Wipe',
@@ -292,20 +288,16 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         ],
       },
       {
-        id: 'sos-fall-geofence-ops',
+        id: 'sos-geofence-ops',
         number: '5',
         icon: 'activity',
-        title: 'SOS-Alarmkette, lokale Sturzerkennung & Sichere Heimzone (Geofencing)',
+        title: 'SOS-Alarmkette & Sichere Heimzone (Geofencing)',
         intro:
           'Alle Notfall- und Schutzmechanismen verbinden rasche Familienbenachrichtigung mit strikter Datensparsamkeit:',
         bullets: [
           {
             label: 'Mehrkanalige SOS-Eskalation:',
             text: 'Beim Auslösen der roten SOS-Taste sendet SENEAR parallel einen hochpriorisierten Cloud-Push-Alarm (inkl. aktuellem GPS-Standort), optional eine Notfall-SMS und startet den direkten Telefonanruf an die hinterlegten Betreuungspersonen.',
-          },
-          {
-            label: '100 % lokale Sturzerkennung mit 30-Sekunden-Countdown:',
-            text: 'Beschleunigungssensoren werden ausschließlich lokal im Arbeitsspeicher ausgewertet (Rohdaten verlassen nie das Gerät). Bei erkanntem Sturz ertönt 30 Sekunden lang ein deutliches Warnsignal mit großem „Mir geht es gut – Abbrechen“-Button, bevor eine Meldung versendet wird.',
           },
           {
             label: 'Überschreibendes Geofencing ohne Bewegungsprofil:',
@@ -385,7 +377,7 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'OPERATIONAL & TRANSPARENCY POLICY – SENEAR',
     subtitle:
-      'This Operational & Transparency Policy documents the real-world technical architecture, bilateral pairing workflow, local anti-scam call shield, SOS and fall-detection protocols, OEM battery resilience, and instant data-erasure & security incident procedures of SENEAR.',
+      'This Operational & Transparency Policy documents the real-world technical architecture, bilateral pairing workflow, local anti-scam call shield, SOS and Home Safe Zone protocols, OEM battery resilience, and instant data-erasure & security incident procedures of SENEAR.',
     effectiveDateValue: 'November 7, 2026',
     quickSummaryTitle: '4 Core Operational Principles of SENEAR',
     quickSummaryItems: [
@@ -398,8 +390,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         desc: 'Android CallScreeningService filters unknown callers 100% locally on the Senior phone—without uploading call logs to the cloud.',
       },
       {
-        title: '30s False-Alarm Guard',
-        desc: 'Accelerometer fall detection runs in local RAM and plays a 30-second audible cancellation countdown before dispatching any alert.',
+        title: 'Guarded SOS & Safe Zone',
+        desc: 'Confirmation-guarded multi-channel SOS escalation and overwrite-in-place Home Safe Zone geofencing.',
       },
       {
         title: 'Delta-Sync & 0s Wipe',
@@ -475,20 +467,16 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
         ],
       },
       {
-        id: 'sos-fall-geofence-ops',
+        id: 'sos-geofence-ops',
         number: '5',
         icon: 'activity',
-        title: 'SOS Escalation Chain, Local Fall Detection & Overwrite-in-Place Geofencing',
+        title: 'SOS Escalation Chain & Overwrite-in-Place Geofencing',
         intro:
           'Safety workflows combine rapid multi-channel family notification with strict data minimization:',
         bullets: [
           {
             label: 'Multi-Channel SOS Dispatch:',
             text: 'Pressing the red SOS button simultaneously dispatches a high-priority FCM push alert (with current GPS location), an optional emergency SMS, and a direct voice call to designated Caregivers.',
-          },
-          {
-            label: '100% On-Device Fall Detection with 30-Second Cancellation Window:',
-            text: 'Accelerometer evaluation runs entirely in local RAM (raw motion data never leaves the phone). If a severe impact/fall pattern is detected, a loud 30-second countdown with a full-screen "I’m OK – Cancel" button appears before any alert is transmitted.',
           },
           {
             label: 'Overwrite-in-Place Home Safe Zone (Zero Breadcrumb Trails):',

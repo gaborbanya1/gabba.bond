@@ -25,7 +25,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     quickSummaryItems: [
       {
         title: 'Örökké Ingyenes Alapmód',
-        desc: 'Az idős szülő telefonján futó önálló SENEAR kezdőképernyő, gyorstárcsázó, SOS gomb és csalószűrő 0 € és reklámmentes.',
+        desc: 'Az idős szülő telefonján futó önálló SENEAR kezdőképernyő, gyorstárcsázó, SOS gomb és csalószűrő teljesen díjmentes és reklámmentes.',
       },
       {
         title: 'Átlátható Google Play Előfizetés',
@@ -73,7 +73,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
           'A SENEAR két, funkcionálisan jól elkülönített szintet kínál:',
         subsections: [
           {
-            subtitle: 'A) Alap (Önálló Senior) csomag — 0 € (Örökké ingyenes)',
+            subtitle: 'A) Alap (Önálló Senior) csomag — Örökké ingyenes',
             badge: 'Reklámmentes & Offline',
             paragraphs: [
               'Tartalmazza a zárolt, elállíthatatlan nagybetűs SENEAR kezdőképernyőt (Kioszk mód), a nagy fotós gyorstárcsázó csempéket, a helyi SOS segélyhívó gombot és az ismeretlen hívókat kiszűrő helyi Anti-Scam Whitelist védelmet.',
@@ -85,7 +85,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             badge: 'Valós Idejű EU Felhőszinkron',
             paragraphs: [
               'Lehetővé teszi 1 idős készülék és legfeljebb 4 családtag (Örökös Duo csomagban 2 idős készülék + 4 családtag) biztonságos összekapcsolását 6-jegyű kétoldalú párosító kóddal.',
-              'Tartalmazza a távoli fotós névjegy- és hangerőkezelést, a távoli napi emlékeztetőket visszaigazolással, az akkumulátor- és GPS Otthoni Biztonsági Zóna felügyeletet, a titkosított WebRTC hang-/videóhívást és az azonnali SOS/zuhanás push-riasztásokat.',
+              'Tartalmazza a távoli fotós névjegy- és hangerőkezelést, a távoli napi emlékeztetőket visszaigazolással, az akkumulátor- és GPS Otthoni Biztonsági Zóna felügyeletet, a titkosított WebRTC hang-/videóhívást és az azonnali SOS push-riasztásokat.',
             ],
           },
         ],
@@ -100,14 +100,14 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'Családi előfizetés és 14 napos ingyenes próbaidőszak:',
-            text: 'Irányadó díj: havi 7,99 € (kb. 2 990 Ft/hó) vagy éves 59,99 € (kb. 23 990 Ft/év; a pontos összeget a Google Play pénztár jeleníti meg a felhasználó helyi pénznemében). Az első alkalommal igénybe vett 14 napos ingyenes próbaidőszak alatt díjterhelés nem történik; ha a próbaidőszak lejárta előtt legalább 24 órával lemondja az előfizetést a Google Play → Előfizetések menüben, semmilyen díjat nem számítunk fel.',
+            text: 'A Családi csomag havi vagy kedvezményes éves előfizetésként vehető igénybe. Az aktuális bruttó díjakat az adott nyelvű SENEAR termékoldal (gabba.bond/senear), valamint a vásárlás jóváhagyása előtt a hivatalos Google Play fizetési felület jeleníti meg a felhasználó országa és helyi pénzneme szerint. Az első alkalommal igénybe vett 14 napos ingyenes próbaidőszak alatt díjterhelés nem történik; ha a próbaidőszak lejárta előtt legalább 24 órával lemondja az előfizetést a Google Play → Előfizetések menüben, semmilyen díjat nem számítunk fel.',
           },
           {
             label: 'Automatikus megújítás és lemondás:',
             text: 'A havi vagy éves előfizetés automatikusan megújul, amíg a Felhasználó azt a Google Play Áruház „Előfizetések” felületén le nem mondja. Lemondás esetén a fizetős funkciók az adott kifizetett számlázási időszak végéig maradéktalanul elérhetők maradnak, ezt követően az idős készülék adatvesztés nélkül visszavált az ingyenes Alap módba.',
           },
           {
-            label: 'Az egyszeri díjas „Örökös” (Lifetime / Duo – 149,00 €) csomag pontos jogi tartalma:',
+            label: 'Az egyszeri díjas „Örökös” (Lifetime / Duo) csomag pontos jogi tartalma:',
             text: 'Az „Örökös” (angolul „Lifetime”, németül „Lifetime-Paket”) megjelölésű egyszeri díjas licenc a SENEAR szoftverszolgáltatás és a hozzá tartozó felhőinfrastruktúra aktív, támogatott kereskedelmi termék-életciklusának (Commercial Product Lifecycle) teljes időtartamára biztosít ismétlődő havidíj nélküli hozzáférést legfeljebb 2 idős készülék és 4 családtag részére — nem pedig egy adott természetes személy élettartamára. Amennyiben a Szolgáltató a jövőben a SENEAR felhőszolgáltatás végleges kivezetéséről döntene, erről a felhasználókat legalább 6 (hat) hónappal korábban előzetesen értesíti.',
           },
         ],
@@ -166,8 +166,8 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'A SENEAR NEM minősül az (EU) 2017/745 rendelet (MDR) hatálya alá tartozó orvostechnikai eszköznek, klinikai monitorozó rendszernek, sem hivatalos állami segélyhívó szolgálatnak (112 / mentők / rendőrség) vagy minősített 24 órás egészségügyi diszpécserszolgálatnak (Hausnotruf). Akut életveszély esetén mindig közvetlenül a 112-es segélyhívót kell hívni!',
           },
           {
-            label: 'Szenzoros és távközlési korlátok:',
-            text: 'A gyorsulásmérőre épülő esésérzékelés nem képes minden típusú rosszullétet vagy lassú lecsúszást felismerni, illetve téves riasztást is adhat. Az SOS hívások/SMS-ek, GPS-zónajelzések és napi emlékeztetők célba érése külső hálózati tényezőktől (térerő, internet, GPS-műholdak, készülék töltöttsége, Android OS korlátozások) függ, amelyekért a Szolgáltató nem tud garantált felelősséget vállalni.',
+            label: 'Távközlési, hálózati és készülékoldali korlátok:',
+            text: 'Az SOS hívások/SMS-ek, GPS-zónajelzések, WebRTC hívások és napi emlékeztetők célba érése külső hálózati és készülékoldali tényezőktől (térerő, internet, GPS-műholdak, készülék töltöttsége, Android OS energiagazdálkodási korlátozások) függ, amelyekért a Szolgáltató nem tud garantált felelősséget vállalni.',
           },
         ],
       },
@@ -231,7 +231,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     quickSummaryItems: [
       {
         title: 'Dauerhaft kostenloser Basismodus',
-        desc: 'Der eigenständige Senioren-Startbildschirm inkl. Fotokacheln, lokaler SOS-Taste und Anruffilter bleibt dauerhaft für 0 € und werbefrei nutzbar.',
+        desc: 'Der eigenständige Senioren-Startbildschirm inkl. Fotokacheln, lokaler SOS-Taste und Anruffilter bleibt dauerhaft kostenlos und werbefrei nutzbar.',
       },
       {
         title: 'Faires Google Play-Abo',
@@ -239,7 +239,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
       },
       {
         title: 'Klares „Lifetime“-Modell',
-        desc: 'Das Einmal-Paket (149,00 €) gilt für den gesamten unterstützten kommerziellen Produktlebenszyklus von SENEAR (mind. 6 Monate Vorankündigung).',
+        desc: 'Das Einmal-Paket (Lifetime Duo) gilt für den gesamten unterstützten kommerziellen Produktlebenszyklus von SENEAR (mind. 6 Monate Vorankündigung).',
       },
       {
         title: 'Rechtmäßige Familiennutzung',
@@ -279,7 +279,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
           'SENEAR stellt zwei klar abgegrenzte Leistungsstufen bereit:',
         subsections: [
           {
-            subtitle: 'A) Basis-Paket (Eigenständiger Senioren-Modus) — 0 €',
+            subtitle: 'A) Basis-Paket (Eigenständiger Senioren-Modus) — Dauerhaft kostenlos',
             badge: 'Dauerhaft kostenlos & werbefrei',
             paragraphs: [
               'Umfasst den geschützten Senioren-Startbildschirm (Kiosk-Modus), große Foto-Kurzwahltasten, die lokale SOS-Notruftaste sowie den lokalen Anti-Scam-Anruffilter (Whitelist).',
@@ -291,7 +291,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             badge: 'EU-Cloud-Echtzeitsynchronisation',
             paragraphs: [
               'Verbindet 1 Seniorengerät mit bis zu 4 Angehörigen (im Lifetime-Duo-Paket bis zu 2 Seniorengeräte + 4 Angehörige) über einen sicheren 6-stelligen Kopplungscode.',
-              'Beinhaltet Fernverwaltung von Fotokontakten und Klingellautstärke, Tagesroutinen mit Bestätigung, Akku- und Heimzonen-Schutz (Geofencing), verschlüsselte WebRTC-Sprach-/Videoanrufe und sofortige SOS-/Sturz-Push-Warnungen.',
+              'Beinhaltet Fernverwaltung von Fotokontakten und Klingellautstärke, Tagesroutinen mit Bestätigung, Akku- und Heimzonen-Schutz (Geofencing), verschlüsselte WebRTC-Sprach-/Videoanrufe und sofortige SOS-Push-Warnungen.',
             ],
           },
         ],
@@ -306,14 +306,14 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'Familien-Abonnement & 14-tägige kostenlose Testphase:',
-            text: 'Richtpreis: 7,99 € / Monat oder 59,99 € / Jahr (maßgeblich ist der im Google Play-Checkout angezeigte Preis in Ihrer Landeswährung). Neukunden erhalten eine 14-tägige kostenlose Testphase; bei Kündigung mindestens 24 Stunden vor Ablauf des Testzeitraums über Google Play → Abonnements erfolgt keinerlei Belastung.',
+            text: 'Das Familien-Abonnement ist als Monats- oder vergünstigtes Jahresabonnement erhältlich; die jeweils gültigen Bruttopreise sind auf der jeweiligen SENEAR-Produktseite (gabba.bond/senear) sowie vor Kaufabschluss verbindlich im Google Play-Checkout in Ihrer Landeswährung ausgewiesen. Neukunden erhalten eine 14-tägige kostenlose Testphase; bei Kündigung mindestens 24 Stunden vor Ablauf des Testzeitraums über Google Play → Abonnements erfolgt keinerlei Belastung.',
           },
           {
             label: 'Automatische Verlängerung & jederzeitige Kündigung:',
             text: 'Laufende Abonnements verlängern sich automatisch um den gewählten Abrechnungszeitraum, sofern sie nicht vor Ablauf über Google Play gekündigt werden. Nach Kündigung bleiben alle Funktionen bis zum Ende der bezahlten Periode aktiv; danach wechselt das Seniorengerät ohne Datenverlust in den kostenlosen Basismodus.',
           },
           {
-            label: 'Rechtliche Definition des Einmal-Tarifs „Lifetime / Für immer“ (149,00 €):',
+            label: 'Rechtliche Definition des Einmal-Tarifs „Lifetime / Für immer“ (Duo):',
             text: 'Die Einmalzahlung für das „Lifetime“-Paket gewährt das Nutzungsrecht ohne wiederkehrende Monats- oder Jahresgebühren für die gesamte Dauer des aktiven, kommerziell unterstützten Produktlebenszyklus (Commercial Product Lifecycle) des SENEAR-Softwaredienstes und seiner Cloud-Infrastruktur (für bis zu 2 Seniorengeräte und 4 Angehörige) – nicht bezogen auf die biologische Lebensdauer einer natürlichen Person. Sollte der Cloud-Dienst zukünftig eingestellt werden, informiert der Betreiber betroffene Nutzer mindestens 6 (sechs) Monate im Voraus.',
           },
         ],
@@ -372,8 +372,8 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'SENEAR ist KEIN zertifiziertes Medizinprodukt im Sinne der Verordnung (EU) 2017/745 (MDR), kein klinisches Überwachungssystem und KEIN Ersatz für öffentliche Notrufdienste (112) oder einen nach DIN EN 50134 zertifizierten 24/7-Hausnotrufdienst. In akuten medizinischen Notfällen wählen Sie stets direkt den Notruf 112!',
           },
           {
-            label: 'Technische Grenzen von Sensorik & Telekommunikation:',
-            text: 'Die sensorbasierte Sturzerkennung kann bauartbedingt nicht jede Art von Sturz oder Ohnmacht erkennen und kann Fehlalarme auslösen. Die Zustellung von SOS-Rufen, SMS, Geofencing-Meldungen und Erinnerungen hängt von externen Faktoren (Mobilfunknetz, WLAN, GPS-Empfang, Akkuladung, Android-Energiesparfunktionen) ab, die außerhalb des Einflussbereichs des Betreibers liegen.',
+            label: 'Technische Grenzen von Telekommunikation, Ortung & Endgerät:',
+            text: 'Die Zustellung von SOS-Rufen, SMS, Geofencing-Meldungen, WebRTC-Gesprächen und Erinnerungen hängt von externen Faktoren (Mobilfunknetz, WLAN, GPS-Empfang, Akkuladung, Android-Energiesparfunktionen) ab, die außerhalb des Einflussbereichs des Betreibers liegen.',
           },
         ],
       },
@@ -437,7 +437,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     quickSummaryItems: [
       {
         title: 'Forever-Free Core Mode',
-        desc: 'The standalone Senior home screen, photo speed-dial tiles, local SOS button, and scam call filter remain €0 and 100% ad-free.',
+        desc: 'The standalone Senior home screen, photo speed-dial tiles, local SOS button, and scam call filter remain completely free of charge and 100% ad-free.',
       },
       {
         title: 'Transparent Google Play Billing',
@@ -445,7 +445,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
       },
       {
         title: 'Clear "Lifetime" Definition',
-        desc: 'The €149.00 One-Time Duo license covers the active supported commercial lifecycle of SENEAR (with min. 6 months prior notice).',
+        desc: 'The One-Time Lifetime Duo license covers the active supported commercial lifecycle of SENEAR (with min. 6 months prior notice).',
       },
       {
         title: 'Lawful Bilateral Consent',
@@ -485,7 +485,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
           'SENEAR provides two clearly defined functional tiers:',
         subsections: [
           {
-            subtitle: 'A) Basic Tier (Standalone Senior Mode) — €0 Forever',
+            subtitle: 'A) Basic Tier (Standalone Senior Mode) — Free Forever',
             badge: 'Ad-Free & Offline-First',
             paragraphs: [
               'Includes the locked high-contrast SENEAR Kiosk home screen, oversized photo speed-dial tiles, dedicated local SOS button, and local Anti-Scam Whitelist call screening.',
@@ -497,7 +497,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             badge: 'Real-Time EU Cloud Sync',
             paragraphs: [
               'Connects 1 Senior phone with up to 4 family Caregivers (or up to 2 Senior phones + 4 Caregivers on the Lifetime Duo tier) via a bilateral 6-digit pairing code.',
-              'Unlocks remote photo contact & volume administration, daily routine alarms with confirmation, battery & Home Safe Zone geofencing, encrypted WebRTC audio/video calls, and instant SOS/fall push alerts.',
+              'Unlocks remote photo contact & volume administration, daily routine alarms with confirmation, battery & Home Safe Zone geofencing, encrypted WebRTC audio/video calls, and instant SOS push alerts.',
             ],
           },
         ],
@@ -512,14 +512,14 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'Family Subscription & 14-Day Free Trial:',
-            text: 'Reference pricing: €7.99/month or €59.99/year (exact local currency pricing is displayed at Google Play checkout). Eligible new subscribers receive a 14-day free trial; canceling at least 24 hours before trial expiration in Google Play → Subscriptions incurs zero charges.',
+            text: 'The Family plan is available as a monthly or discounted annual subscription; applicable gross prices are listed on the respective localized SENEAR product page (gabba.bond/senear) and displayed in your local currency at Google Play checkout prior to purchase. Eligible new subscribers receive a 14-day free trial; canceling at least 24 hours before trial expiration in Google Play → Subscriptions incurs zero charges.',
           },
           {
             label: 'Auto-Renewal & Cancellation:',
             text: 'Monthly and annual subscriptions renew automatically unless canceled in Google Play Subscriptions. Upon cancellation, connected features remain active through the end of the current paid period, after which the Senior phone reverts seamlessly to the Forever-Free Basic mode without losing local contacts.',
           },
           {
-            label: 'Legal Scope of the One-Time "Lifetime" Duo Plan (€149.00):',
+            label: 'Legal Scope of the One-Time "Lifetime" Duo Plan:',
             text: 'The one-time "Lifetime" ("Örökös" / "Lifetime-Paket") license grants recurring-fee-free access for up to 2 Senior phones and 4 Caregivers for the entire supported commercial product lifecycle of the SENEAR software service and its cloud backend—not the biological lifetime of any individual person. Should the Operator ever discontinue the SENEAR cloud service, active users will receive at least six (6) months’ advance written notice.',
           },
         ],
@@ -578,8 +578,8 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'SENEAR is NOT a certified medical device under EU Regulation (EU) 2017/745 (MDR), is not a clinical monitoring system, and is NOT a 24/7 emergency dispatch center (such as 112, 911, or certified European "Hausnotruf" services). In any life-threatening emergency, always dial 112 (or local emergency services) directly!',
           },
           {
-            label: 'Sensor & Telecommunications Limitations:',
-            text: 'Smartphone accelerometer fall detection cannot detect every type of fall or gradual collapse and may trigger false positives. Delivery of SOS calls/SMS, Safe Zone alerts, WebRTC calls, and routine alarms depends on cellular signal, Wi-Fi, GPS satellites, battery charge, and Android OS power policies outside the Operator’s control.',
+            label: 'Telecommunications, Geolocation & Device Limitations:',
+            text: 'Delivery of SOS calls/SMS, Safe Zone alerts, WebRTC calls, and routine alarms depends on cellular signal, Wi-Fi, GPS satellites, battery charge, and Android OS power policies outside the Operator’s control.',
           },
         ],
       },
