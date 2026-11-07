@@ -19,7 +19,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'ÁLTALÁNOS SZERZŐDÉSI FELTÉTELEK (ÁSZF) – SENEAR',
     subtitle:
-      'Jelen Általános Szerződési Feltételek (ÁSZF) szabályozzák a Gabba Bond Studio (Üzemeltető: Bányai Gábor) által fejlesztett és üzemeltetett SENEAR Android-alkalmazás (bond.gabba.senear) és a hozzá kapcsolódó webes szolgáltatások (gabba.bond/senear) igénybevételének jogi, pénzügyi és felelősségi feltételeit.',
+      'Jelen Általános Szerződési Feltételek (ÁSZF) szabályozzák Bányai Gábor (gabba.bond) által fejlesztett és üzemeltetett SENEAR Android-alkalmazás (bond.gabba.senear) és a hozzá kapcsolódó webes szolgáltatások (gabba.bond/senear) igénybevételének jogi, pénzügyi és felelősségi feltételeit.',
     effectiveDateValue: '2026. november 7.',
     quickSummaryTitle: 'A SENEAR ÁSZF Legfontosabb Pontjai Röviden',
     quickSummaryItems: [
@@ -122,7 +122,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'Elállás gyakorlása Google Playen vagy e-mailben:',
-            text: 'A szerződéskötéstől (vagy próbaidőszak utáni első terheléstől) számított 14 napon belül a Fogyasztó kérheti a visszatérítést közvetlenül a Google Play visszatérítési felületén, vagy egyértelmű elállási nyilatkozat küldésével az info@gabba.bond e-mail-címre (a Google Play rendelésazonosító, pl. GPA.xxxx megjelölésével).',
+            text: 'A szerződéskötéstől (vagy próbaidőszak utáni első terheléstől) számított 14 napon belül a Fogyasztó kérheti a visszatérítést közvetlenül a Google Play visszatérítési felületén, vagy egyértelmű elállási nyilatkozat küldésével az gabba@gabba.bond e-mail-címre (a Google Play rendelésazonosító, pl. GPA.xxxx megjelölésével).',
           },
           {
             label: '14 napos ingyenes próbaidőszak mint teljes kockázatmentesség:',
@@ -195,7 +195,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         icon: 'lock',
         title: 'Szellemi tulajdonjogok és a szerződés megszüntetése',
         intro:
-          'A SENEAR szoftverkódja, arculata, logója és dokumentációja a Gabba Bond Studio (Bányai Gábor) kizárólagos szellemi tulajdona:',
+          'A SENEAR szoftverkódja, arculata, logója és dokumentációja Bányai Gábor (gabba) kizárólagos szellemi tulajdona:',
         bullets: [
           {
             label: 'Felhasználási engedély (Licenc) és saját tartalmak:',
@@ -225,7 +225,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'ALLGEMEINE GESCHÄFTSBEDINGUNGEN (AGB) – SENEAR',
     subtitle:
-      'Diese Allgemeinen Geschäftsbedingungen (AGB) regeln das Vertragsverhältnis zwischen dem Betreiber Bányai Gábor (Gabba Bond Studio) und den Nutzern der Android-Anwendung SENEAR (Paket-ID: bond.gabba.senear) sowie der zugehörigen Webdienste (gabba.bond/senear).',
+      'Diese Allgemeinen Geschäftsbedingungen (AGB) regeln das Vertragsverhältnis zwischen dem Betreiber Bányai Gábor und den Nutzern der Android-Anwendung SENEAR (Paket-ID: bond.gabba.senear) sowie der zugehörigen Webdienste (gabba.bond/senear).',
     effectiveDateValue: '7. November 2026',
     quickSummaryTitle: 'Das Wichtigste der SENEAR-AGB auf einen Blick',
     quickSummaryItems: [
@@ -328,7 +328,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'Ausübung des Widerrufs:',
-            text: 'Sie können Ihre Vertragserklärung innerhalb von 14 Tagen ab Vertragsschluss ohne Angabe von Gründen widerrufen – entweder direkt über die Google Play-Rückerstattungsfunktion oder durch eine eindeutige Erklärung per E-Mail an info@gabba.bond (bitte Google Play-Bestellnummer, z. B. GPA.xxxx, angeben).',
+            text: 'Sie können Ihre Vertragserklärung innerhalb von 14 Tagen ab Vertragsschluss ohne Angabe von Gründen widerrufen – entweder direkt über die Google Play-Rückerstattungsfunktion oder durch eine eindeutige Erklärung per E-Mail an gabba@gabba.bond (bitte Google Play-Bestellnummer, z. B. GPA.xxxx, angeben).',
           },
           {
             label: 'Risikofreier Testzeitraum:',
@@ -401,7 +401,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         icon: 'lock',
         title: 'Urheberrecht, Nutzungsrechte & Vertragsbeendigung',
         intro:
-          'Sämtliche Rechte an Softwarecode, Design, Marken und Dokumentation von SENEAR verbleiben bei Gabba Bond Studio (Bányai Gábor):',
+          'Sämtliche Rechte an Softwarecode, Design, Marken und Dokumentation von SENEAR verbleiben bei Bányai Gábor (gabba):',
         bullets: [
           {
             label: 'Persönliche Nutzungslizenz & Eigene Inhalte:',
@@ -431,7 +431,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
     ],
     title: 'TERMS OF SERVICE (ToS) – SENEAR',
     subtitle:
-      'These Terms of Service ("Terms") govern your access to and use of the SENEAR Android application (package ID: bond.gabba.senear) and associated web services (gabba.bond/senear), operated by Bányai Gábor (Gabba Bond Studio).',
+      'These Terms of Service ("Terms") govern your access to and use of the SENEAR Android application (package ID: bond.gabba.senear) and associated web services (gabba.bond/senear), operated by Bányai Gábor.',
     effectiveDateValue: 'November 7, 2026',
     quickSummaryTitle: 'Key Terms of Service Highlights at a Glance',
     quickSummaryItems: [
@@ -534,7 +534,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         bullets: [
           {
             label: 'How to Exercise Withdrawal:',
-            text: 'Within 14 calendar days of purchase, you may request a full refund either directly through Google Play’s refund portal or by sending an unequivocal withdrawal email to info@gabba.bond quoting your Google Play order ID (e.g., GPA.xxxx).',
+            text: 'Within 14 calendar days of purchase, you may request a full refund either directly through Google Play’s refund portal or by sending an unequivocal withdrawal email to gabba@gabba.bond quoting your Google Play order ID (e.g., GPA.xxxx).',
           },
           {
             label: 'Risk-Free 14-Day Trial:',
@@ -607,7 +607,7 @@ export const SENEAR_TERMS_DOC: Record<LegalLang, LegalDocumentData> = {
         icon: 'lock',
         title: 'Intellectual Property, Personal License & Termination',
         intro:
-          'All software code, UI designs, trademarks, and documentation of SENEAR belong exclusively to Gabba Bond Studio (Bányai Gábor):',
+          'All software code, UI designs, trademarks, and documentation of SENEAR belong exclusively to Bányai Gábor (gabba):',
         bullets: [
           {
             label: 'Personal License & Ownership of Family Content:',

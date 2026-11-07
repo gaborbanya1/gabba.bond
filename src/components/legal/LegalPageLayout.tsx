@@ -23,7 +23,6 @@ import {
   Users,
 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
-import { SupportedLanguage } from '../../i18n/types';
 import { AppRoute, LegalDocKind, ROUTE_PATHS, buildRouteHref } from '../../routing';
 import { FOCUS_RING } from '../senear/hooks';
 import {
@@ -43,12 +42,6 @@ export interface LegalPageLayoutProps {
 }
 
 const DOC_ORDER: LegalDocKind[] = ['privacy', 'terms', 'operations'];
-
-const LANG_SWITCH_ITEMS: { code: SupportedLanguage; label: string; aria: string }[] = [
-  { code: 'hu', label: 'HU', aria: 'Magyar (HU)' },
-  { code: 'de', label: 'DE', aria: 'Deutsch (DE)' },
-  { code: 'en', label: 'EN', aria: 'English (EN)' },
-];
 
 function renderSectionIcon(icon: LegalIconKey | undefined) {
   switch (icon) {
@@ -89,7 +82,7 @@ export function LegalPageLayout({
   focusDeletion = false,
   onNavigate,
 }: LegalPageLayoutProps) {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const activeLang: LegalLang = resolveLegalLang(language);
   const ui = LEGAL_UI_COPY[activeLang];
   const operator = GABBA_STUDIO_OPERATOR.byLang[activeLang];
@@ -97,13 +90,13 @@ export function LegalPageLayout({
   const doc = docsForLang[activeDoc];
   const deletionHero = bundle.deletionHero?.[activeLang];
 
-  const activeRoute: AppRoute = focusDeletion && bundle.scope.deleteAccountRoute
-    ? bundle.scope.deleteAccountRoute
-    : bundle.scope.routes[activeDoc];
+  const activeRoute: AppRoute =
+    focusDeletion && bundle.scope.deleteAccountRoute
+      ? bundle.scope.deleteAccountRoute
+      : bundle.scope.routes[activeDoc];
 
-  const canonicalUrl = `https://gabba.bond${ROUTE_PATHS[activeRoute]}?lang=${activeLang}`;
+  const canonicalUrl = `https://gabba.bond${ROUTE_PATHS[activeRoute]}`;
 
-  // Scroll to hash section if present, or scroll top when switching documents / deletion focus
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const rawHash = window.location.hash.replace(/^#+/, '');
@@ -131,7 +124,7 @@ export function LegalPageLayout({
     const el = document.getElementById(id);
     if (!el) return;
     e.preventDefault();
-    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`);
+    window.history.replaceState(null, '', `${window.location.pathname}#${id}`);
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   };
@@ -139,15 +132,14 @@ export function LegalPageLayout({
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] print:bg-white print:text-black">
       {/* =====================================================================
-          STICKY TOP LEGAL SUB-NAVIGATION BAR (3 Docs + HU/DE/EN + Print/PDF)
+          STICKY TOP LEGAL SUB-NAVIGATION BAR (3 Docs + Print/PDF — Zero Lang Switcher)
           ===================================================================== */}
       <div className="sticky top-20 z-30 w-full bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#DFD2BE] shadow-2xs print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2.5">
-            {/* 3 Legal Document Switcher Tabs */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
             <nav
               aria-label={ui.docSwitcherAria}
-              className="flex items-center gap-1.5 overflow-x-auto pb-0.5 lg:pb-0"
+              className="flex items-center gap-1.5 overflow-x-auto pb-0.5 sm:pb-0"
             >
               {DOC_ORDER.map((kind) => {
                 const targetRoute = bundle.scope.routes[kind];
@@ -156,7 +148,7 @@ export function LegalPageLayout({
                 return (
                   <a
                     key={kind}
-                    href={buildRouteHref(targetRoute, activeLang)}
+                    href={buildRouteHref(targetRoute)}
                     aria-current={isSelected ? 'page' : undefined}
                     onClick={handleSpaRoute(targetRoute)}
                     className={`inline-flex min-h-10 items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
@@ -171,34 +163,7 @@ export function LegalPageLayout({
               })}
             </nav>
 
-            {/* Language Switcher (HU / DE / EN) + Print / Save as PDF */}
-            <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 shrink-0">
-              <div
-                role="group"
-                aria-label={ui.langSwitcherAria}
-                className="inline-flex items-center rounded-xl bg-white p-0.5 border border-[#DFD2BE]"
-              >
-                {LANG_SWITCH_ITEMS.map((opt) => {
-                  const isCurrentLang = activeLang === opt.code;
-                  return (
-                    <button
-                      key={opt.code}
-                      type="button"
-                      aria-label={opt.aria}
-                      aria-pressed={isCurrentLang}
-                      onClick={() => setLanguage(opt.code)}
-                      className={`inline-flex min-h-9 min-w-9 items-center justify-center px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer transition-colors ${
-                        isCurrentLang
-                          ? 'bg-[#1B7A4E] text-white shadow-2xs'
-                          : 'text-[#5C5A56] hover:text-[#1F2421] hover:bg-[#F5F0EB]'
-                      } ${FOCUS_RING}`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-
+            <div className="flex items-center justify-end shrink-0">
               <button
                 type="button"
                 onClick={() => window.print()}
@@ -217,7 +182,7 @@ export function LegalPageLayout({
         {/* Print-Only Official Document Masthead */}
         <div className="hidden print:block border-b-2 border-black pb-4 space-y-1 text-xs text-black">
           <div className="font-bold uppercase tracking-wider">
-            Gabba Bond Studio · {bundle.scope.productName} — Official Legal Document
+            gabba · {bundle.scope.productName}
           </div>
           <div>
             <strong>{operator.operatorLabel}:</strong> {operator.operatorName} · {operator.hqValue} ·{' '}
@@ -235,7 +200,7 @@ export function LegalPageLayout({
           className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-[#7A5F43] border-b border-[#E8DFD4] pb-4 print:hidden"
         >
           <a
-            href={buildRouteHref('home', activeLang)}
+            href={buildRouteHref('home')}
             onClick={handleSpaRoute('home')}
             className={`hover:text-[#1F2421] underline-offset-4 hover:underline rounded-sm px-0.5 ${FOCUS_RING}`}
           >
@@ -243,7 +208,7 @@ export function LegalPageLayout({
           </a>
           <ChevronRight aria-hidden="true" className="w-3.5 h-3.5" />
           <a
-            href={buildRouteHref(bundle.scope.productRoute, activeLang)}
+            href={buildRouteHref(bundle.scope.productRoute)}
             onClick={handleSpaRoute(bundle.scope.productRoute)}
             className={`hover:text-[#1F2421] underline-offset-4 hover:underline rounded-sm px-0.5 ${FOCUS_RING}`}
           >
@@ -407,7 +372,7 @@ export function LegalPageLayout({
           </div>
         </section>
 
-        {/* Table of Contents (Section Anchor Pills — Screen Only) */}
+        {/* Table of Contents */}
         <nav
           aria-label={ui.tocTitle}
           className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E8DFD4] space-y-3 print:hidden"
@@ -438,10 +403,7 @@ export function LegalPageLayout({
           </div>
         </nav>
 
-        {/* ===================================================================
-            SECTION 1: 80% CORE GABBA BOND STUDIO OPERATOR & IMPRESSUM CARD
-            (Strictly NO tax number displayed yet)
-            =================================================================== */}
+        {/* Section 1: Operator & Impressum Card (No tax number) */}
         <section
           id="operator"
           className="scroll-mt-40 bg-white rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5 print:border-gray-300 print:shadow-none print:p-4 print:break-inside-avoid"
@@ -518,9 +480,7 @@ export function LegalPageLayout({
           </div>
         </section>
 
-        {/* ===================================================================
-            SECTIONS 2..N: MODULAR CORE + PRODUCT SECTIONS WITH ANCHOR IDS
-            =================================================================== */}
+        {/* Sections 2..N */}
         <div className="space-y-6 print:space-y-4">
           {doc.sections.map((sec) => (
             <section
@@ -660,9 +620,7 @@ export function LegalPageLayout({
           ))}
         </div>
 
-        {/* ===================================================================
-            BOTTOM ACTION, CROSS-DOCUMENT SWITCHER & GDPR CONTACT CARD
-            =================================================================== */}
+        {/* Bottom Action & Contact Card */}
         <section
           id="account-deletion"
           className="scroll-mt-40 bg-gradient-to-br from-[#F5F0EB] to-[#EFE7DC] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] space-y-6 print:hidden"
@@ -680,7 +638,6 @@ export function LegalPageLayout({
             </p>
           </div>
 
-          {/* Cross-links to the 3 Legal Docs + Delete Account */}
           <div className="space-y-2">
             <div className="text-xs font-bold uppercase tracking-wider text-[#7A5F43]">
               {ui.otherDocsHeading}
@@ -692,7 +649,7 @@ export function LegalPageLayout({
                 return (
                   <a
                     key={kind}
-                    href={buildRouteHref(targetRoute, activeLang)}
+                    href={buildRouteHref(targetRoute)}
                     onClick={handleSpaRoute(targetRoute)}
                     className={`inline-flex min-h-10 items-center px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                       isCurrent
@@ -707,7 +664,7 @@ export function LegalPageLayout({
 
               {bundle.scope.deleteAccountRoute && (
                 <a
-                  href={buildRouteHref(bundle.scope.deleteAccountRoute, activeLang)}
+                  href={buildRouteHref(bundle.scope.deleteAccountRoute)}
                   onClick={handleSpaRoute(bundle.scope.deleteAccountRoute)}
                   className={`inline-flex min-h-10 items-center px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                     focusDeletion
@@ -723,7 +680,7 @@ export function LegalPageLayout({
 
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <a
-              href={`mailto:${GABBA_STUDIO_OPERATOR.email}?subject=${encodeURIComponent(`${bundle.scope.productName} Legal / GDPR Request`)}`}
+              href={`mailto:${GABBA_STUDIO_OPERATOR.email}?subject=${encodeURIComponent(`${bundle.scope.productName} GDPR / Legal Request`)}`}
               className={`inline-flex min-h-11 items-center gap-2 px-5 py-3 rounded-xl bg-[#1F2421] text-white text-xs sm:text-sm font-bold hover:bg-[#2C2C2C] transition-colors shadow-xs ${FOCUS_RING}`}
             >
               <Mail aria-hidden="true" className="w-4 h-4 text-[#C5A880] shrink-0" />
@@ -731,7 +688,7 @@ export function LegalPageLayout({
             </a>
 
             <a
-              href={buildRouteHref(bundle.scope.productRoute, activeLang)}
+              href={buildRouteHref(bundle.scope.productRoute)}
               onClick={handleSpaRoute(bundle.scope.productRoute)}
               className={`inline-flex min-h-11 items-center gap-2 px-4 py-3 rounded-xl bg-white text-[#1F2421] border border-[#9A7B4F] text-xs sm:text-sm font-semibold hover:bg-[#FAF8F5] transition-colors ${FOCUS_RING}`}
             >
@@ -739,7 +696,7 @@ export function LegalPageLayout({
             </a>
 
             <a
-              href={buildRouteHref('home', activeLang)}
+              href={buildRouteHref('home')}
               onClick={handleSpaRoute('home')}
               className={`inline-flex min-h-11 items-center gap-2 px-4 py-3 rounded-xl bg-white text-[#1F2421] border border-[#9A7B4F] text-xs sm:text-sm font-semibold hover:bg-[#FAF8F5] transition-colors ${FOCUS_RING}`}
             >

@@ -1,11 +1,9 @@
-import React, { createContext, useCallback, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { RTL_LANGUAGES, SUPPORTED_LANGUAGES, SupportedLanguage, TranslationData } from './types';
 import { translations } from './translations';
-import { detectLangFromUrl } from '../routing';
 
 interface LanguageContextType {
   language: SupportedLanguage;
-  setLanguage: (lang: SupportedLanguage, options?: { syncUrl?: boolean }) => void;
   t: TranslationData;
 }
 
@@ -21,19 +19,18 @@ function toSupported(tag: string | null | undefined): SupportedLanguage | null {
 }
 
 /**
- * Resolves active language with priority:
- * 1. Explicit URL parameter (`?lang=hu|de|en`) or localized path prefix
- * 2. Active browser/device language (`navigator.languages[0]` or `navigator.language`)
- * 3. English ('en') fallback
+ * Resolves active language strictly from the visitor's browser/OS preference list
+ * (`navigator.languages` / `navigator.language`), falling back to English ('en').
  */
-function detectLanguage(): SupportedLanguage {
+function detectBrowserLanguage(): SupportedLanguage {
   if (typeof window === 'undefined') return 'en';
 
-  const urlLang = detectLangFromUrl();
-  if (urlLang) return urlLang;
-
-  const primaryTag = navigator.languages?.[0] || navigator.language;
-  return toSupported(primaryTag) ?? 'en';
+  const prefs = [...(navigator.languages ?? []), navigator.language];
+  for (const tag of prefs) {
+    const match = toSupported(tag);
+    if (match) return match;
+  }
+  return 'en';
 }
 
 export function LanguageProvider({
@@ -41,40 +38,23 @@ export function LanguageProvider({
   initialLanguage,
 }: {
   children: React.ReactNode;
-  /** Forces a language (used by the build-time prerender, where no browser is available). */
+  /** Forces a language during build-time SSR prerender where no browser exists. */
   initialLanguage?: SupportedLanguage;
 }) {
-  const [language, setLanguageState] = React.useState<SupportedLanguage>(() => initialLanguage ?? detectLanguage());
+  const [language, setLanguageState] = React.useState<SupportedLanguage>(
+    () => initialLanguage ?? detectBrowserLanguage()
+  );
   const effectiveLang: SupportedLanguage = translations[language] ? language : 'en';
   const t = translations[effectiveLang] ?? translations.en;
 
-  const setLanguage = useCallback((next: SupportedLanguage, options?: { syncUrl?: boolean }) => {
-    const valid: SupportedLanguage = translations[next] ? next : 'en';
-    setLanguageState(valid);
-
-    if (typeof window !== 'undefined' && (options?.syncUrl ?? true)) {
-      const url = new URL(window.location.href);
-      url.searchParams.set('lang', valid);
-      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
-    }
-  }, []);
-
-  // Keep in sync with browser back/forward (?lang=...) and OS language changes (when no ?lang= override is active).
   useEffect(() => {
     if (initialLanguage) return;
-    const syncLanguage = () => {
-      setLanguageState(detectLanguage());
-    };
-    syncLanguage();
-    window.addEventListener('popstate', syncLanguage);
-    window.addEventListener('languagechange', syncLanguage);
-    return () => {
-      window.removeEventListener('popstate', syncLanguage);
-      window.removeEventListener('languagechange', syncLanguage);
-    };
+    const syncBrowserLanguage = () => setLanguageState(detectBrowserLanguage());
+    syncBrowserLanguage();
+    window.addEventListener('languagechange', syncBrowserLanguage);
+    return () => window.removeEventListener('languagechange', syncBrowserLanguage);
   }, [initialLanguage]);
 
-  // Document titles are set per route in App.tsx (and by the SENEAR landing page itself).
   useEffect(() => {
     const root = document.documentElement;
     root.lang = effectiveLang;
@@ -82,7 +62,7 @@ export function LanguageProvider({
   }, [effectiveLang]);
 
   return (
-    <LanguageContext.Provider value={{ language: effectiveLang, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language: effectiveLang, t }}>
       {children}
     </LanguageContext.Provider>
   );

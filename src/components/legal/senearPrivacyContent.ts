@@ -22,8 +22,8 @@ export const SENEAR_DELETION_HERO: Record<LegalLang, DeletionHeroData> = {
     ],
     method2Title: '2. lehetőség: Adattörlés kérése e-mailben (ha már törölted az alkalmazást)',
     method2Desc:
-      'Ha már eltávolítottad az alkalmazást a készülékről, küldj egy rövid e-mailt az info@gabba.bond címre a regisztrált gondozói e-mail-címeddel, telefonszámoddal vagy a 6-jegyű Senior párosító kóddal. A kérést 72 órán belül végrehajtjuk.',
-    method2Btn: 'Adattörlés kérése e-mailben (info@gabba.bond)',
+      'Ha már eltávolítottad az alkalmazást a készülékről, küldj egy rövid e-mailt az gabba@gabba.bond címre a regisztrált gondozói e-mail-címeddel, telefonszámoddal vagy a 6-jegyű Senior párosító kóddal. A kérést 72 órán belül végrehajtjuk.',
+    method2Btn: 'Adattörlés kérése e-mailben (gabba@gabba.bond)',
     whatDeletedTitle: 'Milyen adatok törlődnek véglegesen:',
     whatDeletedItems: [
       'Gondozói profil (caregivers/{caregiverId}): Név, e-mail-cím, telefonszám, Firebase Auth UID, FCM push tokenek és értesítési beállítások.',
@@ -48,8 +48,8 @@ export const SENEAR_DELETION_HERO: Record<LegalLang, DeletionHeroData> = {
     ],
     method2Title: 'Option 2: Löschungsanfrage per E-Mail (ohne installierte App)',
     method2Desc:
-      'Falls Sie die App bereits deinstalliert haben, senden Sie eine E-Mail an info@gabba.bond mit Ihrer registrierten E-Mail-Adresse, Telefonnummer oder dem 6-stelligen Kopplungscode. Anfragen werden innerhalb von 72 Stunden ausgeführt.',
-    method2Btn: 'Datenlöschung per E-Mail anfordern (info@gabba.bond)',
+      'Falls Sie die App bereits deinstalliert haben, senden Sie eine E-Mail an gabba@gabba.bond mit Ihrer registrierten E-Mail-Adresse, Telefonnummer oder dem 6-stelligen Kopplungscode. Anfragen werden innerhalb von 72 Stunden ausgeführt.',
+    method2Btn: 'Datenlöschung per E-Mail anfordern (gabba@gabba.bond)',
     whatDeletedTitle: 'Welche Daten werden endgültig gelöscht:',
     whatDeletedItems: [
       'Betreuerprofil (caregivers/{caregiverId}): Name, E-Mail-Adresse, Telefonnummer, Firebase Auth UID, FCM-Token und Benachrichtigungseinstellungen.',
@@ -74,8 +74,8 @@ export const SENEAR_DELETION_HERO: Record<LegalLang, DeletionHeroData> = {
     ],
     method2Title: 'Option 2: Deletion Request via Email (Without the App Installed)',
     method2Desc:
-      'If you have already uninstalled the app, send a deletion request to our Data Controller at info@gabba.bond stating your Caregiver email address, registered phone number, or Senior Pairing ID. Requests are processed within 72 hours.',
-    method2Btn: 'Request Data Deletion via Email (info@gabba.bond)',
+      'If you have already uninstalled the app, send a deletion request to our Data Controller at gabba@gabba.bond stating your Caregiver email address, registered phone number, or Senior Pairing ID. Requests are processed within 72 hours.',
+    method2Btn: 'Request Data Deletion via Email (gabba@gabba.bond)',
     whatDeletedTitle: 'What Data Is Permanently Deleted:',
     whatDeletedItems: [
       'Caregiver profile (caregivers/{caregiverId}): Name, email address, phone number, Firebase Auth UID, FCM tokens, and notification preferences.',
@@ -294,7 +294,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Joggyakorlás és adattörlés e-mailben (az alkalmazás nélkül is):',
-            text: 'Kérelmét bármikor elküldheti az info@gabba.bond címre (regisztrált e-mail-címe vagy 6-jegyű párosító kódja megjelölésével); minden megkeresést 72 órán belül teljesítünk és visszaigazolunk.',
+            text: 'Kérelmét bármikor elküldheti az gabba@gabba.bond címre (regisztrált e-mail-címe vagy 6-jegyű párosító kódja megjelölésével); minden megkeresést 72 órán belül teljesítünk és visszaigazolunk.',
           },
         ],
       },
@@ -527,7 +527,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Anfragen & Löschung per E-Mail (ohne installierte App):',
-            text: 'Richten Sie Ihr Anliegen jederzeit an info@gabba.bond (unter Angabe Ihrer E-Mail-Adresse oder des 6-stelligen Kopplungscodes). Bearbeitung und Bestätigung erfolgen innerhalb von 72 Stunden.',
+            text: 'Richten Sie Ihr Anliegen jederzeit an gabba@gabba.bond (unter Angabe Ihrer E-Mail-Adresse oder des 6-stelligen Kopplungscodes). Bearbeitung und Bestätigung erfolgen innerhalb von 72 Stunden.',
           },
         ],
       },
@@ -760,7 +760,7 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           },
           {
             label: 'Email Requests (Without the App Installed):',
-            text: 'Email info@gabba.bond stating your registered email address or 6-digit pairing code to request erasure or data export. Processed and confirmed within 72 hours.',
+            text: 'Email gabba@gabba.bond stating your registered email address or 6-digit pairing code to request erasure or data export. Processed and confirmed within 72 hours.',
           },
         ],
       },

@@ -94,17 +94,17 @@ export interface ProductLegalBundle {
 }
 
 // ============================================================================
-// 80% SHARED GABBA BOND STUDIO OPERATOR & INFRASTRUCTURE CORE
+// 80% SHARED GABBA OPERATOR & INFRASTRUCTURE CORE
 // Strictly NO tax number displayed yet, per studio operator directive.
 // ============================================================================
 
 export const GABBA_STUDIO_OPERATOR = {
-  email: 'info@gabba.bond',
+  email: 'gabba@gabba.bond',
   euRegionCode: 'europe-west1',
   byLang: {
     hu: {
       operatorLabel: 'Üzemeltető / Szolgáltató és Adatkezelő',
-      operatorName: 'Bányai Gábor (Gabba Bond Studio)',
+      operatorName: 'Bányai Gábor',
       hqLabel: 'Székhely és Joghatóság',
       hqValue: '9400 Sopron, Ravazd utca 46., Magyarország (Európai Unió)',
       emailLabel: 'Hivatalos és adatvédelmi e-mail',
@@ -114,7 +114,7 @@ export const GABBA_STUDIO_OPERATOR = {
     },
     de: {
       operatorLabel: 'Betreiber / Diensteanbieter & Verantwortlicher',
-      operatorName: 'Bányai Gábor (Gabba Bond Studio)',
+      operatorName: 'Bányai Gábor',
       hqLabel: 'Sitz & Rechtsordnung',
       hqValue: 'Ravazd utca 46, 9400 Sopron, Ungarn (Europäische Union)',
       emailLabel: 'Offizielle Kontakt- & Datenschutz-E-Mail',
@@ -124,7 +124,7 @@ export const GABBA_STUDIO_OPERATOR = {
     },
     en: {
       operatorLabel: 'Operator / Service Provider & Data Controller',
-      operatorName: 'Bányai Gábor (Gabba Bond Studio)',
+      operatorName: 'Bányai Gábor',
       hqLabel: 'Headquarters & Jurisdiction',
       hqValue: 'Ravazd utca 46, 9400 Sopron, Hungary (European Union)',
       emailLabel: 'Official & Privacy Contact Email',
@@ -156,7 +156,7 @@ export interface LegalUiCopy {
 
 export const LEGAL_UI_COPY: Record<LegalLang, LegalUiCopy> = {
   hu: {
-    studioHome: 'Gabba Bond Studio',
+    studioHome: 'gabba',
     docSwitcherAria: 'Jogi dokumentum kiválasztása',
     langSwitcherAria: 'Dokumentum nyelvének kiválasztása',
     printBtn: 'Nyomtatás / PDF mentés',
@@ -168,14 +168,14 @@ export const LEGAL_UI_COPY: Record<LegalLang, LegalUiCopy> = {
     contactCardTitle: 'Kérdése van, vagy jogait szeretné gyakorolni?',
     contactCardDesc:
       'Adatvédelmi megkeresés, számlázási/elállási nyilatkozat vagy adattörlési igény esetén írjon közvetlenül az Üzemeltetőnek (72 órán belüli adatvédelmi válaszadás), vagy használja az alkalmazáson belüli azonnali adattörlés gombot.',
-    contactEmailBtn: 'Kapcsolatfelvétel: info@gabba.bond',
+    contactEmailBtn: 'Kapcsolatfelvétel: gabba@gabba.bond',
     deleteAccountBtn: 'Fiók- és adattörlési útmutató (/delete-account)',
     backToProductBtn: (name) => `Vissza a ${name} oldalra`,
-    backToStudioBtn: 'Vissza a Gabba Bond főoldalra',
+    backToStudioBtn: 'Vissza a főoldalra',
     otherDocsHeading: 'Kapcsolódó hivatalos dokumentumok:',
   },
   de: {
-    studioHome: 'Gabba Bond Studio',
+    studioHome: 'gabba',
     docSwitcherAria: 'Rechtsdokument auswählen',
     langSwitcherAria: 'Dokumentensprache wählen',
     printBtn: 'Drucken / Als PDF speichern',
@@ -187,14 +187,14 @@ export const LEGAL_UI_COPY: Record<LegalLang, LegalUiCopy> = {
     contactCardTitle: 'Fragen oder Ausübung Ihrer Betroffenenrechte?',
     contactCardDesc:
       'Für Datenschutzanfragen, Widerrufserklärungen oder Löschungsanträge kontaktieren Sie den Betreiber direkt per E-Mail (Bearbeitung von DSGVO-Anfragen innerhalb von 72 Stunden) oder nutzen Sie die sofortige In-App-Löschung.',
-    contactEmailBtn: 'Kontakt: info@gabba.bond',
+    contactEmailBtn: 'Kontakt: gabba@gabba.bond',
     deleteAccountBtn: 'Anleitung zur Kontolöschung (/delete-account)',
     backToProductBtn: (name) => `Zurück zur ${name}-Produktseite`,
-    backToStudioBtn: 'Zurück zum Gabba Bond Studio',
+    backToStudioBtn: 'Zurück zur Startseite',
     otherDocsHeading: 'Weitere verbindliche Rechtsdokumente:',
   },
   en: {
-    studioHome: 'Gabba Bond Studio',
+    studioHome: 'gabba',
     docSwitcherAria: 'Select legal document',
     langSwitcherAria: 'Select document language',
     printBtn: 'Print / Save as PDF',
@@ -206,10 +206,10 @@ export const LEGAL_UI_COPY: Record<LegalLang, LegalUiCopy> = {
     contactCardTitle: 'Questions, Legal Notices, or Data Erasure Requests?',
     contactCardDesc:
       'For GDPR inquiries, statutory withdrawal notices, or email-based account deletion, contact the Operator directly (72-hour response SLA for privacy requests) or trigger instant one-tap erasure inside the app.',
-    contactEmailBtn: 'Contact Operator: info@gabba.bond',
+    contactEmailBtn: 'Contact Operator: gabba@gabba.bond',
     deleteAccountBtn: 'Account & Data Deletion Guide (/delete-account)',
     backToProductBtn: (name) => `Back to ${name} Page`,
-    backToStudioBtn: 'Back to Gabba Bond Studio',
+    backToStudioBtn: 'Back to Home',
     otherDocsHeading: 'Related Official Documents:',
   },
 };
@@ -220,7 +220,7 @@ export function resolveLegalLang(lang: string): LegalLang {
 }
 
 // ============================================================================
-// 80% REUSABLE CORE CLAUSE BUILDERS (SHARED ACROSS ALL GABBA BOND PRODUCTS)
+// 80% REUSABLE CORE CLAUSE BUILDERS (SHARED ACROSS ALL GABBA PRODUCTS)
 // ============================================================================
 
 export function buildCoreEuSecuritySection(
@@ -244,7 +244,7 @@ export function buildCoreEuSecuritySection(
       },
       {
         label: 'Zéró reklám, zéró profilalkotás és zéró adatértékesítés:',
-        text: 'A Gabba Bond termékek nem tartalmaznak reklám-SDK-kat vagy harmadik féltől származó viselkedéskövető kódokat, nem végeznek automatizált döntéshozatalt vagy profilalkotást (GDPR 22. cikk), és soha nem értékesítenek személyes adatokat.',
+        text: 'A gabba alkalmazások nem tartalmaznak reklám-SDK-kat vagy harmadik féltől származó viselkedéskövető kódokat, nem végeznek automatizált döntéshozatalt vagy profilalkotást (GDPR 22. cikk), és soha nem értékesítenek személyes adatokat.',
       },
     ];
     if (extraBullet) bullets.push(extraBullet);
@@ -275,7 +275,7 @@ export function buildCoreEuSecuritySection(
       },
       {
         label: 'Keine Werbung, kein Profiling und kein Datenverkauf:',
-        text: 'Produkte von Gabba Bond enthalten keinerlei Werbe-SDKs oder Drittanbieter-Tracker, führen keine automatisierte Entscheidungsfindung (Art. 22 DSGVO) durch und veräußern niemals personenbezogene Daten.',
+        text: 'Anwendungen von gabba enthalten keinerlei Werbe-SDKs oder Drittanbieter-Tracker, führen keine automatisierte Entscheidungsfindung (Art. 22 DSGVO) durch und veräußern niemals personenbezogene Daten.',
       },
     ];
     if (extraBullet) bullets.push(extraBullet);
@@ -305,7 +305,7 @@ export function buildCoreEuSecuritySection(
     },
     {
       label: 'Zero Advertising, Zero Profiling & Zero Data Selling:',
-      text: 'Gabba Bond products contain no advertising SDKs, no third-party behavioral trackers, perform no automated profiling (GDPR Art. 22), and never sell or rent personal data.',
+      text: 'gabba applications contain no advertising SDKs, no third-party behavioral trackers, perform no automated profiling (GDPR Art. 22), and never sell or rent personal data.',
     },
   ];
   if (extraBullet) bullets.push(extraBullet);
@@ -407,7 +407,7 @@ export function buildCoreTermsDisputeSection(lang: LegalLang, number: string): L
       bullets: [
         {
           label: 'Közvetlen ügyfélszolgálat és panaszkezelés:',
-          text: 'Fogyasztói panaszát az info@gabba.bond e-mail-címen vagy postai úton (9400 Sopron, Ravazd utca 46.) terjesztheti elő. Az írásbeli panaszt a Szolgáltató érdemben megvizsgálja, és legkésőbb 30 napon belül írásban megválaszolja (Fgytv. 17/A. §).',
+          text: 'Fogyasztói panaszát az gabba@gabba.bond e-mail-címen vagy postai úton (9400 Sopron, Ravazd utca 46.) terjesztheti elő. Az írásbeli panaszt a Szolgáltató érdemben megvizsgálja, és legkésőbb 30 napon belül írásban megválaszolja (Fgytv. 17/A. §).',
         },
         {
           label: 'Illetékes Békéltető Testület (Alternatív vitarendezés):',
@@ -432,7 +432,7 @@ export function buildCoreTermsDisputeSection(lang: LegalLang, number: string): L
       bullets: [
         {
           label: 'Direkter Kundensupport & Beschwerdebearbeitung:',
-          text: 'Verbraucherbeschwerden können jederzeit per E-Mail an info@gabba.bond oder postalisch (Ravazd utca 46, 9400 Sopron, Ungarn) eingereicht werden. Schriftliche Beschwerden werden unverzüglich, spätestens jedoch innerhalb der gesetzlichen Frist von 30 Tagen, inhaltlich beantwortet.',
+          text: 'Verbraucherbeschwerden können jederzeit per E-Mail an gabba@gabba.bond oder postalisch (Ravazd utca 46, 9400 Sopron, Ungarn) eingereicht werden. Schriftliche Beschwerden werden unverzüglich, spätestens jedoch innerhalb der gesetzlichen Frist von 30 Tagen, inhaltlich beantwortet.',
         },
         {
           label: 'Zuständige Verbraucherschlichtungsstelle:',
@@ -456,7 +456,7 @@ export function buildCoreTermsDisputeSection(lang: LegalLang, number: string): L
     bullets: [
       {
         label: 'Direct Customer Support & Statutory 30-Day Complaint Handling:',
-        text: 'You may submit any inquiry or formal consumer complaint by email to info@gabba.bond or by post (Ravazd utca 46, 9400 Sopron, Hungary). Formal written complaints are investigated on their merits and answered in writing within a maximum of 30 calendar days.',
+        text: 'You may submit any inquiry or formal consumer complaint by email to gabba@gabba.bond or by post (Ravazd utca 46, 9400 Sopron, Hungary). Formal written complaints are investigated on their merits and answered in writing within a maximum of 30 calendar days.',
       },
       {
         label: 'Competent Consumer Conciliation Board (ADR):',

@@ -1,19 +1,15 @@
 /**
- * Path, query, and hash-aware router for the gabba.bond Umbrella Architecture:
+ * Path, query, and hash-aware router for gabba.bond:
  *
- *   /                     -> Gabba Bond Root Studio Hub
- *   /senear               -> SENEAR product microsite
+ *   /                     -> gabba homepage
+ *   /senear               -> SENEAR product page
  *   /senear/setup         -> SENEAR step-by-step setup guide
  *   /senear/privacy       -> SENEAR GDPR Privacy Notice (Art. 13 & 14)
  *   /senear/terms         -> SENEAR Terms of Service (ÁSZF / AGB / ToS)
  *   /senear/operations    -> SENEAR Operational & Transparency Policy
  *   /delete-account       -> SENEAR Account & Data Deletion (GDPR Art. 17 & Google Play)
- *   /junear               -> JUNEAR teaser / product page
+ *   /junear               -> JUNEAR product page
  *   /junear/setup         -> JUNEAR setup guide
- *
- * Also supports legacy paths (/privacy, /terms, /operations, /install) and
- * hash/query fallbacks (/senear#privacy, /senear#terms, /senear#operations, ?doc=...)
- * for Android onboarding checkboxes, Caregiver PWA, and Google Play Console links.
  */
 export type AppRoute =
   | 'home'
@@ -43,39 +39,16 @@ export const ROUTE_PATHS: Record<AppRoute, string> = {
   'legal-brief': '/ugyved',
 };
 
-export function buildRouteHref(
-  route: AppRoute,
-  lang?: 'hu' | 'de' | 'en' | null,
-  hash?: string
-): string {
+export function buildRouteHref(route: AppRoute, hash?: string): string {
   const base = ROUTE_PATHS[route];
-  const qs = lang ? `?lang=${lang}` : '';
   const cleanHash = hash ? (hash.startsWith('#') ? hash : `#${hash}`) : '';
-  return `${base}${qs}${cleanHash}`;
-}
-
-export function detectLangFromUrl(): 'en' | 'hu' | 'de' | null {
-  if (typeof window === 'undefined') return null;
-  const path = window.location.pathname.toLowerCase();
-  const params = new URLSearchParams(window.location.search);
-  const langParam = params.get('lang')?.toLowerCase().split(/[-_]/)[0];
-  if (langParam === 'hu' || langParam === 'en' || langParam === 'de') {
-    return langParam;
-  }
-  if (path.startsWith('/hu/') || path === '/hu' || path.includes('/adatvedelem') || path.includes('/aszf')) return 'hu';
-  if (path.startsWith('/de/') || path === '/de' || path.includes('/datenschutz') || path.includes('/agb')) return 'de';
-  if (path.startsWith('/en/') || path === '/en') return 'en';
-  return null;
+  return `${base}${cleanHash}`;
 }
 
 function resolveDocToken(token: string | null | undefined): AppRoute | null {
   if (!token) return null;
   const t = token.toLowerCase().replace(/^#+/, '').trim();
-  if (
-    t === 'delete-account' ||
-    t === 'data-deletion' ||
-    t === 'account-deletion'
-  ) {
+  if (t === 'delete-account' || t === 'data-deletion' || t === 'account-deletion') {
     return 'delete-account';
   }
   if (
@@ -87,13 +60,7 @@ function resolveDocToken(token: string | null | undefined): AppRoute | null {
   ) {
     return 'senear-privacy';
   }
-  if (
-    t === 'terms' ||
-    t === 'tos' ||
-    t === 'terms-of-service' ||
-    t === 'aszf' ||
-    t === 'agb'
-  ) {
+  if (t === 'terms' || t === 'tos' || t === 'terms-of-service' || t === 'aszf' || t === 'agb') {
     return 'senear-terms';
   }
   if (
@@ -133,12 +100,10 @@ export function routeOfLegalDoc(doc: LegalDocKind): AppRoute {
 export function resolveRoute(): AppRoute {
   if (typeof window === 'undefined') return 'home';
   const rawPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
-  // Strip optional leading language prefix (/hu, /en, /de)
   const path = rawPath.replace(/^\/(hu|en|de)(?=\/|$)/, '') || '/';
   const hash = window.location.hash.toLowerCase();
   const params = new URLSearchParams(window.location.search);
 
-  // 1. Explicit legal path matches first (so in-page section hashes like /senear/terms#liability work)
   if (
     path === '/delete-account' ||
     path === '/data-deletion' ||
@@ -208,14 +173,12 @@ export function resolveRoute(): AppRoute {
   if (path === '/junear/setup' || path === '/junear/install') return 'junear-setup';
   if (path === '/install' || path === '/install-guide' || path === '/setup') return 'senear-setup';
 
-  // 2. Query & hash fallbacks (e.g. /senear#privacy, /senear#terms, /senear#operations, ?doc=terms)
   const queryLegal = resolveDocToken(params.get('doc') || params.get('legal') || params.get('policy'));
   if (queryLegal) return queryLegal;
 
   const hashLegal = resolveDocToken(hash);
   if (hashLegal) return hashLegal;
 
-  // 3. Product & guide routes
   if (path === '/senear') return 'senear';
   if (path === '/junear') return 'junear';
 

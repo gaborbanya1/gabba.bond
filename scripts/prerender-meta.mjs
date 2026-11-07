@@ -1,17 +1,9 @@
 /**
- * Post-build prerender for Gabba Bond & SENEAR Umbrella routes (default language: English 'en').
+ * Post-build prerender for gabba.bond & SENEAR routes (default language: English 'en').
  *
  *   npm run build  =  vite build
  *                   + vite build --ssr src/entry-server.tsx --outDir dist-ssr
  *                   + node scripts/prerender-meta.mjs   (this file)
- *
- * Output (served by Firebase Hosting with "trailingSlash": false):
- *   dist/senear/index.html             -> /senear             full SSR HTML + EN meta + OG + JSON-LD
- *   dist/senear/setup/index.html       -> /senear/setup       EN meta + OG
- *   dist/senear/privacy/index.html     -> /senear/privacy     GDPR Privacy Notice meta + OG
- *   dist/senear/terms/index.html       -> /senear/terms       Terms of Service (ÁSZF / AGB / ToS) meta + OG
- *   dist/senear/operations/index.html  -> /senear/operations  Operational & Transparency Policy meta + OG
- *   dist/delete-account/index.html     -> /delete-account     Google Play Account & Data Deletion meta + OG
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -32,7 +24,7 @@ function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, 
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:locale" content="en_US" />`,
-    `<meta property="og:site_name" content="Gabba Bond · SENEAR" />`,
+    `<meta property="og:site_name" content="gabba · SENEAR" />`,
     `<meta name="twitter:title" content="${esc(title)}" />`,
     `<meta name="twitter:description" content="${esc(description)}" />`,
     `<meta name="twitter:image" content="${image}" />`,
@@ -62,7 +54,6 @@ const ssr = await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).hre
 const seo = ssr.senearSeo();
 const senearBody = ssr.renderSenearPage();
 
-// Clean previous outputs
 fs.rmSync(path.join(distDir, 'senear'), { recursive: true, force: true });
 fs.rmSync(path.join(distDir, 'delete-account'), { recursive: true, force: true });
 fs.rmSync(path.join(distDir, 'senear.html'), { force: true });
@@ -82,7 +73,7 @@ writeRouteHtml(['senear', 'setup'], {
 });
 
 writeRouteHtml(['senear', 'privacy'], {
-  title: 'GDPR Privacy Notice (Art. 13 & 14) – SENEAR · Gabba Bond',
+  title: 'GDPR Privacy Notice (Art. 13 & 14) – SENEAR · gabba',
   description:
     'Official GDPR Privacy Notice for SENEAR (bond.gabba.senear): 100% EU data residency in europe-west1, bilateral consent, zero-storage Base64 photos, and one-tap Art. 17 erasure.',
   url: 'https://gabba.bond/senear/privacy',
@@ -90,15 +81,15 @@ writeRouteHtml(['senear', 'privacy'], {
 });
 
 writeRouteHtml(['senear', 'terms'], {
-  title: 'Terms of Service (ÁSZF / AGB / ToS) – SENEAR · Gabba Bond',
+  title: 'Terms of Service (ÁSZF / AGB / ToS) – SENEAR · gabba',
   description:
-    'Official Terms of Service (ÁSZF / AGB / ToS) for SENEAR by Gabba Bond Studio: Forever-Free Senior Launcher, Google Play Family subscriptions, 14-day withdrawal right, and EU MDR disclaimer.',
+    'Official Terms of Service (ÁSZF / AGB / ToS) for SENEAR: Forever-Free Senior Launcher, Google Play Family subscriptions, 14-day withdrawal right, and EU MDR disclaimer.',
   url: 'https://gabba.bond/senear/terms',
   image: seo.image,
 });
 
 writeRouteHtml(['senear', 'operations'], {
-  title: 'Operational & Transparency Policy – SENEAR · Gabba Bond',
+  title: 'Operational & Transparency Policy – SENEAR · gabba',
   description:
     'Technical and operational transparency policy for the SENEAR ecosystem: dual-role Kiosk architecture, bilateral 6-digit pairing, local CallScreeningService shield, and 0-second wipe.',
   url: 'https://gabba.bond/senear/operations',
@@ -106,7 +97,7 @@ writeRouteHtml(['senear', 'operations'], {
 });
 
 writeRouteHtml(['delete-account'], {
-  title: 'Account & Personal Data Deletion (GDPR Art. 17) – SENEAR · Gabba Bond',
+  title: 'Account & Personal Data Deletion (GDPR Art. 17) – SENEAR · gabba',
   description:
     'Instructions for instant one-tap in-app deletion or 72-hour email deletion of SENEAR Caregiver and Senior accounts and cloud data.',
   url: 'https://gabba.bond/delete-account',

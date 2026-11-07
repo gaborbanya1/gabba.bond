@@ -12,7 +12,6 @@ import {
   resolveRoute,
 } from './routing';
 
-// Route-level code splitting keeps initial landing bundles lean.
 const SenearInstallGuidePage = lazy(() =>
   import('./components/SenearInstallGuidePage').then((m) => ({ default: m.SenearInstallGuidePage }))
 );
@@ -34,15 +33,15 @@ function Route({ element }: { path: string; element: ReactNode }) {
 }
 
 const ROUTE_TITLES: Record<AppRoute, string> = {
-  home: 'Gabba Bond — Accessible European Software & Product Studio',
-  senear: 'SENEAR — Gabba Bond',
-  junear: 'JUNEAR — Gabba Bond',
-  'senear-setup': 'SENEAR Setup Guide — Gabba Bond',
-  'junear-setup': 'JUNEAR Setup Guide — Gabba Bond',
-  'senear-privacy': 'GDPR Privacy Notice — SENEAR · Gabba Bond',
-  'senear-terms': 'Terms of Service (ÁSZF / AGB) — SENEAR · Gabba Bond',
-  'senear-operations': 'Operational & Transparency Policy — SENEAR · Gabba Bond',
-  'delete-account': 'Account & Data Deletion (GDPR Art. 17) — SENEAR · Gabba Bond',
+  home: 'gabba — Technology, Bonded.',
+  senear: 'SENEAR — gabba',
+  junear: 'JUNEAR — gabba',
+  'senear-setup': 'SENEAR Setup — gabba',
+  'junear-setup': 'JUNEAR Setup — gabba',
+  'senear-privacy': 'GDPR Privacy Notice — SENEAR · gabba',
+  'senear-terms': 'Terms of Service (ÁSZF / AGB) — SENEAR · gabba',
+  'senear-operations': 'Operational & Transparency Policy — SENEAR · gabba',
+  'delete-account': 'Account & Data Deletion (GDPR) — SENEAR · gabba',
   'legal-brief': 'Ügyvédi Egyeztetési Kivonat — gabba.bond',
 };
 
@@ -81,23 +80,12 @@ function scrollToId(id: string) {
   el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 }
 
-function getPreservedLangQuery(): string {
-  if (typeof window === 'undefined') return '';
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('lang')?.toLowerCase().split(/[-_]/)[0];
-  if (raw === 'hu' || raw === 'de' || raw === 'en') {
-    return `?lang=${raw}`;
-  }
-  return '';
-}
-
 function normalizeLocationForRoute(targetRoute: AppRoute): string | null {
   const canonical = ROUTE_PATHS[targetRoute];
-  const search = getPreservedLangQuery();
   const rawHash = window.location.hash;
   const lowerHash = rawHash.toLowerCase();
   const keepSectionHash = Boolean(rawHash && rawHash.length > 1 && !ROUTE_ALIAS_HASHES.has(lowerHash));
-  const nextUrl = `${canonical}${search}${keepSectionHash ? rawHash : ''}`;
+  const nextUrl = `${canonical}${keepSectionHash ? rawHash : ''}`;
   const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
   if (currentUrl !== nextUrl) {
@@ -133,11 +121,18 @@ export function SkipToMainLink() {
   );
 }
 
+function LocalizedTitleSync({ route }: { route: AppRoute }) {
+  const { t } = useLanguage();
+  useEffect(() => {
+    if (route === 'senear') return;
+    document.title = route === 'home' ? t.pageTitle : ROUTE_TITLES[route];
+  }, [route, t]);
+  return null;
+}
+
 export default function App() {
   const [route, setRoute] = useState<AppRoute>(() => resolveRoute());
 
-  // Normalize legacy paths (/privacy, /install) and hash/query fallbacks (/senear#terms, ?doc=privacy)
-  // while preserving ?lang=hu|de|en and valid in-page #section anchors.
   useEffect(() => {
     const sectionAnchor = normalizeLocationForRoute(route);
     if (sectionAnchor) {
@@ -167,19 +162,10 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    // The SENEAR landing page manages its own localized document title.
-    if (route === 'senear') return;
-    document.title = ROUTE_TITLES[route];
-  }, [route]);
-
   const navigate = useCallback((next: AppRoute) => {
     const path = ROUTE_PATHS[next];
-    const search = getPreservedLangQuery();
-    const targetUrl = `${path}${search}`;
-    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    if (currentUrl !== targetUrl) {
-      window.history.pushState(null, '', targetUrl);
+    if (window.location.pathname !== path || window.location.search || window.location.hash) {
+      window.history.pushState(null, '', path);
     }
     setRoute(next);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -194,13 +180,14 @@ export default function App() {
     }
   };
 
-  const scrollToContact = () => goHomeAndScroll('impressum');
-  const scrollToProjects = () => goHomeAndScroll('portfolio');
+  const scrollToContact = () => goHomeAndScroll('contact');
+  const scrollToProjects = () => goHomeAndScroll('projects');
 
   const activeLegalDoc = legalDocOfRoute(route);
 
   return (
     <LanguageProvider>
+      <LocalizedTitleSync route={route} />
       <div
         className={`min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans selection:bg-[#C5A880]/30 selection:text-[#1F2421] print:bg-white ${
           route === 'senear-setup' ? 'lg:h-screen lg:overflow-hidden' : ''
