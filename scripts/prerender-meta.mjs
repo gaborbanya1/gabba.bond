@@ -89,9 +89,9 @@ writeRouteHtml(['senear', 'terms'], {
 });
 
 writeRouteHtml(['senear', 'operations'], {
-  title: 'Operational & Transparency Policy – SENEAR · gabba',
+  title: 'Operational, GDPR & Google Play Transparency Policy – SENEAR · gabba',
   description:
-    'Technical and operational transparency policy for the SENEAR ecosystem: dual-role Kiosk architecture, bilateral 6-digit pairing, local CallScreeningService shield, and 0-second wipe.',
+    'Full GDPR & Google Play transparency matrix for SENEAR: incoming data from Senior, Caregiver, and Google Play, retention periods, operator access boundaries, and Android permission justifications.',
   url: 'https://gabba.bond/senear/operations',
   image: seo.image,
 });

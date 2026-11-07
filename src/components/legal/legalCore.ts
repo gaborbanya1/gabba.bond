@@ -23,6 +23,27 @@ export interface LegalSectionItem {
   text: string;
 }
 
+export interface LegalTableCell {
+  title?: string;
+  lines: string[];
+  badge?: string;
+}
+
+export type LegalTableCellValue = string | LegalTableCell;
+
+export interface LegalTable {
+  caption?: string;
+  headers: string[];
+  rows: LegalTableCellValue[][];
+}
+
+export interface LegalNeverCollectedBox {
+  badge?: string;
+  title: string;
+  subtitle?: string;
+  items: LegalSectionItem[];
+}
+
 export interface LegalSubsection {
   subtitle: string;
   badge?: string;
@@ -34,10 +55,13 @@ export interface LegalSection {
   id: string;
   number: string;
   title: string;
+  gdprBadge?: string;
   icon?: LegalIconKey;
   isWarningBox?: boolean;
   intro?: string;
   paragraphs?: string[];
+  table?: LegalTable;
+  neverCollectedBox?: LegalNeverCollectedBox;
   subsections?: LegalSubsection[];
   bullets?: LegalSectionItem[];
   footerNote?: string;
@@ -68,6 +92,7 @@ export interface LegalDocumentData {
   quickSummaryTitle: string;
   quickSummaryItems: LegalSummaryCard[];
   operatorSectionTitle: string;
+  operatorSectionGdprBadge?: string;
   sections: LegalSection[];
 }
 
@@ -251,6 +276,7 @@ export function buildCoreEuSecuritySection(
     return {
       id: 'eu-residency-security',
       number,
+      gdprBadge: 'GDPR 28., 32. & 44. cikk',
       icon: 'server',
       title: 'EU-s adattárolás, adatfeldolgozók és technikai biztonság (GDPR 28., 32., 44. cikk)',
       intro:
@@ -282,6 +308,7 @@ export function buildCoreEuSecuritySection(
     return {
       id: 'eu-residency-security',
       number,
+      gdprBadge: 'Art. 28, 32 & 44 DSGVO',
       icon: 'server',
       title: 'EU-Datenhaltung, Auftragsverarbeiter & Technische Sicherheit (Art. 28, 32, 44 DSGVO)',
       intro:
@@ -312,6 +339,7 @@ export function buildCoreEuSecuritySection(
   return {
     id: 'eu-residency-security',
     number,
+    gdprBadge: 'GDPR Art. 28, 32 & 44',
     icon: 'server',
     title: 'EU Data Residency, Sub-Processors & Technical Security (GDPR Art. 28, 32, 44)',
     intro:

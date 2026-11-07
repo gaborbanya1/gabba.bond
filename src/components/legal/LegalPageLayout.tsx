@@ -2,6 +2,7 @@ import { useEffect, type MouseEvent } from 'react';
 import {
   Activity,
   AlertTriangle,
+  Ban,
   Building2,
   CheckCircle2,
   ChevronRight,
@@ -30,6 +31,7 @@ import {
   LEGAL_UI_COPY,
   LegalIconKey,
   LegalLang,
+  LegalTableCellValue,
   ProductLegalBundle,
   resolveLegalLang,
 } from './legalCore';
@@ -42,6 +44,40 @@ export interface LegalPageLayoutProps {
 }
 
 const DOC_ORDER: LegalDocKind[] = ['privacy', 'terms', 'operations'];
+
+function renderTableCell(cell: LegalTableCellValue, isFirstCol: boolean) {
+  if (typeof cell === 'string') {
+    return (
+      <span className={isFirstCol ? 'font-bold text-[#1F2421] print:text-black' : 'text-[#3F3C38] print:text-black'}>
+        {cell}
+      </span>
+    );
+  }
+  return (
+    <div className="space-y-1.5">
+      {cell.badge && (
+        <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9] print:border-gray-400 print:text-black print:bg-transparent">
+          {cell.badge}
+        </span>
+      )}
+      {cell.title && (
+        <div className="font-bold text-[#1F2421] leading-snug print:text-black">{cell.title}</div>
+      )}
+      {cell.lines.length === 1 ? (
+        <p className="leading-relaxed text-[#3F3C38] print:text-black">{cell.lines[0]}</p>
+      ) : (
+        <ul className="space-y-1.5">
+          {cell.lines.map((line, idx) => (
+            <li key={idx} className="flex items-start gap-1.5 leading-relaxed text-[#3F3C38] print:text-black">
+              <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[#1B7A4E] shrink-0 mt-1.5 print:bg-black" />
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 function renderSectionIcon(icon: LegalIconKey | undefined) {
   switch (icon) {
@@ -96,6 +132,9 @@ export function LegalPageLayout({
       : bundle.scope.routes[activeDoc];
 
   const canonicalUrl = `https://gabba.bond${ROUTE_PATHS[activeRoute]}`;
+  const hasGdprBadges = Boolean(
+    doc.operatorSectionGdprBadge || doc.sections.some((sec) => Boolean(sec.gdprBadge))
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -380,27 +419,65 @@ export function LegalPageLayout({
           <div className="text-xs font-extrabold uppercase tracking-wider text-[#7A5F43]">
             {ui.tocTitle}
           </div>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href="#operator"
-              onClick={scrollToAnchor('operator')}
-              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FAF8F5] text-[#2C2C2C] border border-[#E8DFD4] hover:bg-[#F0EAE1] transition-colors ${FOCUS_RING}`}
-            >
-              <span className="font-bold text-[#7A5F43]">1.</span>
-              <span>{operator.operatorLabel}</span>
-            </a>
-            {doc.sections.map((sec) => (
+          {hasGdprBadges ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
               <a
-                key={sec.id}
-                href={`#${sec.id}`}
-                onClick={scrollToAnchor(sec.id)}
+                href="#operator"
+                onClick={scrollToAnchor('operator')}
+                className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 px-3.5 py-2.5 rounded-xl text-xs bg-[#FAF8F5] text-[#1F2421] border border-[#E8DFD4] hover:bg-[#F0EAE1] transition-colors ${FOCUS_RING}`}
+              >
+                <span className="font-semibold leading-snug">
+                  <span className="font-extrabold text-[#7A5F43] mr-1">1.</span>
+                  {doc.operatorSectionTitle.replace(/^1\.\s*/, '')}
+                </span>
+                {doc.operatorSectionGdprBadge && (
+                  <span className="self-start sm:self-center shrink-0 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9]">
+                    {doc.operatorSectionGdprBadge}
+                  </span>
+                )}
+              </a>
+              {doc.sections.map((sec) => (
+                <a
+                  key={sec.id}
+                  href={`#${sec.id}`}
+                  onClick={scrollToAnchor(sec.id)}
+                  className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 px-3.5 py-2.5 rounded-xl text-xs bg-[#FAF8F5] text-[#1F2421] border border-[#E8DFD4] hover:bg-[#F0EAE1] transition-colors ${FOCUS_RING}`}
+                >
+                  <span className="font-semibold leading-snug">
+                    <span className="font-extrabold text-[#7A5F43] mr-1">{sec.number}.</span>
+                    {sec.title}
+                  </span>
+                  {sec.gdprBadge && (
+                    <span className="self-start sm:self-center shrink-0 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9]">
+                      {sec.gdprBadge}
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              <a
+                href="#operator"
+                onClick={scrollToAnchor('operator')}
                 className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FAF8F5] text-[#2C2C2C] border border-[#E8DFD4] hover:bg-[#F0EAE1] transition-colors ${FOCUS_RING}`}
               >
-                <span className="font-bold text-[#7A5F43]">{sec.number}.</span>
-                <span>{sec.title.split('(')[0].trim()}</span>
+                <span className="font-bold text-[#7A5F43]">1.</span>
+                <span>{operator.operatorLabel}</span>
               </a>
-            ))}
-          </div>
+              {doc.sections.map((sec) => (
+                <a
+                  key={sec.id}
+                  href={`#${sec.id}`}
+                  onClick={scrollToAnchor(sec.id)}
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FAF8F5] text-[#2C2C2C] border border-[#E8DFD4] hover:bg-[#F0EAE1] transition-colors ${FOCUS_RING}`}
+                >
+                  <span className="font-bold text-[#7A5F43]">{sec.number}.</span>
+                  <span>{sec.title.split('(')[0].trim()}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </nav>
 
         {/* Section 1: Operator & Impressum Card (No tax number) */}
@@ -408,14 +485,21 @@ export function LegalPageLayout({
           id="operator"
           className="scroll-mt-40 bg-white rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5 print:border-gray-300 print:shadow-none print:p-4 print:break-inside-avoid"
         >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#F5F0EB] text-[#7A5F43] flex items-center justify-center font-bold shrink-0 print:hidden">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-[#F5F0EB] text-[#7A5F43] flex items-center justify-center font-bold shrink-0 mt-0.5 print:hidden">
                 <Building2 aria-hidden="true" className="w-5 h-5" />
               </div>
-              <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#1F2421]">
-                {doc.operatorSectionTitle}
-              </h2>
+              <div className="space-y-1.5">
+                {doc.operatorSectionGdprBadge && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9] print:border-gray-400 print:text-black print:bg-transparent">
+                    {doc.operatorSectionGdprBadge}
+                  </span>
+                )}
+                <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#1F2421]">
+                  {doc.operatorSectionTitle}
+                </h2>
+              </div>
             </div>
             <a
               href="#operator"
@@ -488,8 +572,8 @@ export function LegalPageLayout({
               id={sec.id}
               className={
                 sec.isWarningBox
-                  ? 'scroll-mt-40 bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 border-2 border-amber-400/90 shadow-xs space-y-5 print:bg-white print:border-black print:shadow-none print:p-4 print:break-inside-avoid'
-                  : 'scroll-mt-40 bg-white rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5 print:border-gray-300 print:shadow-none print:p-4 print:break-inside-avoid'
+                  ? `scroll-mt-40 bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 border-2 border-amber-400/90 shadow-xs space-y-5 print:bg-white print:border-black print:shadow-none print:p-4 ${sec.table ? '' : 'print:break-inside-avoid'}`
+                  : `scroll-mt-40 bg-white rounded-3xl p-6 sm:p-8 border border-[#E8DFD4] shadow-2xs space-y-5 print:border-gray-300 print:shadow-none print:p-4 ${sec.table ? '' : 'print:break-inside-avoid'}`
               }
             >
               <div className="flex items-start justify-between gap-3">
@@ -504,6 +588,11 @@ export function LegalPageLayout({
                     {renderSectionIcon(sec.icon)}
                   </div>
                   <div className="space-y-1.5">
+                    {sec.gdprBadge && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9] print:border-gray-400 print:text-black print:bg-transparent">
+                        {sec.gdprBadge}
+                      </span>
+                    )}
                     <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#1F2421]">
                       {sec.number}. {sec.title}
                     </h2>
@@ -532,6 +621,92 @@ export function LegalPageLayout({
                       {p}
                     </p>
                   ))}
+                </div>
+              )}
+
+              {sec.table && (
+                <div
+                  role="region"
+                  aria-label={sec.table.caption || sec.title}
+                  tabIndex={0}
+                  className={`overflow-x-auto rounded-2xl border border-[#DFD2BE] shadow-2xs bg-white print:overflow-visible print:border-gray-400 print:shadow-none ${FOCUS_RING}`}
+                >
+                  <table className="w-full min-w-[760px] border-collapse text-left text-xs sm:text-[13px] print:min-w-0 print:text-[11px]">
+                    {sec.table.caption && (
+                      <caption className="sr-only">{sec.table.caption}</caption>
+                    )}
+                    <thead>
+                      <tr className="bg-[#1F2421] text-white print:bg-gray-100 print:text-black">
+                        {sec.table.headers.map((header, hIdx) => (
+                          <th
+                            key={hIdx}
+                            scope="col"
+                            className="px-4 py-3.5 font-bold tracking-wide border-b border-[#373D39] first:w-[19%] last:w-[17%] print:border-gray-400 print:px-2.5 print:py-2"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E8DFD4] print:divide-gray-300">
+                      {sec.table.rows.map((row, rIdx) => (
+                        <tr
+                          key={rIdx}
+                          className="even:bg-[#FAF8F5] odd:bg-white hover:bg-[#F4EFE7]/60 transition-colors print:bg-white print:break-inside-avoid"
+                        >
+                          {row.map((cell, cIdx) => (
+                            <td
+                              key={cIdx}
+                              className={`px-4 py-3.5 align-top border-r last:border-r-0 border-[#EFE9DF] print:border-gray-300 print:px-2.5 print:py-2 ${
+                                cIdx === 0 ? 'bg-[#FAF6F0]/75 print:bg-white' : ''
+                              }`}
+                            >
+                              {renderTableCell(cell, cIdx === 0)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {sec.neverCollectedBox && (
+                <div className="rounded-2xl bg-gradient-to-br from-[#F2FAF5] to-[#FAF8F5] border-2 border-[#B7DFC9] p-5 sm:p-6 space-y-4 print:bg-white print:border-gray-400 print:p-4 print:break-inside-avoid">
+                  <div className="space-y-1.5">
+                    {sec.neverCollectedBox.badge && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#14593A] text-white print:bg-transparent print:text-black print:border print:border-black">
+                        <Ban aria-hidden="true" className="w-3 h-3 shrink-0" />
+                        <span>{sec.neverCollectedBox.badge}</span>
+                      </span>
+                    )}
+                    <h3 className="font-heading text-base sm:text-lg font-extrabold text-[#1F2421]">
+                      {sec.neverCollectedBox.title}
+                    </h3>
+                    {sec.neverCollectedBox.subtitle && (
+                      <p className="text-xs sm:text-sm text-[#4A4743] leading-relaxed print:text-black">
+                        {sec.neverCollectedBox.subtitle}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {sec.neverCollectedBox.items.map((item, nIdx) => (
+                      <div
+                        key={nIdx}
+                        className="rounded-xl bg-white p-3.5 border border-[#CDE6D8] space-y-1 shadow-2xs print:border-gray-300 print:shadow-none"
+                      >
+                        {item.label && (
+                          <div className="flex items-start gap-2 font-bold text-xs sm:text-sm text-[#14593A] print:text-black">
+                            <Ban aria-hidden="true" className="w-4 h-4 text-[#1B7A4E] shrink-0 mt-0.5 print:hidden" />
+                            <span>{item.label}</span>
+                          </div>
+                        )}
+                        <p className="text-xs text-[#4A4743] leading-relaxed print:text-black">
+                          {item.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
