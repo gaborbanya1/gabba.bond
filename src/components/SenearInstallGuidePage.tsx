@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ArrowLeft, Play } from 'lucide-react';
+import { ArrowLeft, Globe2, Play, Users } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { SENEAR_FACEBOOK_GROUPS, SENEAR_FACEBOOK_PAGES } from './senear/senearContent';
 
 interface SenearInstallGuidePageProps {
   onBackToHome: () => void;
@@ -555,7 +556,7 @@ export function SenearInstallGuidePage({
       <div className="max-w-7xl w-full mx-auto px-4 pt-5 pb-8 lg:py-6 flex-1 flex flex-col min-h-0 gap-5">
         {/* Clean Simplified Header (Fixed on Desktop) */}
         <header className="shrink-0 space-y-2">
-          <div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <button
               type="button"
               onClick={onBackToProduct}
@@ -564,6 +565,40 @@ export function SenearInstallGuidePage({
               <ArrowLeft className="w-4 h-4" />
               <span>{c.backToSenearBtn}</span>
             </button>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href={SENEAR_FACEBOOK_PAGES[lang]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#D8CBB8] bg-white px-3.5 py-1.5 text-xs font-bold text-[#2C2C2C] hover:border-[#8C7355] hover:bg-[#FAF7F2] transition-colors"
+              >
+                <Globe2 className="w-3.5 h-3.5 shrink-0 text-[#8C7355]" />
+                <span>
+                  {lang === 'hu'
+                    ? 'Hivatalos Facebook-oldal'
+                    : lang === 'de'
+                    ? 'Offizielle Facebook-Seite'
+                    : 'Official Facebook Page'}
+                </span>
+              </a>
+
+              <a
+                href={SENEAR_FACEBOOK_GROUPS[lang]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#529172]/60 bg-[#F1F8F3] px-3.5 py-1.5 text-xs font-bold text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#E5F3EA] transition-colors"
+              >
+                <Users className="w-3.5 h-3.5 shrink-0 text-[#1B7A4E]" />
+                <span>
+                  {lang === 'hu'
+                    ? 'Kérdésed van? SENEAR Fórum'
+                    : lang === 'de'
+                    ? 'Fragen? SENEAR Community'
+                    : 'Need help? SENEAR Community'}
+                </span>
+              </a>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -662,6 +697,56 @@ export function SenearInstallGuidePage({
                 </div>
               );
             })}
+
+            {/* Community & Official Facebook Page Help Card at the bottom of the step list */}
+            <div className="rounded-2xl p-5 bg-[#FAF7F2] border border-[#E8DFD4] space-y-3">
+              <p className="font-heading text-sm font-bold text-[#1F2421]">
+                {lang === 'hu'
+                  ? 'Elakadtál valamelyik lépésnél, vagy követnéd az újdonságokat?'
+                  : lang === 'de'
+                  ? 'Fragen zu einem Schritt oder Interesse an praktischen Tipps?'
+                  : 'Stuck on one of the steps, or looking for practical tips?'}
+              </p>
+              <p className="text-xs sm:text-sm text-[#3F3C38] leading-relaxed">
+                {lang === 'hu'
+                  ? 'Kérdezz bátran a zárt magyar SENEAR Fórumban (telefon típussal együtt segítünk), vagy kövesd a hivatalos Facebook-oldalunkat!'
+                  : lang === 'de'
+                  ? 'Schreiben Sie Ihr Handy-Modell in unsere geschlossene Facebook-Community – oder folgen Sie unserer offiziellen Facebook-Seite!'
+                  : 'Share your phone model in our closed SENEAR Facebook Community for fast help, or follow our official Facebook Page!'}
+              </p>
+              <div className="space-y-2 pt-0.5">
+                <a
+                  href={SENEAR_FACEBOOK_GROUPS[lang]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-[#1B7A4E] text-white hover:bg-[#145E3B] transition-colors inline-flex items-center justify-center gap-2"
+                >
+                  <Users className="w-3.5 h-3.5 shrink-0" />
+                  <span>
+                    {lang === 'hu'
+                      ? 'Csatlakozás a zárt SENEAR Fórumhoz'
+                      : lang === 'de'
+                      ? 'Zur geschlossenen SENEAR Community'
+                      : 'Join Closed SENEAR Community'}
+                  </span>
+                </a>
+                <a
+                  href={SENEAR_FACEBOOK_PAGES[lang]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold border border-[#529172] bg-white text-[#14593A] hover:border-[#1B7A4E] hover:bg-[#F1F8F3] transition-colors inline-flex items-center justify-center gap-2"
+                >
+                  <Globe2 className="w-3.5 h-3.5 shrink-0 text-[#1B7A4E]" />
+                  <span>
+                    {lang === 'hu'
+                      ? 'Hivatalos Facebook-oldal (@senear.hu)'
+                      : lang === 'de'
+                      ? 'Offizielle Facebook-Seite (@senear.de)'
+                      : 'Official Facebook Page (@senear.official)'}
+                  </span>
+                </a>
+              </div>
+            </div>
           </div>
         </section>
       </div>

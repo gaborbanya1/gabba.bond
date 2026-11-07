@@ -35,6 +35,8 @@ import {
   IPHONE_WEB_APP_URL,
   PLAY_STORE_URL,
   SENEAR_CONTENT,
+  SENEAR_FACEBOOK_GROUPS,
+  SENEAR_FACEBOOK_PAGES,
   type SenearContent,
   type SenearLang,
 } from './senearContent';
@@ -187,8 +189,8 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
       <Pricing c={c} />
       <TrustBar c={c} />
       {TESTIMONIALS.length > 0 && <Testimonials items={TESTIMONIALS} />}
-      <Faq c={c} />
-      <FinalCta c={c} onNavigate={onNavigate} sectionRef={finalCtaRef} />
+      <Faq c={c} lang={lang} />
+      <FinalCta c={c} lang={lang} onNavigate={onNavigate} sectionRef={finalCtaRef} />
 
       {/* Mobile sticky download button */}
       <div
@@ -1553,8 +1555,10 @@ function Testimonials({ items }: { items: Testimonial[] }) {
    7. FAQ (first item open by default)
    ===================================================================== */
 
-function Faq({ c }: { c: SenearContent }) {
+function Faq({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const fbGroupUrl = SENEAR_FACEBOOK_GROUPS[lang];
+  const fbPageUrl = SENEAR_FACEBOOK_PAGES[lang];
 
   useEffect(() => {
     const openIfHashMatches = () => {
@@ -1616,6 +1620,38 @@ function Faq({ c }: { c: SenearContent }) {
             );
           })}
         </div>
+
+        {/* Official Facebook Community / Forum & Page Callout */}
+        <div className="mt-10 rounded-3xl bg-[#FAF7F2] p-6 sm:p-8 ring-1 ring-[#E8DFD4] flex flex-col gap-5">
+          <div className="space-y-1.5 max-w-2xl">
+            <h3 className="font-heading text-lg sm:text-xl font-bold text-[#1F2421]">
+              {c.faq.communityTitle}
+            </h3>
+            <p className="text-[15px] sm:text-base leading-relaxed text-[#3F3C38]">
+              {c.faq.communityText}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={fbGroupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex min-h-12 items-center justify-center gap-2.5 rounded-2xl border-2 border-[#529172] bg-white px-5 py-2.5 text-[15px] font-bold text-[#14593A] transition-colors hover:border-[#1B7A4E] hover:bg-[#F1F8F3] ${FOCUS_RING}`}
+            >
+              <Users className="h-4.5 w-4.5 shrink-0 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
+              <span>{c.faq.communityBtn}</span>
+            </a>
+            <a
+              href={fbPageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex min-h-12 items-center justify-center gap-2.5 rounded-2xl border border-[#8C7355] bg-white px-5 py-2.5 text-[15px] font-bold text-[#2C2C2C] transition-colors hover:border-[#2C2C2C] hover:bg-[#F5F0EB] ${FOCUS_RING}`}
+            >
+              <Globe2 className="h-4.5 w-4.5 shrink-0 text-[#7A5A2E]" aria-hidden="true" focusable="false" />
+              <span>{c.faq.pageBtn}</span>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -1627,13 +1663,17 @@ function Faq({ c }: { c: SenearContent }) {
 
 function FinalCta({
   c,
+  lang,
   onNavigate,
   sectionRef,
 }: {
   c: SenearContent;
+  lang: SenearLang;
   onNavigate: (route: AppRoute) => void;
   sectionRef: React.Ref<HTMLElement>;
 }) {
+  const fbGroupUrl = SENEAR_FACEBOOK_GROUPS[lang];
+  const fbPageUrl = SENEAR_FACEBOOK_PAGES[lang];
   return (
     <section ref={sectionRef} className="px-4 pb-20 sm:px-6 lg:px-8" aria-labelledby="final-title">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-[#1F2421] px-6 py-14 text-center text-white sm:px-12 sm:py-20">
@@ -1660,14 +1700,34 @@ function FinalCta({
           </div>
           <div className="flex flex-col items-center gap-2 pt-2">
             <SendToSelf c={c} tone="dark" />
-            <a
-              href="/senear/setup"
-              onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
-            >
-              <BookOpen className="h-4 w-4" aria-hidden="true" focusable="false" />
-              {c.finalCta.guideLink}
-            </a>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+              <a
+                href="/senear/setup"
+                onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }}
+                className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
+              >
+                <BookOpen className="h-4 w-4" aria-hidden="true" focusable="false" />
+                {c.finalCta.guideLink}
+              </a>
+              <a
+                href={fbGroupUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
+              >
+                <Users className="h-4 w-4" aria-hidden="true" focusable="false" />
+                {c.finalCta.communityLink}
+              </a>
+              <a
+                href={fbPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
+              >
+                <Globe2 className="h-4 w-4" aria-hidden="true" focusable="false" />
+                {c.finalCta.pageLink}
+              </a>
+            </div>
           </div>
         </div>
       </div>

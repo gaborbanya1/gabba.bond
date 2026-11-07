@@ -1,55 +1,109 @@
 import { useState, useEffect, useCallback, lazy, Suspense, type ReactNode } from 'react';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { Projects } from './components/Projects';
-import { Contact } from './components/Contact';
+import { StudioHubPage } from './components/StudioHubPage';
 import { Footer } from './components/Footer';
-import { ProjectDetailModal } from './components/ProjectDetailModal';
 import { SenearLandingPage } from './components/senear/SenearLandingPage';
-import { ProjectItem } from './types';
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
-import { AppRoute, ProductKey, ROUTE_PATHS, resolveRoute } from './routing';
+import {
+  AppRoute,
+  ROUTE_PATHS,
+  isLegalRoute,
+  legalDocOfRoute,
+  resolveRoute,
+} from './routing';
 
-// Route-level code splitting: these pages/modals are loaded only when needed,
-// which keeps the initial bundle of the landing pages small.
-const NogondSimulatorModal = lazy(() =>
-  import('./components/NogondSimulatorModal').then((m) => ({ default: m.NogondSimulatorModal }))
-);
+// Route-level code splitting keeps initial landing bundles lean.
 const SenearInstallGuidePage = lazy(() =>
   import('./components/SenearInstallGuidePage').then((m) => ({ default: m.SenearInstallGuidePage }))
 );
 const JunearSetupGuidePage = lazy(() =>
   import('./components/JunearSetupGuidePage').then((m) => ({ default: m.JunearSetupGuidePage }))
 );
-const ProductPage = lazy(() => import('./components/ProductPage').then((m) => ({ default: m.ProductPage })));
-const PrivacyPage = lazy(() => import('./components/PrivacyPage').then((m) => ({ default: m.PrivacyPage })));
-const LegalBriefPage = lazy(() => import('./components/LegalBriefPage').then((m) => ({ default: m.LegalBriefPage })));
+const ProductPage = lazy(() =>
+  import('./components/ProductPage').then((m) => ({ default: m.ProductPage }))
+);
+const SenearLegalPage = lazy(() =>
+  import('./components/legal/SenearLegalPage').then((m) => ({ default: m.SenearLegalPage }))
+);
+const LegalBriefPage = lazy(() =>
+  import('./components/LegalBriefPage').then((m) => ({ default: m.LegalBriefPage }))
+);
 
-/**
- * Supported URL paths:
- * - /senear/setup & /senear/install -> SenearInstallGuidePage
- * - /privacy & /senear/privacy      -> PrivacyPage
- */
 function Route({ element }: { path: string; element: ReactNode }) {
   return <>{element}</>;
 }
 
 const ROUTE_TITLES: Record<AppRoute, string> = {
-  home: 'gabba — Technology, Bonded.',
-  senear: 'SENEAR — gabba',
-  junear: 'JUNEAR — gabba',
-  'senear-setup': 'SENEAR Setup — gabba',
-  'junear-setup': 'JUNEAR Setup — gabba',
-  privacy: 'Privacy Policy (GDPR) — SENEAR · gabba',
-  'delete-account': 'Account & Data Deletion (GDPR) — SENEAR · gabba',
+  home: 'Gabba Bond — Accessible European Software & Product Studio',
+  senear: 'SENEAR — Gabba Bond',
+  junear: 'JUNEAR — Gabba Bond',
+  'senear-setup': 'SENEAR Setup Guide — Gabba Bond',
+  'junear-setup': 'JUNEAR Setup Guide — Gabba Bond',
+  'senear-privacy': 'GDPR Privacy Notice — SENEAR · Gabba Bond',
+  'senear-terms': 'Terms of Service (ÁSZF / AGB) — SENEAR · Gabba Bond',
+  'senear-operations': 'Operational & Transparency Policy — SENEAR · Gabba Bond',
+  'delete-account': 'Account & Data Deletion (GDPR Art. 17) — SENEAR · Gabba Bond',
   'legal-brief': 'Ügyvédi Egyeztetési Kivonat — gabba.bond',
 };
+
+const ROUTE_ALIAS_HASHES = new Set([
+  '#privacy',
+  '#privacy-policy',
+  '#gdpr',
+  '#adatvedelem',
+  '#datenschutz',
+  '#terms',
+  '#tos',
+  '#terms-of-service',
+  '#aszf',
+  '#agb',
+  '#operations',
+  '#operational',
+  '#operational-policy',
+  '#mukodes',
+  '#mukodesi-szabalyzat',
+  '#delete-account',
+  '#data-deletion',
+  '#account-deletion',
+  '#install',
+  '#install-guide',
+  '#installation',
+  '#senear-setup',
+  '#junear-setup',
+  '#senear',
+  '#junear',
+]);
 
 function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+}
+
+function getPreservedLangQuery(): string {
+  if (typeof window === 'undefined') return '';
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('lang')?.toLowerCase().split(/[-_]/)[0];
+  if (raw === 'hu' || raw === 'de' || raw === 'en') {
+    return `?lang=${raw}`;
+  }
+  return '';
+}
+
+function normalizeLocationForRoute(targetRoute: AppRoute): string | null {
+  const canonical = ROUTE_PATHS[targetRoute];
+  const search = getPreservedLangQuery();
+  const rawHash = window.location.hash;
+  const lowerHash = rawHash.toLowerCase();
+  const keepSectionHash = Boolean(rawHash && rawHash.length > 1 && !ROUTE_ALIAS_HASHES.has(lowerHash));
+  const nextUrl = `${canonical}${search}${keepSectionHash ? rawHash : ''}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  if (currentUrl !== nextUrl) {
+    window.history.replaceState(null, '', nextUrl);
+  }
+  return keepSectionHash ? rawHash.slice(1) : null;
 }
 
 export function SkipToMainLink() {
@@ -81,29 +135,30 @@ export function SkipToMainLink() {
 
 export default function App() {
   const [route, setRoute] = useState<AppRoute>(() => resolveRoute());
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [isNogondDemoOpen, setIsNogondDemoOpen] = useState(false);
 
-  // Normalize legacy URLs (/install, #install-guide, ?lang=...) to the canonical path once.
+  // Normalize legacy paths (/privacy, /install) and hash/query fallbacks (/senear#terms, ?doc=privacy)
+  // while preserving ?lang=hu|de|en and valid in-page #section anchors.
   useEffect(() => {
-    const canonical = ROUTE_PATHS[route];
-    const params = new URLSearchParams(window.location.search);
-    params.delete('lang');
-    const qs = params.toString();
-    const search = qs ? `?${qs}` : '';
-    const hash = window.location.hash;
-    const keepHash = route === 'home' && (hash === '#projects' || hash === '#contact');
-    if (window.location.pathname !== canonical || window.location.search !== search || (hash && !keepHash)) {
-      window.history.replaceState(null, '', canonical + search + (keepHash ? hash : ''));
-    }
-    if (keepHash) {
-      setTimeout(() => scrollToId(hash.slice(1)), 120);
+    const sectionAnchor = normalizeLocationForRoute(route);
+    if (sectionAnchor) {
+      setTimeout(() => scrollToId(sectionAnchor), 120);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const onPop = () => setRoute(resolveRoute());
+    const onPop = () => {
+      const next = resolveRoute();
+      setRoute((prev) => {
+        const sectionAnchor = normalizeLocationForRoute(next);
+        if (prev !== next && !sectionAnchor) {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        } else if (sectionAnchor) {
+          setTimeout(() => scrollToId(sectionAnchor), 80);
+        }
+        return next;
+      });
+    };
     window.addEventListener('popstate', onPop);
     window.addEventListener('hashchange', onPop);
     return () => {
@@ -113,16 +168,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // The SENEAR landing page manages its own localized title.
+    // The SENEAR landing page manages its own localized document title.
     if (route === 'senear') return;
     document.title = ROUTE_TITLES[route];
   }, [route]);
 
   const navigate = useCallback((next: AppRoute) => {
     const path = ROUTE_PATHS[next];
-    const search = window.location.search || '';
-    if (window.location.pathname !== path || window.location.hash) {
-      window.history.pushState(null, '', path + search);
+    const search = getPreservedLangQuery();
+    const targetUrl = `${path}${search}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (currentUrl !== targetUrl) {
+      window.history.pushState(null, '', targetUrl);
     }
     setRoute(next);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -131,20 +188,21 @@ export default function App() {
   const goHomeAndScroll = (id: string) => {
     if (route !== 'home') {
       navigate('home');
-      setTimeout(() => scrollToId(id), 80);
+      setTimeout(() => scrollToId(id), 90);
     } else {
       scrollToId(id);
     }
   };
 
-  const scrollToContact = () => goHomeAndScroll('contact');
-  const scrollToProjects = () => goHomeAndScroll('projects');
-  const openProduct = (product: ProductKey) => navigate(product);
+  const scrollToContact = () => goHomeAndScroll('impressum');
+  const scrollToProjects = () => goHomeAndScroll('portfolio');
+
+  const activeLegalDoc = legalDocOfRoute(route);
 
   return (
     <LanguageProvider>
       <div
-        className={`min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans selection:bg-[#C5A880]/30 selection:text-[#1F2421] ${
+        className={`min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans selection:bg-[#C5A880]/30 selection:text-[#1F2421] print:bg-white ${
           route === 'senear-setup' ? 'lg:h-screen lg:overflow-hidden' : ''
         }`}
       >
@@ -163,23 +221,15 @@ export default function App() {
           className={`flex-1 focus:outline-none ${route === 'senear-setup' ? 'lg:min-h-0 lg:overflow-hidden' : ''}`}
         >
           <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
-          {route === 'home' && (
-            <>
-              <Hero onViewProjects={scrollToProjects} onGetInTouch={scrollToContact} onOpenProduct={openProduct} />
-              <Projects onOpenProduct={openProduct} />
-              <Contact />
-            </>
-          )}
+            {route === 'home' && <StudioHubPage onNavigate={navigate} />}
 
-          {route === 'senear' && <SenearLandingPage onNavigate={navigate} />}
+            {route === 'senear' && <SenearLandingPage onNavigate={navigate} />}
 
-          {route === 'junear' && (
-            <ProductPage key={route} product={route} onNavigate={navigate} onContactClick={scrollToContact} />
-          )}
+            {route === 'junear' && (
+              <ProductPage key={route} product={route} onNavigate={navigate} onContactClick={scrollToContact} />
+            )}
 
-          {route === 'senear-setup' && (
-            <>
-              {/* Supports both /senear/setup (Android app) and /senear/install */}
+            {route === 'senear-setup' && (
               <Route
                 path="/senear/setup"
                 element={
@@ -190,49 +240,32 @@ export default function App() {
                   />
                 }
               />
-            </>
-          )}
+            )}
 
-          {route === 'junear-setup' && <JunearSetupGuidePage onNavigate={navigate} onContactClick={scrollToContact} />}
+            {route === 'junear-setup' && (
+              <JunearSetupGuidePage onNavigate={navigate} onContactClick={scrollToContact} />
+            )}
 
-          {(route === 'privacy' || route === 'delete-account') && (
-            <>
-              {/* Supports /privacy, /senear/privacy, /delete-account, and /data-deletion */}
+            {isLegalRoute(route) && activeLegalDoc && (
               <Route
-                path={route === 'delete-account' ? '/delete-account' : '/privacy'}
+                path={ROUTE_PATHS[route]}
                 element={
-                  <PrivacyPage
-                    onBackToHome={() => navigate('home')}
-                    onBackToSenear={() => navigate('senear')}
+                  <SenearLegalPage
+                    activeDoc={activeLegalDoc}
                     focusDeletion={route === 'delete-account'}
+                    onNavigate={navigate}
                   />
                 }
               />
-            </>
-          )}
+            )}
 
-          {route === 'legal-brief' && <LegalBriefPage />}
+            {route === 'legal-brief' && <LegalBriefPage />}
           </Suspense>
         </main>
 
-        <div className={route === 'senear-setup' ? 'lg:hidden' : route === 'legal-brief' ? 'print:hidden' : ''}>
-          <Footer onNavigate={navigate} />
+        <div className={route === 'senear-setup' ? 'lg:hidden' : ''}>
+          <Footer onNavigate={navigate} currentRoute={route} />
         </div>
-
-        {isNogondDemoOpen && (
-          <Suspense fallback={null}>
-            <NogondSimulatorModal isOpen={isNogondDemoOpen} onClose={() => setIsNogondDemoOpen(false)} />
-          </Suspense>
-        )}
-
-        <ProjectDetailModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-          onOpenDemo={() => {
-            setSelectedProject(null);
-            setIsNogondDemoOpen(true);
-          }}
-        />
       </div>
     </LanguageProvider>
   );

@@ -1,13 +1,17 @@
 /**
- * Post-build prerender for the SENEAR pages.
+ * Post-build prerender for Gabba Bond & SENEAR Umbrella routes (default language: English 'en').
  *
  *   npm run build  =  vite build
  *                   + vite build --ssr src/entry-server.tsx --outDir dist-ssr
  *                   + node scripts/prerender-meta.mjs   (this file)
  *
  * Output (served by Firebase Hosting with "trailingSlash": false):
- *   dist/senear/index.html        -> /senear        full SSR HTML + HU meta + OG + JSON-LD
- *   dist/senear/setup/index.html  -> /senear/setup  HU meta + OG (content rendered client-side)
+ *   dist/senear/index.html             -> /senear             full SSR HTML + EN meta + OG + JSON-LD
+ *   dist/senear/setup/index.html       -> /senear/setup       EN meta + OG
+ *   dist/senear/privacy/index.html     -> /senear/privacy     GDPR Privacy Notice meta + OG
+ *   dist/senear/terms/index.html       -> /senear/terms       Terms of Service (ÁSZF / AGB / ToS) meta + OG
+ *   dist/senear/operations/index.html  -> /senear/operations  Operational & Transparency Policy meta + OG
+ *   dist/delete-account/index.html     -> /delete-account     Google Play Account & Data Deletion meta + OG
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -27,8 +31,8 @@ function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, 
     `<meta property="og:image" content="${image}" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
-    `<meta property="og:locale" content="hu_HU" />`,
-    `<meta property="og:site_name" content="gabba · SENEAR" />`,
+    `<meta property="og:locale" content="en_US" />`,
+    `<meta property="og:site_name" content="Gabba Bond · SENEAR" />`,
     `<meta name="twitter:title" content="${esc(title)}" />`,
     `<meta name="twitter:description" content="${esc(description)}" />`,
     `<meta name="twitter:image" content="${image}" />`,
@@ -39,7 +43,7 @@ function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, 
     .join('\n    ');
 
   return baseHtml
-    .replace(/<html lang="[^"]*"/, '<html lang="hu"')
+    .replace(/<html lang="[^"]*"/, '<html lang="en"')
     .replace(/<title>.*?<\/title>/s, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${esc(description)}" />`)
     .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${esc(title)}" />`)
@@ -48,32 +52,68 @@ function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, 
     .replace('<div id="root"></div>', `<div id="root">${bodyHtml}</div>`);
 }
 
+function writeRouteHtml(relDir, meta) {
+  const outDir = path.join(distDir, ...relDir);
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(path.join(outDir, 'index.html'), buildHtml(meta), 'utf8');
+}
+
 const ssr = await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).href);
 const seo = ssr.senearSeo();
 const senearBody = ssr.renderSenearPage();
 
-// Clean previous outputs (older builds wrote senear.html or index files).
+// Clean previous outputs
 fs.rmSync(path.join(distDir, 'senear'), { recursive: true, force: true });
+fs.rmSync(path.join(distDir, 'delete-account'), { recursive: true, force: true });
 fs.rmSync(path.join(distDir, 'senear.html'), { force: true });
-fs.mkdirSync(path.join(distDir, 'senear', 'setup'), { recursive: true });
 
-fs.writeFileSync(
-  path.join(distDir, 'senear', 'index.html'),
-  buildHtml({ ...seo, preloadImage: seo.heroImage, bodyHtml: senearBody }),
-  'utf8'
-);
+writeRouteHtml(['senear'], {
+  ...seo,
+  preloadImage: seo.heroImage,
+  bodyHtml: senearBody,
+});
 
-fs.writeFileSync(
-  path.join(distDir, 'senear', 'setup', 'index.html'),
-  buildHtml({
-    title: 'SENEAR beállítási útmutató – lépésről lépésre, videóval',
-    description:
-      'Lépésről lépésre, videóval összekötött beállítási útmutató a SENEAR idősbarát Android telefonrendszerhez: az idős szülő és a családtag telefonja.',
-    url: 'https://gabba.bond/senear/setup',
-    image: seo.image,
-  }),
-  'utf8'
-);
+writeRouteHtml(['senear', 'setup'], {
+  title: 'SENEAR Setup Guide – Step-by-step with video',
+  description:
+    'Step-by-step, video-synced setup guide for the SENEAR senior-friendly Android phone system: setting up both the senior parent’s phone and the family caregiver’s phone.',
+  url: 'https://gabba.bond/senear/setup',
+  image: seo.image,
+});
+
+writeRouteHtml(['senear', 'privacy'], {
+  title: 'GDPR Privacy Notice (Art. 13 & 14) – SENEAR · Gabba Bond',
+  description:
+    'Official GDPR Privacy Notice for SENEAR (bond.gabba.senear): 100% EU data residency in europe-west1, bilateral consent, zero-storage Base64 photos, and one-tap Art. 17 erasure.',
+  url: 'https://gabba.bond/senear/privacy',
+  image: seo.image,
+});
+
+writeRouteHtml(['senear', 'terms'], {
+  title: 'Terms of Service (ÁSZF / AGB / ToS) – SENEAR · Gabba Bond',
+  description:
+    'Official Terms of Service (ÁSZF / AGB / ToS) for SENEAR by Gabba Bond Studio: Forever-Free Senior Launcher, Google Play Family subscriptions, 14-day withdrawal right, and EU MDR disclaimer.',
+  url: 'https://gabba.bond/senear/terms',
+  image: seo.image,
+});
+
+writeRouteHtml(['senear', 'operations'], {
+  title: 'Operational & Transparency Policy – SENEAR · Gabba Bond',
+  description:
+    'Technical and operational transparency policy for the SENEAR ecosystem: dual-role Kiosk architecture, bilateral 6-digit pairing, local CallScreeningService shield, and 0-second wipe.',
+  url: 'https://gabba.bond/senear/operations',
+  image: seo.image,
+});
+
+writeRouteHtml(['delete-account'], {
+  title: 'Account & Personal Data Deletion (GDPR Art. 17) – SENEAR · Gabba Bond',
+  description:
+    'Instructions for instant one-tap in-app deletion or 72-hour email deletion of SENEAR Caregiver and Senior accounts and cloud data.',
+  url: 'https://gabba.bond/delete-account',
+  image: seo.image,
+});
 
 fs.rmSync(ssrDir, { recursive: true, force: true });
-console.log(`Prerendered /senear (${Math.round(senearBody.length / 1024)} KB HTML) and /senear/setup`);
+console.log(
+  `Prerendered /senear (${Math.round(senearBody.length / 1024)} KB HTML), /senear/setup, /senear/privacy, /senear/terms, /senear/operations, and /delete-account`
+);

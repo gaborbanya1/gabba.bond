@@ -9,7 +9,31 @@ export type SenearLang = 'hu' | 'en' | 'de';
 export const SENEAR_PACKAGE_ID = 'bond.gabba.senear';
 export const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${SENEAR_PACKAGE_ID}`;
 export const SENEAR_PAGE_URL = 'https://gabba.bond/senear';
-export const SENEAR_OG_IMAGE = 'https://gabba.bond/screenshots/senear/senear-og-hu.jpg';
+export const SENEAR_OG_IMAGE = 'https://gabba.bond/screenshots/senear/senear-og.png';
+
+export const SENEAR_FACEBOOK_GROUPS: Record<SenearLang, string> = {
+  hu: 'https://www.facebook.com/groups/1709059460555909',
+  de: 'https://www.facebook.com/groups/1804196847451569',
+  en: 'https://www.facebook.com/groups/1141851401636344',
+};
+
+export function getSenearFacebookGroupUrl(lang?: string): string {
+  if (lang === 'hu') return SENEAR_FACEBOOK_GROUPS.hu;
+  if (lang === 'de') return SENEAR_FACEBOOK_GROUPS.de;
+  return SENEAR_FACEBOOK_GROUPS.en;
+}
+
+export const SENEAR_FACEBOOK_PAGES: Record<SenearLang, string> = {
+  hu: 'https://www.facebook.com/senear.hu',
+  de: 'https://www.facebook.com/senear.de',
+  en: 'https://www.facebook.com/senear.official',
+};
+
+export function getSenearFacebookPageUrl(lang?: string): string {
+  if (lang === 'hu') return SENEAR_FACEBOOK_PAGES.hu;
+  if (lang === 'de') return SENEAR_FACEBOOK_PAGES.de;
+  return SENEAR_FACEBOOK_PAGES.en;
+}
 
 /**
  * Configurable destination for the Hero subline-2 iPhone web-version link.
@@ -178,8 +202,23 @@ export interface SenearContent {
     trust: string;
   };
   trustBar: { label: string; badges: string[] };
-  faq: { eyebrow: string; title: string; items: { q: string; a: string }[] };
-  finalCta: { title: string; text: string; trialNote: string; guideLink: string };
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: { q: string; a: string }[];
+    communityTitle: string;
+    communityText: string;
+    communityBtn: string;
+    pageBtn: string;
+  };
+  finalCta: {
+    title: string;
+    text: string;
+    trialNote: string;
+    guideLink: string;
+    communityLink: string;
+    pageLink: string;
+  };
   sticky: string;
 }
 
@@ -529,12 +568,19 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'Nem. Bármilyen meglévő Android 8.0+ telefon megfelel, gyári visszaállítás sem kell.',
         },
       ],
+      communityTitle: 'Maradt még kérdésed, vagy elakadtál a beállításban?',
+      communityText:
+        'Csatlakozz a zárt magyar SENEAR Facebook-közösséghez, vagy kövesd a hivatalos Facebook-oldalunkat friss tippekért és hírekért.',
+      communityBtn: 'SENEAR Közösség & Fórum',
+      pageBtn: 'Hivatalos Facebook-oldal',
     },
     finalCta: {
       title: 'Hogy te is nyugodtan aludhass.',
       text: 'Telepítsd ma a szüleid telefonjára. Az alap mindig ingyenes.',
       trialNote: '14 nap ingyenes próba a családi funkciókhoz',
       guideLink: 'Lépésről lépésre útmutató',
+      communityLink: 'SENEAR Közösség (Facebook)',
+      pageLink: 'Hivatalos Facebook-oldal',
     },
     sticky: 'Letöltés – Ingyenes',
   },
@@ -884,12 +930,19 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'No. Any existing Android 8.0+ phone works, no factory reset needed.',
         },
       ],
+      communityTitle: 'Still have a question or need help with setup?',
+      communityText:
+        'Join our closed SENEAR Facebook Community for direct support, or follow our official Facebook Page for practical tips and updates.',
+      communityBtn: 'SENEAR Community & Forum',
+      pageBtn: 'Official Facebook Page',
     },
     finalCta: {
       title: 'So you can sleep peacefully too.',
       text: 'Install it on your parent’s phone today. The basics are always free.',
       trialNote: '14-day free trial for the family features',
       guideLink: 'Step-by-step guide',
+      communityLink: 'SENEAR Community (Facebook)',
+      pageLink: 'Official Facebook Page',
     },
     sticky: 'Download – Free',
   },
@@ -1239,12 +1292,19 @@ export const SENEAR_CONTENT: Record<SenearLang, SenearContent> = {
           a: 'Nein. Jedes vorhandene Android-8.0+-Handy reicht, ein Zurücksetzen auf Werkseinstellungen ist nicht nötig.',
         },
       ],
+      communityTitle: 'Noch Fragen oder Hilfe bei der Einrichtung gewünscht?',
+      communityText:
+        'Treten Sie unserer geschlossenen deutschsprachigen SENEAR Community bei oder folgen Sie unserer offiziellen Facebook-Seite für Tipps und Neuigkeiten.',
+      communityBtn: 'SENEAR Community & Forum',
+      pageBtn: 'Offizielle Facebook-Seite',
     },
     finalCta: {
       title: 'Damit auch Sie ruhig schlafen können.',
       text: 'Installieren Sie es noch heute auf dem Handy Ihrer Eltern. Die Grundfunktionen sind immer kostenlos.',
       trialNote: '14 Tage kostenlos testen für die Familienfunktionen',
       guideLink: 'Schritt-für-Schritt-Anleitung',
+      communityLink: 'SENEAR Community (Facebook)',
+      pageLink: 'Offizielle Facebook-Seite',
     },
     sticky: 'Laden – Kostenlos',
   },

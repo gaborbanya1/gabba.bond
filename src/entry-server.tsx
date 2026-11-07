@@ -1,7 +1,8 @@
 /**
  * Build-time prerender entry (vite build --ssr). Renders the SENEAR landing page to
- * static HTML so search engines and link previews (Facebook, Messenger, Viber…) see
- * the real content without running JavaScript. The browser bundle replaces it on load.
+ * static HTML in default English ('en') so search engines and link previews see
+ * the real content without running JavaScript. The browser bundle replaces it on load
+ * using the visitor's own browser language (with English default fallback).
  */
 import { renderToString } from 'react-dom/server';
 import { SkipToMainLink } from './App';
@@ -21,7 +22,7 @@ const noop = () => {};
 
 export function renderSenearPage(): string {
   return renderToString(
-    <LanguageProvider initialLanguage="hu">
+    <LanguageProvider initialLanguage="en">
       <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] flex flex-col font-sans">
         <SkipToMainLink />
         <Navbar onContactClick={noop} onExploreProjects={noop} onNavigate={noop} currentRoute="senear" />
@@ -34,16 +35,16 @@ export function renderSenearPage(): string {
   );
 }
 
-/** Hungarian SEO / share metadata + schema.org JSON-LD for /senear. */
+/** Default English SEO / share metadata + schema.org JSON-LD for /senear. */
 export function senearSeo() {
-  const c = SENEAR_CONTENT.hu;
+  const c = SENEAR_CONTENT.en;
   const softwareApplication = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'SENEAR',
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Android 8.0+',
-    inLanguage: 'hu',
+    inLanguage: 'en',
     description: c.meta.description,
     url: SENEAR_PAGE_URL,
     image: SENEAR_OG_IMAGE,
@@ -52,10 +53,10 @@ export function senearSeo() {
     identifier: SENEAR_PACKAGE_ID,
     publisher: { '@type': 'Organization', name: 'gabba', url: 'https://gabba.bond' },
     offers: [
-      { '@type': 'Offer', name: c.pricing.free.name, price: '0', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.monthly}`, price: '2490', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.yearly}`, price: '19900', priceCurrency: 'HUF' },
-      { '@type': 'Offer', name: c.pricing.lifetime.name, price: '59900', priceCurrency: 'HUF' },
+      { '@type': 'Offer', name: c.pricing.free.name, price: '0', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.monthly}`, price: '7.99', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: `${c.pricing.family.name} – ${c.pricing.yearly}`, price: '59.99', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: c.pricing.lifetime.name, price: '149.00', priceCurrency: 'EUR' },
     ],
   };
   const faqPage = {
@@ -72,7 +73,7 @@ export function senearSeo() {
     description: c.meta.description,
     url: SENEAR_PAGE_URL,
     image: SENEAR_OG_IMAGE,
-    heroImage: '/screenshots/senear/hero-hu.webp',
+    heroImage: '/screenshots/senear/hero-en.webp',
     jsonLd: [softwareApplication, faqPage],
   };
 }
