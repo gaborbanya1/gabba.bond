@@ -195,8 +195,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           'Az adattakarékosság elvével összhangban a SENEAR kizárólag a családi biztonsági ökoszisztéma működéséhez elengedhetetlen adatokat kezeli:',
         bullets: [
           {
-            label: 'A) Távoli gyorstárcsázó névjegyek és Zero-Storage Base64 fotók:',
-            text: 'Párosított módban a gyorstárcsázó nevek, telefonszámok és opcionális portréfotók szinkronizálódnak. Minden kontaktfotót az alkalmazás helyben a készüléken kicsinyít (300×300px) és titkosított Base64 szövegként tárol közvetlenül az EU-s adatbázisban (europe-west1) — a fotók SOHA nem kerülnek nyilvános képszerverre vagy CDN-re.',
+            label: 'A) Távoli gyorstárcsázó névjegyek és kliensoldali E2EE (Zero-Knowledge) Base64 fotók:',
+            text: 'Párosított módban a gyorstárcsázó nevek, telefonszámok, fehérlistás számok és a helyben 300×300 pixelre kicsinyített Base64 portréfotók kliensoldali végpontok közötti titkosítással (AES-256-GCM + ECDH P-256 családi kulcs) szinkronizálódnak az EU-s adatbázisban (europe-west1) — nyilvános képszerverre soha nem kerülnek, és az Üzemeltető számára technikailag sem hozzáférhetők.',
           },
           {
             label: 'B) Napi rutinok, emlékeztetők és visszaigazolások (Zéró egészségügyi profilalkotás):',
@@ -428,8 +428,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           'Gemäß dem Grundsatz der Datenminimierung verarbeitet SENEAR ausschließlich die für das Sicherheits-Ökosystem erforderlichen Datenkategorien:',
         bullets: [
           {
-            label: 'A) Ferngesteuerte Kurzwahlkontakte & „Zero-Storage Base64“-Fotos:',
-            text: 'Kontaktfotos werden lokal auf dem Gerät auf 300×300 Pixel komprimiert und als verschlüsselte Base64-Strings direkt in unserer EU-Datenbank (europe-west1) gespeichert – niemals auf öffentlichen Bildservern oder CDNs.',
+            label: 'A) Ferngesteuerte Kurzwahlkontakte & clientseitig E2EE-verschlüsselte (Zero-Knowledge) Base64-Fotos:',
+            text: 'Kurzwahlkontakte, Whitelist-Nummern und lokal auf 300×300 Pixel komprimierte Base64-Porträtfotos werden clientseitig Ende-zu-Ende verschlüsselt (AES-256-GCM + ECDH P-256 Familienschlüssel) in unserer EU-Datenbank (europe-west1) synchronisiert – niemals auf öffentlichen Bildservern gespeichert und für den Betreiber technisch unzugänglich.',
           },
           {
             label: 'B) Tagesroutinen, Erinnerungen & Bestätigungen (Kein Gesundheits-Profiling):',
@@ -661,8 +661,8 @@ export const SENEAR_PRIVACY_DOC: Record<LegalLang, LegalDocumentData> = {
           'In strict compliance with GDPR Data Minimization, SENEAR processes only essential data categories required for family safety:',
         bullets: [
           {
-            label: 'A) Remote Speed-Dial Contacts & Zero-Storage Base64 Photos:',
-            text: 'All contact photos are cropped and compressed locally on the device (300×300px) and stored as encrypted Base64 text strings directly inside our EU Firebase database (europe-west1)—never uploaded to public image servers or external CDNs.',
+            label: 'A) Remote Speed-Dial Contacts & Client-Side E2EE (Zero-Knowledge) Base64 Photos:',
+            text: 'Speed-dial contacts, Call Whitelist numbers, and locally compressed (300×300px) Base64 portraits are encrypted end-to-end on the client device (AES-256-GCM + ECDH P-256 family vault key) before syncing through our EU Firebase database (europe-west1)—never uploaded to public image servers and technically inaccessible to the Operator.',
           },
           {
             label: 'B) Daily Routines, Reminders & Acknowledgments (Non-Profiling Guarantee):',

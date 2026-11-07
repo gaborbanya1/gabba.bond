@@ -142,10 +142,10 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
                 ],
               },
               {
-                title: 'Adminfelületen nem jelenik meg',
+                title: 'Kliensoldali E2EE (Üzemeltetőnek technikailag sem elérhető)',
                 lines: [
-                  'A családi fotók, kontaktok és napi rutinok az Üzemeltető saját adminisztrációs felületén nincsenek bekötve és nem jelennek meg.',
-                  'Az EU-s adatbázisban (AES-256 szerveroldali titkosítással) kizárólag a két telefon automatikus szinkronizációjára szolgálnak; az Üzemeltető ezeket üzemszerűen nem nyitja meg, nem elemzi és nem profilozza.',
+                  'A gyorstárcsázó névjegyek, a 300×300 px Base64 fotók, a napi rutinok, a fehérlistás számok és az SOS címzettek még a telefon elhagyása előtt kliensoldali végpontok közötti titkosítást (AES-256-GCM + ECDH P-256 családi kulcs) kapnak.',
+                  'A visszafejtési kulcs kizárólag a párosított családi készülékeken létezik — így ezeket az adatokat az Üzemeltető még a nyers felhő-adatbázisban sem tudja visszafejteni és technikailag sem éri el.',
                 ],
               },
               {
@@ -574,8 +574,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'Az alkalmazáson belüli Wi-Fi/mobilnet hang- és videóhívások közvetlen P2P titkosítást használnak (szigorú tűzfal esetén titkosított TURN átjátszóval). A hívásjelzési metaadatok a beszélgetés bontásakor 0 másodperc alatt törlődnek, felvétel soha nem készül, a Senior telefon pedig mindig hangjelzéssel és teljes képernyős élő sávval jelzi az aktív kapcsolatot.',
           },
           {
-            label: 'Helyi 300×300 px Base64 képtömörítés (Zero-Public-URL):',
-            text: 'A gyorstárcsázó csempék és napi rutinok fotóit az alkalmazás feltöltés előtt helyben 300×300 pixelre vágja és tömöríti, majd közvetlenül a védett EU-s Firestore dokumentumban tárolja (AES-256 nyugalmi titkosítással) — így nem jönnek létre kiszivárogható nyilvános képlinkek.',
+            label: 'Kliensoldali E2EE (AES-256-GCM + ECDH P-256) Base64 fotók és rutinok (Zero-Knowledge):',
+            text: 'A gyorstárcsázó csempék és napi rutinok fotóit az alkalmazás feltöltés előtt helyben 300×300 pixelre tömöríti, majd a névjegyekkel és rutinokkal együtt a családi készülékek közös kulcsával (AES-256-GCM + ECDH P-256) kliensoldalon titkosítja. Nem jönnek létre nyilvános képlinkek, és a titkosított tartalmat az Üzemeltető technikailag sem tudja visszafejteni.',
           },
         ],
       },
@@ -742,10 +742,10 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
                 ],
               },
               {
-                title: 'Im Admin-Dashboard nicht eingebunden',
+                title: 'Clientseitige E2EE (Für Betreiber technisch unzugänglich)',
                 lines: [
-                  'Familienfotos, Kontakte und Tagesroutinen werden in der Administrationsansicht des Betreibers nicht geladen und nicht angezeigt.',
-                  'In der EU-Datenbank (serverseitig AES-256-verschlüsselt) dienen sie ausschließlich der automatischen Gerätesynchronisation; der Betreiber öffnet, analysiert oder profiliert diese Inhalte im regulären Betrieb nicht.',
+                  'Kurzwahlkontakte, 300×300 px Base64-Fotos, Tagesroutinen, Whitelist-Rufnummern und SOS-Empfänger werden bereits auf dem Endgerät vor der Übertragung Ende-zu-Ende verschlüsselt (AES-256-GCM + ECDH P-256 Familienschlüssel).',
+                  'Der Entschlüsselungsschlüssel verbleibt ausschließlich auf den gekoppelten Familiengeräten – der Betreiber kann diese Inhalte selbst in der Cloud-Datenbank technisch nicht entschlüsseln oder einsehen.',
                 ],
               },
               {
@@ -1174,8 +1174,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'App-interne WLAN-/Mobilfunkanrufe nutzen direkte Peer-to-Peer-Verschlüsselung (mit verschlüsseltem TURN-Relay hinter strikten Firewalls). Signalisierungsdaten werden in 0 Sekunden nach Gesprächsende gelöscht, Gespräche niemals aufgezeichnet, und das Seniorengerät zeigt jedes aktive Gespräch akustisch und im Vollbild an.',
           },
           {
-            label: 'Lokale 300×300 px Base64-Bildkomprimierung (Zero-Public-URL):',
-            text: 'Kontakt- und Erinnerungsfotos werden vor der Synchronisation lokal auf 300×300 Pixel zugeschnitten und als Base64-Feld direkt im geschützten EU-Firestore-Dokument (AES-256 at rest) abgelegt – es existieren keine öffentlich abrufbaren Bild-URLs.',
+            label: 'Clientseitige E2EE (AES-256-GCM + ECDH P-256) für Base64-Fotos & Routinen (Zero-Knowledge):',
+            text: 'Kontakt- und Erinnerungsfotos werden lokal auf 300×300 Pixel komprimiert und zusammen mit Kontakten und Tagesroutinen clientseitig über den gemeinsamen Familienschlüssel (AES-256-GCM + ECDH P-256) Ende-zu-Ende verschlüsselt. Es existieren keine öffentlichen Bild-URLs, und der Betreiber hat technisch keinen Zugriff auf den Klartext.',
           },
         ],
       },
@@ -1342,10 +1342,10 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
                 ],
               },
               {
-                title: 'Not Displayed in Operator Admin UI',
+                title: 'Client-Side E2EE (Technically Inaccessible to Operator)',
                 lines: [
-                  'Family photos, speed-dial contacts, and daily routines are not wired into or displayed on the Operator’s administrative dashboard.',
-                  'In the EU database (encrypted at rest via server-side AES-256), they exist solely for automated device-to-device synchronization; the Operator does not manually open, inspect, analyze, or profile these fields in normal operations.',
+                  'Speed-dial contacts, 300×300 px Base64 portraits, daily routines, Call Whitelist numbers, and SOS recipients are encrypted end-to-end on the client device (AES-256-GCM + ECDH P-256 family vault key) before ever leaving the phone.',
+                  'Because the decryption key exists exclusively on the paired family devices, the Operator technically cannot decrypt, view, or access these fields even inside the raw cloud database.',
                 ],
               },
               {
@@ -1774,8 +1774,8 @@ export const SENEAR_OPERATIONS_DOC: Record<LegalLang, LegalDocumentData> = {
             text: 'In-app Wi-Fi/mobile calls use encrypted peer-to-peer WebRTC (with encrypted TURN fallback behind strict NATs). Signaling metadata is purged in 0 seconds upon call end, calls are never recorded, and the Senior phone always plays audible tones and displays a full-screen live banner.',
           },
           {
-            label: 'Local 300×300 px Base64 Image Compression (Zero-Public-URL):',
-            text: 'Contact and reminder portraits are cropped and compressed locally (300×300 px) prior to sync and stored directly inside our protected EU Firestore document (AES-256 at rest)—never exposed on guessable public CDN URLs.',
+            label: 'Client-Side E2EE (AES-256-GCM + ECDH P-256) Base64 Portraits & Routines (Zero-Knowledge):',
+            text: 'Contact and reminder portraits are compressed locally (300×300 px) and encrypted end-to-end on the client device alongside contacts and daily routines using the family vault key (AES-256-GCM + ECDH P-256)—never exposed on public CDN URLs and technically unreadable by the Operator.',
           },
         ],
       },
