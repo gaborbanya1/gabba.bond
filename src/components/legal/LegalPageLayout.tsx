@@ -1,4 +1,4 @@
-import { useEffect, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, useCallback, type MouseEvent } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -6,16 +6,21 @@ import {
   Building2,
   CheckCircle2,
   ChevronRight,
+  CloudCheck,
   CreditCard,
   Database,
+  Download,
   Eye,
   FileCheck2,
   Hash,
   Lock,
   Mail,
   MapPin,
+  MessageSquarePlus,
+  MessageSquareText,
   PhoneCall,
   Printer,
+  RefreshCw,
   Scale,
   Server,
   ShieldCheck,
@@ -35,6 +40,18 @@ import {
   ProductLegalBundle,
   resolveLegalLang,
 } from './legalCore';
+import {
+  AllLegalNotesMap,
+  countNonEmptyNotes,
+  createEmptyAllNotes,
+  fetchAllCloudLegalNotes,
+  formatNoteTimestamp,
+  loadLocalLegalNotes,
+  mergeCloudAndLocalNotes,
+  saveCloudSectionNote,
+  saveLocalLegalNotes,
+  toReviewDocKey,
+} from './legalReviewStorage';
 
 export interface LegalPageLayoutProps {
   bundle: ProductLegalBundle;
@@ -44,6 +61,111 @@ export interface LegalPageLayoutProps {
 }
 
 const DOC_ORDER: LegalDocKind[] = ['privacy', 'terms', 'operations'];
+
+const REVIEW_UI_COPY: Record<
+  LegalLang,
+  {
+    exportPdfBtn: string;
+    exportPdfSub: string;
+    panelBadge: string;
+    panelTitle: string;
+    panelDesc: string;
+    cloudActiveLabel: string;
+    refreshBtn: string;
+    generalNoteLabel: string;
+    generalNotePlaceholder: string;
+    jumpToCommentsLabel: string;
+    addSectionNoteBtn: string;
+    sectionNoteHeader: (title: string) => string;
+    sectionNotePlaceholder: string;
+    savingLabel: string;
+    savedCloudLabel: (timeStr: string) => string;
+    savedLocalLabel: string;
+    saveNowBtn: string;
+    printSummaryTitle: string;
+    printGeneralLabel: string;
+    printSectionNoteTitle: (author: string, timeStr: string) => string;
+  }
+> = {
+  hu: {
+    exportPdfBtn: 'Letöltés PDF-ként (megjegyzésekkel együtt)',
+    exportPdfSub: 'PDF mentés / Nyomtatás',
+    panelBadge: 'Ügyvédi véleményezés & Felhőszinkron (Adri & Gábor)',
+    panelTitle: 'Ügyvédi megjegyzések és PDF exportálás',
+    panelDesc:
+      'Minden fejezet végén (és itt általánosan is) közvetlenül az oldalon tudsz megjegyzést írni. A beírt észrevételek automatikusan mentődnek a felhőbe, így Gábor azonnal látja őket a saját gépén, a „Letöltés PDF-ként” gombbal pedig a teljes dokumentum a megjegyzéseiddel együtt exportálható.',
+    cloudActiveLabel: 'Felhőszinkron aktív — Gábor valós időben látja a beírt megjegyzéseket',
+    refreshBtn: 'Frissítés',
+    generalNoteLabel:
+      'Általános ügyvédi észrevétel ehhez a dokumentumhoz (pl. esernyő-struktúra, felépítés, általános javaslatok):',
+    generalNotePlaceholder:
+      'Írd ide az általános észrevételeidet ehhez a dokumentumhoz vagy a gabba.bond főoldal vs. SENEAR aloldal (esernyő-struktúra) elválasztásához...',
+    jumpToCommentsLabel: 'Megjegyzéssel ellátott fejezetek ezen az oldalon:',
+    addSectionNoteBtn: 'Ügyvédi megjegyzés hozzáfűzése ehhez a ponthoz (Adri)',
+    sectionNoteHeader: (title) => `Ügyvédi megjegyzés (Adri) — ${title}`,
+    sectionNotePlaceholder:
+      'Írd ide a jogi javaslatodat, módosítási kérésedet vagy kérdésedet ehhez a fejezethez (automatikusan mentődik)...',
+    savingLabel: 'Mentés a felhőbe...',
+    savedCloudLabel: (timeStr) =>
+      timeStr ? `Felhőbe mentve (${timeStr}) — Gábor is látja` : 'Felhőbe mentve — Gábor is látja',
+    savedLocalLabel: 'Helyileg mentve',
+    saveNowBtn: 'Mentés most',
+    printSummaryTitle: 'ÜGYVÉDI ÉSZREVÉTELEK ÉS MEGJEGYZÉSEK ÖSSZESÍTÉSE (ADRI)',
+    printGeneralLabel: 'Általános megjegyzés a dokumentumhoz',
+    printSectionNoteTitle: (author, timeStr) =>
+      `ÜGYVÉDI MEGJEGYZÉS (${author || 'Adri'}${timeStr ? ` · ${timeStr}` : ''}):`,
+  },
+  de: {
+    exportPdfBtn: 'Als PDF speichern (inkl. Anmerkungen)',
+    exportPdfSub: 'PDF-Export / Drucken',
+    panelBadge: 'Juristische Prüfung & Cloud-Sync (Adri & Gábor)',
+    panelTitle: 'Anwaltsnotizen & PDF-Export',
+    panelDesc:
+      'Sie können unter jedem Abschnitt (sowie hier allgemein) direkt auf der Seite Kommentare hinterlassen. Alle Notizen werden automatisch in der Cloud gespeichert, sodass Gábor sie sofort sieht, und werden beim PDF-Export vollständig mitgedruckt.',
+    cloudActiveLabel: 'Cloud-Sync aktiv — Gábor sieht alle Anmerkungen in Echtzeit',
+    refreshBtn: 'Aktualisieren',
+    generalNoteLabel: 'Allgemeine juristische Anmerkung zu diesem Dokument (z. B. Dachmarken-Struktur):',
+    generalNotePlaceholder: 'Allgemeine Anmerkungen zu diesem Dokument hier eingeben...',
+    jumpToCommentsLabel: 'Kommentierte Abschnitte auf dieser Seite:',
+    addSectionNoteBtn: 'Juristische Anmerkung zu diesem Abschnitt hinzufügen (Adri)',
+    sectionNoteHeader: (title) => `Juristische Anmerkung (Adri) — ${title}`,
+    sectionNotePlaceholder: 'Anmerkung oder Änderungsvorschlag zu diesem Abschnitt eingeben (wird automatisch gespeichert)...',
+    savingLabel: 'Wird in der Cloud gespeichert...',
+    savedCloudLabel: (timeStr) =>
+      timeStr ? `In der Cloud gespeichert (${timeStr})` : 'In der Cloud gespeichert',
+    savedLocalLabel: 'Lokal gespeichert',
+    saveNowBtn: 'Jetzt speichern',
+    printSummaryTitle: 'ZUSAMMENFASSUNG DER JURISTISCHEN ANMERKUNGEN (ADRI)',
+    printGeneralLabel: 'Allgemeine Anmerkung zum Dokument',
+    printSectionNoteTitle: (author, timeStr) =>
+      `JURISTISCHE ANMERKUNG (${author || 'Adri'}${timeStr ? ` · ${timeStr}` : ''}):`,
+  },
+  en: {
+    exportPdfBtn: 'Save as PDF (including comments)',
+    exportPdfSub: 'PDF Export / Print',
+    panelBadge: 'Legal Review & Cloud Sync (Adri & Gábor)',
+    panelTitle: 'Legal Review Notes & PDF Export',
+    panelDesc:
+      'You can add inline comments at the bottom of any section (or a general note below). All notes auto-save to the cloud in real time so Gábor can see them immediately, and they are included when exporting the page as a PDF.',
+    cloudActiveLabel: 'Cloud Sync active — Gábor sees all comments in real time',
+    refreshBtn: 'Refresh',
+    generalNoteLabel: 'General legal comment for this document (e.g. umbrella structure, overall feedback):',
+    generalNotePlaceholder: 'Write general comments for this document or the umbrella structure here...',
+    jumpToCommentsLabel: 'Commented sections on this page:',
+    addSectionNoteBtn: 'Add legal comment to this section (Adri)',
+    sectionNoteHeader: (title) => `Legal Comment (Adri) — ${title}`,
+    sectionNotePlaceholder: 'Write your legal note or revision suggestion for this section (auto-saves)...',
+    savingLabel: 'Saving to cloud...',
+    savedCloudLabel: (timeStr) =>
+      timeStr ? `Saved to cloud (${timeStr}) — visible to Gábor` : 'Saved to cloud — visible to Gábor',
+    savedLocalLabel: 'Saved locally',
+    saveNowBtn: 'Save now',
+    printSummaryTitle: 'SUMMARY OF LEGAL REVIEW COMMENTS (ADRI)',
+    printGeneralLabel: 'General Document Comment',
+    printSectionNoteTitle: (author, timeStr) =>
+      `LEGAL COMMENT (${author || 'Adri'}${timeStr ? ` · ${timeStr}` : ''}):`,
+  },
+};
 
 function renderTableCell(cell: LegalTableCellValue, isFirstCol: boolean) {
   if (typeof cell === 'string') {
@@ -121,10 +243,207 @@ export function LegalPageLayout({
   const { language } = useLanguage();
   const activeLang: LegalLang = resolveLegalLang(language);
   const ui = LEGAL_UI_COPY[activeLang];
+  const revUi = REVIEW_UI_COPY[activeLang];
   const operator = GABBA_STUDIO_OPERATOR.byLang[activeLang];
   const docsForLang = bundle.documents[activeLang];
   const doc = docsForLang[activeDoc];
   const deletionHero = bundle.deletionHero?.[activeLang];
+
+  const activeDocKey = toReviewDocKey(activeDoc);
+  const [allNotes, setAllNotes] = useState<AllLegalNotesMap>(() => createEmptyAllNotes());
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [savingMap, setSavingMap] = useState<Record<string, 'saving' | 'cloud' | 'local'>>({});
+  const [isRefreshingCloud, setIsRefreshingCloud] = useState(false);
+  const debounceTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  const syncFromCloud = useCallback(async () => {
+    setIsRefreshingCloud(true);
+    const local = loadLocalLegalNotes();
+    const cloud = await fetchAllCloudLegalNotes();
+    const merged = mergeCloudAndLocalNotes(local, cloud);
+    saveLocalLegalNotes(merged);
+    setAllNotes(merged);
+    setIsRefreshingCloud(false);
+  }, []);
+
+  useEffect(() => {
+    const initialLocal = loadLocalLegalNotes();
+    setAllNotes(initialLocal);
+    void syncFromCloud();
+
+    const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        void syncFromCloud();
+      }
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [syncFromCloud]);
+
+  const currentDocNotes = allNotes[activeDocKey] || {};
+
+  const persistNoteToCloud = useCallback(
+    async (docKey: typeof activeDocKey, sectionId: string, textValue: string) => {
+      const stateKey = `${docKey}:${sectionId}`;
+      setSavingMap((prev) => ({ ...prev, [stateKey]: 'saving' }));
+      const noteObj = {
+        text: textValue,
+        updatedAt: new Date().toISOString(),
+        author: 'Adri',
+      };
+      const ok = await saveCloudSectionNote(docKey, sectionId, noteObj);
+      setSavingMap((prev) => ({ ...prev, [stateKey]: ok ? 'cloud' : 'local' }));
+    },
+    []
+  );
+
+  const handleNoteChange = useCallback(
+    (sectionId: string, newText: string) => {
+      const updatedAt = new Date().toISOString();
+      const noteObj = { text: newText, updatedAt, author: 'Adri' };
+
+      setAllNotes((prev) => {
+        const next: AllLegalNotesMap = {
+          ...prev,
+          [activeDocKey]: {
+            ...(prev[activeDocKey] || {}),
+            [sectionId]: noteObj,
+          },
+        };
+        saveLocalLegalNotes(next);
+        return next;
+      });
+
+      const timerKey = `${activeDocKey}:${sectionId}`;
+      setSavingMap((prev) => ({ ...prev, [timerKey]: 'saving' }));
+      if (debounceTimersRef.current[timerKey]) {
+        clearTimeout(debounceTimersRef.current[timerKey]);
+      }
+      debounceTimersRef.current[timerKey] = setTimeout(() => {
+        void persistNoteToCloud(activeDocKey, sectionId, newText);
+      }, 550);
+    },
+    [activeDocKey, persistNoteToCloud]
+  );
+
+  const handleImmediateSave = useCallback(
+    (sectionId: string) => {
+      const timerKey = `${activeDocKey}:${sectionId}`;
+      if (debounceTimersRef.current[timerKey]) {
+        clearTimeout(debounceTimersRef.current[timerKey]);
+      }
+      const currentText = allNotes[activeDocKey]?.[sectionId]?.text ?? '';
+      void persistNoteToCloud(activeDocKey, sectionId, currentText);
+    },
+    [activeDocKey, allNotes, persistNoteToCloud]
+  );
+
+  const renderSectionNoteBox = (sectionId: string, sectionTitle: string) => {
+    const note = currentDocNotes[sectionId];
+    const hasText = Boolean(note && note.text && note.text.trim().length > 0);
+    const expandKey = `${activeDocKey}:${sectionId}`;
+    const isExpanded = Boolean(expandedSections[expandKey] || hasText);
+    const saveStatus = savingMap[expandKey] || (hasText ? 'cloud' : undefined);
+    const formattedTime = note?.updatedAt ? formatNoteTimestamp(note.updatedAt, activeLang) : '';
+
+    return (
+      <div className="pt-3 border-t border-[#EFE9DF] print:border-t-0 print:pt-2">
+        {/* Screen Interactive Comment Toggle / Editor */}
+        <div className="print:hidden">
+          {!isExpanded ? (
+            <button
+              type="button"
+              onClick={() => setExpandedSections((prev) => ({ ...prev, [expandKey]: true }))}
+              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FFFBEB] hover:bg-[#FEF3C7] text-amber-950 border border-amber-300/90 text-xs font-bold transition-colors cursor-pointer ${FOCUS_RING}`}
+            >
+              <MessageSquarePlus aria-hidden="true" className="w-4 h-4 text-amber-700 shrink-0" />
+              <span>{revUi.addSectionNoteBtn}</span>
+            </button>
+          ) : (
+            <div className="rounded-2xl bg-[#FFFDF7] border-2 border-amber-300/90 p-4 sm:p-5 space-y-3 shadow-2xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label
+                  htmlFor={`note-${activeDocKey}-${sectionId}`}
+                  className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-amber-950"
+                >
+                  <MessageSquareText aria-hidden="true" className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>{revUi.sectionNoteHeader(sectionTitle)}</span>
+                </label>
+
+                <div className="flex items-center gap-2">
+                  {saveStatus === 'saving' && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                      <RefreshCw aria-hidden="true" className="w-3 h-3 animate-spin shrink-0" />
+                      <span>{revUi.savingLabel}</span>
+                    </span>
+                  )}
+                  {saveStatus === 'cloud' && hasText && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9]">
+                      <CloudCheck aria-hidden="true" className="w-3.5 h-3.5 text-[#1B7A4E] shrink-0" />
+                      <span>{revUi.savedCloudLabel(formattedTime)}</span>
+                    </span>
+                  )}
+                  {saveStatus === 'local' && hasText && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-stone-100 text-stone-800 border border-stone-300">
+                      <span>{revUi.savedLocalLabel}</span>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleImmediateSave(sectionId)}
+                    className={`px-2.5 py-1 rounded-lg bg-[#1F2421] text-white text-[11px] font-bold hover:bg-[#2C2C2C] transition-colors cursor-pointer ${FOCUS_RING}`}
+                  >
+                    {revUi.saveNowBtn}
+                  </button>
+                </div>
+              </div>
+
+              <textarea
+                id={`note-${activeDocKey}-${sectionId}`}
+                rows={3}
+                value={note?.text ?? ''}
+                onChange={(e) => handleNoteChange(sectionId, e.target.value)}
+                onBlur={() => handleImmediateSave(sectionId)}
+                placeholder={revUi.sectionNotePlaceholder}
+                className="w-full rounded-xl bg-white border border-amber-300 px-3.5 py-2.5 text-xs sm:text-sm text-[#1F2421] placeholder:text-[#7A756E] leading-relaxed focus:outline-2 focus:outline-[#1B7A4E]"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Print / PDF Export Rendered Comment Box (only shown when non-empty!) */}
+        {hasText && (
+          <div className="hidden print:block mt-3 rounded-xl border-2 border-black bg-[#FFFDF7] p-3.5 text-black break-inside-avoid">
+            <div className="text-xs font-extrabold uppercase tracking-wide border-b border-gray-400 pb-1 mb-1.5">
+              {revUi.printSectionNoteTitle(note?.author || 'Adri', formattedTime)}
+            </div>
+            <div className="text-xs leading-relaxed whitespace-pre-wrap">{note?.text}</div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const commentedSectionsList = [
+    ...(currentDocNotes['general']?.text?.trim()
+      ? [{ id: 'lawyer-review-panel', label: revUi.printGeneralLabel, text: currentDocNotes['general'].text }]
+      : []),
+    ...(currentDocNotes['operator']?.text?.trim()
+      ? [
+          {
+            id: 'operator',
+            label: `1. ${doc.operatorSectionTitle.replace(/^1\.\s*/, '')}`,
+            text: currentDocNotes['operator'].text,
+          },
+        ]
+      : []),
+    ...doc.sections
+      .filter((sec) => Boolean(currentDocNotes[sec.id]?.text?.trim()))
+      .map((sec) => ({
+        id: sec.id,
+        label: `${sec.number}. ${sec.title}`,
+        text: currentDocNotes[sec.id].text,
+      })),
+  ];
 
   const activeRoute: AppRoute =
     focusDeletion && bundle.scope.deleteAccountRoute
@@ -171,7 +490,7 @@ export function LegalPageLayout({
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#2C2C2C] print:bg-white print:text-black">
       {/* =====================================================================
-          STICKY TOP LEGAL SUB-NAVIGATION BAR (3 Docs + Print/PDF — Zero Lang Switcher)
+          STICKY TOP LEGAL SUB-NAVIGATION BAR (3 Docs + PDF Export + Note Counters)
           ===================================================================== */}
       <div className="sticky top-20 z-30 w-full bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#DFD2BE] shadow-2xs print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
@@ -184,6 +503,7 @@ export function LegalPageLayout({
                 const targetRoute = bundle.scope.routes[kind];
                 const itemDoc = docsForLang[kind];
                 const isSelected = activeDoc === kind && !focusDeletion;
+                const noteCount = countNonEmptyNotes(allNotes[toReviewDocKey(kind)]);
                 return (
                   <a
                     key={kind}
@@ -197,19 +517,30 @@ export function LegalPageLayout({
                     } ${FOCUS_RING}`}
                   >
                     <span>{itemDoc.shortTabLabel}</span>
+                    {noteCount > 0 && (
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
+                          isSelected
+                            ? 'bg-amber-400 text-[#1F2421]'
+                            : 'bg-amber-100 text-amber-950 border border-amber-300'
+                        }`}
+                      >
+                        💬 {noteCount}
+                      </span>
+                    )}
                   </a>
                 );
               })}
             </nav>
 
-            <div className="flex items-center justify-end shrink-0">
+            <div className="flex items-center justify-end gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => window.print()}
-                className={`inline-flex min-h-10 items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white text-[#1F2421] border border-[#9A7B4F] text-xs font-bold hover:bg-[#F5F0EB] transition-colors cursor-pointer ${FOCUS_RING}`}
+                className={`inline-flex min-h-10 items-center gap-2 px-4 py-2 rounded-xl bg-[#1B7A4E] text-white text-xs sm:text-sm font-bold hover:bg-[#14593A] shadow-xs transition-colors cursor-pointer ${FOCUS_RING}`}
               >
-                <Printer aria-hidden="true" className="w-3.5 h-3.5 text-[#7A5F43] shrink-0" />
-                <span>{ui.printBtn}</span>
+                <Download aria-hidden="true" className="w-4 h-4 shrink-0" />
+                <span>{revUi.exportPdfBtn}</span>
               </button>
             </div>
           </div>
@@ -387,6 +718,148 @@ export function LegalPageLayout({
           </div>
         </header>
 
+        {/* =====================================================================
+            LAWYER REVIEW & PDF EXPORT PANEL (Screen + Print Summary)
+            ===================================================================== */}
+        <section
+          id="lawyer-review-panel"
+          className="scroll-mt-36 rounded-3xl bg-gradient-to-br from-[#FFFDF7] to-[#FAF5E8] border-2 border-[#C5A880] p-5 sm:p-7 shadow-xs space-y-4 print:hidden"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="space-y-1.5 max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#1F2421] text-[#E5CFA8]">
+                  <Scale aria-hidden="true" className="w-3.5 h-3.5 text-[#C5A880] shrink-0" />
+                  <span>{revUi.panelBadge}</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9]">
+                  <CloudCheck aria-hidden="true" className="w-3.5 h-3.5 text-[#1B7A4E] shrink-0" />
+                  <span>{revUi.cloudActiveLabel}</span>
+                </span>
+              </div>
+              <h2 className="font-heading text-lg sm:text-xl font-extrabold text-[#1F2421]">
+                {revUi.panelTitle}
+              </h2>
+              <p className="text-xs sm:text-sm text-[#4A4743] leading-relaxed">
+                {revUi.panelDesc}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => void syncFromCloud()}
+                disabled={isRefreshingCloud}
+                className={`inline-flex min-h-11 items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white text-[#1F2421] border border-[#C5A880] text-xs font-bold hover:bg-[#FAF8F5] transition-colors cursor-pointer ${FOCUS_RING}`}
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={`w-3.5 h-3.5 text-[#7A5F43] shrink-0 ${isRefreshingCloud ? 'animate-spin' : ''}`}
+                />
+                <span>{revUi.refreshBtn}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className={`inline-flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1B7A4E] text-white text-xs sm:text-sm font-extrabold hover:bg-[#14593A] shadow-sm transition-colors cursor-pointer ${FOCUS_RING}`}
+              >
+                <Download aria-hidden="true" className="w-4 h-4 shrink-0" />
+                <span>{revUi.exportPdfBtn}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* General Document-Level Lawyer Note */}
+          <div className="rounded-2xl bg-white border border-amber-300/90 p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label
+                htmlFor={`note-${activeDocKey}-general`}
+                className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-[#1F2421]"
+              >
+                <MessageSquareText aria-hidden="true" className="w-4 h-4 text-amber-700 shrink-0" />
+                <span>{revUi.generalNoteLabel}</span>
+              </label>
+
+              <div className="flex items-center gap-2">
+                {savingMap[`${activeDocKey}:general`] === 'saving' && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                    <RefreshCw aria-hidden="true" className="w-3 h-3 animate-spin shrink-0" />
+                    <span>{revUi.savingLabel}</span>
+                  </span>
+                )}
+                {(savingMap[`${activeDocKey}:general`] === 'cloud' ||
+                  Boolean(currentDocNotes['general']?.text?.trim())) &&
+                  savingMap[`${activeDocKey}:general`] !== 'saving' && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E9F5EE] text-[#14593A] border border-[#B7DFC9]">
+                      <CloudCheck aria-hidden="true" className="w-3.5 h-3.5 text-[#1B7A4E] shrink-0" />
+                      <span>
+                        {revUi.savedCloudLabel(
+                          currentDocNotes['general']?.updatedAt
+                            ? formatNoteTimestamp(currentDocNotes['general'].updatedAt, activeLang)
+                            : ''
+                        )}
+                      </span>
+                    </span>
+                  )}
+                <button
+                  type="button"
+                  onClick={() => handleImmediateSave('general')}
+                  className={`px-2.5 py-1 rounded-lg bg-[#1F2421] text-white text-[11px] font-bold hover:bg-[#2C2C2C] transition-colors cursor-pointer ${FOCUS_RING}`}
+                >
+                  {revUi.saveNowBtn}
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              id={`note-${activeDocKey}-general`}
+              rows={3}
+              value={currentDocNotes['general']?.text ?? ''}
+              onChange={(e) => handleNoteChange('general', e.target.value)}
+              onBlur={() => handleImmediateSave('general')}
+              placeholder={revUi.generalNotePlaceholder}
+              className="w-full rounded-xl bg-[#FFFDF9] border border-[#DFD2BE] px-3.5 py-2.5 text-xs sm:text-sm text-[#1F2421] placeholder:text-[#7A756E] leading-relaxed focus:outline-2 focus:outline-[#1B7A4E]"
+            />
+          </div>
+
+          {commentedSectionsList.length > 0 && (
+            <div className="pt-1 space-y-2">
+              <div className="text-xs font-bold text-[#7A5F43]">{revUi.jumpToCommentsLabel}</div>
+              <div className="flex flex-wrap gap-2">
+                {commentedSectionsList.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={scrollToAnchor(item.id)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200/80 text-amber-950 border border-amber-300 text-xs font-bold transition-colors ${FOCUS_RING}`}
+                  >
+                    <span>💬</span>
+                    <span>{item.label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Print-Only Summary of Lawyer Comments at Top of PDF (if any exist) */}
+        {commentedSectionsList.length > 0 && (
+          <section className="hidden print:block rounded-2xl border-2 border-black bg-[#FFFDF7] p-4 space-y-2.5 text-black break-inside-avoid">
+            <h2 className="text-sm font-extrabold uppercase tracking-wide border-b border-black pb-1.5">
+              {revUi.printSummaryTitle} ({commentedSectionsList.length})
+            </h2>
+            <div className="space-y-2">
+              {commentedSectionsList.map((item) => (
+                <div key={item.id} className="text-xs leading-relaxed border-b last:border-b-0 border-gray-300 pb-1.5 last:pb-0">
+                  <div className="font-bold">{item.label}:</div>
+                  <div className="whitespace-pre-wrap pl-2">{item.text}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Key Highlights Summary Box */}
         <section className="bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white rounded-3xl p-6 sm:p-8 shadow-md border border-[#C5A880]/40 space-y-5 print:bg-white print:from-white print:to-white print:text-black print:border-gray-300 print:shadow-none print:p-4 print:break-inside-avoid">
           <div className="flex items-center gap-2.5">
@@ -562,6 +1035,8 @@ export function LegalPageLayout({
               </div>
             </div>
           </div>
+
+          {renderSectionNoteBox('operator', doc.operatorSectionTitle)}
         </section>
 
         {/* Sections 2..N */}
@@ -791,6 +1266,8 @@ export function LegalPageLayout({
               {sec.footerNote && (
                 <p className="text-xs text-[#5C5A56] pt-2 border-t border-[#F0EAE1]">{sec.footerNote}</p>
               )}
+
+              {renderSectionNoteBox(sec.id, `${sec.number}. ${sec.title}`)}
             </section>
           ))}
         </div>
@@ -800,17 +1277,28 @@ export function LegalPageLayout({
           id="account-deletion"
           className="scroll-mt-40 bg-gradient-to-br from-[#F5F0EB] to-[#EFE7DC] rounded-3xl p-6 sm:p-8 border-2 border-[#C5A880] space-y-6 print:hidden"
         >
-          <div className="space-y-2.5 max-w-3xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#1B7A4E] text-white">
-              <ShieldCheck aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-              <span>{ui.contactCardBadge}</span>
-            </span>
-            <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#1F2421]">
-              {ui.contactCardTitle}
-            </h2>
-            <p className="text-xs sm:text-sm text-[#4A4743] leading-relaxed">
-              {ui.contactCardDesc}
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="space-y-2.5 max-w-3xl">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#1B7A4E] text-white">
+                <ShieldCheck aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                <span>{ui.contactCardBadge}</span>
+              </span>
+              <h2 className="font-heading text-xl sm:text-2xl font-bold text-[#1F2421]">
+                {ui.contactCardTitle}
+              </h2>
+              <p className="text-xs sm:text-sm text-[#4A4743] leading-relaxed">
+                {ui.contactCardDesc}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className={`inline-flex min-h-11 items-center gap-2 px-5 py-3 rounded-xl bg-[#1B7A4E] text-white text-xs sm:text-sm font-extrabold hover:bg-[#14593A] shadow-sm transition-colors cursor-pointer shrink-0 ${FOCUS_RING}`}
+            >
+              <Download aria-hidden="true" className="w-4 h-4 shrink-0" />
+              <span>{revUi.exportPdfBtn}</span>
+            </button>
           </div>
 
           <div className="space-y-2">
