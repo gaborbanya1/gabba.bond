@@ -67,3 +67,12 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# SENEAR Security Hygiene
+.env*
+!.env.example
+*firebase-adminsdk*.json
+service-account*.json
+credentials.json
+token.json
+.tmp/

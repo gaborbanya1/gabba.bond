@@ -27,6 +27,7 @@ import {
 import { useLanguage } from '../../i18n/LanguageContext';
 import { GooglePlayIcon } from '../GooglePlayIcon';
 import type { AppRoute } from '../../routing';
+import { startSenearLandingTelemetry } from '../../utils/landingTelemetry';
 import { CallFilterPhone } from './CallFilterPhone';
 import { RemoteSetupStory } from './RemoteSetupStory';
 import { FOCUS_RING, FOCUS_RING_DARK, scrollToSection, useInViewOnce, usePrefersReducedMotion } from './hooks';
@@ -83,6 +84,15 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
   useEffect(() => {
     rootRef.current?.classList.add('sn-js');
   }, []);
+
+  // Cookie-free, first-party landing page telemetry (section reading dwell time + click tracking).
+  useEffect(() => {
+    return startSenearLandingTelemetry({
+      page: 'senear',
+      lang,
+      rootEl: rootRef.current,
+    });
+  }, [lang]);
 
   // Page title + meta description + OG / Twitter / Schema.org SoftwareApplication for this route (restored on leave).
   useEffect(() => {
@@ -199,7 +209,7 @@ export function SenearLandingPage({ onNavigate }: SenearLandingPageProps) {
         }`}
         aria-hidden={!showSticky}
       >
-        <PlayButton label={c.sticky} className="w-full" tabIndex={showSticky ? 0 : -1} />
+        <PlayButton label={c.sticky} className="w-full" tabIndex={showSticky ? 0 : -1} telemetryId="cta_play_sticky" />
       </div>
     </div>
   );
@@ -216,6 +226,7 @@ function PlayButton({
   tone = 'light',
   tabIndex,
   anchorRef,
+  telemetryId = 'cta_play_hero',
 }: {
   label: string;
   className?: string;
@@ -223,6 +234,7 @@ function PlayButton({
   tone?: 'light' | 'dark';
   tabIndex?: number;
   anchorRef?: React.Ref<HTMLAnchorElement>;
+  telemetryId?: string;
 }) {
   return (
     <a
@@ -231,6 +243,7 @@ function PlayButton({
       target="_blank"
       rel="noopener noreferrer"
       tabIndex={tabIndex}
+      data-telemetry-click={telemetryId}
       className={`group inline-flex items-center justify-center gap-3 rounded-2xl bg-[#1B7A4E] font-bold text-white shadow-[0_12px_24px_-10px_rgba(27,122,78,0.6)] transition-all hover:bg-[#145E3B] hover:shadow-[0_16px_30px_-10px_rgba(27,122,78,0.7)] active:scale-[0.98] ${
         size === 'lg' ? 'min-h-14 px-6 text-base sm:text-[17px]' : 'min-h-12 px-5 text-base'
       } ${tone === 'dark' ? FOCUS_RING_DARK : FOCUS_RING} ${className}`}
@@ -315,6 +328,7 @@ function SendToSelf({
       {compact ? (
         <button
           type="button"
+          data-telemetry-click="cta_send_to_self"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls={panelId}
@@ -329,6 +343,7 @@ function SendToSelf({
       ) : (
         <button
           type="button"
+          data-telemetry-click="cta_send_to_self"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls={panelId}
@@ -423,7 +438,10 @@ function Hero({
   };
 
   return (
-    <section className="relative border-b border-[#E8DFD4] bg-gradient-to-b from-[#FBF9F5] via-[#F7F1E9] to-[#F3EBDF]">
+    <section
+      data-telemetry-section="hero"
+      className="relative border-b border-[#E8DFD4] bg-gradient-to-b from-[#FBF9F5] via-[#F7F1E9] to-[#F3EBDF]"
+    >
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-14 lg:pt-8 lg:pb-20">
         <nav aria-label={breadcrumbAria} className="mb-6 flex items-center gap-1.5 text-sm text-[#5C5A56]">
           <a
@@ -469,6 +487,7 @@ function Hero({
                   <span>{c.hero.subline2Prefix} </span>
                   <a
                     href={IPHONE_WEB_APP_URL}
+                    data-telemetry-click="cta_iphone_webapp"
                     onClick={handleIphoneLinkClick}
                     className={`inline-flex min-h-9 items-center rounded-sm py-1.5 font-semibold text-[#14593A] underline decoration-[#1B7A4E]/45 decoration-2 underline-offset-4 transition-colors hover:text-[#0F4D31] hover:decoration-[#1B7A4E] ${FOCUS_RING}`}
                   >
@@ -497,15 +516,15 @@ function Hero({
 
           <div className="lg:col-span-7 lg:row-start-2 self-start">
             <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-              <a href="#igy-mukodik" onClick={(e) => { e.preventDefault(); scrollToSection('igy-mukodik'); }} className={outline}>
+              <a href="#igy-mukodik" data-telemetry-click="nav_how_it_works" onClick={(e) => { e.preventDefault(); scrollToSection('igy-mukodik'); }} className={outline}>
                 <ArrowDown className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.howBtn}
               </a>
-              <a href="#kozelebbrol" onClick={(e) => { e.preventDefault(); scrollToSection('kozelebbrol'); }} className={outline}>
+              <a href="#kozelebbrol" data-telemetry-click="nav_video" onClick={(e) => { e.preventDefault(); scrollToSection('kozelebbrol'); }} className={outline}>
                 <PlayCircle className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.videoBtn}
               </a>
-              <a href="/senear/setup" onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }} className={outline}>
+              <a href="/senear/setup" data-telemetry-click="cta_setup_guide_hero" onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }} className={outline}>
                 <BookOpen className="h-4 w-4 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
                 {c.hero.guideBtn}
               </a>
@@ -861,7 +880,7 @@ function ScenarioCard({
 
 function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   return (
-    <section className="py-20 sm:py-28 lg:py-32 bg-white" aria-labelledby="scenarios-title">
+    <section data-telemetry-section="scenarios" className="py-20 sm:py-28 lg:py-32 bg-white" aria-labelledby="scenarios-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{c.scenarios.eyebrow}</Eyebrow>
@@ -893,7 +912,7 @@ function Scenarios({ c, lang }: { c: SenearContent; lang: SenearLang }) {
 
 function Modes({ c }: { c: SenearContent }) {
   return (
-    <section className="py-16 sm:py-24" aria-labelledby="modes-title">
+    <section data-telemetry-section="modes" className="py-16 sm:py-24" aria-labelledby="modes-title">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{c.modes.eyebrow}</Eyebrow>
@@ -1010,6 +1029,7 @@ function HowItWorks({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   return (
     <section
       id="igy-mukodik"
+      data-telemetry-section="how_it_works"
       className="scroll-mt-24 py-16 sm:py-24 bg-gradient-to-b from-[#F3EBDF] via-[#FAF7F2] to-white"
       aria-labelledby="how-title"
     >
@@ -1070,6 +1090,7 @@ function HowItWorks({ c, lang }: { c: SenearContent; lang: SenearLang }) {
         <div className="mt-6 text-center">
           <button
             type="button"
+            data-telemetry-click="how_specs_expand"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls="how-specs"
@@ -1138,7 +1159,7 @@ function VideoSection({ c }: { c: SenearContent }) {
   };
 
   return (
-    <section id="kozelebbrol" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="video-title">
+    <section id="kozelebbrol" data-telemetry-section="video" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="video-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{v.eyebrow}</Eyebrow>
@@ -1163,6 +1184,7 @@ function VideoSection({ c }: { c: SenearContent }) {
               ) : (
                 <button
                   type="button"
+                  data-telemetry-click="video_play_main"
                   onClick={() => play(active)}
                   className={`group absolute inset-0 h-full w-full cursor-pointer ${FOCUS_RING}`}
                   aria-label={`${v.title} – ${v.chapters[active].title}`}
@@ -1221,6 +1243,7 @@ function VideoSection({ c }: { c: SenearContent }) {
                   <li key={ch.time}>
                     <button
                       type="button"
+                      data-telemetry-click={`video_chapter_${idx}`}
                       onClick={() => play(idx)}
                       aria-current={isActive ? 'step' : undefined}
                       className={`flex w-full items-start gap-3 rounded-2xl p-3 text-left transition-colors cursor-pointer ${
@@ -1274,7 +1297,7 @@ function Pricing({ c }: { c: SenearContent }) {
   const priceRow = 'mt-4 flex flex-wrap items-end gap-x-2';
 
   return (
-    <section id="arak" className="scroll-mt-24 py-16 sm:py-24 bg-gradient-to-b from-[#FAF7F2] to-[#F3EBDF]" aria-labelledby="pricing-title">
+    <section id="arak" data-telemetry-section="pricing" className="scroll-mt-24 py-16 sm:py-24 bg-gradient-to-b from-[#FAF7F2] to-[#F3EBDF]" aria-labelledby="pricing-title">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <Eyebrow>{p.eyebrow}</Eyebrow>
@@ -1299,7 +1322,7 @@ function Pricing({ c }: { c: SenearContent }) {
               openLabel={p.moreDetailsOpen}
               closeLabel={p.moreDetailsClose}
             />
-            <PlanLink label={p.free.cta} variant="outline" />
+            <PlanLink label={p.free.cta} variant="outline" telemetryId="cta_play_pricing_free" />
           </Reveal>
 
           {/* --- Family (recommended) --- */}
@@ -1335,6 +1358,7 @@ function Pricing({ c }: { c: SenearContent }) {
                 <button
                   key={String(isYearly)}
                   type="button"
+                  data-telemetry-click={isYearly ? 'pricing_toggle_yearly' : 'pricing_toggle_monthly'}
                   aria-pressed={yearly === isYearly}
                   onClick={() => setYearly(isYearly)}
                   className={`relative z-10 min-h-11 rounded-full text-sm font-bold transition-colors cursor-pointer ${
@@ -1375,7 +1399,7 @@ function Pricing({ c }: { c: SenearContent }) {
               openLabel={p.moreDetailsOpen}
               closeLabel={p.moreDetailsClose}
             />
-            <PlanLink label={p.family.cta} variant="filled" />
+            <PlanLink label={p.family.cta} variant="filled" telemetryId="cta_play_pricing_family" />
           </Reveal>
 
           {/* --- Lifetime --- */}
@@ -1422,7 +1446,7 @@ function Pricing({ c }: { c: SenearContent }) {
               openLabel={p.moreDetailsOpen}
               closeLabel={p.moreDetailsClose}
             />
-            <PlanLink label={p.lifetime.cta} variant="outline" />
+            <PlanLink label={p.lifetime.cta} variant="outline" telemetryId="cta_play_pricing_lifetime" />
           </Reveal>
         </div>
 
@@ -1462,6 +1486,7 @@ function PlanFeatures({
 
       <button
         type="button"
+        data-telemetry-click="pricing_details_expand"
         onClick={() => setExpanded((e) => !e)}
         aria-expanded={expanded}
         aria-controls={panelId}
@@ -1487,13 +1512,22 @@ function PlanFeatures({
   );
 }
 
-function PlanLink({ label, variant }: { label: string; variant: 'filled' | 'outline' }) {
+function PlanLink({
+  label,
+  variant,
+  telemetryId = 'cta_play_pricing_family',
+}: {
+  label: string;
+  variant: 'filled' | 'outline';
+  telemetryId?: string;
+}) {
   return (
     <div className="pt-4">
       <a
         href={PLAY_STORE_URL}
         target="_blank"
         rel="noopener noreferrer"
+        data-telemetry-click={telemetryId}
         className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-bold transition-colors ${
           variant === 'filled'
             ? 'bg-[#1B7A4E] text-white hover:bg-[#145E3B]'
@@ -1515,7 +1549,7 @@ const TRUST_ICONS = [Globe2, Ban, ShieldCheck];
 
 function TrustBar({ c }: { c: SenearContent }) {
   return (
-    <section aria-label={c.trustBar.label} className="border-y border-[#E8DFD4] bg-white">
+    <section data-telemetry-section="trust" aria-label={c.trustBar.label} className="border-y border-[#E8DFD4] bg-white">
       <ul className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 py-6">
         {c.trustBar.badges.map((b, i) => {
           const Icon = TRUST_ICONS[i];
@@ -1577,7 +1611,7 @@ function Faq({ c, lang }: { c: SenearContent; lang: SenearLang }) {
   }, []);
 
   return (
-    <section id="gyik" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="faq-title">
+    <section id="gyik" data-telemetry-section="faq" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="faq-title">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <SectionTitle id="faq-title" eyebrow={c.faq.eyebrow} title={c.faq.title} />
         <div className="mt-10 divide-y divide-[#E8DFD4] border-y border-[#E8DFD4]">
@@ -1596,6 +1630,7 @@ function Faq({ c, lang }: { c: SenearContent; lang: SenearLang }) {
                   <button
                     id={btnId}
                     type="button"
+                    data-telemetry-click={`faq_${idx}`}
                     aria-expanded={open}
                     aria-controls={panelId}
                     onClick={() => setOpenIdx(open ? null : idx)}
@@ -1636,6 +1671,7 @@ function Faq({ c, lang }: { c: SenearContent; lang: SenearLang }) {
               href={fbGroupUrl}
               target="_blank"
               rel="noopener noreferrer"
+              data-telemetry-click="social_fb_group"
               className={`inline-flex min-h-12 items-center justify-center gap-2.5 rounded-2xl border-2 border-[#529172] bg-white px-5 py-2.5 text-[15px] font-bold text-[#14593A] transition-colors hover:border-[#1B7A4E] hover:bg-[#F1F8F3] ${FOCUS_RING}`}
             >
               <Users className="h-4.5 w-4.5 shrink-0 text-[#1B7A4E]" aria-hidden="true" focusable="false" />
@@ -1645,6 +1681,7 @@ function Faq({ c, lang }: { c: SenearContent; lang: SenearLang }) {
               href={fbPageUrl}
               target="_blank"
               rel="noopener noreferrer"
+              data-telemetry-click="social_fb_page"
               className={`inline-flex min-h-12 items-center justify-center gap-2.5 rounded-2xl border border-[#8C7355] bg-white px-5 py-2.5 text-[15px] font-bold text-[#2C2C2C] transition-colors hover:border-[#2C2C2C] hover:bg-[#F5F0EB] ${FOCUS_RING}`}
             >
               <Globe2 className="h-4.5 w-4.5 shrink-0 text-[#7A5A2E]" aria-hidden="true" focusable="false" />
@@ -1675,7 +1712,7 @@ function FinalCta({
   const fbGroupUrl = SENEAR_FACEBOOK_GROUPS[lang];
   const fbPageUrl = SENEAR_FACEBOOK_PAGES[lang];
   return (
-    <section ref={sectionRef} className="px-4 pb-20 sm:px-6 lg:px-8" aria-labelledby="final-title">
+    <section ref={sectionRef} data-telemetry-section="final_cta" className="px-4 pb-20 sm:px-6 lg:px-8" aria-labelledby="final-title">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-[#1F2421] px-6 py-14 text-center text-white sm:px-12 sm:py-20">
         <div
           aria-hidden="true"
@@ -1691,7 +1728,7 @@ function FinalCta({
           </h2>
           <p className="text-lg sm:text-xl leading-relaxed text-stone-200">{c.finalCta.text}</p>
           <div className="flex flex-col items-center gap-3 pt-2">
-            <PlayButton label={c.hero.primaryCta} tone="dark" className="w-full sm:w-auto" />
+            <PlayButton label={c.hero.primaryCta} tone="dark" className="w-full sm:w-auto" telemetryId="cta_play_final" />
             <p className="inline-flex items-center gap-2 text-base font-semibold text-[#E8D5B0]">
               <Sparkles className="h-4 w-4" aria-hidden="true" focusable="false" />
               {c.finalCta.trialNote}
@@ -1703,6 +1740,7 @@ function FinalCta({
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
               <a
                 href="/senear/setup"
+                data-telemetry-click="cta_setup_guide_final"
                 onClick={(e) => { e.preventDefault(); onNavigate('senear-setup'); }}
                 className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
               >
@@ -1713,6 +1751,7 @@ function FinalCta({
                 href={fbGroupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-telemetry-click="social_fb_group"
                 className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
               >
                 <Users className="h-4 w-4" aria-hidden="true" focusable="false" />
@@ -1722,6 +1761,7 @@ function FinalCta({
                 href={fbPageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-telemetry-click="social_fb_page"
                 className={`inline-flex min-h-11 items-center gap-2 rounded-lg text-[15px] font-semibold text-white underline decoration-white/40 decoration-2 underline-offset-4 hover:decoration-white ${FOCUS_RING_DARK}`}
               >
                 <Globe2 className="h-4 w-4" aria-hidden="true" focusable="false" />

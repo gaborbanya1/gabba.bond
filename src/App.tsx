@@ -7,19 +7,25 @@ import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 import {
   AppRoute,
   ROUTE_PATHS,
+  isJunearLegalRoute,
   isLegalRoute,
+  junearLegalDocOfRoute,
   legalDocOfRoute,
   resolveRoute,
 } from './routing';
+import { captureInitialAttribution } from './utils/landingTelemetry';
 
 const SenearInstallGuidePage = lazy(() =>
   import('./components/SenearInstallGuidePage').then((m) => ({ default: m.SenearInstallGuidePage }))
 );
+const JunearLandingPage = lazy(() =>
+  import('./components/junear/JunearLandingPage').then((m) => ({ default: m.JunearLandingPage }))
+);
 const JunearSetupGuidePage = lazy(() =>
   import('./components/JunearSetupGuidePage').then((m) => ({ default: m.JunearSetupGuidePage }))
 );
-const ProductPage = lazy(() =>
-  import('./components/ProductPage').then((m) => ({ default: m.ProductPage }))
+const JunearLegalPage = lazy(() =>
+  import('./components/legal/JunearLegalPage').then((m) => ({ default: m.JunearLegalPage }))
 );
 const SenearLegalPage = lazy(() =>
   import('./components/legal/SenearLegalPage').then((m) => ({ default: m.SenearLegalPage }))
@@ -38,10 +44,15 @@ const ROUTE_TITLES: Record<AppRoute, string> = {
   junear: 'JUNEAR — gabba',
   'senear-setup': 'SENEAR Setup — gabba',
   'junear-setup': 'JUNEAR Setup — gabba',
+  'junear-usb-setup': 'JUNEAR WebUSB Setup — gabba',
   'senear-privacy': 'GDPR Privacy Notice — SENEAR · gabba',
   'senear-terms': 'Terms of Service (ÁSZF / AGB) — SENEAR · gabba',
   'senear-operations': 'Operational & Transparency Policy — SENEAR · gabba',
   'delete-account': 'Account & Data Deletion (GDPR) — SENEAR · gabba',
+  'junear-privacy': 'GDPR Privacy Notice — JUNEAR · gabba',
+  'junear-terms': 'Terms of Service (ÁSZF / AGB) — JUNEAR · gabba',
+  'junear-operations': 'Operational & Transparency Policy — JUNEAR · gabba',
+  'junear-delete-account': 'Account & Data Deletion (GDPR) — JUNEAR · gabba',
   'legal-brief': 'Ügyvédi Egyeztetési Kivonat — gabba.bond',
 };
 
@@ -81,11 +92,19 @@ function scrollToId(id: string) {
 }
 
 function normalizeLocationForRoute(targetRoute: AppRoute): string | null {
+  captureInitialAttribution();
   const canonical = ROUTE_PATHS[targetRoute];
   const rawHash = window.location.hash;
   const lowerHash = rawHash.toLowerCase();
   const keepSectionHash = Boolean(rawHash && rawHash.length > 1 && !ROUTE_ALIAS_HASHES.has(lowerHash));
-  const nextUrl = `${canonical}${keepSectionHash ? rawHash : ''}`;
+  let junearLangQuery = '';
+  if (targetRoute.startsWith('junear')) {
+    const langParam = new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
+    if (langParam === 'hu' || langParam === 'de' || langParam === 'en') {
+      junearLangQuery = `?lang=${langParam}`;
+    }
+  }
+  const nextUrl = `${canonical}${junearLangQuery}${keepSectionHash ? rawHash : ''}`;
   const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
   if (currentUrl !== nextUrl) {
@@ -124,7 +143,7 @@ export function SkipToMainLink() {
 function LocalizedTitleSync({ route }: { route: AppRoute }) {
   const { t } = useLanguage();
   useEffect(() => {
-    if (route === 'senear') return;
+    if (route === 'senear' || route.startsWith('junear')) return;
     document.title = route === 'home' ? t.pageTitle : ROUTE_TITLES[route];
   }, [route, t]);
   return null;
@@ -164,8 +183,15 @@ export default function App() {
 
   const navigate = useCallback((next: AppRoute) => {
     const path = ROUTE_PATHS[next];
-    if (window.location.pathname !== path || window.location.search || window.location.hash) {
-      window.history.pushState(null, '', path);
+    let nextUrl = path;
+    if (next.startsWith('junear')) {
+      const langParam = new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
+      if (langParam === 'hu' || langParam === 'de' || langParam === 'en') {
+        nextUrl = `${path}?lang=${langParam}`;
+      }
+    }
+    if (`${window.location.pathname}${window.location.search}` !== nextUrl || window.location.hash) {
+      window.history.pushState(null, '', nextUrl);
     }
     setRoute(next);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -184,6 +210,7 @@ export default function App() {
   const scrollToProjects = () => goHomeAndScroll('projects');
 
   const activeLegalDoc = legalDocOfRoute(route);
+  const activeJunearLegalDoc = junearLegalDocOfRoute(route);
 
   return (
     <LanguageProvider>
@@ -212,9 +239,7 @@ export default function App() {
 
             {route === 'senear' && <SenearLandingPage onNavigate={navigate} />}
 
-            {route === 'junear' && (
-              <ProductPage key={route} product={route} onNavigate={navigate} onContactClick={scrollToContact} />
-            )}
+            {route === 'junear' && <JunearLandingPage onNavigate={navigate} />}
 
             {route === 'senear-setup' && (
               <Route
@@ -229,8 +254,12 @@ export default function App() {
               />
             )}
 
-            {route === 'junear-setup' && (
-              <JunearSetupGuidePage onNavigate={navigate} onContactClick={scrollToContact} />
+            {(route === 'junear-setup' || route === 'junear-usb-setup') && (
+              <JunearSetupGuidePage
+                initialTab={route === 'junear-usb-setup' ? 'usb' : 'qr'}
+                onNavigate={navigate}
+                onContactClick={scrollToContact}
+              />
             )}
 
             {isLegalRoute(route) && activeLegalDoc && (
@@ -243,6 +272,16 @@ export default function App() {
                     onNavigate={navigate}
                   />
                 }
+              />
+            )}
+
+            {isJunearLegalRoute(route) && activeJunearLegalDoc && (
+              <JunearLegalPage
+                docType={activeJunearLegalDoc}
+                focusDeletion={route === 'junear-delete-account'}
+                onNavigate={navigate}
+                onBackToHome={() => navigate('home')}
+                onBackToJunear={() => navigate('junear')}
               />
             )}
 

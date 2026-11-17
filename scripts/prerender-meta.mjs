@@ -16,7 +16,8 @@ const baseHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, bodyHtml = '' }) {
+function buildHtml({ title, description, url, image, siteName = 'gabba · SENEAR', jsonLd = [], preloadImage, bodyHtml = '' }) {
+  const preloadMime = preloadImage && preloadImage.endsWith('.png') ? 'image/png' : 'image/webp';
   const head = [
     `<link rel="canonical" href="${url}" />`,
     `<meta property="og:url" content="${url}" />`,
@@ -24,11 +25,11 @@ function buildHtml({ title, description, url, image, jsonLd = [], preloadImage, 
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:locale" content="en_US" />`,
-    `<meta property="og:site_name" content="gabba · SENEAR" />`,
+    `<meta property="og:site_name" content="${esc(siteName)}" />`,
     `<meta name="twitter:title" content="${esc(title)}" />`,
     `<meta name="twitter:description" content="${esc(description)}" />`,
     `<meta name="twitter:image" content="${image}" />`,
-    preloadImage ? `<link rel="preload" as="image" href="${preloadImage}" type="image/webp" fetchpriority="high" />` : '',
+    preloadImage ? `<link rel="preload" as="image" href="${preloadImage}" type="${preloadMime}" fetchpriority="high" />` : '',
     ...jsonLd.map((obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`),
   ]
     .filter(Boolean)
@@ -104,7 +105,45 @@ writeRouteHtml(['delete-account'], {
   image: seo.image,
 });
 
+const jSeo = ssr.junearSeo();
+const junearBody = ssr.renderJunearPage();
+
+fs.rmSync(path.join(distDir, 'junear'), { recursive: true, force: true });
+
+writeRouteHtml(['junear'], {
+  ...jSeo,
+  siteName: 'gabba · JUNEAR',
+  preloadImage: jSeo.heroImage,
+  bodyHtml: junearBody,
+});
+
+writeRouteHtml(['junear', 'setup'], {
+  ...ssr.junearSetupSeo('qr'),
+  siteName: 'gabba · JUNEAR',
+  bodyHtml: ssr.renderJunearSetupPage('qr'),
+});
+
+writeRouteHtml(['junear', 'usb-setup'], {
+  ...ssr.junearSetupSeo('usb'),
+  siteName: 'gabba · JUNEAR',
+  bodyHtml: ssr.renderJunearSetupPage('usb'),
+});
+
+for (const docType of ['privacy', 'terms', 'operations']) {
+  writeRouteHtml(['junear', docType], {
+    ...ssr.junearLegalSeo(docType, false),
+    siteName: 'gabba · JUNEAR',
+    bodyHtml: ssr.renderJunearLegalPage(docType, false),
+  });
+}
+
+writeRouteHtml(['junear', 'delete-account'], {
+  ...ssr.junearLegalSeo('privacy', true),
+  siteName: 'gabba · JUNEAR',
+  bodyHtml: ssr.renderJunearLegalPage('privacy', true),
+});
+
 fs.rmSync(ssrDir, { recursive: true, force: true });
 console.log(
-  `Prerendered /senear (${Math.round(senearBody.length / 1024)} KB HTML), /senear/setup, /senear/privacy, /senear/terms, /senear/operations, and /delete-account`
+  `Prerendered /senear (${Math.round(senearBody.length / 1024)} KB HTML), /senear/setup, /senear/privacy, /senear/terms, /senear/operations, /delete-account, and /junear (${Math.round(junearBody.length / 1024)} KB HTML) + setup/usb-setup/legal routes`
 );

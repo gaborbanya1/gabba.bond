@@ -1,439 +1,800 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ArrowRight,
-  Baby,
-  Bell,
   Check,
   ChevronRight,
-  Download,
+  GraduationCap,
+  HeartHandshake,
   Info,
   KeyRound,
   Lock,
-  MapPin,
-  ShieldCheck,
-  UserCheck,
-  Users,
-  HeartHandshake,
+  QrCode,
   RotateCcw,
+  ShieldCheck,
+  Smartphone,
+  Usb,
+  Users,
+  WifiOff,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { PRODUCT_ACCENT } from './ProductShowcase3D';
-import { AppRoute } from '../routing';
 
-type Lang = 'hu' | 'en' | 'de';
-type Target = 'child' | 'parent';
+export type JunearSetupTab = 'qr' | 'usb' | 'parent' | 'antibrick';
+type Lang = 'hu' | 'de' | 'en';
 
-interface Step {
+interface GuideStep {
   title: string;
   desc: string;
   tip: string;
+  codeBadge?: string;
 }
 
-interface GuideCopy {
+interface TabCopy {
+  label: string;
+  sub: string;
+  summary: string;
+  steps: GuideStep[];
+}
+
+interface SetupCopy {
+  metaTitle: string;
   home: string;
+  backToJunear: string;
+  badge: string;
   pageTitle: string;
   pageSubtitle: string;
-  previewNote: string;
-  tabChild: string;
-  tabChildSub: string;
-  tabParent: string;
-  tabParentSub: string;
-  stepLabel: string;
-  markDone: string;
-  done: string;
-  reset: string;
-  progress: string;
-  finishTitle: string;
-  finishText: string;
-  toParent: string;
-  backToProduct: string;
-  child: Step[];
-  parent: Step[];
+  complianceCallout: string;
+  stepWord: string;
+  markDoneBtn: string;
+  resetBtn: string;
+  progressSuffix: string;
+  completedTitle: string;
+  completedBody: string;
+  nextTabBtn: string;
+  tabs: Record<JunearSetupTab, TabCopy>;
 }
 
-const COPY: Record<Lang, GuideCopy> = {
+const SETUP_COPY: Record<Lang, SetupCopy> = {
   hu: {
+    metaTitle: 'JUNEAR Beállítási Útmutató — Gyári QR, WebUSB, Szülői PWA & Anti-Brick | gabba',
     home: 'Főoldal',
-    pageTitle: 'JUNEAR Beállítási Útmutató',
+    backToJunear: 'Vissza a JUNEAR oldalra',
+    badge: '100% GOOGLE PLAY KONFORM HIBRID TELEPÍTÉS • EUR3',
+    pageTitle: 'JUNEAR Beállítási & Üzembe Helyezési Útmutató',
     pageSubtitle:
-      'Lépésről lépésre követhető útmutató a gyermek és a szülő telefonjának beállításához. Egyszerű, normál alkalmazás-telepítéssel.',
-    previewNote:
-      'A JUNEAR hamarosan elérhető. Az útmutató a végleges induláskor kisebb mértékben változhat — kérj értesítést, és szólunk, amint letölthető!',
-    tabChild: 'Gyermek telefonja',
-    tabChildSub: '6 lépés • Védett gyerekfelület',
-    tabParent: 'Szülő telefonja',
-    tabParentSub: '5 lépés • Szülői vezérlőpult',
-    stepLabel: 'Lépés',
-    markDone: 'Kész, tovább',
-    done: 'Kész',
-    reset: 'Újrakezdés',
-    progress: 'lépés kész',
-    finishTitle: 'Ez a telefon készen áll!',
-    finishText: 'Minden lépést elvégeztél ezen a készüléken.',
-    toParent: 'Tovább a szülő telefonjára',
-    backToProduct: 'Vissza a JUNEAR oldalra',
-    child: [
-      {
-        title: 'Alkalmazás telepítése és megnyitása',
-        desc: 'Telepítsd a JUNEAR alkalmazást a gyermek telefonjára (Google Play Áruházból), majd nyisd meg.',
-        tip: 'Nincs szükség gyári visszaállításra. Az első indításkor fogadd el a hívás-, helymeghatározási és értesítési engedélyeket.',
+      'Válaszd ki a nektek legmegfelelőbb módot: 6-érintéses gyári QR új készülékhez, adatvesztés nélküli Böngészős WebUSB meglévő telefonhoz, Szülői/Iskolai összekapcsolás vagy a Kettős Anti-Brick vésznyitó.',
+    complianceCallout:
+      'Natív Android Enterprise DevicePolicyManager védelem: a JUNEAR soha nem kér sebezhető Kisegítő lehetőségek (AccessibilityService) engedélyt, és 0% reklám-azonosítót (AD_ID) tartalmaz.',
+    stepWord: 'Lépés',
+    markDoneBtn: 'Kész, következő lépés',
+    resetBtn: 'Alaphelyzet',
+    progressSuffix: 'lépés elvégezve',
+    completedTitle: 'Minden lépést sikeresen elvégeztél ebben a szakaszban!',
+    completedBody: 'Folytathatod a következő beállítási füllel vagy visszatérhetsz a JUNEAR áttekintéshez.',
+    nextTabBtn: 'Tovább a következő fülre',
+    tabs: {
+      qr: {
+        label: '1. Gyári QR (6-érintéses)',
+        sub: 'Új vagy visszaállított telefonhoz',
+        summary:
+          'A legerősebb, eltávolíthatatlan Device Owner védelem vadonatúj vagy gyári állapotra visszaállított Android készüléken — kábel és számítógép nélkül.',
+        steps: [
+          {
+            title: 'Szülői PWA megnyitása és GDPR 8. cikk nyilatkozat',
+            desc: 'Nyisd meg a saját telefonodon vagy gépeden a JUNEAR Szülői Központot, válaszd ki a nyelvet (HU/DE/EN), és fogadd el az előre be nem jelölt GDPR 8. cikk szerinti szülői felügyeleti nyilatkozatot.',
+            tip: 'A Szülői Központ iPhone-on (Safari -> Főképernyőhöz adás), Androidon és böngészőben is azonnal működik.',
+          },
+          {
+            title: '6 érintés a gyermek telefonjának üdvözlőképernyőjén',
+            desc: 'Kapcsold be az új (vagy gyári állapotra állított) gyermek-telefont. A legelső „Üdvözöljük / Hi there” képernyő üres részét érintsd meg gyorsan egymás után 6-szor.',
+            tip: 'FONTOS: Ne lépj tovább a nyelvválasztón! A 6 érintés nyitja meg az Android beépített vállalati QR-olvasóját.',
+          },
+          {
+            title: 'Wi-Fi csatlakozás és a JUNEAR QR-kód beolvasása',
+            desc: 'Add meg az otthoni Wi-Fi jelszót (vagy használd a Szülői PWA által QR-kódba ágyazott Wi-Fi adatokat), majd olvasd be a Szülői Központ „6-Tap Factory QR” ablakában megjelenő kódot.',
+            tip: 'Az Android ellenőrzi az APK SHA-256 ujjlenyomatát, és beállítja a natív Device Owner módot.',
+            codeBadge: 'bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'Párosítás a JNR-XXXX kóddal és korcsoport választás',
+            desc: 'Írd be a Szülői PWA-ban látható rövid párosító kódot (pl. JNR-9400), válaszd ki a gyermek korcsoportját (6–7, 8–9, 10–11 vagy 12–14 év) és a független olvasási módot (pl. Szimbólum + Noémi hang).',
+            tip: 'Az Offline 8 jegyű Anti-Brick mesterkulcs ebben a pillanatban titkosítva létrejön mindkét eszközön.',
+          },
+          {
+            title: 'Kioszk aktiválása és E.164 hívólista tesztelése',
+            desc: 'Érintsd meg a Kioszk indítása gombot. A gyermek előtt megjelenik a színes Bento kezdőképernyő és a 3 másodperces SOS sáv.',
+            tip: 'Próbáld ki a családi gyorshívást (+36 / +43 / +49) a hívásszűrő megerősítéséhez.',
+          },
+        ],
       },
-      {
-        title: '„Gyermek vagyok” profil kiválasztása',
-        desc: 'Az üdvözlő képernyőn válaszd a gyermek profilt, és add meg a gyermek keresztnevét és életkorát.',
-        tip: 'A név jelenik meg a szülő vezérlőpultján és minden értesítésben.',
+      usb: {
+        label: '2. Böngészős WebUSB',
+        sub: 'Adatvesztés nélkül (/junear/usb-setup)',
+        summary:
+          'Meglévő, már belakott gyermek-telefon védelme gyári visszaállítás (factory reset) és parancssori ADB telepítése nélkül, közvetlenül Chrome vagy Edge böngészőből.',
+        steps: [
+          {
+            title: 'JUNEAR telepítése a gyermek meglévő telefonjára',
+            desc: 'Telepítsd a JUNEAR alkalmazást a gyermek Android telefonjára, de még ne zárold a felületet.',
+            tip: 'Minden meglévő családi fénykép és helyi fájl érintetlen marad a telefonon!',
+          },
+          {
+            title: 'Fejlesztői beállítások és USB-hibakeresés ideiglenes bekapcsolása',
+            desc: 'A gyermek telefonján nyisd meg: Beállítások -> A telefonról -> érintsd meg 7-szer a „Build szám” sort, majd a Fejlesztői beállításokban kapcsold be az „USB-hibakeresés” (USB debugging) kapcsolót.',
+            tip: 'A varázsló végén az USB-hibakeresést 1 érintéssel visszazárjuk.',
+          },
+          {
+            title: 'Fiókok ideiglenes kijelentkeztetése a 60 mp-es beállítás idejére',
+            desc: 'Az Android biztonsági szabálya miatt a Beállítások -> Fiókok menüben ideiglenesen távolítsd el a bejelentkezett Google-fióko(ka)t a kábeles aktiválás erejéig.',
+            tip: 'FONTOS: Amint a Device Owner aktiválás (kb. 10 másodperc) lefutott, a szükséges fiók visszatehető.',
+          },
+          {
+            title: 'USB-C csatlakoztatás & WebUSB 1-Kattintásos Varázsló indítása',
+            desc: 'Kösd össze a gyermek telefonját USB-C adat-kábellel egy laptoppal/PC-vel (Chrome vagy Edge böngésző), nyisd meg a Szülői PWA /junear/usb-setup felületét, kattints a csatlakozásra, és hagyd jóvá az RSA kulcsot a telefon képernyőjén.',
+            tip: 'A böngésző natív WebUSB protokollon keresztül futtatja le a hivatalos Device Owner parancsot:',
+            codeBadge: 'dpm set-device-owner bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'USB-hibakeresés kikapcsolása és Kioszk lezárása',
+            desc: 'Húzd ki a kábelt, kapcsold ki a Fejlesztői beállításokat, és párosítsd a telefont a JNR-XXXX kóddal.',
+            tip: 'A telefon mostantól ugyanazzal a teljes Device Owner védelemmel fut, mint a gyári QR-kódos módban!',
+          },
+        ],
       },
-      {
-        title: 'Kisegítő lehetőség és védelem bekapcsolása',
-        desc: 'Kapcsold be a JUNEAR szolgáltatást a Kisegítő lehetőségek menüben, hogy a gyerekfelület ne legyen elhagyható.',
-        tip: 'FONTOS: e nélkül a gyermek a kezdőgombbal kiléphetne a védett felületről.',
+      parent: {
+        label: '3. Szülői PWA, Nagyszülők & Iskola',
+        sub: '2+ Társszülő • Fotófal • classCode',
+        summary:
+          'Többfelnőttes családi és iskolai együttműködés szigorú eur3 GDPR adatvédelmi falakkal.',
+        steps: [
+          {
+            title: '2. Egyenrangú Társszülő (Anya & Apa) meghívása',
+            desc: 'A Szülői PWA „Hívólista & Kettős Kézfogás” fülén add hozzá a másik szülőt Társszülő Adminként (coParentUids). Mindkét szülő pontosan ugyanazokkal a jogokkal rendelkezik.',
+            tip: ' mindkét szülő telefonszámánál kapcsold be a „2x Sürgősségi Áttörés” kapcsolót (3 percen belüli 2. híváskor néma módban is csörög).',
+          },
+          {
+            title: 'Nagyszülők meghívása a Csak-Olvasási Családi Fotófalra',
+            desc: 'Hívd meg a nagyszülőket „Családtag — Olvasási Fal” (familyMemberUids) szerepkörrel. Ők egy letisztult felületet kapnak a gyermek által megosztott <= 250 KB WebP fotókkal és gyorshívó gombokkal.',
+            tip: 'A nagyszülők nem módosíthatnak véletlenül semmilyen Kioszk szabályt, és nem látják a GPS nyomkövetést.',
+          },
+          {
+            title: 'Iskolai osztálykód (classCode) és allowedSchoolWindow megadása',
+            desc: 'Ha a gyermek osztálya használja a JUNEAR Tanári Fókusz Konzolt, írd be az osztályfőnöktől kapott kódot (pl. SOPRON-3A), és állítsd be a tanítási időablakot (pl. H–P 07:45–15:30).',
+            tip: 'A tanár SOHA nem látja a gyermek helyzetét, családi fotóit (!isTeacherRole), névjegyeit vagy üzeneteit.',
+          },
+          {
+            title: 'Szülői Tiltólista & 1-Érintéses Szünidő / Betegnap Kapcsoló',
+            desc: 'Add meg azokat az alkalmazás-csomagokat, amelyeket a tanár 45 perces tanórai feloldással sem nyithat meg. Ha a gyermek beteg, nyomd meg az 1-érintéses „Szünidő / Betegszabadság” gombot.',
+            tip: 'Betegszabadság módban az összes tanórai fókusz zár azonnal felfüggesztődik.',
+          },
+        ],
       },
-      {
-        title: 'Engedélyezett kontaktok és alkalmazások',
-        desc: 'Add meg a családtagokat (fényképpel), akiket a gyermek hívhat, és válaszd ki a jóváhagyott alkalmazásokat.',
-        tip: 'Csak az itt megadott számok hívhatók, és csak ezek hívhatják a gyermeket.',
+      antibrick: {
+        label: '4. Kettős Anti-Brick Vésznyitó',
+        sub: 'Távoli felhő + 100% Offline 8 jegyű kód',
+        summary:
+          'Garantált szülői vészkijárat minden élethelyzetre: online 1 kattintással, vagy térerő és SIM-kártya nélkül 8 jegyű matematikai mesterkóddal.',
+        steps: [
+          {
+            title: '1. Útvonal (Online): Távoli Firestore Vészfeloldás (REMOTE_RELEASE)',
+            desc: 'Nyisd meg a Szülői PWA „5. Hibrid MDM & Anti-Brick” fülét, és kattints a „Távoli Kioszk Vészfeloldás Indítása” gombra, majd erősítsd meg.',
+            tip: 'Amint a gyermek telefonja Wi-Fi-re vagy mobilnetre csatlakozik, a RemoteMdmCommandListener azonnal feloldja a LockTask és Device Owner korlátozásokat.',
+            codeBadge: 'mdmCommands/{cmdId} -> commandType: "REMOTE_RELEASE"',
+          },
+          {
+            title: '2. Útvonal (100% Offline): 5 érintés a Kioszk Pajzs jelvényen',
+            desc: 'Ha a telefon repülőgép módban van, nincs SIM-kártya vagy nincs térerő: érintsd meg gyorsan 5-ször a gyermek képernyőjének tetején látható „Kioszk Zár Aktív” pajzs ikont.',
+            tip: 'A rendszer saját beépített numerikus billentyűzetet (OfflineUnlockSheet) nyit meg, így külső billentyűzet-alkalmazás sem szükséges.',
+          },
+          {
+            title: 'Napi 8 jegyű HMAC-SHA256 Mesterkód beírása (XXXX-XXXX)',
+            desc: 'Olvasd le a saját Szülői PWA-dban látható 8 jegyű kódot (pl. 7977-7033), és üsd be a gyermek telefonján.',
+            tip: 'FONTOS: Az RFC 4226 HMAC-SHA256 algoritmus +/- 1 UTC nap óraeltérést is tolerál, 5 hibás próba után pedig 60 másodperces helyi védelmet alkalmaz.',
+            codeBadge: 'HMAC_SHA256(secret, "JUNEAR-UNLOCK-V1:" + utcEpochDay)',
+          },
+        ],
       },
-      {
-        title: 'Párosító kód feljegyzése',
-        desc: 'A beállítások között megjelenik a 6-jegyű párosító kód — ezt kell majd beírni a szülő telefonján.',
-        tip: 'Tartsd szem előtt a kódot, vagy fotózd le a következő lépésekhez.',
-      },
-      {
-        title: 'Gyerekfelület zárolása és indítása',
-        desc: 'Nyomd meg a „Zárolás és indítás” gombot. A telefon ezzel a védett JUNEAR felületre vált.',
-        tip: 'A beállításokhoz később a szülői PIN-kóddal térhetsz vissza.',
-      },
-    ],
-    parent: [
-      {
-        title: 'JUNEAR telepítése a szülő telefonjára',
-        desc: 'Telepítsd ugyanazt a JUNEAR alkalmazást a saját telefonodra, és engedélyezd az értesítéseket.',
-        tip: 'Az értesítések nélkül nem kapnál jelzést zónaelhagyásról vagy alacsony akkuról.',
-      },
-      {
-        title: '„Szülő vagyok” profil és regisztráció',
-        desc: 'Válaszd a szülő profilt, add meg a neved és e-mail címed.',
-        tip: 'Több szülő is csatlakozhat ugyanahhoz a gyermekhez.',
-      },
-      {
-        title: 'Párosítás a 6-jegyű kóddal',
-        desc: 'Írd be a gyermek telefonján látható párosító kódot, és nyomd meg a „Párosítás” gombot.',
-        tip: 'A kapcsolat azonnal létrejön, a gyermek kártyája megjelenik a vezérlőpulton.',
-      },
-      {
-        title: 'Biztonsági zónák beállítása',
-        desc: 'Jelöld ki a térképen az otthon és az iskola biztonsági zónáját.',
-        tip: 'Értesítést kapsz, ha a gyermek telefonja elhagyja a kijelölt zónát.',
-      },
-      {
-        title: 'Értesítések és napló áttekintése',
-        desc: 'Állítsd be, milyen eseményekről kérsz értesítést, és nézd át a hívásnaplót és az eseményeket.',
-        tip: 'A frissítés ikonnal bármikor azonnali helyzet- és akkulekérést kérhetsz.',
-      },
-    ],
-  },
-  en: {
-    home: 'Home',
-    pageTitle: 'JUNEAR Setup Guide',
-    pageSubtitle: 'Step-by-step guide to set up both the child’s and the parent’s phone. Simple, standard app installation.',
-    previewNote:
-      'JUNEAR is coming soon. This guide may change slightly at launch — request a notification and we will let you know as soon as it is available!',
-    tabChild: 'Child’s phone',
-    tabChildSub: '6 steps • Protected kids interface',
-    tabParent: 'Parent’s phone',
-    tabParentSub: '5 steps • Parent dashboard',
-    stepLabel: 'Step',
-    markDone: 'Done, next',
-    done: 'Done',
-    reset: 'Restart',
-    progress: 'steps done',
-    finishTitle: 'This phone is ready!',
-    finishText: 'You completed every step on this device.',
-    toParent: 'Continue with the parent’s phone',
-    backToProduct: 'Back to JUNEAR',
-    child: [
-      {
-        title: 'Install and open the app',
-        desc: 'Install JUNEAR on your child’s phone (from Google Play) and open it.',
-        tip: 'No factory reset needed. On first launch, grant the call, location and notification permissions.',
-      },
-      {
-        title: 'Choose the “I am a child” profile',
-        desc: 'On the welcome screen select the child profile and enter your child’s first name and age.',
-        tip: 'The name appears on the parent dashboard and in every notification.',
-      },
-      {
-        title: 'Enable accessibility protection',
-        desc: 'Turn on the JUNEAR service in Accessibility settings so the kids interface cannot be left.',
-        tip: 'IMPORTANT: without it, the child could exit the protected interface with the home button.',
-      },
-      {
-        title: 'Approved contacts and apps',
-        desc: 'Add the family members (with photos) your child may call and pick the approved apps.',
-        tip: 'Only these numbers can be called — and only they can call your child.',
-      },
-      {
-        title: 'Note the pairing code',
-        desc: 'The settings show a 6-digit pairing code — you will enter it on the parent’s phone.',
-        tip: 'Keep the code handy or take a photo of it.',
-      },
-      {
-        title: 'Lock and start the kids interface',
-        desc: 'Tap “Lock and start”. The phone switches to the protected JUNEAR interface.',
-        tip: 'You can return to the settings later with the parent PIN.',
-      },
-    ],
-    parent: [
-      {
-        title: 'Install JUNEAR on the parent’s phone',
-        desc: 'Install the same JUNEAR app on your own phone and allow notifications.',
-        tip: 'Without notifications you would not be alerted about zone exits or low battery.',
-      },
-      {
-        title: '“I am a parent” profile and sign-up',
-        desc: 'Choose the parent profile and enter your name and e-mail address.',
-        tip: 'Several parents can connect to the same child.',
-      },
-      {
-        title: 'Pair with the 6-digit code',
-        desc: 'Enter the pairing code shown on the child’s phone and tap “Pair”.',
-        tip: 'The connection is instant and your child’s card appears on the dashboard.',
-      },
-      {
-        title: 'Set up safe zones',
-        desc: 'Mark the home and school safe zones on the map.',
-        tip: 'You get notified when the child’s phone leaves a zone.',
-      },
-      {
-        title: 'Review alerts and history',
-        desc: 'Choose which events you want to be notified about and review the call log and events.',
-        tip: 'Use the refresh icon to request an instant location and battery update.',
-      },
-    ],
+    },
   },
   de: {
+    metaTitle: 'JUNEAR Einrichtungsanleitung — Werks-QR, WebUSB, Eltern-PWA & Anti-Brick | gabba',
     home: 'Startseite',
-    pageTitle: 'JUNEAR Einrichtungsanleitung',
-    pageSubtitle: 'Schritt-für-Schritt-Anleitung für das Kinder- und das Eltern-Telefon. Einfache, normale App-Installation.',
-    previewNote:
-      'JUNEAR erscheint in Kürze. Die Anleitung kann sich zum Start noch leicht ändern — lassen Sie sich benachrichtigen, sobald die App verfügbar ist!',
-    tabChild: 'Kinder-Telefon',
-    tabChildSub: '6 Schritte • Geschützte Kinderoberfläche',
-    tabParent: 'Eltern-Telefon',
-    tabParentSub: '5 Schritte • Eltern-Dashboard',
-    stepLabel: 'Schritt',
-    markDone: 'Erledigt, weiter',
-    done: 'Erledigt',
-    reset: 'Neu starten',
-    progress: 'Schritte erledigt',
-    finishTitle: 'Dieses Telefon ist bereit!',
-    finishText: 'Sie haben alle Schritte auf diesem Gerät abgeschlossen.',
-    toParent: 'Weiter mit dem Eltern-Telefon',
-    backToProduct: 'Zurück zu JUNEAR',
-    child: [
-      {
-        title: 'App installieren und öffnen',
-        desc: 'Installieren Sie JUNEAR auf dem Telefon Ihres Kindes (über Google Play) und öffnen Sie die App.',
-        tip: 'Kein Werksreset nötig. Erteilen Sie beim ersten Start die Anruf-, Standort- und Benachrichtigungsrechte.',
+    backToJunear: 'Zurück zu JUNEAR',
+    badge: '100% GOOGLE-PLAY-KONFORME HYBRID-EINRICHTUNG • EUR3',
+    pageTitle: 'JUNEAR Einrichtungs- & Sicherheitsanleitung',
+    pageSubtitle:
+      'Wählen Sie den passenden Weg: 6-Tap Werks-QR für Neugeräte, Browser-WebUSB ohne Datenverlust für bestehende Handys, Familien-/Schul-Verknüpfung oder das duale Anti-Brick-Notfallsystem.',
+    complianceCallout:
+      'Nativer Android Enterprise DevicePolicyManager: JUNEAR nutzt keinerlei unsichere Bedienungshilfen (AccessibilityService) und enthält 0% Werbe-IDs (AD_ID).',
+    stepWord: 'Schritt',
+    markDoneBtn: 'Erledigt, nächster Schritt',
+    resetBtn: 'Zurücksetzen',
+    progressSuffix: 'Schritte erledigt',
+    completedTitle: 'Alle Schritte in diesem Bereich erfolgreich abgeschlossen!',
+    completedBody: 'Wechseln Sie zum nächsten Reiter oder kehren Sie zur JUNEAR-Übersicht zurück.',
+    nextTabBtn: 'Weiter zum nächsten Reiter',
+    tabs: {
+      qr: {
+        label: '1. Werks-QR (6-Tap)',
+        sub: 'Für neue / zurückgesetzte Geräte',
+        summary:
+          'Maximaler, unlöschbarer Device-Owner-Schutz auf neuen oder zurückgesetzten Android-Smartphones komplett ohne Kabel.',
+        steps: [
+          {
+            title: 'Eltern-PWA öffnen & DSGVO Art. 8 Einwilligung bestätigen',
+            desc: 'Öffnen Sie die JUNEAR Eltern-Zentrale am eigenen Gerät, wählen Sie Ihre Sprache (DE/HU/EN) und bestätigen Sie die elterliche Verantwortung gemäß DSGVO Artikel 8.',
+            tip: 'Funktioniert sofort auf iPhone (Safari -> Zum Home-Bildschirm), Android und Desktop.',
+          },
+          {
+            title: '6-mal auf den Willkommensbildschirm des Kindergeräts tippen',
+            desc: 'Schalten Sie das neue Android-Handy ein und tippen Sie auf der allerersten „Willkommen“-Seite 6-mal rasch auf eine freie Stelle.',
+            tip: 'WICHTIG: Noch nicht auf „Starten“ tippen! Die 6 Tipps öffnen den integrierten Enterprise-QR-Scanner.',
+          },
+          {
+            title: 'WLAN verbinden & JUNEAR-QR-Code scannen',
+            desc: 'Verbinden Sie das WLAN und scannen Sie den in der Eltern-PWA angezeigten 6-Tap-QR-Code.',
+            tip: 'Android prüft die SHA-256-Prüfsumme und aktiviert nativen Device-Owner-Schutz.',
+            codeBadge: 'bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'Mit JNR-XXXX koppeln & Altersstufe / Lesemodus wählen',
+            desc: 'Geben Sie den Kopplungscode (z.B. JNR-9400) ein und wählen Sie Altersstufe (6–7 bis 12–14) sowie den unabhängigen Lesemodus.',
+            tip: 'Dabei wird automatisch das lokale Offline-Entsperrgeheimnis sicher synchronisiert.',
+          },
+          {
+            title: 'Kiosk starten & E.164-Familienanruf testen',
+            desc: 'Starten Sie den geschützten Bento-Bildschirm und testen Sie einen Kurzwahl-Anruf (+43 / +49 / +36).',
+            tip: 'Unbekannte Rufnummern werden ab sofort lautlos gefiltert.',
+          },
+        ],
       },
-      {
-        title: 'Profil „Ich bin ein Kind“ wählen',
-        desc: 'Wählen Sie auf dem Startbildschirm das Kinderprofil und geben Sie Vorname und Alter ein.',
-        tip: 'Der Name erscheint im Eltern-Dashboard und in jeder Benachrichtigung.',
+      usb: {
+        label: '2. Browser-WebUSB',
+        sub: 'Ohne Datenverlust (/junear/usb-setup)',
+        summary:
+          'Aktiviert vollen Device-Owner-Schutz auf einem bereits genutzten Handy ohne Werksreset direkt über Chrome oder Edge per USB-C.',
+        steps: [
+          {
+            title: 'JUNEAR-App auf dem bestehenden Kindergerät installieren',
+            desc: 'Installieren Sie JUNEAR auf dem Android-Telefon des Kindes.',
+            tip: 'Alle vorhandenen Fotos und lokalen Dateien bleiben vollständig erhalten!',
+          },
+          {
+            title: 'Entwickleroptionen & USB-Debugging kurz aktivieren',
+            desc: 'Unter Einstellungen -> Über das Telefon 7-mal auf „Build-Nummer“ tippen und danach in den Entwickleroptionen „USB-Debugging“ einschalten.',
+            tip: 'Nach dem 60-Sekunden-Setup schalten wir USB-Debugging sofort wieder aus.',
+          },
+          {
+            title: 'Google-Konten für den kurzen Setup-Moment abmelden',
+            desc: 'Melden Sie unter Einstellungen -> Konten vorhandene Konten kurzzeitig ab, damit Android die Device-Owner-Ernennung zulässt.',
+            tip: 'WICHTIG: Direkt nach der Aktivierung können benötigte Konten wieder hinzugefügt werden.',
+          },
+          {
+            title: 'USB-C anschließen & WebUSB-Assistent starten',
+            desc: 'Verbinden Sie das Handy per USB-C mit Ihrem Laptop/PC (Chrome/Edge), öffnen Sie /junear/usb-setup und bestätigen Sie den RSA-Dialog am Handy.',
+            tip: 'Der Browser führt das offizielle Kommando ohne zusätzliche Treiber/CLI aus:',
+            codeBadge: 'dpm set-device-owner bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'USB-Debugging deaktivieren & Kiosk koppeln',
+            desc: 'Trennen Sie das Kabel, deaktivieren Sie die Entwickleroptionen und koppeln Sie das Gerät per JNR-XXXX.',
+            tip: 'Das Gerät ist nun genauso stark geschützt wie nach einem Werks-QR-Setup!',
+          },
+        ],
       },
-      {
-        title: 'Bedienungshilfe-Schutz aktivieren',
-        desc: 'Aktivieren Sie den JUNEAR-Dienst in den Bedienungshilfen, damit die Kinderoberfläche nicht verlassen werden kann.',
-        tip: 'WICHTIG: Ohne diesen Schutz könnte das Kind die Oberfläche mit der Home-Taste verlassen.',
+      parent: {
+        label: '3. Eltern-PWA, Oma & Schule',
+        sub: '2+ Co-Parents • Fotowand • classCode',
+        summary:
+          'Rollengerechte Zusammenarbeit für beide Elternteile, Großeltern und Lehrkräfte mit strikter DSGVO-Trennung.',
+        steps: [
+          {
+            title: 'Zweiten gleichberechtigten Co-Parent einladen',
+            desc: 'Fügen Sie den zweiten Elternteil als Co-Parent Admin (coParentUids) hinzu und aktivieren Sie für beide den 2x Notfall-Durchbruch.',
+            tip: 'Beide Elternteile verwalten Kontakte, Aufgaben und Spielzeiten gleichberechtigt.',
+          },
+          {
+            title: 'Großeltern zur schreibgeschützten Fotowand einladen',
+            desc: 'Laden Sie Großeltern als Familienmitglied (familyMemberUids) ein: Sie sehen aktiv geteilte WebP-Fotos (<= 250 KB) und Direktwahl-Karten.',
+            tip: 'Kein versehentliches Verstellen von Kiosk-Regeln und kein Zugriff auf GPS-Standorte.',
+          },
+          {
+            title: 'Schul-Klassencode (classCode) & Schulfenster festlegen',
+            desc: 'Tragen Sie den Klassencode (z.B. SOPRON-3A) und das erlaubte Zeitfenster (z.B. Mo–Fr 07:45–15:30) ein.',
+            tip: 'Lehrkräfte sehen NIEMALS GPS, Familienfotos (!isTeacherRole), Kontakte oder Chats.',
+          },
+          {
+            title: 'Eltern-Sperrliste & 1-Tap Ferien-/Krankheitstag nutzen',
+            desc: 'Sperren Sie unerwünschte Apps global und nutzen Sie bei Krankheit den 1-Tap-Schalter zur sofortigen Aufhebung aller Schulsperren.',
+            tip: 'Eltern behalten zu jeder Sekunde die oberste Hoheit über das Gerät.',
+          },
+        ],
       },
-      {
-        title: 'Erlaubte Kontakte und Apps',
-        desc: 'Fügen Sie die Familienmitglieder (mit Foto) hinzu, die Ihr Kind anrufen darf, und wählen Sie die erlaubten Apps.',
-        tip: 'Nur diese Nummern können angerufen werden — und nur sie können Ihr Kind anrufen.',
+      antibrick: {
+        label: '4. Dualer Anti-Brick-Notausgang',
+        sub: 'Remote-Cloud + 100% Offline 8-Stellen-Code',
+        summary:
+          'Garantierte Eltern-Entsperrung in jeder Situation — online per Klick oder komplett offline ohne WLAN und ohne SIM-Karte.',
+        steps: [
+          {
+            title: 'Pfad 1 (Online): 1-Klick Remote-Freigabe (REMOTE_RELEASE)',
+            desc: 'Klicken Sie in der Eltern-PWA unter „Hybrid-MDM & Anti-Brick“ auf „Remote-Kiosk-Freigabe auslösen“.',
+            tip: 'Sobald das Gerät WLAN oder Mobilfunk hat, werden alle Kiosk-Sperren sofort aufgehoben.',
+            codeBadge: 'mdmCommands/{cmdId} -> commandType: "REMOTE_RELEASE"',
+          },
+          {
+            title: 'Pfad 2 (100% Offline): 5x Tippen auf das Kiosk-Schild',
+            desc: 'Bei Flugmodus oder Funkloch: Tippen Sie am Kindergerät 5-mal rasch auf das Abzeichen „Kiosk-Sperre aktiv“.',
+            tip: 'Es öffnet sich ein eigenes Offline-Ziffernfeld (unabhängig von gesperrten Tastatur-Apps).',
+          },
+          {
+            title: '8-stelligen HMAC-SHA256 Mastercode eingeben (XXXX-XXXX)',
+            desc: 'Lesen Sie den aktuellen 8-stelligen Code (z.B. 7977-7033) in Ihrer Eltern-PWA ab und tippen Sie ihn am Kindergerät ein.',
+            tip: 'WICHTIG: Funktioniert komplett ohne Internet (+/- 1 UTC-Tag Toleranz, 60s Schutzpause nach 5 Fehlversuchen).',
+            codeBadge: 'HMAC_SHA256(secret, "JUNEAR-UNLOCK-V1:" + utcEpochDay)',
+          },
+        ],
       },
-      {
-        title: 'Kopplungscode notieren',
-        desc: 'In den Einstellungen erscheint ein 6-stelliger Kopplungscode — diesen geben Sie am Eltern-Telefon ein.',
-        tip: 'Halten Sie den Code bereit oder fotografieren Sie ihn.',
+    },
+  },
+  en: {
+    metaTitle: 'JUNEAR Setup Guide — 6-Tap QR, Zero-Wipe WebUSB, Parent PWA & Anti-Brick | gabba',
+    home: 'Home',
+    backToJunear: 'Back to JUNEAR',
+    badge: '100% GOOGLE PLAY COMPLIANT HYBRID PROVISIONING • EUR3',
+    pageTitle: 'JUNEAR Setup & Provisioning Guide',
+    pageSubtitle:
+      'Choose the setup flow that fits your family: 6-Tap Factory QR for new phones, zero-wipe Browser WebUSB for existing phones, Multi-Adult & Classroom linking, or the Dual Anti-Brick Escape Hatch.',
+    complianceCallout:
+      'Native Android Enterprise DevicePolicyManager protection: JUNEAR never uses fragile AccessibilityService workarounds and ships with 0% AD_ID tracking.',
+    stepWord: 'Step',
+    markDoneBtn: 'Done, next step',
+    resetBtn: 'Reset progress',
+    progressSuffix: 'steps completed',
+    completedTitle: 'All steps completed in this section!',
+    completedBody: 'Continue to the next setup tab or return to the JUNEAR overview.',
+    nextTabBtn: 'Continue to next tab',
+    tabs: {
+      qr: {
+        label: '1. Factory QR (6-Tap)',
+        sub: 'For brand-new / reset phones',
+        summary:
+          'Unremovable native Device Owner enrollment on a fresh or factory-reset Android phone — zero cables or desktop computer required.',
+        steps: [
+          {
+            title: 'Open the Parent PWA & complete GDPR Art. 8 Consent',
+            desc: 'Open the JUNEAR Parent Hub on your own phone or computer, pick your language (HU/DE/EN), and tick the unchecked-by-default GDPR Article 8 parental responsibility declaration.',
+            tip: 'Works seamlessly on iOS (Safari -> Add to Home Screen), Android, and desktop browsers.',
+          },
+          {
+            title: 'Tap 6 times on the child phone’s Welcome screen',
+            desc: 'Power on the fresh (or factory-reset) Android phone. On the very first “Welcome / Hi there” screen, tap an empty spot 6 times rapidly.',
+            tip: 'IMPORTANT: Do not sign in first! Tapping 6 times launches Android’s built-in Enterprise QR scanner.',
+          },
+          {
+            title: 'Connect Wi-Fi & scan the JUNEAR QR payload',
+            desc: 'Join your Wi-Fi network and scan the QR matrix generated inside the Parent Hub’s “6-Tap Factory QR” modal.',
+            tip: 'Android verifies the SHA-256 APK checksum and grants full Device Owner privileges.',
+            codeBadge: 'bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'Pair via JNR-XXXX & choose AgeTier + LiteracyMode',
+            desc: 'Enter the short pairing code (e.g. JNR-9400) and select the child’s visual AgeTier (6–7 to 12–14) and decoupled LiteracyMode.',
+            tip: 'Your per-child Offline 8-digit Anti-Brick secret is provisioned into EncryptedSharedPreferences automatically.',
+          },
+          {
+            title: 'Enter Kiosk Mode & test E.164 whitelist calling',
+            desc: 'Activate the colorful Bento Home screen and test a whitelisted family call (+36 / +43 / +49).',
+            tip: 'Unknown and scam numbers are now silently blocked before ringing.',
+          },
+        ],
       },
-      {
-        title: 'Kinderoberfläche sperren und starten',
-        desc: 'Tippen Sie auf „Sperren und starten“. Das Telefon wechselt in die geschützte JUNEAR-Oberfläche.',
-        tip: 'Mit der Eltern-PIN gelangen Sie später zurück in die Einstellungen.',
+      usb: {
+        label: '2. Browser WebUSB',
+        sub: 'Zero data wipe (/junear/usb-setup)',
+        summary:
+          'Enroll full Device Owner protection on an already-used phone without factory reset or installing command-line ADB tools, right from Chrome or Edge.',
+        steps: [
+          {
+            title: 'Install JUNEAR on the child’s existing Android phone',
+            desc: 'Install the JUNEAR app on the phone while keeping all existing family photos and files intact.',
+            tip: 'Zero factory reset is performed in this workflow!',
+          },
+          {
+            title: 'Temporarily enable Developer Options & USB Debugging',
+            desc: 'Open Settings -> About phone -> tap “Build number” 7 times, then toggle “USB debugging” ON inside Developer Options.',
+            tip: 'You will turn Developer Options back OFF right after the 60-second handshake.',
+          },
+          {
+            title: 'Temporarily sign out Google accounts during enrollment',
+            desc: 'Android requires zero active accounts on the device at the exact moment Device Owner is granted. Temporarily remove accounts under Settings -> Accounts.',
+            tip: 'IMPORTANT: As soon as enrollment finishes (~10 seconds), accounts can be added back if needed.',
+          },
+          {
+            title: 'Connect USB-C & run the WebUSB 1-Click Wizard',
+            desc: 'Plug the phone into a laptop/PC running Chrome or Edge, open /junear/usb-setup in the Parent PWA, click Connect, and accept the RSA prompt on the phone.',
+            tip: 'WebUSB executes the official DevicePolicyManager enrollment command directly:',
+            codeBadge: 'dpm set-device-owner bond.gabba.junear/bond.gabba.junear.core.mdm.JunearDeviceAdminReceiver',
+          },
+          {
+            title: 'Disable USB Debugging & pair with JNR-XXXX',
+            desc: 'Unplug the USB cable, turn Developer Options OFF, and enter your JNR-XXXX pairing code.',
+            tip: 'Your child’s phone now runs with full unremovable Device Owner protection!',
+          },
+        ],
       },
-    ],
-    parent: [
-      {
-        title: 'JUNEAR auf dem Eltern-Telefon installieren',
-        desc: 'Installieren Sie dieselbe JUNEAR-App auf Ihrem Telefon und erlauben Sie Benachrichtigungen.',
-        tip: 'Ohne Benachrichtigungen erhalten Sie keine Hinweise zu Zonen oder niedrigem Akku.',
+      parent: {
+        label: '3. Parent PWA, Grandparents & School',
+        sub: '2+ Co-Parents • Photo Wall • classCode',
+        summary:
+          'Connect equal Co-Parents, read-only Extended Family members, and GDPR-isolated Classroom Teachers.',
+        steps: [
+          {
+            title: 'Invite your 2nd Equal Co-Parent Admin',
+            desc: 'In the Parent PWA “Whitelist & Double Handshake” tab, add the other parent to coParentUids and enable 2x Urgent Call Breakthrough.',
+            tip: 'Both Co-Parents enjoy 100% symmetric control across iOS, Android, and Web.',
+          },
+          {
+            title: 'Invite Grandparents to the Read-Only Photo Wall',
+            desc: 'Add grandparents to familyMemberUids so they receive the clean Family Photo Wall (<= 250 KB WebP) and Speed-Dial cards.',
+            tip: 'Extended family members cannot accidentally alter MDM rules or view child GPS tracking.',
+          },
+          {
+            title: 'Link Classroom Teacher classCode & allowedSchoolWindow',
+            desc: 'Enter the teacher’s classCode (e.g. SOPRON-3A) and set the school window (e.g. Mon–Fri 07:45–15:30).',
+            tip: 'Teachers have ZERO access to GPS, sharedPhotos (!isTeacherRole), contacts, call logs, or chats.',
+          },
+          {
+            title: 'Configure Parent Blacklist & 1-Tap Vacation / Sick-Day Mode',
+            desc: 'Add any globally blacklisted Android packages and use the 1-Tap Vacation / Sick-Day switch whenever your child stays home.',
+            tip: 'Vacation / Sick-Day Mode immediately overrides all classroom focus locks.',
+          },
+        ],
       },
-      {
-        title: 'Profil „Ich bin ein Elternteil“ und Registrierung',
-        desc: 'Wählen Sie das Elternprofil und geben Sie Namen und E-Mail-Adresse ein.',
-        tip: 'Mehrere Elternteile können sich mit demselben Kind verbinden.',
+      antibrick: {
+        label: '4. Dual Anti-Brick Escape Hatch',
+        sub: 'Remote Cloud + 100% Offline 8-Digit Code',
+        summary:
+          'Two independent guaranteed parent recovery paths — online in 1 click or 100% offline with zero Wi-Fi and zero SIM card.',
+        steps: [
+          {
+            title: 'Path 1 (Online): 1-Click Remote Cloud Release (REMOTE_RELEASE)',
+            desc: 'Open the Parent PWA “5. Hybrid MDM & Anti-Brick” tab and dispatch REMOTE_RELEASE with confirmation.',
+            tip: 'Clears LockTask, app suspensions, and Device Owner restrictions as soon as the phone has connectivity.',
+            codeBadge: 'mdmCommands/{cmdId} -> commandType: "REMOTE_RELEASE"',
+          },
+          {
+            title: 'Path 2 (100% Offline): Tap the Kiosk Shield badge 5 times',
+            desc: 'With zero Wi-Fi, zero mobile data, and zero SIM card: rapidly tap the “Kiosk Lock Active” shield badge 5 times on the child phone.',
+            tip: 'Opens JUNEAR’s built-in LockTask-safe numeric keypad (OfflineUnlockSheet).',
+          },
+          {
+            title: 'Enter the 8-digit HMAC-SHA256 Master Unlock Code (XXXX-XXXX)',
+            desc: 'Read the 8-digit RFC 4226 code (e.g. 7977-7033) from your Parent PWA and enter it on the child phone.',
+            tip: 'IMPORTANT: Verifies in constant time across +/- 1 UTC day clock drift with a 60s cooldown after 5 attempts.',
+            codeBadge: 'HMAC_SHA256(secret, "JUNEAR-UNLOCK-V1:" + utcEpochDay)',
+          },
+        ],
       },
-      {
-        title: 'Mit dem 6-stelligen Code koppeln',
-        desc: 'Geben Sie den Code vom Kinder-Telefon ein und tippen Sie auf „Koppeln“.',
-        tip: 'Die Verbindung steht sofort, die Karte Ihres Kindes erscheint im Dashboard.',
-      },
-      {
-        title: 'Sicherheitszonen einrichten',
-        desc: 'Markieren Sie die Zonen für Zuhause und Schule auf der Karte.',
-        tip: 'Sie werden benachrichtigt, wenn das Kinder-Telefon eine Zone verlässt.',
-      },
-      {
-        title: 'Benachrichtigungen und Verlauf prüfen',
-        desc: 'Legen Sie fest, über welche Ereignisse Sie informiert werden, und prüfen Sie Anrufliste und Ereignisse.',
-        tip: 'Mit dem Aktualisieren-Symbol fordern Sie sofort Standort und Akkustand an.',
-      },
-    ],
+    },
   },
 };
 
-const CHILD_ICONS = [Download, UserCheck, ShieldCheck, Users, KeyRound, Lock];
-const PARENT_ICONS = [Bell, HeartHandshake, KeyRound, MapPin, Info];
+const TAB_ORDER: JunearSetupTab[] = ['qr', 'usb', 'parent', 'antibrick'];
 
-interface JunearSetupGuidePageProps {
-  onNavigate: (route: AppRoute) => void;
-  onContactClick: () => void;
+function detectSetupLangFromUrl(): Lang | null {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  const langParam = params.get('lang')?.toLowerCase();
+  if (langParam === 'hu' || langParam === 'de' || langParam === 'en') {
+    return langParam;
+  }
+  const path = window.location.pathname.toLowerCase();
+  if (path.startsWith('/hu/') || path === '/hu') return 'hu';
+  if (path.startsWith('/de/') || path === '/de') return 'de';
+  if (path.startsWith('/en/') || path === '/en') return 'en';
+  return null;
 }
 
-export function JunearSetupGuidePage({ onNavigate, onContactClick }: JunearSetupGuidePageProps) {
-  const { language, t } = useLanguage();
-  const lang = (['hu', 'en', 'de'].includes(language) ? language : 'en') as Lang;
-  const c = COPY[lang];
-  const accent = PRODUCT_ACCENT.junear;
+function resolveInitialSetupLang(contextLang: string): Lang {
+  const fromUrl = detectSetupLangFromUrl();
+  if (fromUrl) return fromUrl;
+  if (contextLang === 'hu') return 'hu';
+  if (contextLang === 'de') return 'de';
+  return 'en';
+}
 
-  const [target, setTarget] = useState<Target>('child');
-  const [done, setDone] = useState<Record<Target, Set<number>>>({ child: new Set(), parent: new Set() });
-  const [openStep, setOpenStep] = useState(0);
+export function JunearSetupGuidePage({
+  onNavigate,
+  initialTab = 'qr',
+  onContactClick,
+}: {
+  onNavigate: (route: any) => void;
+  initialTab?: JunearSetupTab;
+  onContactClick?: () => void;
+}) {
+  const { language } = useLanguage();
+  const [lang, setLang] = useState<Lang>(() => resolveInitialSetupLang(language));
+  const c = SETUP_COPY[lang];
 
-  const steps = target === 'child' ? c.child : c.parent;
-  const icons = target === 'child' ? CHILD_ICONS : PARENT_ICONS;
-  const doneSet = done[target];
-  const allDone = doneSet.size === steps.length;
+  useEffect(() => {
+    if (!detectSetupLangFromUrl()) {
+      setLang(language === 'hu' || language === 'de' ? language : 'en');
+    }
+  }, [language]);
 
-  const selectTarget = (tg: Target) => {
-    setTarget(tg);
+  const handleSelectLang = (nextLang: Lang) => {
+    setLang(nextLang);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', nextLang);
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  };
+
+  const [tab, setTab] = useState<JunearSetupTab>(initialTab);
+  const [doneMap, setDoneMap] = useState<Record<JunearSetupTab, number[]>>({
+    qr: [],
+    usb: [],
+    parent: [],
+    antibrick: [],
+  });
+  const [openStep, setOpenStep] = useState<number>(0);
+
+  useEffect(() => {
+    setTab(initialTab);
     setOpenStep(0);
-    document.getElementById('junear-steps')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [initialTab]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const prev = document.title;
+    const prevHtmlLang = document.documentElement.lang;
+    document.title = c.metaTitle;
+    document.documentElement.lang = lang;
+    return () => {
+      document.title = prev;
+      if (prevHtmlLang) document.documentElement.lang = prevHtmlLang;
+    };
+  }, [lang, c.metaTitle]);
+
+  const activeCopy = c.tabs[tab];
+  const completedSteps = doneMap[tab];
+  const allDone = completedSteps.length === activeCopy.steps.length;
+
+  const handleSelectTab = (next: JunearSetupTab) => {
+    setTab(next);
+    setOpenStep(0);
+    if (next === 'usb') {
+      onNavigate('junear-usb-setup');
+    } else if (tab === 'usb') {
+      onNavigate('junear-setup');
+    }
   };
 
-  const markDone = (i: number) => {
-    setDone((prev) => {
-      const next = new Set(prev[target]);
-      next.add(i);
-      return { ...prev, [target]: next };
+  const handleMarkStepDone = (idx: number) => {
+    setDoneMap((prev) => {
+      const exists = prev[tab].includes(idx);
+      const nextList = exists ? prev[tab] : [...prev[tab], idx];
+      return { ...prev, [tab]: nextList };
     });
-    setOpenStep(i + 1 < steps.length ? i + 1 : -1);
+    setOpenStep(idx + 1 < activeCopy.steps.length ? idx + 1 : -1);
   };
+
+  const handleResetTab = () => {
+    setDoneMap((prev) => ({ ...prev, [tab]: [] }));
+    setOpenStep(0);
+  };
+
+  const nextTabIdx = (TAB_ORDER.indexOf(tab) + 1) % TAB_ORDER.length;
+
+  const renderTabIcon = (key: JunearSetupTab) => {
+    switch (key) {
+      case 'qr':
+        return <QrCode className="w-5 h-5" />;
+      case 'usb':
+        return <Usb className="w-5 h-5" />;
+      case 'parent':
+        return <Users className="w-5 h-5" />;
+      case 'antibrick':
+        return <WifiOff className="w-5 h-5" />;
+    }
+  };
+
+  const stepIcons = [Smartphone, ShieldCheck, Lock, HeartHandshake, GraduationCap, KeyRound];
 
   return (
-    <div className="bg-[#FAFAFA] text-[#2C2C2C] min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
-        {/* Breadcrumb */}
-        <nav className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-[#8C7355]">
-          <button type="button" onClick={() => onNavigate('home')} className="hover:text-[#2C2C2C] cursor-pointer">
-            {c.home}
-          </button>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <button type="button" onClick={() => onNavigate('junear')} className="hover:text-[#2C2C2C] cursor-pointer">
-            JUNEAR
-          </button>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[#2C2C2C] font-semibold">{t.nav.installGuide}</span>
-        </nav>
+    <div className="bg-[#FDFBF7] text-[#1F2421] min-h-screen">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+        {/* Breadcrumb + Local JUNEAR Language Switcher */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <nav
+            aria-label="Breadcrumb"
+            className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-[#6E573D]"
+          >
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="inline-flex items-center min-h-[32px] px-2 py-1 rounded-lg hover:text-[#1F2421] hover:bg-[#EFE9DF] transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E6952]"
+            >
+              {c.home}
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+            <button
+              type="button"
+              onClick={() => onNavigate('junear')}
+              className="inline-flex items-center min-h-[32px] px-2 py-1 rounded-lg hover:text-[#1F2421] hover:bg-[#EFE9DF] transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E6952]"
+            >
+              JUNEAR
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="text-[#0E6952] font-bold px-1">{activeCopy.label}</span>
+          </nav>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div
+              role="group"
+              aria-label={
+                lang === 'hu'
+                  ? 'JUNEAR nyelvválasztó'
+                  : lang === 'de'
+                    ? 'JUNEAR Sprachauswahl'
+                    : 'JUNEAR language selector'
+              }
+              className="inline-flex items-center gap-1 rounded-xl bg-white border border-[#D8CEBE] p-1 shadow-2xs"
+            >
+              {(['hu', 'de', 'en'] as const).map((code) => {
+                const active = lang === code;
+                const fullLabel =
+                  code === 'hu' ? 'Magyar (HU)' : code === 'de' ? 'Deutsch (DE)' : 'English (EN)';
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => handleSelectLang(code)}
+                    aria-pressed={active}
+                    aria-label={fullLabel}
+                    className={`inline-flex items-center justify-center min-h-[32px] min-w-[36px] px-2.5 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E6952] ${
+                      active
+                        ? 'bg-[#0E6952] text-white shadow-2xs'
+                        : 'bg-transparent text-[#2C2C2C] hover:bg-[#F5F0EB]'
+                    }`}
+                  >
+                    {code.toUpperCase()}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onNavigate('junear')}
+              className="inline-flex items-center min-h-[36px] px-3 py-1.5 rounded-xl bg-white border border-[#D8CEBE] hover:border-[#0E6952] text-xs font-bold text-[#1F2421] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E6952]"
+            >
+              {c.backToJunear}
+            </button>
+          </div>
+        </div>
 
         {/* Header */}
-        <header className="space-y-5">
+        <header className="space-y-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DCEFEA] border border-[#9FD4C5] text-xs font-extrabold text-[#134236]">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#0E6952]" />
+            {c.badge}
+          </span>
+
           <div className="flex items-center gap-4">
-            <img src="/logos/junear-logo.png" alt="JUNEAR logo" className="w-16 h-16 object-contain" />
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">{c.pageTitle}</h1>
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white border-2 border-[#E8DFD4] p-2 flex items-center justify-center shrink-0">
+              <img
+                src="/logos/junear-logo.png"
+                alt="JUNEAR logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h1 className="font-heading text-2xl sm:text-4xl font-extrabold tracking-tight text-[#1F2421]">
+              {c.pageTitle}
+            </h1>
           </div>
-          <p className="text-base sm:text-lg text-[#5C5A56] leading-relaxed">{c.pageSubtitle}</p>
-          <div className="flex items-start gap-3 p-4 rounded-2xl border bg-[#F1FAF8]" style={{ borderColor: `${accent.main}66` }}>
-            <Info className="w-5 h-5 shrink-0 mt-0.5" style={{ color: accent.main }} />
-            <p className="text-sm text-[#24453F] leading-relaxed">
-              {c.previewNote}{' '}
-              <button type="button" onClick={onContactClick} className="font-bold underline cursor-pointer">
-                {t.junear.btnMoreInfo}
-              </button>
-            </p>
+
+          <p className="text-sm sm:text-base text-[#5C5A56] leading-relaxed">{c.pageSubtitle}</p>
+
+          <div className="rounded-2xl bg-[#F1FAF8] border border-[#9FD4C5] p-4 flex items-start gap-3 text-xs sm:text-sm text-[#134236] font-medium">
+            <Info className="w-5 h-5 text-[#0E6952] shrink-0 mt-0.5" />
+            <div>
+              <span>{c.complianceCallout}</span>
+              {onContactClick && (
+                <button
+                  type="button"
+                  onClick={onContactClick}
+                  className="ml-2 underline font-bold text-[#0E6952] cursor-pointer"
+                >
+                  info@gabba.bond
+                </button>
+              )}
+            </div>
           </div>
         </header>
 
-        {/* Phone selector */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {(
-            [
-              { key: 'child' as Target, title: c.tabChild, sub: c.tabChildSub, Icon: Baby },
-              { key: 'parent' as Target, title: c.tabParent, sub: c.tabParentSub, Icon: HeartHandshake },
-            ]
-          ).map(({ key, title, sub, Icon }) => {
-            const active = target === key;
+        {/* 4 Interactive Setup Mode Tabs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {TAB_ORDER.map((key) => {
+            const active = tab === key;
+            const meta = c.tabs[key];
             return (
               <button
                 key={key}
                 type="button"
-                onClick={() => selectTarget(key)}
-                className={`p-5 rounded-3xl border-2 text-left flex items-center gap-4 transition-all cursor-pointer ${
-                  active ? 'bg-white shadow-lg' : 'bg-white/70 border-[#E8DFD4] hover:border-[#C5A880]/60'
+                onClick={() => handleSelectTab(key)}
+                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between gap-2.5 transition-all cursor-pointer ${
+                  active
+                    ? 'bg-white border-[#0E6952] shadow-md'
+                    : 'bg-white/70 border-[#E8DFD4] hover:border-[#C5A880]'
                 }`}
-                style={active ? { borderColor: accent.main } : undefined}
               >
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: active ? accent.main : '#F5F0EB', color: active ? '#fff' : accent.main }}
-                >
-                  <Icon className="w-6 h-6" />
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      active ? 'bg-[#0E6952] text-white' : 'bg-[#F5F0EB] text-[#0E6952]'
+                    }`}
+                  >
+                    {renderTabIcon(key)}
+                  </span>
+                  {active && <Check className="w-4 h-4 text-[#0E6952]" strokeWidth={3} />}
                 </div>
                 <div>
-                  <div className="font-heading font-bold text-lg">{title}</div>
-                  <div className="text-xs font-semibold text-[#8C7355]">{sub}</div>
+                  <div className="font-heading font-extrabold text-sm text-[#1F2421]">
+                    {meta.label}
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#6E573D] mt-0.5">{meta.sub}</div>
                 </div>
-                {active && <Check className="w-5 h-5 ml-auto" style={{ color: accent.main }} strokeWidth={3} />}
               </button>
             );
           })}
         </div>
 
-        {/* Progress */}
-        <div id="junear-steps" className="scroll-mt-28 flex items-center justify-between gap-3 text-sm">
-          <div className="flex-1 h-2 rounded-full bg-[#E8DFD4] overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${(doneSet.size / steps.length) * 100}%`, background: accent.main }}
-            />
+        {/* Active Tab Summary + Progress Bar */}
+        <div className="rounded-3xl bg-white border-2 border-[#E8DFD4] p-5 sm:p-6 space-y-4">
+          <p className="text-sm sm:text-base font-semibold text-[#2C2C2C]">{activeCopy.summary}</p>
+          <div className="flex items-center justify-between gap-3 text-xs sm:text-sm">
+            <div className="flex-1 h-2.5 rounded-full bg-[#EFE9DF] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#0E6952] transition-all duration-300"
+                style={{
+                  width: `${Math.round((completedSteps.length / activeCopy.steps.length) * 100)}%`,
+                }}
+              />
+            </div>
+            <span className="font-bold text-[#6E6B65] whitespace-nowrap">
+              {completedSteps.length}/{activeCopy.steps.length} {c.progressSuffix}
+            </span>
+            <button
+              type="button"
+              onClick={handleResetTab}
+              className="inline-flex items-center gap-1 text-xs font-bold text-[#5C5A56] hover:text-[#1F2421] cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>{c.resetBtn}</span>
+            </button>
           </div>
-          <span className="font-semibold text-[#8C7355] whitespace-nowrap">
-            {doneSet.size}/{steps.length} {c.progress}
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              setDone((p) => ({ ...p, [target]: new Set() }));
-              setOpenStep(0);
-            }}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#5C5A56] hover:text-[#2C2C2C] cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" /> {c.reset}
-          </button>
         </div>
 
-        {/* Steps */}
-        <ol className="space-y-4">
-          {steps.map((step, i) => {
-            const Icon = icons[i];
-            const isDone = doneSet.has(i);
+        {/* Step-by-Step Accordion */}
+        <ol className="space-y-3.5">
+          {activeCopy.steps.map((step, i) => {
+            const StepIcon = stepIcons[i % stepIcons.length];
+            const isDone = completedSteps.includes(i);
             const isOpen = openStep === i;
-            const important = /^(FONTOS|IMPORTANT|WICHTIG)/.test(step.tip);
+            const isImportant = /^(FONTOS|IMPORTANT|WICHTIG)/.test(step.tip);
+
             return (
               <li
-                key={`${target}-${i}`}
-                className={`rounded-3xl border-2 bg-white overflow-hidden transition-all ${isOpen ? 'shadow-md' : ''}`}
-                style={{ borderColor: isOpen ? accent.main : isDone ? '#A7DCC9' : '#E8DFD4' }}
+                key={`${tab}-${i}`}
+                className={`rounded-3xl border-2 bg-white overflow-hidden transition-all ${
+                  isOpen
+                    ? 'border-[#0E6952] shadow-md'
+                    : isDone
+                      ? 'border-[#9FD4C5]'
+                      : 'border-[#E8DFD4]'
+                }`}
               >
                 <button
                   type="button"
@@ -441,41 +802,57 @@ export function JunearSetupGuidePage({ onNavigate, onContactClick }: JunearSetup
                   className="w-full p-5 flex items-center gap-4 text-left cursor-pointer"
                 >
                   <div
-                    className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 font-black"
-                    style={{
-                      background: isDone ? '#10895F' : isOpen ? '#2C2C2C' : '#F0EAE1',
-                      color: isDone || isOpen ? '#fff' : '#6E6B65',
-                    }}
+                    className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 font-extrabold text-sm ${
+                      isDone
+                        ? 'bg-[#0E6952] text-white'
+                        : isOpen
+                          ? 'bg-[#1F2421] text-white'
+                          : 'bg-[#F0EAE1] text-[#5C5A56]'
+                    }`}
                   >
                     {isDone ? <Check className="w-5 h-5" strokeWidth={3} /> : i + 1}
                   </div>
                   <div className="flex-1">
-                    <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: accent.main }}>
-                      {c.stepLabel} {i + 1}
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0E6952]">
+                      {c.stepWord} {i + 1}
                     </div>
-                    <div className="font-heading font-bold text-base sm:text-lg">{step.title}</div>
+                    <div className="font-heading font-bold text-base sm:text-lg text-[#1F2421]">
+                      {step.title}
+                    </div>
                   </div>
-                  <Icon className="w-6 h-6 text-[#8C7355] shrink-0" />
+                  <StepIcon className="w-5 h-5 text-[#6E573D] shrink-0" />
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 sm:pl-20 space-y-4">
-                    <p className="text-base text-[#5C5A56] leading-relaxed">{step.desc}</p>
+                  <div className="px-5 pb-5 sm:pl-19 space-y-3.5">
+                    <p className="text-sm sm:text-base text-[#4D524F] leading-relaxed">
+                      {step.desc}
+                    </p>
+
+                    {step.codeBadge && (
+                      <div className="rounded-xl bg-[#1F2421] text-[#A7F3D0] px-4 py-2.5 font-mono text-xs overflow-x-auto">
+                        {step.codeBadge}
+                      </div>
+                    )}
+
                     <div
-                      className={`p-3.5 rounded-2xl border text-sm leading-relaxed flex items-start gap-2.5 ${
-                        important ? 'bg-amber-50 border-amber-300 text-amber-950' : 'bg-[#FAF8F5] border-[#C5A880]/35 text-[#5C5A56]'
+                      className={`p-3.5 rounded-2xl border text-xs sm:text-sm leading-relaxed flex items-start gap-2.5 ${
+                        isImportant
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 font-semibold'
+                          : 'bg-[#FAF7F2] border-[#D8CEBE] text-[#5C5A56]'
                       }`}
                     >
-                      <Info className="w-4 h-4 shrink-0 mt-0.5" />
+                      <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#0E6952]" />
                       <span>{step.tip}</span>
                     </div>
+
                     <button
                       type="button"
-                      onClick={() => markDone(i)}
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2C2C2C] text-white text-sm font-bold hover:bg-black transition-all cursor-pointer"
+                      onClick={() => handleMarkStepDone(i)}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0E6952] hover:bg-[#0F6B53] text-white text-xs sm:text-sm font-extrabold transition-colors cursor-pointer"
                     >
-                      {c.markDone}
-                      <ArrowRight className="w-4 h-4" style={{ color: accent.soft }} />
+                      <span>{c.markDoneBtn}</span>
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 )}
@@ -484,30 +861,31 @@ export function JunearSetupGuidePage({ onNavigate, onContactClick }: JunearSetup
           })}
         </ol>
 
+        {/* Completion Banner */}
         {allDone && (
-          <div className="rounded-3xl bg-gradient-to-br from-[#2C2C2C] to-[#1F2421] text-white p-8 text-center space-y-4 shadow-xl">
-            <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center" style={{ background: `${accent.main}33` }}>
-              <Check className="w-8 h-8" style={{ color: accent.soft }} strokeWidth={3} />
+          <div className="rounded-3xl bg-[#1F2421] text-white p-7 sm:p-8 text-center space-y-4 shadow-xl">
+            <div className="w-14 h-14 mx-auto rounded-full bg-[#0E6952]/30 border border-[#0E6952] flex items-center justify-center">
+              <Check className="w-7 h-7 text-[#8CE6CE]" strokeWidth={3} />
             </div>
-            <h2 className="font-heading text-2xl sm:text-3xl font-bold">{c.finishTitle}</h2>
-            <p className="text-stone-300">{c.finishText}</p>
+            <h2 className="font-heading text-xl sm:text-2xl font-extrabold">{c.completedTitle}</h2>
+            <p className="text-sm text-stone-300">{c.completedBody}</p>
             <div className="flex flex-wrap justify-center gap-3 pt-2">
-              {target === 'child' && (
-                <button
-                  type="button"
-                  onClick={() => selectTarget('parent')}
-                  className="px-6 py-3 rounded-xl font-bold text-sm text-[#1F2421] cursor-pointer"
-                  style={{ background: accent.soft }}
-                >
-                  {c.toParent} →
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => handleSelectTab(TAB_ORDER[nextTabIdx])}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0E6952] hover:bg-[#0F6B53] text-white text-xs sm:text-sm font-extrabold cursor-pointer"
+              >
+                <span>
+                  {c.nextTabBtn}: {c.tabs[TAB_ORDER[nextTabIdx]].label}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
               <button
                 type="button"
                 onClick={() => onNavigate('junear')}
-                className="px-6 py-3 rounded-xl font-semibold text-sm bg-white/10 border border-white/20 hover:bg-white/20 cursor-pointer"
+                className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs sm:text-sm font-bold cursor-pointer"
               >
-                {c.backToProduct}
+                {c.backToJunear}
               </button>
             </div>
           </div>
@@ -516,3 +894,5 @@ export function JunearSetupGuidePage({ onNavigate, onContactClick }: JunearSetup
     </div>
   );
 }
+
+export default JunearSetupGuidePage;

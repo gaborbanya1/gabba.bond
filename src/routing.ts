@@ -17,10 +17,15 @@ export type AppRoute =
   | 'junear'
   | 'senear-setup'
   | 'junear-setup'
+  | 'junear-usb-setup'
   | 'senear-privacy'
   | 'senear-terms'
   | 'senear-operations'
   | 'delete-account'
+  | 'junear-privacy'
+  | 'junear-terms'
+  | 'junear-operations'
+  | 'junear-delete-account'
   | 'legal-brief';
 
 export type ProductKey = 'senear' | 'junear';
@@ -32,10 +37,15 @@ export const ROUTE_PATHS: Record<AppRoute, string> = {
   junear: '/junear',
   'senear-setup': '/senear/setup',
   'junear-setup': '/junear/setup',
+  'junear-usb-setup': '/junear/usb-setup',
   'senear-privacy': '/senear/privacy',
   'senear-terms': '/senear/terms',
   'senear-operations': '/senear/operations',
   'delete-account': '/delete-account',
+  'junear-privacy': '/junear/privacy',
+  'junear-terms': '/junear/terms',
+  'junear-operations': '/junear/operations',
+  'junear-delete-account': '/junear/delete-account',
   'legal-brief': '/ugyved',
 };
 
@@ -97,12 +107,67 @@ export function routeOfLegalDoc(doc: LegalDocKind): AppRoute {
   return 'senear-operations';
 }
 
+export function isJunearLegalRoute(route: AppRoute): boolean {
+  return (
+    route === 'junear-privacy' ||
+    route === 'junear-terms' ||
+    route === 'junear-operations' ||
+    route === 'junear-delete-account'
+  );
+}
+
+export function junearLegalDocOfRoute(route: AppRoute): LegalDocKind | null {
+  if (route === 'junear-privacy' || route === 'junear-delete-account') return 'privacy';
+  if (route === 'junear-terms') return 'terms';
+  if (route === 'junear-operations') return 'operations';
+  return null;
+}
+
 export function resolveRoute(): AppRoute {
   if (typeof window === 'undefined') return 'home';
   const rawPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
   const path = rawPath.replace(/^\/(hu|en|de)(?=\/|$)/, '') || '/';
   const hash = window.location.hash.toLowerCase();
   const params = new URLSearchParams(window.location.search);
+
+  if (
+    path === '/junear/delete-account' ||
+    path === '/junear/data-deletion' ||
+    path === '/junear/account-deletion'
+  ) {
+    return 'junear-delete-account';
+  }
+  if (
+    path === '/junear/privacy' ||
+    path === '/junear/privacy-policy' ||
+    path === '/junear/adatvedelem' ||
+    path === '/junear/datenschutz'
+  ) {
+    return 'junear-privacy';
+  }
+  if (
+    path === '/junear/terms' ||
+    path === '/junear/tos' ||
+    path === '/junear/terms-of-service' ||
+    path === '/junear/aszf' ||
+    path === '/junear/agb'
+  ) {
+    return 'junear-terms';
+  }
+  if (
+    path === '/junear/operations' ||
+    path === '/junear/operational-policy' ||
+    path === '/junear/mukodes' ||
+    path === '/junear/mukodesi-szabalyzat'
+  ) {
+    return 'junear-operations';
+  }
+  if (path === '/junear/usb-setup' || path === '/junear/webusb') {
+    return 'junear-usb-setup';
+  }
+  if (path === '/junear/setup' || path === '/junear/install') {
+    return 'junear-setup';
+  }
 
   if (
     path === '/delete-account' ||
@@ -203,6 +268,16 @@ export function productOfRoute(route: AppRoute): ProductKey | null {
   ) {
     return 'senear';
   }
-  if (route === 'junear' || route === 'junear-setup') return 'junear';
+  if (
+    route === 'junear' ||
+    route === 'junear-setup' ||
+    route === 'junear-usb-setup' ||
+    route === 'junear-privacy' ||
+    route === 'junear-terms' ||
+    route === 'junear-operations' ||
+    route === 'junear-delete-account'
+  ) {
+    return 'junear';
+  }
   return null;
 }
